@@ -52,8 +52,8 @@ class celestialBody
          *
          * - gamma_a = 1.35                                         adiabetic index for Mars
          * - Rstar = Ra/Ma =~ 1918.42635            [m^2/(s^2*K)]   specific gas constant for Mars (Ra = 8.3144598 m^2*kg/(s^2*K*mol) and Ma = 0.004334 kg/mol)
-         * - PTn                                    [-]             these are the polynomial coefficients for the fit for the temperature curves
-         * - Prho n                                 [-]             these are the polynomial coefficients for the fit for the density curves
+         * - PTn                                                    these are the polynomial coefficients for the fit for the temperature curves
+         * - Prho n                                                 these are the polynomial coefficients for the fit for the density curves
          * - mu_M = 4.283*10^13                     [m^3/s^2]       standard gravitational parameter for Mars
          * - marsRotationalVelocity = 7.088*10^-5   [rad/s]         rotational velocity of Mars
          * - OmegaP = 0                             [rad]           relative angle between the prime meridian and the x-axis (for now it is chosen such that
