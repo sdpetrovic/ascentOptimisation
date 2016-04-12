@@ -23,7 +23,8 @@
  *    OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *    Changelog
- *      160411    S.D. Petrovic          File created
+ *      YYMMDD    Author            Comment
+ *      160411    S.D. Petrovic     File created
  *
  *    References
  *
@@ -38,6 +39,8 @@
 #include <boost/make_shared.hpp>
 #include <boost/shared_ptr.hpp>
 #include <string>
+
+#include <Tudat/Mathematics/BasicMathematics/linearAlgebraTypes.h>
 
 /// Testing the celestial body class ///
 
@@ -56,12 +59,16 @@
 
 #include <thesisProject/MarsAscentVehicle.h>    // Final version
 
+/// Testing the current state and time and its updater ///
+
+#include <thesisProject/stateAndTime.h>     // Original test file
+
 
 int main()
 
 {
 
-
+/*
 
     /// Testing the Celestial Body class ///
 
@@ -234,6 +241,28 @@ int main()
 
         std::cout<<"The thrustAzimuth for the Mars Ascent Vehicle is "<<thrustAzimuthThree<<std::endl;
         std::cout<<"The thrustElevation for the Mars Ascent Vehicle is "<<thrustElevationThree<<std::endl;
+*/
+
+/// Testing the current state and time class ///
+
+
+    // Initial conditions
+
+    tudat::basic_mathematics::Vector6d aState;
+
+    aState(0,0) = 1;
+    aState(0,1) = 1;
+    aState(0,2) = 1;
+    aState(0,3) = 2;
+    aState(0,4) = 2;
+    aState(0,5) = 2;
+
+    double aMass = 227;   // [kg] from literature study
+
+    satellite_propagator_examples::StateAndTime currentStateAndTime(aState,aMass);
+
+
+
 
     return 0;
 }

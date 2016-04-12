@@ -23,7 +23,8 @@
  *    OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *    Changelog
- *      160411    S.D. Petrovic          File created
+ *      YYMMDD    Author            Comment
+ *      160411    S.D. Petrovic     File created
  *
  *    References
  *
