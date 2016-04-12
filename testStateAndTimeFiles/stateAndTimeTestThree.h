@@ -51,7 +51,7 @@
 
 
 
-//! Test StateAndTime class.
+//! Test body class.
 /*!
  * This class serves as an example of how a container can be constructed that stores state and
  * time information, which can be used in conjunction with acceleration models, the Cartesian state

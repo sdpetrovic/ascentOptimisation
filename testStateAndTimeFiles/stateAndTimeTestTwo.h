@@ -46,12 +46,11 @@
 #include <Eigen/Core>
 
 #include <Tudat/Astrodynamics/BasicAstrodynamics/accelerationModel.h>
-//#include <Tudat/Mathematics/BasicMathematics/linearAlgebraTypes.h>
-#include <tudatApplications/thesisProject/linearAlgebraTypesUpdated.h>
+#include <Tudat/Mathematics/BasicMathematics/linearAlgebraTypes.h>
 
 
 
-//! Test StateAndTime class.
+//! Test body class.
 /*!
  * This class serves as an example of how a container can be constructed that stores state and
  * time information, which can be used in conjunction with acceleration models, the Cartesian state
@@ -68,17 +67,17 @@ public:
      * Constructor taking an input state (mass separate) and time. The input state is used internally to
      * set the current position (taken as a segment of the input state given by the indices
      * (0, 3)), the current velocity (taken as a segment of the input state given by the indices
-     * (3, 3)) and the current mass (taken as a segment of the input state given by the indices
-     * (6, 1)).
+     * (3, 3)) and the current mass.
      * \param aState An input state vector.
+     * \param aMass An input mass [kg].
      * \param aTime An input time (default = 0.0) [s].
      */
-    StateAndTime( const tudat::basic_mathematics::Vector7d& aState, const double aTime = 0.0 )
+    StateAndTime( const tudat::basic_mathematics::Vector6d& aState, const double aMass, const double aTime = 0.0 )
         : currentState( aState ),
           currentPosition( aState.segment( 0, 3 ) ),
           currentVelocity( aState.segment( 3, 3 ) ),
           currentTime( aTime ),
-          currentMass( aState(6) )
+          currentMass(aMass)
     { }
 
     //! Set current time and state.
@@ -86,18 +85,18 @@ public:
      * Sets the current time, position and current velocity internally based on the input
      * arguments. The current position is taken as a segment of the input state given by the
      * indices (0, 3), the current velocity is taken as a segment of the input state given by
-     * the indices (3, 3) and the current mass is taken as a segment of the input state given
-     * by the indices (6, 1).
+     * the indices (3, 3) and the current mass is provided as an input.
      * \param aTime An input time [s].
+     * \param aMass An input mass [kg].
      * \param aState An input state vector.
      */
-    void setCurrentStateAndTime( const tudat::basic_mathematics::Vector7d& aState, const double aTime  )
+    void setCurrentStateAndTime( const tudat::basic_mathematics::Vector6d& aState, const double aMass, const double aTime  )
     {
         currentTime = aTime;
         currentState = aState;
         currentPosition = aState.segment( 0, 3 );
         currentVelocity = aState.segment( 3, 3 );
-        currentMass = aState(6);
+        currentMass = aMass;
     }
 
     //! Get current state.
@@ -105,7 +104,7 @@ public:
      * Returns the internally stored current state vector.
      * \return Current state.
      */
-    tudat::basic_mathematics::Vector7d getCurrentState( ) { return currentState; }
+    tudat::basic_mathematics::Vector6d getCurrentState( ) { return currentState; }
 
     //! Get current position.
     /*!
@@ -143,7 +142,7 @@ protected:
 private:
 
     //! Current state.
-    tudat::basic_mathematics::Vector7d currentState;
+    tudat::basic_mathematics::Vector6d currentState;
 
     //! Current position.
     Eigen::Vector3d currentPosition;
