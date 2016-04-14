@@ -282,12 +282,12 @@ public:
 
     //// Set functions ////
 
-    void setThrustAzimuth(const Eigen::MatrixXd updatedThrustAzimuthSet)            // This functions lets you provide the class with
+    void setThrustAzimuth(const Eigen::MatrixXd updatedThrustAzimuthSet)            // This functions lets you provide the class with your own thrust azimuth angle set
     {
         thrustAzimuth_ = updatedThrustAzimuthSet;
     }
 
-    void setThrustElevation(const Eigen::MatrixXd updatedThrustElevationSet)            // This functions lets you provide the class with
+    void setThrustElevation(const Eigen::MatrixXd updatedThrustElevationSet)            // This functions lets you provide the class with your own thrust elevation angle set
     {
         thrustElevation_ = updatedThrustElevationSet;
     }

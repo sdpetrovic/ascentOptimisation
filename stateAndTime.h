@@ -65,7 +65,7 @@ public:
 
     //! Constructor taking a state (,mass) and a time.
     /*!
-     * Constructor taking an input state (mass separate) and time. The input state is used internally to
+     * Constructor taking an input state and time. The input state is used internally to
      * set the current position (taken as a segment of the input state given by the indices
      * (0, 3)), the current velocity (taken as a segment of the input state given by the indices
      * (3, 3)) and the current mass (taken as a segment of the input state given by the indices

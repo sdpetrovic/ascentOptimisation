@@ -330,32 +330,43 @@ int main()
     /// Testing StateAndTime class using modified vector ///
 
 
-    // Initial conditions
+//    // Initial conditions
 
-    tudat::basic_mathematics::Vector7d aState;
+//    tudat::basic_mathematics::Vector7d aState;
 
-    aState(0) = 1;
-    aState(1) = 1;
-    aState(2) = 1;
-    aState(3) = 2;
-    aState(4) = 2;
-    aState(5) = 2;
-    aState(6) = 227;  // Mass [kg] from literature study
+//    aState(0) = 1;
+//    aState(1) = 1;
+//    aState(2) = 1;
+//    aState(3) = 2;
+//    aState(4) = 2;
+//    aState(5) = 2;
+//    aState(6) = 227;  // Mass [kg] from literature study
 
 
-    StateAndTime currentStateAndTime(aState);        // Creating the current state class using the namespace and class directly
+//    StateAndTime currentStateAndTime(aState);        // Creating the current state class using the namespace and class directly
 
-    const tudat::basic_mathematics::Vector7d currentState = currentStateAndTime.getCurrentState();
-    const Eigen::Vector3d currentPosition = currentStateAndTime.getCurrentPosition();
-    const Eigen::Vector3d currentVelocity = currentStateAndTime.getCurrentVelocity();
-    const double currentMass = currentStateAndTime.getCurrentMass();
-    const double currentTime = currentStateAndTime.getCurrentTime();
+//    const tudat::basic_mathematics::Vector7d currentState = currentStateAndTime.getCurrentState();
+//    const Eigen::Vector3d currentPosition = currentStateAndTime.getCurrentPosition();
+//    const Eigen::Vector3d currentVelocity = currentStateAndTime.getCurrentVelocity();
+//    const double currentMass = currentStateAndTime.getCurrentMass();
+//    const double currentTime = currentStateAndTime.getCurrentTime();
 
-    std::cout<<"The currentState is "<<currentState<<std::endl;
-    std::cout<<"The currentPosition is "<<currentPosition<<std::endl;
-    std::cout<<"The currentVelocity is "<<currentVelocity<<std::endl;
-    std::cout<<"The currentMass is "<<currentMass<<std::endl;
-    std::cout<<"The currentTime is "<<currentTime<<std::endl;
+//    std::cout<<"The currentState is "<<currentState<<std::endl;
+//    std::cout<<"The currentPosition is "<<currentPosition<<std::endl;
+//    std::cout<<"The currentVelocity is "<<currentVelocity<<std::endl;
+//    std::cout<<"The currentMass is "<<currentMass<<std::endl;
+//    std::cout<<"The currentTime is "<<currentTime<<std::endl;
+
+
+    //// Testing the Auxiliary class ///
+
+    // Testing the atan2 function of c++
+
+    double atan2Test1 = std::atan2(0,0);        // Results in 0, but is in fact undefined!!
+    double atan2Test2 = std::atan2(4,3);
+
+    std::cout<<"The atan2 of y = 0 and x = 0 is "<<atan2Test1<<std::endl;
+    std::cout<<"The atan2 of y = 4 and x = 3 is "<<atan2Test2<<std::endl;
 
 
     return 0;
