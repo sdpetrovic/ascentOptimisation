@@ -70,7 +70,7 @@
 
 #include <thesisProject/stateAndTime.h>             // Final version
 
-// test
+// testing
 
 int main()
 
