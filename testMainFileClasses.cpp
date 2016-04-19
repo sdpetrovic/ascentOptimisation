@@ -83,8 +83,8 @@ int main()
 
 
     /// Testing the Celestial Body class ///
-    /*
 
+/*
 //    // First test
 
 //    celestialBody Mars;
@@ -106,7 +106,7 @@ int main()
    const double primeMeridianAngle = Mars.primeMeridianAngle();
    const double inertialFrameTime = Mars.inertialFrameTime();
 
-  const double marsMolaRadius = Mars.marsMolaRadius();
+  const double bodyReferenceRadius = Mars.bodyReferenceRadius();
 
 
    const Eigen::MatrixXd temperaturePolyCoefficients = Mars.temperaturePolyCoefficients();
@@ -119,7 +119,7 @@ int main()
        std::cout<<"The rotationalVelocity for the Martian atmosphere is "<<rotationalVelocity<<std::endl;
        std::cout<<"The primeMeridianAngle for the Martian atmosphere is "<<primeMeridianAngle<<std::endl;
        std::cout<<"The inertialFrameTime for the Martian atmosphere is "<<inertialFrameTime<<std::endl;
-       std::cout<<"The marsMolaRadius for the Martian atmosphere is "<<marsMolaRadius<<std::endl;
+       std::cout<<"The marsMolaRadius for the Martian atmosphere is "<<bodyReferenceRadius<<std::endl;
        std::cout<<"The temperaturePolyCoefficients for the Martian atmosphere is "<<temperaturePolyCoefficients<<std::endl;
        std::cout<<"The temperatureAltitudeRanges for the Martian atmosphere is "<<temperatureAltitudeRanges<<std::endl;
        std::cout<<"The densityPolyCoefficients for the Martian atmosphere is "<<densityPolyCoefficients<<std::endl;

@@ -36,14 +36,11 @@
 
 #include <iostream>
 #include <Eigen/Core>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/shared_ptr.hpp>
 #include <string>
 
-//#include <Tudat/Mathematics/BasicMathematics/linearAlgebraTypes.h>
-#include <tudatApplications/thesisProject/linearAlgebraTypesUpdated.h>
+#include <Tudat/Mathematics/BasicMathematics/linearAlgebraTypes.h>
 
 /// Testing the celestial body class ///
 
@@ -64,11 +61,8 @@
 
 /// Testing the current state and time and its updater ///
 
-//#include <thesisProject/StateAndTime.h>           // Original test file
-//#include <thesisProject/stateAndTimeTestTwo.h>      // Second test file
-//#include <thesisProject/stateAndTimeTestThree.h>    // Third test file
+#include <thesisProject/stateAndTime.h>     // Original test file
 
-#include <thesisProject/stateAndTime.h>             // Final version
 
 int main()
 
@@ -254,108 +248,20 @@ int main()
 
     // Initial conditions
 
-//    tudat::basic_mathematics::Vector6d aState;
+    tudat::basic_mathematics::Vector6d aState;
 
-//    aState(0) = 1;
-//    aState(1) = 1;
-//    aState(2) = 1;
-//    aState(3) = 2;
-//    aState(4) = 2;
-//    aState(5) = 2;
+    aState(0,0) = 1;
+    aState(0,1) = 1;
+    aState(0,2) = 1;
+    aState(0,3) = 2;
+    aState(0,4) = 2;
+    aState(0,5) = 2;
 
-//    double aMass = 227;   // [kg] from literature study
+    double aMass = 227;   // [kg] from literature study
 
-
-    /// Test original Body class converted to StateAndTime class /// (The pointer doesn't really do much, is too much work and end up with the same thing in the end. Only useful if it actually calls a function with input variables.)
-
-
-//    const satellite_propagator_examples::StateAndTimePointer currentStateAndTime = boost::make_shared< satellite_propagator_examples::StateAndTime > (aState,aMass); // Creating the current state class using the namespace by pointing
-
-//    boost::function<const tudat::basic_mathematics::Vector6d ()> currentState_ = boost::bind( &satellite_propagator_examples::StateAndTime::getCurrentState, currentStateAndTime);
-//    boost::function<const Eigen::Vector3d ()> currentPosition_ = boost::bind( &satellite_propagator_examples::StateAndTime::getCurrentPosition, currentStateAndTime);
-//    boost::function<const Eigen::Vector3d ()> currentVelocity_ = boost::bind( &satellite_propagator_examples::StateAndTime::getCurrentVelocity, currentStateAndTime);
-//    boost::function<const double ()> currentMass_ = boost::bind( &satellite_propagator_examples::StateAndTime::getCurrentMass, currentStateAndTime);
-//    boost::function<const double ()> currentTime_ = boost::bind( &satellite_propagator_examples::StateAndTime::getCurrentTime, currentStateAndTime);
+    satellite_propagator_examples::StateAndTime currentStateAndTime(aState,aMass);
 
 
-//        const tudat::basic_mathematics::Vector6d currentState = currentState_();
-//        const Eigen::Vector3d currentPosition = currentPosition_();
-//        const Eigen::Vector3d currentVelocity = currentVelocity_();
-//        const double currentMass = currentMass_();
-//        const double currentTime = currentTime_();
-
-
-//    satellite_propagator_examples::StateAndTime currentStateAndTime(aState,aMass);        // Creating the current state class using the namespace and class directly
-
-//    const tudat::basic_mathematics::Vector6d currentState = currentStateAndTime.getCurrentState();
-//    const Eigen::Vector3d currentPosition = currentStateAndTime.getCurrentPosition();
-//    const Eigen::Vector3d currentVelocity = currentStateAndTime.getCurrentVelocity();
-//    const double currentMass = currentStateAndTime.getCurrentMass();
-//    const double currentTime = currentStateAndTime.getCurrentTime();
-
-
-
-    /// Test modified StateAndTime class (removed unnecessary namespace) /// (Still, pointer is useless I think)
-
-
-
-//        const StateAndTimePointer currentStateAndTime = boost::make_shared< StateAndTime > (aState,aMass); // Creating the current state class using the namespace by pointing
-
-//        boost::function<const tudat::basic_mathematics::Vector6d ()> currentState_ = boost::bind( &StateAndTime::getCurrentState, currentStateAndTime);
-//        boost::function<const Eigen::Vector3d ()> currentPosition_ = boost::bind( &StateAndTime::getCurrentPosition, currentStateAndTime);
-//        boost::function<const Eigen::Vector3d ()> currentVelocity_ = boost::bind( &StateAndTime::getCurrentVelocity, currentStateAndTime);
-//        boost::function<const double ()> currentMass_ = boost::bind( &StateAndTime::getCurrentMass, currentStateAndTime);
-//        boost::function<const double ()> currentTime_ = boost::bind( &StateAndTime::getCurrentTime, currentStateAndTime);
-
-
-//            const tudat::basic_mathematics::Vector6d currentState = currentState_();
-//            const Eigen::Vector3d currentPosition = currentPosition_();
-//            const Eigen::Vector3d currentVelocity = currentVelocity_();
-//            const double currentMass = currentMass_();
-//            const double currentTime = currentTime_();
-
-
-
-
-//        StateAndTime currentStateAndTime(aState,aMass);        // Creating the current state class using the namespace and class directly
-
-//        const tudat::basic_mathematics::Vector6d currentState = currentStateAndTime.getCurrentState();
-//        const Eigen::Vector3d currentPosition = currentStateAndTime.getCurrentPosition();
-//        const Eigen::Vector3d currentVelocity = currentStateAndTime.getCurrentVelocity();
-//        const double currentMass = currentStateAndTime.getCurrentMass();
-//        const double currentTime = currentStateAndTime.getCurrentTime();
-
-
-
-    /// Testing StateAndTime class using modified vector ///
-
-
-    // Initial conditions
-
-    tudat::basic_mathematics::Vector7d aState;
-
-    aState(0) = 1;
-    aState(1) = 1;
-    aState(2) = 1;
-    aState(3) = 2;
-    aState(4) = 2;
-    aState(5) = 2;
-    aState(6) = 227;  // [kg] from literature study
-
-
-    StateAndTime currentStateAndTime(aState);        // Creating the current state class using the namespace and class directly
-
-    const tudat::basic_mathematics::Vector7d currentState = currentStateAndTime.getCurrentState();
-    const Eigen::Vector3d currentPosition = currentStateAndTime.getCurrentPosition();
-    const Eigen::Vector3d currentVelocity = currentStateAndTime.getCurrentVelocity();
-    const double currentMass = currentStateAndTime.getCurrentMass();
-    const double currentTime = currentStateAndTime.getCurrentTime();
-
-    std::cout<<"The currentState is "<<currentState<<std::endl;
-    std::cout<<"The currentPosition is "<<currentPosition<<std::endl;
-    std::cout<<"The currentVelocity is "<<currentVelocity<<std::endl;
-    std::cout<<"The currentMass is "<<currentMass<<std::endl;
-    std::cout<<"The currentTime is "<<currentTime<<std::endl;
 
 
     return 0;

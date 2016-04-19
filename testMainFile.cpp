@@ -68,7 +68,7 @@ int main()
 
 {
 
-/*
+
 
     /// Testing the Celestial Body class ///
 
@@ -107,7 +107,7 @@ int main()
        std::cout<<"The temperatureAltitudeRanges for the Martian atmosphere is "<<temperatureAltitudeRanges<<std::endl;
        std::cout<<"The densityPolyCoefficients for the Martian atmosphere is "<<densityPolyCoefficients<<std::endl;
 
-
+/*
 
 //   boost::shared_ptr< celestialBody > MarsTwo = boost::make_shared< celestialBody > ();     // Still not sure how this works so lets keep it simple for now shall we...
 
