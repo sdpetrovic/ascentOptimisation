@@ -61,6 +61,7 @@ class celestialBody
          *                                                          the inertial frame was set at time t = start time and going through the prime meridian)
          * - t0 = 0                                 [s]             time between the start time and the time that the inertial frame was set
          * - temperatureAltitudeRanges              [km MOLA]       altitude range per section for the temperature-altitude curve
+         * - Rm = 3396e3                              [m]             MOLA radius of Mars
          *
          */
 
@@ -108,6 +109,9 @@ public:
 
             // Inertial Frame Time
                 inertialFrameTime_ = 0;  // [s]
+
+            // MOLA radius of Mars
+                bodyReferenceRadius_ = 3396e3; // [m]
 
 
             // Temperature Polynomial Coefficients
@@ -202,6 +206,7 @@ public:
             rotationalVelocity_ = 0;                                    // rotational velocity of celestial body
             primeMeridianAngle_ = 0;                                    // OmegaP       relative angle between the prime meridian and the x-axis
             inertialFrameTime_ = 0;                                     // t0           time between the start time and the time that the inertial frame was set
+            bodyReferenceRadius_ = 0;                                        // Rm           MOLA radius of Mars
             temperaturePolyCoefficients_ = Eigen::MatrixXd::Zero(1,1);  // PTn    temperature polynomial coefficients
             temperatureAltitudeRanges_ = Eigen::MatrixXd::Zero(1,1);    // altitude range per section for the temperature-altitude curve
             densityPolyCoefficients_ = Eigen::VectorXd::Zero(1);        // Prho n density polynomial coefficients
@@ -232,6 +237,7 @@ public:
     const double rotationalVelocity() { return rotationalVelocity_; }                           // rotational velocity of Mars
     const double primeMeridianAngle() { return primeMeridianAngle_; }                           // OmegaP       relative angle between the prime meridian and the x-axis
     const double inertialFrameTime() { return inertialFrameTime_; }                             // t0           time between the start time and the time that the inertial frame was set
+    const double bodyReferenceRadius() { return bodyReferenceRadius_; }                                   // Rm           MOLA radius of Mars
 
     // Returning the different polynomial coefficient parameter matrices
 
@@ -263,6 +269,7 @@ private:
     double rotationalVelocity_;                     // rotational velocity of celestial body
     double primeMeridianAngle_;                     // OmegaP       relative angle between the prime meridian and the x-axis
     double inertialFrameTime_;                      // t0           time between the start time and the time that the inertial frame was set
+    double bodyReferenceRadius_;                         // Rm           MOLA radius of Mars
 
     // Creating the different polynomial coefficient parameter matrices
 

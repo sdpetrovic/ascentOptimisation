@@ -88,7 +88,7 @@ public:
      * const double specificImpulse                                         // Isp [s]    engine nominal specific impulse
      * const double referenceArea                                            // S [m^2]  vehicle reference area
      * const Eigen::MatrixXd dragCoefficientPolyCoefficients            // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
-     * const Eigen::MatrixXd dragCoefficientMachranges                        // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
+     * const Eigen::MatrixXd dragCoefficientMachRanges                        // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
      *
      *
      *
@@ -96,9 +96,9 @@ public:
 
 
     Auxiliary(const double adiabeticIndex_, const double specificGasConstant_, const double standardGravitationalParameter_, const double rotationalVelocity_, const double primeMeridianAngle_,
-              const double inertialFrameTime_, const Eigen::MatrixXd temperaturePolyCoefficients_, const Eigen::MatrixXd temperatureAltitudeRanges_,
+              const double inertialFrameTime_, const double bodyReferenceRadius_, const Eigen::MatrixXd temperaturePolyCoefficients_, const Eigen::MatrixXd temperatureAltitudeRanges_,
               const Eigen::VectorXd densityPolyCoefficients_, const double Thrust_, const double specificImpulse_,
-              const double referenceArea_, const Eigen::MatrixXd dragCoefficientPolyCoefficients_, const Eigen::MatrixXd dragCoefficientMachranges_){
+              const double referenceArea_, const Eigen::MatrixXd dragCoefficientPolyCoefficients_, const Eigen::MatrixXd dragCoefficientMachRanges_){
 
             // Set the diferent celestial body constant parameters and polynomial coefficient parameter matrices
 
@@ -108,6 +108,8 @@ public:
          rotationalVelocity = rotationalVelocity_;                         // rotational velocity of Mars  [rad/s]
          primeMeridianAngle = primeMeridianAngle_;                          // OmegaP   [rad]   relative angle between the prime meridian and the x-axis
          inertialFrameTime = inertialFrameTime_;                            // t0       [s]    time between the start time and the time that the inertial frame was set
+         bodyReferenceRadius = bodyReferenceRadius_;                                  // Rm       [m]     MOLA radius of Mars
+
          temperaturePolyCoefficients = temperaturePolyCoefficients_; // PTn    temperature polynomial coefficients
          temperatureAltitudeRanges = temperatureAltitudeRanges_;    // altitude range per section for the temperature-altitude curve [km MOLA]
          densityPolyCoefficients = densityPolyCoefficients_;         // Prho n density polynomial coefficients
@@ -118,7 +120,7 @@ public:
          specificImpulse = specificImpulse_;                                        // Isp [s]    engine nominal specific impulse
          referenceArea = referenceArea_;                                           // S [m^2]  vehicle reference area
          dragCoefficientPolyCoefficients = dragCoefficientPolyCoefficients_;           // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
-         dragCoefficientMachranges = dragCoefficientMachranges_;                       // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
+         dragCoefficientMachRanges = dragCoefficientMachRanges_;                       // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
 
 
 
@@ -145,7 +147,7 @@ public:
 
     Eigen::VectorXd getAuxiliaryEquations( const tudat::basic_mathematics::Vector7d& aState, const double time, const Eigen::Vector3d& thrustAccelerationsBframe){
 
-        auxiliaryEquationsVector = Eigen::VectorXd::Zero(35);       // Setting the complete vector and filling it with zeros for now
+        auxiliaryEquationsVector = Eigen::VectorXd::Zero(45);       // Setting the complete vector and filling it with zeros for now
 
         // The following expressions are described in the order in which the equations have to be computed corresponding to the respective vector entry
 
@@ -164,56 +166,144 @@ public:
 
         auxiliaryEquationsVector(10) = rotationalVelocity*(inertialFrameTime+time)-primeMeridianAngle ;              // x10
 
-        auxiliaryEquationsVector(19) = ;              // x19
+        auxiliaryEquationsVector(19) = auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2);              // x19
 
-        auxiliaryEquationsVector(21) = ;              // x21
+        auxiliaryEquationsVector(21) = auxiliaryEquationsVector(4)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(5)*auxiliaryEquationsVector(5)+
+                auxiliaryEquationsVector(6)*auxiliaryEquationsVector(6) ;              // x21
 
-        auxiliaryEquationsVector(26) = ;              // x26
+        auxiliaryEquationsVector(26) = 2*(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)+
+                                          auxiliaryEquationsVector(3)*auxiliaryEquationsVector(6));              // x26
 
-        auxiliaryEquationsVector(11) = ;              // x11
+        auxiliaryEquationsVector(11) = atan2(auxiliaryEquationsVector(2),auxiliaryEquationsVector(1))-auxiliaryEquationsVector(10);              // x11
 
-        auxiliaryEquationsVector(15) = ;              // x15
+        auxiliaryEquationsVector(20) = pow(auxiliaryEquationsVector(8), 0.5);              // x20
 
-        auxiliaryEquationsVector(20) = ;              // x20
+        auxiliaryEquationsVector(36) = pow(auxiliaryEquationsVector(21), 0.5) ;                // x36
 
-        auxiliaryEquationsVector(12) = ;              // x12
+        auxiliaryEquationsVector(12) = asin(auxiliaryEquationsVector(3)/auxiliaryEquationsVector(20)) ;              // x12
 
-        auxiliaryEquationsVector(25) = ;              // x25
+        auxiliaryEquationsVector(25) = auxiliaryEquationsVector(25)/(2*auxiliaryEquationsVector(20));              // x25
 
-        auxiliaryEquationsVector(31) = ;              // x31
+        // Please note that the altitude h (x31) is expressed in km MOLA (which is also the input for the density and temperature curves!)
+        auxiliaryEquationsVector(31) = (auxiliaryEquationsVector(20)-bodyReferenceRadius)/1000;              // x31 [km]!!!
 
-        auxiliaryEquationsVector(23) = ;              // x23
+        auxiliaryEquationsVector(24) = (auxiliaryEquationsVector(20)*auxiliaryEquationsVector(6)-auxiliaryEquationsVector(3)*auxiliaryEquationsVector(25))/
+                (auxiliaryEquationsVector(8)*sqrt(1-pow((auxiliaryEquationsVector(3)/auxiliaryEquationsVector(20)),2)));              // x24
 
-        auxiliaryEquationsVector(24) = ;              // x24
+        // Computing the polynomial fit using the altitude and fit parameters for density
+        for (int i = 0; i < 10;i++) {
 
-        auxiliaryEquationsVector(30) = ;              // x30
+        auxiliaryEquationsVector(30) += pow(auxiliaryEquationsVector(31),i)*densityPolyCoefficients(i);              // x30
+};
 
-        auxiliaryEquationsVector(34) = ;              // x34
+        // Determine which section of the temperature curve needs to be used and what the corresponding order is
 
-        auxiliaryEquationsVector(14) = ;              // x14
+        if (temperatureAltitudeRanges(0,0) <= auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31) < temperatureAltitudeRanges(0,1)){
 
-        auxiliaryEquationsVector(18) = ;              // x18
+        sectionT = 0;
+        powerT = 1;
 
-        auxiliaryEquationsVector(28) = ;              // x28
+        }
+        else if (temperatureAltitudeRanges(1,0) <= auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31) < temperatureAltitudeRanges(1,1)){
 
-        auxiliaryEquationsVector(33) = ;              // x33
+        sectionT = 1;
+        powerT = 3;
 
-        auxiliaryEquationsVector(16) = ;              // x16
+        }
+        else if (temperatureAltitudeRanges(2,0) <= auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31) < temperatureAltitudeRanges(2,1)){
 
-        auxiliaryEquationsVector(32) = ;              // x32
+        sectionT = 2;
+        powerT = 6;
 
-        auxiliaryEquationsVector(17) = ;              // x17
+        }
+        else if (temperatureAltitudeRanges(3,0) <= auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31) < temperatureAltitudeRanges(3,1)){
 
-        auxiliaryEquationsVector(29) = ;              // x29
+            sectionT = 3;
+            powerT = 8;
+        }
+        else if (temperatureAltitudeRanges(4,0) <= auxiliaryEquationsVector(31)){
 
-        auxiliaryEquationsVector(22) = ;              // x22
+            sectionT = 4;
+            powerT = 0;
+        }
+        else {
 
-        auxiliaryEquationsVector(27) = ;              // x27
 
-        auxiliaryEquationsVector(13) = ;              // x13
+            std::cerr<<"The current altitude: "<<auxiliaryEquationsVector(31)<<" [km MOLA] is not a valid altitude (lower than the lowest reference altitude)"<<std::endl;
 
-        auxiliaryEquationsVector(0) = ;              // w4,2
+                       sectionT = 0;
+                        powerT = 1;
 
+        };
+
+        // Computing the polynomial fit using the altitude and fit parameters for temperature
+        for (int i=0; i < powerT;i++){
+
+        auxiliaryEquationsVector(34) += pow(auxiliaryEquationsVector(31),i)*temperaturePolyCoefficients(sectionT,i);              // x34
+
+};
+        auxiliaryEquationsVector(35) = rotationalVelocity*auxiliaryEquationsVector(20)*cos(auxiliaryEquationsVector(12));                // x35
+
+        auxiliaryEquationsVector(37) = auxiliaryEquationsVector(25)/auxiliaryEquationsVector(36);                // x37
+
+        auxiliaryEquationsVector(18) = auxiliaryEquationsVector(20)*auxiliaryEquationsVector(24);              // x18
+
+        auxiliaryEquationsVector(28) = exp(auxiliaryEquationsVector(30));              // x28
+
+        auxiliaryEquationsVector(33) = sqrt(adiabeticIndex*specificGasConstant*auxiliaryEquationsVector(34));              // x33
+
+        auxiliaryEquationsVector(38) = asin(auxiliaryEquationsVector(37));                // x38
+
+        auxiliaryEquationsVector(41) = auxiliaryEquationsVector(35)*auxiliaryEquationsVector(36);                // x41
+
+        auxiliaryEquationsVector(44) = auxiliaryEquationsVector(36)*cos(auxiliaryEquationsVector(38));                // x44
+
+        auxiliaryEquationsVector(39) = auxiliaryEquationsVector(18)/auxiliaryEquationsVector(44);                // x39
+
+        auxiliaryEquationsVector(40) = acos(auxiliaryEquationsVector(39));                // x40
+
+        auxiliaryEquationsVector(42) = cos(auxiliaryEquationsVector(38)*sin(auxiliaryEquationsVector(40)));                // x42
+
+        auxiliaryEquationsVector(43) = auxiliaryEquationsVector(41)*auxiliaryEquationsVector(42);                // x43
+
+        auxiliaryEquationsVector(15) = sqrt(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43));              // x15
+
+        auxiliaryEquationsVector(23) = auxiliaryEquationsVector(25)/auxiliaryEquationsVector(15);              // x23
+
+        auxiliaryEquationsVector(14) = asin(auxiliaryEquationsVector(23));              // x14
+
+        auxiliaryEquationsVector(16) = cos(auxiliaryEquationsVector(14));              // x16
+
+        auxiliaryEquationsVector(32) = auxiliaryEquationsVector(15)/auxiliaryEquationsVector(33);              // x32
+
+        auxiliaryEquationsVector(17) = auxiliaryEquationsVector(16)*auxiliaryEquationsVector(15);              // x17
+
+        // Determine which section of the drag coefficient curve needs to be used
+
+        for (int i=0; i < 5; i++){
+
+            if (dragCoefficientMachRanges(i,0) <= auxiliaryEquationsVector(32) && auxiliaryEquationsVector(32) < dragCoefficientMachRanges(i,1)){
+
+                sectionCD = i;
+            }
+
+        };
+
+        auxiliaryEquationsVector(29) = dragCoefficientPolyCoefficients(sectionCD,1)*auxiliaryEquationsVector(32)+dragCoefficientPolyCoefficients(sectionCD,0);              // x29
+
+        auxiliaryEquationsVector(22) = auxiliaryEquationsVector(18)/auxiliaryEquationsVector(17);              // x22
+
+        auxiliaryEquationsVector(27) = 0.5*referenceArea*auxiliaryEquationsVector(28)*auxiliaryEquationsVector(15)*auxiliaryEquationsVector(15)*auxiliaryEquationsVector(29);              // x27
+
+        auxiliaryEquationsVector(13) = acos(auxiliaryEquationsVector(22));              // x13
+
+        auxiliaryEquationsVector(0) = thrustAccelerationsBframe(0)-(auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7));              // w4,2
+
+
+
+
+
+// auxiliaryEquationsVector()
 
 
 
@@ -238,17 +328,19 @@ private:
  double rotationalVelocity;                         // rotational velocity of Mars  [rad/s]
  double primeMeridianAngle;                          // OmegaP   [rad]   relative angle between the prime meridian and the x-axis
  double inertialFrameTime;                            // t0       [s]    time between the start time and the time that the inertial frame was set
+ double bodyReferenceRadius;                         // Rm    [m]       MOLA radius of Mars
+
  Eigen::MatrixXd temperaturePolyCoefficients; // PTn    temperature polynomial coefficients
  Eigen::MatrixXd temperatureAltitudeRanges;    // altitude range per section for the temperature-altitude curve [km MOLA]
  Eigen::VectorXd densityPolyCoefficients;         // Prho n density polynomial coefficients
 
-     // The differnt vehicle constant parameters and polynomial coefficients
+     // The different vehicle constant parameters and polynomial coefficients
 
  double Thrust;                                                         // T   [N]  engine nominal thrust
  double specificImpulse;                                        // Isp [s]    engine nominal specific impulse
  double referenceArea;                                           // S [m^2]  vehicle reference area
  Eigen::MatrixXd dragCoefficientPolyCoefficients;           // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
- Eigen::MatrixXd dragCoefficientMachranges;                       // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
+ Eigen::MatrixXd dragCoefficientMachRanges;                       // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
 
 
 
@@ -258,9 +350,13 @@ private:
 
 
 
+    // Additional in-class used variables
 
 
+    int sectionT;                                   // This variable holds the "(section number -1)" for the temperature curve fit
+    int powerT;                                     // This variable holds the section corresponding order for the temperature curve fit
 
+    int sectionCD;                                  // This variable holds the "(section number -1)" for the drag coefficient curve fit
 
 };
 

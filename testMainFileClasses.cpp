@@ -41,6 +41,7 @@
 #include <boost/make_shared.hpp>
 #include <boost/shared_ptr.hpp>
 #include <string>
+#include <cmath>
 
 //#include <Tudat/Mathematics/BasicMathematics/linearAlgebraTypes.h>
 #include <tudatApplications/thesisProject/linearAlgebraTypesUpdated.h>
@@ -70,15 +71,19 @@
 
 #include <thesisProject/stateAndTime.h>             // Final version
 
+/// Testing the auxiliary equations ///
+#include <thesisProject/Auxiliary.h>                // Original test file
+
 // testing
 
 int main()
 
 {
 
-/*
+
 
     /// Testing the Celestial Body class ///
+    /*
 
 //    // First test
 
@@ -92,7 +97,7 @@ int main()
     celestialBody Mars;
 
 //    celestialBody Mars(planet);
-//    Mars.setPlanet(planet);
+//    Mars.setPlanet(planet);  // Does not exist in the class anymore!
 
    const double adiabeticIndex = Mars.adiabeticIndex();
    const double specificGasConstant = Mars.specificGasConstant();
@@ -100,6 +105,9 @@ int main()
    const double rotationalVelocity = Mars.rotationalVelocity();
    const double primeMeridianAngle = Mars.primeMeridianAngle();
    const double inertialFrameTime = Mars.inertialFrameTime();
+
+  const double marsMolaRadius = Mars.marsMolaRadius();
+
 
    const Eigen::MatrixXd temperaturePolyCoefficients = Mars.temperaturePolyCoefficients();
    const Eigen::MatrixXd temperatureAltitudeRanges = Mars.temperatureAltitudeRanges();
@@ -111,6 +119,7 @@ int main()
        std::cout<<"The rotationalVelocity for the Martian atmosphere is "<<rotationalVelocity<<std::endl;
        std::cout<<"The primeMeridianAngle for the Martian atmosphere is "<<primeMeridianAngle<<std::endl;
        std::cout<<"The inertialFrameTime for the Martian atmosphere is "<<inertialFrameTime<<std::endl;
+       std::cout<<"The marsMolaRadius for the Martian atmosphere is "<<marsMolaRadius<<std::endl;
        std::cout<<"The temperaturePolyCoefficients for the Martian atmosphere is "<<temperaturePolyCoefficients<<std::endl;
        std::cout<<"The temperatureAltitudeRanges for the Martian atmosphere is "<<temperatureAltitudeRanges<<std::endl;
        std::cout<<"The densityPolyCoefficients for the Martian atmosphere is "<<densityPolyCoefficients<<std::endl;
@@ -134,7 +143,7 @@ int main()
     const double specificImpulse = MAV.specificImpulse();                                        // Isp     engine nominal specific impulse
     const double referenceArea = MAV.referenceArea();                                             // S   vehicle reference area
     const Eigen::MatrixXd dragCoefficientPolyCoefficients = MAV.dragCoefficientPolyCoefficients();            // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
-    const Eigen::MatrixXd dragCoefficientMachranges = MAV.dragCoefficientMachranges();                       // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
+    const Eigen::MatrixXd dragCoefficientMachRanges = MAV.dragCoefficientMachRanges();                       // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
     const Eigen::MatrixXd thrustAzimuth = MAV.thrustAzimuth();                                // psiT   these are the thrust azimuth-gimbal angles as a function of time (including the time ranges)
     const Eigen::MatrixXd thrustElevation = MAV.thrustElevation();                                // epsilonT   these are the thrust elevation-gimbal angles as a function of time (including the time ranges)
 
@@ -142,7 +151,7 @@ int main()
     std::cout<<"The specificImpulse for the Mars Ascent Vehicle is "<<specificImpulse<<std::endl;
     std::cout<<"The referenceArea for the Mars Ascent Vehicle is "<<referenceArea<<std::endl;
     std::cout<<"The dragCoefficientPolyCoefficients for the Mars Ascent Vehicle is "<<dragCoefficientPolyCoefficients<<std::endl;
-    std::cout<<"The dragCoefficientMachranges for the Mars Ascent Vehicle is "<<dragCoefficientMachranges<<std::endl;
+    std::cout<<"The dragCoefficientMachRanges for the Mars Ascent Vehicle is "<<dragCoefficientMachRanges<<std::endl;
     std::cout<<"The thrustAzimuth for the Mars Ascent Vehicle is "<<thrustAzimuth<<std::endl;
     std::cout<<"The thrustElevation for the Mars Ascent Vehicle is "<<thrustElevation<<std::endl;
 
@@ -253,7 +262,7 @@ int main()
 
 /// Testing the current state and time class ///
 
-
+/*
     // Initial conditions
 
 //    tudat::basic_mathematics::Vector6d aState;
@@ -359,12 +368,12 @@ int main()
 //    std::cout<<"The currentMass is "<<currentMass<<std::endl;
 //    std::cout<<"The currentTime is "<<currentTime<<std::endl;
 
-
+*/
     //// Testing the Auxiliary class ///
 
     // Testing the atan2 function of c++
 
-    double atan2Test1 = std::atan2(0,0);        // Results in 0, but is in fact undefined!!
+    double atan2Test1 = std::atan2(0,0);        // Results in 0, but is in-fact undefined!!
     double atan2Test2 = std::atan2(4,3);
 
     std::cout<<"The atan2 of y = 0 and x = 0 is "<<atan2Test1<<std::endl;
