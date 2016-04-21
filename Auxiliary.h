@@ -204,7 +204,9 @@ public:
 
         };
 
+//        std::cout<<"Altitude = "<<auxiliaryEquationsVector(31)<<std::endl;
 
+//        std::cout<<"Lowest altitude range = "<<temperatureAltitudeRanges(0,0)<<std::endl;
 
         // Computing the polynomial fit using the altitude and fit parameters for density
         for (int i = 0; i < 10;i++) {
@@ -213,8 +215,9 @@ public:
 };
 
         // Determine which section of the temperature curve needs to be used and what the corresponding order is
+        // Also, because a computer is less than perfect, a small correction is made to the lower bound of the first section to make sure that the initial altitude is still valid
 
-        if (temperatureAltitudeRanges(0,0) <= auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31) < temperatureAltitudeRanges(0,1)){
+        if ((temperatureAltitudeRanges(0,0)-0.000000000001) <= auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31) < temperatureAltitudeRanges(0,1)){
 
         sectionT = 0;
         powerT = 1;
@@ -394,7 +397,7 @@ Eigen::VectorXd getAuxiliaryDerivatives( const tudat::basic_mathematics::Vector7
 
     if (auxiliaryEquationsVector(3)==auxiliaryEquationsVector(20) || -auxiliaryEquationsVector(3)==auxiliaryEquationsVector(20)){
 
-        auxiliaryDerivativeVector(12) = 0;
+        auxiliaryDerivativesVector(12) = 0;
     }
     else {
     auxiliaryDerivativesVector(12) = (auxiliaryEquationsVector(20)*auxiliaryEquationsVector(6)-auxiliaryEquationsVector(3)*auxiliaryEquationsVector(25))/
@@ -411,8 +414,9 @@ Eigen::VectorXd getAuxiliaryDerivatives( const tudat::basic_mathematics::Vector7
 
 
     // Determine which section of the temperature curve needs to be used and what the corresponding order is
+    // Also, because a computer is less than perfect, a small correction is made to the lower bound of the first section to make sure that the initial altitude is still valid
 
-    if (temperatureAltitudeRanges(0,0) <= auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31) < temperatureAltitudeRanges(0,1)){
+    if (temperatureAltitudeRanges(0,0)-0.000000000001 <= auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31) < temperatureAltitudeRanges(0,1)){
 
     sectionT = 0;
     powerT = 1;
@@ -616,7 +620,7 @@ Eigen::VectorXd getAuxiliaryDerivatives( const tudat::basic_mathematics::Vector7
     return auxiliaryDerivativesVector;
 }
 
-Eigen::MatrixXd getAuxiliaryDerivatives( const tudat::basic_mathematics::Vector7d& aState, const double time, const Eigen::Vector3d& thrustAccelerationsBframe, const Eigen::VectorXd& auxiliaryEquationsVector,
+Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d& aState, const double time, const Eigen::Vector3d& thrustAccelerationsBframe, const Eigen::VectorXd& auxiliaryEquationsVector,
                                          const Eigen::VectorXd& auxiliaryDerivativesVector){
 
     auxiliaryFunctionsMatrix = Eigen::MatrixXd::Zero(45,25);       // Setting the complete matrix and filling it with zeros for now
@@ -861,132 +865,182 @@ Eigen::MatrixXd getAuxiliaryDerivatives( const tudat::basic_mathematics::Vector7
 
 
     // w30
-    auxiliaryFunctionsMatrix(30,1) = ;
-    auxiliaryFunctionsMatrix(30,2) = ;
-    auxiliaryFunctionsMatrix(30,3) = ;
-    auxiliaryFunctionsMatrix(30,4) = ;
-    auxiliaryFunctionsMatrix(30,5) = ;
-    auxiliaryFunctionsMatrix(30,6) = ;
-    auxiliaryFunctionsMatrix(30,7) = ;
-    auxiliaryFunctionsMatrix(30,8) = ;
-    auxiliaryFunctionsMatrix(30,9) = ;
+    auxiliaryFunctionsMatrix(30,1) = pow(auxiliaryEquationsVector(31),9);
+    auxiliaryFunctionsMatrix(30,2) = pow(auxiliaryEquationsVector(31),8);
+    auxiliaryFunctionsMatrix(30,3) = pow(auxiliaryEquationsVector(31),7);
+    auxiliaryFunctionsMatrix(30,4) = pow(auxiliaryEquationsVector(31),6);
+    auxiliaryFunctionsMatrix(30,5) = pow(auxiliaryEquationsVector(31),5);
+    auxiliaryFunctionsMatrix(30,6) = pow(auxiliaryEquationsVector(31),4);
+    auxiliaryFunctionsMatrix(30,7) = pow(auxiliaryEquationsVector(31),3);
+    auxiliaryFunctionsMatrix(30,8) = pow(auxiliaryEquationsVector(31),2);
+
+    for (int i=2; i<10; i++){
+
+        if (i==2){
+
+            auxiliaryFunctionsMatrix(30,9) = auxiliaryDerivativesVector(31)*(2*densityPolyCoefficients(2)*auxiliaryEquationsVector(31)+densityPolyCoefficients(1));
+        }
+        else {
+
+           auxiliaryFunctionsMatrix(30,9) += auxiliaryDerivativesVector(31)*i*densityPolyCoefficients(i)*auxiliaryFunctionsMatrix(30,(11-i));
+
+        };
+    };
+
 
 
 
 
 
     // w32
-    auxiliaryFunctionsMatrix(32,1) = ;
-    auxiliaryFunctionsMatrix(32,2) = ;
-    auxiliaryFunctionsMatrix(32,3) = ;
-    auxiliaryFunctionsMatrix(32,4) = ;
+    auxiliaryFunctionsMatrix(32,1) = auxiliaryEquationsVector(33)*auxiliaryDerivativesVector(15);
+    auxiliaryFunctionsMatrix(32,2) = auxiliaryEquationsVector(15)*auxiliaryDerivativesVector(33);
+    auxiliaryFunctionsMatrix(32,3) = auxiliaryEquationsVector(33)*auxiliaryEquationsVector(33);
+    auxiliaryFunctionsMatrix(32,4) = (auxiliaryFunctionsMatrix(32,1)-auxiliaryFunctionsMatrix(32,2))/(auxiliaryFunctionsMatrix(32,3));
 
 
 
 
 
     // w33
-    auxiliaryFunctionsMatrix(33,1) = ;
+    auxiliaryFunctionsMatrix(33,1) = auxiliaryDerivativesVector(34)/auxiliaryEquationsVector(33);
 
 
 
 
     // w34
-    auxiliaryFunctionsMatrix(34,1) = ;
-    auxiliaryFunctionsMatrix(34,2) = ;
-    auxiliaryFunctionsMatrix(34,3) = ;
-    auxiliaryFunctionsMatrix(34,4) = ;
+    // First it has to be determined whether or not these functions have to be computed. If not, they remain zero. If so they only one of them is computed.
+
+    if (temperatureAltitudeRanges(1,0)<=auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31)<temperatureAltitudeRanges(1,1)){
+
+      auxiliaryFunctionsMatrix(34,2) = auxiliaryDerivativesVector(31)*(3*temperaturePolyCoefficients(3,2)*auxiliaryFunctionsMatrix(30,8)+2*temperaturePolyCoefficients(2,2)*auxiliaryEquationsVector(31)+temperaturePolyCoefficients(1,2));
+    }
+    else if (temperatureAltitudeRanges(2,0)<=auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31)<temperatureAltitudeRanges(2,1)){
+
+        for (int i=2; i<6;i++){
+
+            if (i==2){
+
+                auxiliaryFunctionsMatrix(34,3) = auxiliaryDerivativesVector(31)*(2*temperaturePolyCoefficients(2,3)*auxiliaryEquationsVector(31)+temperaturePolyCoefficients(1,3));
+            }
 
 
+            else {
+
+                auxiliaryFunctionsMatrix(34,3) += auxiliaryDerivativesVector(31)*i*temperaturePolyCoefficients(i,3)*auxiliaryFunctionsMatrix(30,(11-i));
+            };
+
+        };
+
+
+
+    }
+    else if (temperatureAltitudeRanges(3,0)<=auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31)<temperatureAltitudeRanges(3,1)){
+
+        for (int i=2; i<8;i++){
+
+            if (i==2){
+
+                auxiliaryFunctionsMatrix(34,4) = auxiliaryDerivativesVector(31)*(2*temperaturePolyCoefficients(2,4)*auxiliaryEquationsVector(31)+temperaturePolyCoefficients(1,4));
+            }
+
+
+            else {
+
+                auxiliaryFunctionsMatrix(34,4) += auxiliaryDerivativesVector(31)*i*temperaturePolyCoefficients(i,4)*auxiliaryFunctionsMatrix(30,(11-i));
+            };
+
+        };
+};
 
 
 
     // w35
-    auxiliaryFunctionsMatrix(35,1) = ;
-    auxiliaryFunctionsMatrix(35,2) = ;
+    auxiliaryFunctionsMatrix(35,1) = auxiliaryFunctionsMatrix(4,6)*auxiliaryEquationsVector(25);
+    auxiliaryFunctionsMatrix(35,2) = auxiliaryFunctionsMatrix(4,4)*auxiliaryEquationsVector(18);
 
 
 
 
 
     // w36
-    auxiliaryFunctionsMatrix(36,1) = ;
+    auxiliaryFunctionsMatrix(36,1) = auxiliaryDerivativesVector(21)/auxiliaryEquationsVector(36);
 
 
 
 
     // w37
-    auxiliaryFunctionsMatrix(37,1) = ;
-    auxiliaryFunctionsMatrix(37,2) = ;
-    auxiliaryFunctionsMatrix(37,3) = ;
-    auxiliaryFunctionsMatrix(37,4) = ;
+    auxiliaryFunctionsMatrix(37,1) = auxiliaryEquationsVector(36)*auxiliaryDerivativesVector(25);
+    auxiliaryFunctionsMatrix(37,2) = auxiliaryEquationsVector(25)*auxiliaryDerivativesVector(36);
+    auxiliaryFunctionsMatrix(37,3) = auxiliaryEquationsVector(36)*auxiliaryEquationsVector(36);
+    auxiliaryFunctionsMatrix(37,4) = (auxiliaryFunctionsMatrix(37,1)-auxiliaryFunctionsMatrix(37,2))/(auxiliaryFunctionsMatrix(37,3));
 
 
 
 
 
     // w38
-    auxiliaryFunctionsMatrix(38,1) = ;
-    auxiliaryFunctionsMatrix(38,2) = ;
-    auxiliaryFunctionsMatrix(38,3) = ;
+    auxiliaryFunctionsMatrix(38,1) = auxiliaryEquationsVector(37)*auxiliaryEquationsVector(37);
+    auxiliaryFunctionsMatrix(38,2) = sqrt(1-auxiliaryFunctionsMatrix(38,1));
+    auxiliaryFunctionsMatrix(38,3) = auxiliaryDerivativesVector(37)/auxiliaryFunctionsMatrix(38,2);
 
 
 
 
 
     // w39
-    auxiliaryFunctionsMatrix(39,1) = ;
-    auxiliaryFunctionsMatrix(39,2) = ;
-    auxiliaryFunctionsMatrix(39,3) = ;
-    auxiliaryFunctionsMatrix(39,4) = ;
+    auxiliaryFunctionsMatrix(39,1) = auxiliaryEquationsVector(44)*auxiliaryDerivativesVector(18);
+    auxiliaryFunctionsMatrix(39,2) = auxiliaryEquationsVector(18)*auxiliaryDerivativesVector(44);
+    auxiliaryFunctionsMatrix(39,3) = auxiliaryEquationsVector(44)*auxiliaryEquationsVector(44);
+    auxiliaryFunctionsMatrix(39,4) = (auxiliaryFunctionsMatrix(39,1)-auxiliaryFunctionsMatrix(39,2))/(auxiliaryFunctionsMatrix(39,3));
 
 
 
 
 
     // w40
-    auxiliaryFunctionsMatrix(40,1) = ;
-    auxiliaryFunctionsMatrix(40,2) = ;
-    auxiliaryFunctionsMatrix(40,3) = ;
+    auxiliaryFunctionsMatrix(40,1) = auxiliaryEquationsVector(39)*auxiliaryEquationsVector(39);
+    auxiliaryFunctionsMatrix(40,2) = sqrt(1-auxiliaryFunctionsMatrix(40,1));
+    auxiliaryFunctionsMatrix(40,3) = auxiliaryDerivativesVector(39)/auxiliaryFunctionsMatrix(40,2);
 
 
 
 
 
     // w41
-    auxiliaryFunctionsMatrix(41,1) = ;
-    auxiliaryFunctionsMatrix(41,2) = ;
+    auxiliaryFunctionsMatrix(41,1) = auxiliaryEquationsVector(36)*auxiliaryDerivativesVector(35);
+    auxiliaryFunctionsMatrix(41,2) = auxiliaryEquationsVector(35)*auxiliaryDerivativesVector(36);
 
 
 
 
 
     // w42
-    auxiliaryFunctionsMatrix(42,1) = ;
-    auxiliaryFunctionsMatrix(42,2) = ;
-    auxiliaryFunctionsMatrix(42,3) = ;
-    auxiliaryFunctionsMatrix(42,4) = ;
-    auxiliaryFunctionsMatrix(42,5) = ;
-    auxiliaryFunctionsMatrix(42,6) = ;
-    auxiliaryFunctionsMatrix(42,7) = ;
-    auxiliaryFunctionsMatrix(42,8) = ;
+    auxiliaryFunctionsMatrix(42,1) = cos(auxiliaryEquationsVector(38));
+    auxiliaryFunctionsMatrix(42,2) = cos(auxiliaryEquationsVector(40));
+    auxiliaryFunctionsMatrix(42,3) = sin(auxiliaryEquationsVector(38));
+    auxiliaryFunctionsMatrix(42,4) = sin(auxiliaryEquationsVector(40));
+    auxiliaryFunctionsMatrix(42,5) = auxiliaryFunctionsMatrix(42,2)*auxiliaryDerivativesVector(43);
+    auxiliaryFunctionsMatrix(42,6) = auxiliaryFunctionsMatrix(42,3)*auxiliaryDerivativesVector(38);
+    auxiliaryFunctionsMatrix(42,7) = auxiliaryFunctionsMatrix(42,1)*auxiliaryFunctionsMatrix(42,5);
+    auxiliaryFunctionsMatrix(42,8) = auxiliaryFunctionsMatrix(42,6)*auxiliaryFunctionsMatrix(42,4);
 
 
 
 
 
     // w43
-    auxiliaryFunctionsMatrix(43,1) = ;
-    auxiliaryFunctionsMatrix(43,2) = ;
+    auxiliaryFunctionsMatrix(43,1) = auxiliaryEquationsVector(41)*auxiliaryDerivativesVector(42);
+    auxiliaryFunctionsMatrix(43,2) = auxiliaryEquationsVector(42)*auxiliaryDerivativesVector(41);
 
 
 
 
 
     // w44
-    auxiliaryFunctionsMatrix(44,1) = ;
-    auxiliaryFunctionsMatrix(44,2) = ;
-    auxiliaryFunctionsMatrix(44,3) = ;
+    auxiliaryFunctionsMatrix(44,1) = auxiliaryEquationsVector(36)*auxiliaryDerivativesVector(38);
+    auxiliaryFunctionsMatrix(44,2) = auxiliaryDerivativesVector(36)*auxiliaryFunctionsMatrix(42,1);
+    auxiliaryFunctionsMatrix(44,3) = auxiliaryFunctionsMatrix(44,1)*auxiliaryFunctionsMatrix(42,4);
 
 
 // auxiliaryFunctionsMatrix(,)

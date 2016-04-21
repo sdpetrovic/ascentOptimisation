@@ -36,6 +36,7 @@
 
 #include <iostream>
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
@@ -45,6 +46,10 @@
 
 //#include <Tudat/Mathematics/BasicMathematics/linearAlgebraTypes.h>
 #include <tudatApplications/thesisProject/linearAlgebraTypesUpdated.h>
+#include <Tudat/Mathematics/BasicMathematics/coordinateConversions.h>
+#include <Tudat/Mathematics/BasicMathematics/mathematicalConstants.h>
+#include <Tudat/Astrodynamics/ReferenceFrames/referenceFrameTransformations.h>
+//#include <tudatApplications/thesisProject/referenceFrameTransformationsUpdated.h>
 
 /// Testing the celestial body class ///
 
@@ -76,6 +81,72 @@
 
 // testing
 
+
+/// deg2rad and rad2deg ///
+
+const double deg2rad(const double deg){
+
+    const double rad = deg*tudat::mathematical_constants::LONG_PI/180;
+
+    return rad;
+}
+
+const double rad2deg(const double rad){
+
+    const double deg = rad*180/tudat::mathematical_constants::LONG_PI;
+
+    return deg;
+}
+
+
+/// B-P frame transformations ///
+
+
+
+//! Get transformation quaternion from the Body (B) to the Propulsion (P) frame.
+Eigen::Quaterniond getBodyToPropulsionFrameTransformationQuaternion(
+        const double thrustAzimuth, const double thrustElevation )
+{
+    // Compute transformation quaternion.
+    // Note the sign change, because how angleAxisd is defined.
+    Eigen::AngleAxisd RotationAroundZaxis = Eigen::AngleAxisd(
+                -1.0 * thrustAzimuth, Eigen::Vector3d::UnitZ( ) );
+    Eigen::AngleAxisd RotationAroundYaxis = Eigen::AngleAxisd(
+                -1.0 * thrustElevation,
+                Eigen::Vector3d::UnitY( ) );
+    Eigen::Quaterniond frameTransformationQuaternion = Eigen::Quaterniond(
+                ( RotationAroundYaxis * RotationAroundZaxis ) );
+
+    // Return transformation quaternion.
+    return frameTransformationQuaternion;
+}
+
+
+//! Get transformation matrix from the Body (B) to the Propulsion (P) frame.
+Eigen::Matrix3d getBodyToPropulsionFrameTransformationMatrix(
+    const double thrustAzimuth, const double thrustElevation )
+{
+    return getBodyToPropulsionFrameTransformationQuaternion(
+            thrustAzimuth, thrustElevation ).toRotationMatrix( );
+}
+
+//! Get transformation matrix from the Propulsion (P) to the Body (B) frame.
+Eigen::Matrix3d getPropulsionToBodyFrameTransformationMatrix(
+    const double thrustAzimuth, const double thrustElevation )
+{
+    return getBodyToPropulsionFrameTransformationMatrix(
+            thrustAzimuth, thrustElevation ).transpose( );
+}
+
+//! Get transformation quaternion from the Propulsion (P) to the Body (B) frame.
+Eigen::Quaterniond getPropulsionToBodyFrameTransformationQuaternion(
+        const double thrustAzimuth, const double thrustElevation )
+{
+    return getBodyToPropulsionFrameTransformationQuaternion(
+            thrustAzimuth, thrustElevation ).inverse( );
+}
+
+
 int main()
 
 {
@@ -84,7 +155,7 @@ int main()
 
     /// Testing the Celestial Body class ///
 
-/*
+
 //    // First test
 
 //    celestialBody Mars;
@@ -112,7 +183,7 @@ int main()
    const Eigen::MatrixXd temperaturePolyCoefficients = Mars.temperaturePolyCoefficients();
    const Eigen::MatrixXd temperatureAltitudeRanges = Mars.temperatureAltitudeRanges();
    const Eigen::VectorXd densityPolyCoefficients = Mars.densityPolyCoefficients();
-
+/*
        std::cout<<"The adiabeticIndex for the Martian atmosphere is "<<adiabeticIndex<<std::endl;
        std::cout<<"The specificGasConstant for the Martian atmosphere is "<<specificGasConstant<<std::endl;
        std::cout<<"The standardGravitationalParameter for the Martian atmosphere is "<<standardGravitationalParameter<<std::endl;
@@ -132,7 +203,7 @@ int main()
 
 //            std::cout<<"The adiabeticIndexTwoTest for the Martian atmosphere is "<<adiabeticIndexTwoTest<<std::endl;
 
-
+*/
     /// Testing the vehicle class ///
 
     MarsAscentVehicle MAV;
@@ -147,6 +218,7 @@ int main()
     const Eigen::MatrixXd thrustAzimuth = MAV.thrustAzimuth();                                // psiT   these are the thrust azimuth-gimbal angles as a function of time (including the time ranges)
     const Eigen::MatrixXd thrustElevation = MAV.thrustElevation();                                // epsilonT   these are the thrust elevation-gimbal angles as a function of time (including the time ranges)
 
+/*
     std::cout<<"The Thrust for the Mars Ascent Vehicle is "<<Thrust<<std::endl;
     std::cout<<"The specificImpulse for the Mars Ascent Vehicle is "<<specificImpulse<<std::endl;
     std::cout<<"The referenceArea for the Mars Ascent Vehicle is "<<referenceArea<<std::endl;
@@ -263,18 +335,18 @@ int main()
 /// Testing the current state and time class ///
 
 /*
-    // Initial conditions
+     Initial conditions
 
-//    tudat::basic_mathematics::Vector6d aState;
+    tudat::basic_mathematics::Vector6d aState;
 
-//    aState(0) = 1;
-//    aState(1) = 1;
-//    aState(2) = 1;
-//    aState(3) = 2;
-//    aState(4) = 2;
-//    aState(5) = 2;
+    aState(0) = 1;
+    aState(1) = 1;
+    aState(2) = 1;
+    aState(3) = 2;
+    aState(4) = 2;
+    aState(5) = 2;
 
-//    double aMass = 227;   // [kg] from literature study
+    double aMass = 227;   // [kg] from literature study
 
 
     /// Test original Body class converted to StateAndTime class /// (The pointer doesn't really do much, is too much work and end up with the same thing in the end. Only useful if it actually calls a function with input variables.)
@@ -336,48 +408,154 @@ int main()
 //        const double currentMass = currentStateAndTime.getCurrentMass();
 //        const double currentTime = currentStateAndTime.getCurrentTime();
 
+*/
 
 
-    /// Testing StateAndTime class using modified vector ///
+
+    /// Initial conditions ///
+
+    // Launch site characteristics
+
+    const double initialAltitude = -0.6e3;             // Starting altitude [m MOLA]
+    const double initialLatitudeDeg = 21;               // Starting latitude [deg]
+    const double initialLongitudeDeg = 74.5;            // Starting longitude [deg]
+
+//    const double initialLatitude = initialLatitudeDeg*tudat::mathematical_constants::LONG_PI/180;       // Starting latitude [rad]
+//    const double initialLongitude = initialLongitudeDeg*tudat::mathematical_constants::LONG_PI/180;     // Starting longitude [rad]
+
+    const double initialLatitude = deg2rad(initialLatitudeDeg);       // Starting latitude [rad]
+    const double initialLongitude = deg2rad(initialLongitudeDeg);     // Starting longitude [rad]
 
 
-//    // Initial conditions
+    const double initialRadius = bodyReferenceRadius+initialAltitude;               // Starting radius in m
+/*
+//    const Eigen::Vector3d initialSphericalPosition = Eigen::Vector3d(initialRadius,initialLatitude,initialLongitude);
 
-//    tudat::basic_mathematics::Vector7d aState;
+//        std::cout<<"The initialSpehricalPosition is "<<initialSphericalPosition<<std::endl;
+*/
+        // Converting the initial spherical position to cartesian position using the standard convertSphericalToCartesian function of Tudat
+        // Please note that this function requires the zenith angle as input which is pi/2-latitude!
 
-//    aState(0) = 1;
-//    aState(1) = 1;
-//    aState(2) = 1;
-//    aState(3) = 2;
-//    aState(4) = 2;
-//    aState(5) = 2;
-//    aState(6) = 227;  // Mass [kg] from literature study
+    const Eigen::Vector3d initialCartesianPositionRotationalFrame = tudat::coordinate_conversions::convertSphericalToCartesian(Eigen::Vector3d(initialRadius,((tudat::mathematical_constants::LONG_PI/2)-initialLatitude),initialLongitude));
+
+//    const Eigen::Vector3d initialCartesianPositionInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(rotationalVelocity*inertialFrameTime-primeMeridianAngle)*initialCartesianPositionRotationalFrame;
 
 
-//    StateAndTime currentStateAndTime(aState);        // Creating the current state class using the namespace and class directly
+    const Eigen::Vector3d initialCartesianPositionInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(rotationalVelocity*inertialFrameTime-primeMeridianAngle)*initialCartesianPositionRotationalFrame;
 
-//    const tudat::basic_mathematics::Vector7d currentState = currentStateAndTime.getCurrentState();
-//    const Eigen::Vector3d currentPosition = currentStateAndTime.getCurrentPosition();
-//    const Eigen::Vector3d currentVelocity = currentStateAndTime.getCurrentVelocity();
-//    const double currentMass = currentStateAndTime.getCurrentMass();
-//    const double currentTime = currentStateAndTime.getCurrentTime();
 
-//    std::cout<<"The currentState is "<<currentState<<std::endl;
-//    std::cout<<"The currentPosition is "<<currentPosition<<std::endl;
-//    std::cout<<"The currentVelocity is "<<currentVelocity<<std::endl;
-//    std::cout<<"The currentMass is "<<currentMass<<std::endl;
-//    std::cout<<"The currentTime is "<<currentTime<<std::endl;
+
+    // Compute initial velocity in y-direction as seen from the launch site in the inertial frame
+
+    const Eigen::Vector3d initialVelocityLaunchSite = Eigen::Vector3d(0,(rotationalVelocity*bodyReferenceRadius*cos(initialLatitude)),0);
+
+//    const Eigen::Vector3d initialVelocityInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(rotationalVelocity*inertialFrameTime-primeMeridianAngle+initialLongitude)*initialVelocityLaunchSite;
+
+
+    const Eigen::Vector3d initialVelocityInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(rotationalVelocity*inertialFrameTime-primeMeridianAngle+initialLongitude)*initialVelocityLaunchSite;
+
+
+
+/*
+        std::cout<<initialLatitude<<std::endl;
+        std::cout<<initialLongitude<<std::endl;
+        std::cout<<"The initialCartesianPositionRotationalFrame is "<<initialCartesianPositionRotationalFrame<<std::endl;
+        std::cout<<"The initialCartesianPositionInertialFrame is "<<initialCartesianPositionInertialFrame<<std::endl;
+        std::cout<<"The initialVelocityLaunchSite is "<<initialVelocityLaunchSite<<std::endl;
+        std::cout<<"The initialVelocityInertialFrame is "<<initialVelocityInertialFrame<<std::endl;
 
 */
+        /// Testing StateAndTime class using modified vector ///
+
+    tudat::basic_mathematics::Vector7d aState;
+
+    aState(0) = initialCartesianPositionInertialFrame(0);
+    aState(1) = initialCartesianPositionInertialFrame(1);
+    aState(2) = initialCartesianPositionInertialFrame(2);
+    aState(3) = initialVelocityInertialFrame(0);
+    aState(4) = initialVelocityInertialFrame(1);
+    aState(5) = initialVelocityInertialFrame(2);
+    aState(6) = 227;  // Mass [kg] from literature study
+
+
+    StateAndTime currentStateAndTime(aState);        // Creating the current state class using the namespace and class directly
+
+    const tudat::basic_mathematics::Vector7d currentState = currentStateAndTime.getCurrentState();
+    const Eigen::Vector3d currentPosition = currentStateAndTime.getCurrentPosition();
+    const Eigen::Vector3d currentVelocity = currentStateAndTime.getCurrentVelocity();
+    const double currentMass = currentStateAndTime.getCurrentMass();
+    const double currentTime = currentStateAndTime.getCurrentTime();
+
+
+/*
+    std::cout<<"The currentState is "<<currentState<<std::endl;
+    std::cout<<"The currentPosition is "<<currentPosition<<std::endl;
+    std::cout<<"The currentVelocity is "<<currentVelocity<<std::endl;
+    std::cout<<"The currentMass is "<<currentMass<<std::endl;
+    std::cout<<"The currentTime is "<<currentTime<<std::endl;
+*/
+
+
+
+    /// Thrust acceleration in B-frame ///   thrustAccelerationsBframe
+
+    const Eigen::Vector3d thrustAccelerationsPframe = Eigen::Vector3d((Thrust/currentMass),0,0);
+
+    const double thrustAzimuthTestDeg = 0;             // thrust azimuth gimbal angle [Deg] 10 for testing
+    const double thrustElevationTestDeg = 0;            // thrust elevation gimbal angle [Deg] 5 for testing
+
+    const double thrustAzimuthTest = deg2rad(thrustAzimuthTestDeg);     // thrust azimuth gimbal angle [rad]
+    const double thrustElevationTest = deg2rad(thrustElevationTestDeg); // thrust elevation gimbal angle [rad]
+
+//    const Eigen::Vector3d thrustAccelerationsBframe = tudat::reference_frames::getPropulsionToBodyFrameTransformationMatrix(thrustAzimuthTest,thrustElevationTest)*thrustAccelerationsPframe;
+
+
+//    const Eigen::Vector3d thrustAccelerationsBframe = tudat::reference_frames::getPropulsionToBodyFrameTransformationMatrix(thrustAzimuthTest,thrustElevationTest)*thrustAccelerationsPframe;
+
+    const Eigen::Vector3d thrustAccelerationsBframe = getPropulsionToBodyFrameTransformationMatrix(thrustAzimuthTest,thrustElevationTest)*thrustAccelerationsPframe;
+
+/*
+    std::cout<<"The thrustAccelerationsPframe is "<<thrustAccelerationsPframe<<std::endl;
+    std::cout<<"The thrustAccelerationsBframe is "<<thrustAccelerationsBframe<<std::endl;
+*/
+
     //// Testing the Auxiliary class ///
 
-    // Testing the atan2 function of c++
+    /*
+//    // Testing the atan2 function of c++
 
-    double atan2Test1 = std::atan2(0,0);        // Results in 0, but is in-fact undefined!!
-    double atan2Test2 = std::atan2(4,3);
+//    double atan2Test1 = std::atan2(0,0);        // Results in 0, but is in-fact undefined!!
+//    double atan2Test2 = std::atan2(4,3);
 
-    std::cout<<"The atan2 of y = 0 and x = 0 is "<<atan2Test1<<std::endl;
-    std::cout<<"The atan2 of y = 4 and x = 3 is "<<atan2Test2<<std::endl;
+//    std::cout<<"The atan2 of y = 0 and x = 0 is "<<atan2Test1<<std::endl;
+//    std::cout<<"The atan2 of y = 4 and x = 3 is "<<atan2Test2<<std::endl;
+*/
+
+
+    Auxiliary Aux(adiabeticIndex, specificGasConstant,standardGravitationalParameter, rotationalVelocity, primeMeridianAngle,
+              inertialFrameTime, bodyReferenceRadius, temperaturePolyCoefficients, temperatureAltitudeRanges,
+              densityPolyCoefficients, Thrust, specificImpulse,
+              referenceArea, dragCoefficientPolyCoefficients, dragCoefficientMachRanges);
+
+
+    // Compute the auxiliary equations
+
+    Eigen::VectorXd auxiliaryEquations =  Aux.getAuxiliaryEquations(aState,currentTime,thrustAccelerationsBframe);
+
+
+    // Compute the auxiliary derivatives
+
+    Eigen::VectorXd auxiliaryDerivatives = Aux.getAuxiliaryDerivatives(aState,currentTime,thrustAccelerationsBframe,auxiliaryEquations);
+
+    // Compute the auxiliary functions
+
+    Eigen::MatrixXd auxiliaryFunctions = Aux.getAuxiliaryFunctions(aState,currentTime,thrustAccelerationsBframe,auxiliaryEquations,auxiliaryDerivatives);
+
+
+    std::cout<<"The auxiliaryEquations are "<<auxiliaryEquations<<std::endl;
+    std::cout<<"The auxiliaryDerivatives are "<<auxiliaryDerivatives<<std::endl;
+    std::cout<<"The auxiliaryFunctions are "<<auxiliaryFunctions<<std::endl;
+
 
 
     return 0;

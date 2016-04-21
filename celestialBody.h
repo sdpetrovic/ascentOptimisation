@@ -104,7 +104,7 @@ public:
 
 
             // Prime Meridian angle
-                primeMeridianAngle_ = 0;  // [rad]
+                primeMeridianAngle_ = 0;  // [rad]  (please note that this angle is defined negative in the positive direction when looking from the inertial frame to the rotating frame. I might change this later...)
 
 
             // Inertial Frame Time
