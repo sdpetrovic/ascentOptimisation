@@ -35,6 +35,7 @@
 // This is a test main file to test the different class files, header/source files to see if any output is produced (verification)
 
 #include <iostream>
+#include <iomanip>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <boost/function.hpp>
@@ -151,7 +152,7 @@ int main()
 
 {
 
-
+std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     /// Testing the Celestial Body class ///
 
@@ -427,6 +428,8 @@ int main()
     const double initialLongitude = deg2rad(initialLongitudeDeg);     // Starting longitude [rad]
 
 
+//    std::cout<<setprecision(15)<<"initialLatitude = "<<initialLatitude<<std::endl;
+
     const double initialRadius = bodyReferenceRadius+initialAltitude;               // Starting radius in m
 /*
 //    const Eigen::Vector3d initialSphericalPosition = Eigen::Vector3d(initialRadius,initialLatitude,initialLongitude);
@@ -551,10 +554,11 @@ int main()
 
     Eigen::MatrixXd auxiliaryFunctions = Aux.getAuxiliaryFunctions(aState,currentTime,thrustAccelerationsBframe,auxiliaryEquations,auxiliaryDerivatives);
 
-
+///*
     std::cout<<"The auxiliaryEquations are "<<auxiliaryEquations<<std::endl;
-    std::cout<<"The auxiliaryDerivatives are "<<auxiliaryDerivatives<<std::endl;
-    std::cout<<"The auxiliaryFunctions are "<<auxiliaryFunctions<<std::endl;
+//    std::cout<<"The auxiliaryDerivatives are "<<auxiliaryDerivatives<<std::endl;
+//    std::cout<<"The auxiliaryFunctions are "<<auxiliaryFunctions<<std::endl;
+//*/
 
 
 

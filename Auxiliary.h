@@ -41,6 +41,7 @@
 
 
 #include <iostream>
+#include <iomanip>
 #include <cmath>
 
 #include <Eigen/Core>
@@ -176,6 +177,16 @@ public:
         auxiliaryEquationsVector(26) = 2*(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)+
                                           auxiliaryEquationsVector(3)*auxiliaryEquationsVector(6));              // x26
 
+        std::cout<<setprecision(15)<<"x26 = "<<auxiliaryEquationsVector(26)<<std::endl;
+        /*
+        std::cout<<setprecision(15)<<"x1*x4 = "<<auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)<<std::endl;
+        std::cout<<setprecision(15)<<"x2*x5 = "<<auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)<<std::endl;
+        std::cout<<setprecision(15)<<"x3*x6 = "<<auxiliaryEquationsVector(3)*auxiliaryEquationsVector(6)<<std::endl;
+        std::cout<<setprecision(15)<<"x1*x4+x2*x5 = "<<(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4))+(auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5))<<std::endl;
+        std::cout<<setprecision(15)<<"x1*x4+x2*x5+x3*x6 = "<<auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)+
+                   auxiliaryEquationsVector(3)*auxiliaryEquationsVector(6)<<std::endl;
+                   */
+
         auxiliaryEquationsVector(11) = atan2(auxiliaryEquationsVector(2),auxiliaryEquationsVector(1))-auxiliaryEquationsVector(10);              // x11
 
         auxiliaryEquationsVector(20) = pow(auxiliaryEquationsVector(8), 0.5);              // x20
@@ -209,7 +220,7 @@ public:
 //        std::cout<<"Lowest altitude range = "<<temperatureAltitudeRanges(0,0)<<std::endl;
 
         // Computing the polynomial fit using the altitude and fit parameters for density
-        for (int i = 0; i < 10;i++) {
+        for (int i = 0; i < 10+1;i++) {
 
         auxiliaryEquationsVector(30) += pow(auxiliaryEquationsVector(31),i)*densityPolyCoefficients(i);              // x30
 };
@@ -256,9 +267,11 @@ public:
         };
 
         // Computing the polynomial fit using the altitude and fit parameters for temperature
-        for (int i=0; i < powerT;i++){
+        for (int i=0; i < powerT+1;i++){
 
         auxiliaryEquationsVector(34) += pow(auxiliaryEquationsVector(31),i)*temperaturePolyCoefficients(sectionT,i);              // x34
+
+        std::cout<<"x34 interval "<<i<<" = "<<auxiliaryEquationsVector(34)<<std::endl;
 
 };
         auxiliaryEquationsVector(35) = rotationalVelocity*auxiliaryEquationsVector(20)*cos(auxiliaryEquationsVector(12));                // x35
@@ -311,7 +324,7 @@ public:
 
         // Determine which section of the drag coefficient curve needs to be used
 
-        for (int i=0; i < 5; i++){
+        for (int i=0; i < 5+1; i++){
 
             if (dragCoefficientMachRanges(i,0) <= auxiliaryEquationsVector(32) && auxiliaryEquationsVector(32) < dragCoefficientMachRanges(i,1)){
 
@@ -407,7 +420,7 @@ Eigen::VectorXd getAuxiliaryDerivatives( const tudat::basic_mathematics::Vector7
     auxiliaryDerivativesVector(31) = auxiliaryDerivativesVector(20);                // u31
 
     // Computing the polynomial fit derivative using the altitude and fit parameters for density
-    for (int i = 1; i < 10;i++) {
+    for (int i = 1; i < 10+1;i++) {
 
     auxiliaryDerivativesVector(30) += auxiliaryDerivativesVector(31)*i*pow(auxiliaryEquationsVector(31),i-1)*densityPolyCoefficients(i);              // u30
 };
@@ -455,7 +468,7 @@ Eigen::VectorXd getAuxiliaryDerivatives( const tudat::basic_mathematics::Vector7
     };
 
     // Computing the polynomial fit using the altitude and fit parameters for temperature
-    for (int i=1; i < powerT;i++){
+    for (int i=1; i < powerT+1;i++){
 
     auxiliaryDerivativesVector(34) += auxiliaryDerivativesVector(31)*i*pow(auxiliaryEquationsVector(31),i-1)*temperaturePolyCoefficients(sectionT,i);              // u34
 
@@ -576,7 +589,7 @@ Eigen::VectorXd getAuxiliaryDerivatives( const tudat::basic_mathematics::Vector7
 
     // Determine which section of the drag coefficient curve needs to be used
 
-    for (int i=0; i < 5; i++){
+    for (int i=0; i < 5+1; i++){
 
         if (dragCoefficientMachRanges(i,0) <= auxiliaryEquationsVector(32) && auxiliaryEquationsVector(32) < dragCoefficientMachRanges(i,1)){
 
@@ -874,7 +887,7 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(30,7) = pow(auxiliaryEquationsVector(31),3);
     auxiliaryFunctionsMatrix(30,8) = pow(auxiliaryEquationsVector(31),2);
 
-    for (int i=2; i<10; i++){
+    for (int i=2; i<10+1; i++){
 
         if (i==2){
 
@@ -917,7 +930,7 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     }
     else if (temperatureAltitudeRanges(2,0)<=auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31)<temperatureAltitudeRanges(2,1)){
 
-        for (int i=2; i<6;i++){
+        for (int i=2; i<6+1;i++){
 
             if (i==2){
 
@@ -937,7 +950,7 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     }
     else if (temperatureAltitudeRanges(3,0)<=auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31)<temperatureAltitudeRanges(3,1)){
 
-        for (int i=2; i<8;i++){
+        for (int i=2; i<8+1;i++){
 
             if (i==2){
 
