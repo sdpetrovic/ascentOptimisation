@@ -177,7 +177,7 @@ public:
         auxiliaryEquationsVector(26) = 2*(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)+
                                           auxiliaryEquationsVector(3)*auxiliaryEquationsVector(6));              // x26
 
-        std::cout<<setprecision(15)<<"x26 = "<<auxiliaryEquationsVector(26)<<std::endl;
+//        std::cout<<setprecision(15)<<"x26 = "<<auxiliaryEquationsVector(26)<<std::endl;
         /*
         std::cout<<setprecision(15)<<"x1*x4 = "<<auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)<<std::endl;
         std::cout<<setprecision(15)<<"x2*x5 = "<<auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)<<std::endl;
@@ -189,16 +189,36 @@ public:
 
         auxiliaryEquationsVector(11) = atan2(auxiliaryEquationsVector(2),auxiliaryEquationsVector(1))-auxiliaryEquationsVector(10);              // x11
 
-        auxiliaryEquationsVector(20) = pow(auxiliaryEquationsVector(8), 0.5);              // x20
+//        auxiliaryEquationsVector(20) = pow(auxiliaryEquationsVector(8), 0.5);              // x20
 
-        auxiliaryEquationsVector(36) = pow(auxiliaryEquationsVector(21), 0.5) ;                // x36
+        auxiliaryEquationsVector(20) = sqrt(auxiliaryEquationsVector(8));               // x20
 
+//        auxiliaryEquationsVector(36) = pow(auxiliaryEquationsVector(21), 0.5) ;                // x36
+
+        auxiliaryEquationsVector(36) = sqrt(auxiliaryEquationsVector(21));              // x36
+
+/*
+        std::cout<<"x21-x21 = "<<auxiliaryEquationsVector(21)-auxiliaryEquationsVector(21)<<std::endl;
+        std::cout<<"x21-sqrt(x21*x21) = "<<auxiliaryEquationsVector(21)-sqrt(auxiliaryEquationsVector(21)*auxiliaryEquationsVector(21))<<std::endl;
+        std::cout<<"x21-sqrt(x21)*sqrt(x21) = "<<auxiliaryEquationsVector(21)-sqrt(auxiliaryEquationsVector(21))*sqrt(auxiliaryEquationsVector(21))<<std::endl;
+
+        std::cout<<"4-2*2 = "<<4-2*2<<std::endl;
+        std::cout<<"4.365416516-sqrt(4.365416516)*sqrt(4.365416516) = "<<4.365416516-sqrt(4.365416516)*sqrt(4.365416516)<<std::endl;
+
+                std::cout<<"x21-x36^2 = "<<auxiliaryEquationsVector(21)-auxiliaryEquationsVector(36)*auxiliaryEquationsVector(36)<<std::endl;
+*/
         auxiliaryEquationsVector(12) = asin(auxiliaryEquationsVector(3)/auxiliaryEquationsVector(20)) ;              // x12
 
         auxiliaryEquationsVector(25) = auxiliaryEquationsVector(25)/(2*auxiliaryEquationsVector(20));              // x25
 
         // Please note that the altitude h (x31) is expressed in km MOLA (which is also the input for the density and temperature curves!)
         auxiliaryEquationsVector(31) = (auxiliaryEquationsVector(20)-bodyReferenceRadius)/1000;              // x31 [km]!!!
+/*
+        std::cout<<"bodyReferenceRadius = "<<bodyReferenceRadius<<std::endl;
+        std::cout<<"Computed initial radius = "<<auxiliaryEquationsVector(20)<<std::endl;
+        std::cout<<"Computed altitude in m is "<<auxiliaryEquationsVector(20)-bodyReferenceRadius<<std::endl;
+        std::cout<<"Computed altitude in km is "<<auxiliaryEquationsVector(31)<<std::endl;
+*/
 
 
 
@@ -271,7 +291,7 @@ public:
 
         auxiliaryEquationsVector(34) += pow(auxiliaryEquationsVector(31),i)*temperaturePolyCoefficients(sectionT,i);              // x34
 
-        std::cout<<"x34 interval "<<i<<" = "<<auxiliaryEquationsVector(34)<<std::endl;
+//        std::cout<<"x34 interval "<<i<<" = "<<auxiliaryEquationsVector(34)<<std::endl;
 
 };
         auxiliaryEquationsVector(35) = rotationalVelocity*auxiliaryEquationsVector(20)*cos(auxiliaryEquationsVector(12));                // x35
@@ -283,6 +303,9 @@ public:
         auxiliaryEquationsVector(28) = exp(auxiliaryEquationsVector(30));              // x28
 
         auxiliaryEquationsVector(33) = sqrt(adiabeticIndex*specificGasConstant*auxiliaryEquationsVector(34));              // x33
+
+
+//        std::cout<<"x33 (or speed of sound) = "<<auxiliaryEquationsVector(33)<<std::endl;
 
         auxiliaryEquationsVector(38) = asin(auxiliaryEquationsVector(37));                // x38
 
@@ -298,7 +321,39 @@ public:
 
         auxiliaryEquationsVector(43) = auxiliaryEquationsVector(41)*auxiliaryEquationsVector(42);                // x43
 
+        // Set tollerence for the velocity in case of rounding errors... It is set such that the the accuracy is 10 micro-metres/sec
+
+        if (abs(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43))<=1E-10){
+
+            auxiliaryEquationsVector(15) = 0;
+        }
+        else {
         auxiliaryEquationsVector(15) = sqrt(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43));              // x15
+};
+
+
+/*
+ * // What the actual f*ck?!
+ *
+        std::cout<<"x35-x36 = "<<auxiliaryEquationsVector(35)-auxiliaryEquationsVector(36)<<std::endl;
+        std::cout<<"x42 = "<<auxiliaryEquationsVector(42)<<std::endl;
+        std::cout<<"x35^2-x43 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)-auxiliaryEquationsVector(43)<<std::endl;
+        std::cout<<"x21-x43 = "<<auxiliaryEquationsVector(21)-auxiliaryEquationsVector(43)<<std::endl;
+        std::cout<<"x35^2-x43+x21-x43 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)-auxiliaryEquationsVector(43)+auxiliaryEquationsVector(21)-auxiliaryEquationsVector(43)<<std::endl;
+        std::cout<<"x35^2+x21-x43-x43 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-auxiliaryEquationsVector(43)-auxiliaryEquationsVector(43)<<std::endl;
+        std::cout<<"x35^2+x21-2*x43 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43)<<std::endl;
+        std::cout<<"x35^2-x43-x43+x21 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)-auxiliaryEquationsVector(43)-auxiliaryEquationsVector(43)+auxiliaryEquationsVector(21)<<std::endl;
+
+        std::cout<<"x35 = "<<auxiliaryEquationsVector(35)<<std::endl;
+        std::cout<<"x35^2 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)<<std::endl;
+
+//        std::cout<<""
+
+        std::cout<<"x21 = "<<auxiliaryEquationsVector(21)<<std::endl;
+        std::cout<<"x43 = "<<auxiliaryEquationsVector(43)<<std::endl;
+
+        std::cout<<"x15 (or V_R) = "<<auxiliaryEquationsVector(15)<<std::endl;
+*/
 
 
         // If the velocity of the MAV in the rotating frame V_R (or x15) = 0 m/s then the flight path angle in that frame (gamma_R or x14) is not defined.
@@ -320,6 +375,8 @@ public:
 
         auxiliaryEquationsVector(32) = auxiliaryEquationsVector(15)/auxiliaryEquationsVector(33);              // x32
 
+//        std::cout<<"x32 (or Mach number) = "<<auxiliaryEquationsVector(32)<<std::endl;
+
         auxiliaryEquationsVector(17) = auxiliaryEquationsVector(16)*auxiliaryEquationsVector(15);              // x17
 
         // Determine which section of the drag coefficient curve needs to be used
@@ -329,11 +386,19 @@ public:
             if (dragCoefficientMachRanges(i,0) <= auxiliaryEquationsVector(32) && auxiliaryEquationsVector(32) < dragCoefficientMachRanges(i,1)){
 
                 sectionCD = i;
+
+//                std::cout<<"Required section for CD is section "<<sectionCD<<std::endl;
             }
+
 
         };
 
+//        std::cout<<"As I said sectionCD is "<<sectionCD<<std::endl;
+
+//        std::cout<<"Yes?"<<std::endl;
+
         auxiliaryEquationsVector(29) = dragCoefficientPolyCoefficients(sectionCD,1)*auxiliaryEquationsVector(32)+dragCoefficientPolyCoefficients(sectionCD,0);              // x29
+//        std::cout<<"No?"<<std::endl;
 
         // Similar to the flight path angle, if V_R (or x15) = 0 m/s then the azimuth angle is not defined. It is also not defined if the flight path angle is +-90 degrees (i.e. if x23 = +-1)
         // To avoid singularities x22 is set to be equal to 1.
@@ -347,6 +412,8 @@ public:
         auxiliaryEquationsVector(22) = auxiliaryEquationsVector(18)/auxiliaryEquationsVector(17);              // x22
 };
 
+
+
         auxiliaryEquationsVector(27) = 0.5*referenceArea*auxiliaryEquationsVector(28)*auxiliaryEquationsVector(15)*auxiliaryEquationsVector(15)*auxiliaryEquationsVector(29);              // x27
 
         auxiliaryEquationsVector(13) = acos(auxiliaryEquationsVector(22));              // x13
@@ -358,6 +425,7 @@ public:
 
 
 // auxiliaryEquationsVector() = ;               // x
+
 
 
 
@@ -487,6 +555,9 @@ Eigen::VectorXd getAuxiliaryDerivatives( const tudat::basic_mathematics::Vector7
                                                                                                           cos(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(14)))-
                                           sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*sin(auxiliaryEquationsVector(13))*sin(auxiliaryEquationsVector(14)));                // u4
 
+
+
+
     auxiliaryDerivativesVector(5) = -standardGravitationalParameter*(auxiliaryEquationsVector(2)/auxiliaryEquationsVector(9))+auxiliaryEquationsVector(0)*
             (sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*(-sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14))+cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(14)))+
                  cos(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*sin(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14)))+
@@ -501,6 +572,13 @@ Eigen::VectorXd getAuxiliaryDerivatives( const tudat::basic_mathematics::Vector7
             thrustAccelerationsBframe(2)*(cos(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*sin(auxiliaryEquationsVector(14))-sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(14)));                // u6
 
     auxiliaryDerivativesVector(21) = 2*(auxiliaryEquationsVector(4)*auxiliaryDerivativesVector(4)+auxiliaryEquationsVector(5)*auxiliaryDerivativesVector(5)+auxiliaryEquationsVector(6)*auxiliaryDerivativesVector(6));                // u21
+
+    std::cout<<"x4*u4  ="<<auxiliaryEquationsVector(4)*auxiliaryDerivativesVector(4)<<std::endl;
+    std::cout<<"x5*u5  ="<<auxiliaryEquationsVector(5)*auxiliaryDerivativesVector(5)<<std::endl;
+    std::cout<<"x6*u6  ="<<auxiliaryEquationsVector(6)*auxiliaryDerivativesVector(6)<<std::endl;
+
+    std::cout<<"x4*u4+x5*u5  ="<<auxiliaryEquationsVector(4)*auxiliaryDerivativesVector(4)+auxiliaryEquationsVector(5)*auxiliaryDerivativesVector(5)<<std::endl;
+
 
     auxiliaryDerivativesVector(26) = 2*auxiliaryEquationsVector(21)+2*(auxiliaryEquationsVector(1)*auxiliaryDerivativesVector(4)+auxiliaryEquationsVector(2)*auxiliaryDerivativesVector(5)+auxiliaryEquationsVector(3)*auxiliaryDerivativesVector(6));                // u26
 

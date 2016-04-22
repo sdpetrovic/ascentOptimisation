@@ -432,6 +432,10 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     const double initialRadius = bodyReferenceRadius+initialAltitude;               // Starting radius in m
 /*
+    std::cout<<"initialRadius = "<<initialRadius<<std::endl;
+    std::cout<<"initialAltitude = "<<initialAltitude<<std::endl;
+*/
+/*
 //    const Eigen::Vector3d initialSphericalPosition = Eigen::Vector3d(initialRadius,initialLatitude,initialLongitude);
 
 //        std::cout<<"The initialSpehricalPosition is "<<initialSphericalPosition<<std::endl;
@@ -439,7 +443,19 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         // Converting the initial spherical position to cartesian position using the standard convertSphericalToCartesian function of Tudat
         // Please note that this function requires the zenith angle as input which is pi/2-latitude!
 
-    const Eigen::Vector3d initialCartesianPositionRotationalFrame = tudat::coordinate_conversions::convertSphericalToCartesian(Eigen::Vector3d(initialRadius,((tudat::mathematical_constants::LONG_PI/2)-initialLatitude),initialLongitude));
+//    const Eigen::Vector3d initialCartesianPositionRotationalFrame = tudat::coordinate_conversions::convertSphericalToCartesian(Eigen::Vector3d(initialRadius,((tudat::mathematical_constants::LONG_PI/2)-initialLatitude),initialLongitude));
+
+      Eigen::Vector3d initialCartesianPositionRotationalFrame = Eigen::Vector3d::Zero(3);
+
+      initialCartesianPositionRotationalFrame(0) = initialRadius*cos(initialLatitude)*cos(initialLongitude); // x_R
+      initialCartesianPositionRotationalFrame(1) = initialRadius*cos(initialLatitude)*sin(initialLongitude); // y_R
+      initialCartesianPositionRotationalFrame(2) = initialRadius*sin(initialLatitude); // z_R
+
+
+//    const Eigen::Vector3d initialCartesianPositionRotationalFrame = tudat::coordinate_conversions::convertSphericalToCartesian(Eigen::Vector3d(initialRadius,((3.1415926535897932384626433832795028841971693993751058/2)-initialLatitude),initialLongitude)); // This also made it crash..
+
+
+//    const Eigen::Vector3d initialCartesianPositionRotationalFrame = tudat::coordinate_conversions::convertSphericalToCartesian(Eigen::Vector3d(initialRadius,((tudat::mathematical_constants::PI/2)-initialLatitude),initialLongitude)); // This makes it crash and say: The program has unexpectedly finished.
 
 //    const Eigen::Vector3d initialCartesianPositionInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(rotationalVelocity*inertialFrameTime-primeMeridianAngle)*initialCartesianPositionRotationalFrame;
 
@@ -450,7 +466,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // Compute initial velocity in y-direction as seen from the launch site in the inertial frame
 
-    const Eigen::Vector3d initialVelocityLaunchSite = Eigen::Vector3d(0,(rotationalVelocity*bodyReferenceRadius*cos(initialLatitude)),0);
+    const Eigen::Vector3d initialVelocityLaunchSite = Eigen::Vector3d(0,(rotationalVelocity*initialRadius*cos(initialLatitude)),0);
 
 //    const Eigen::Vector3d initialVelocityInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(rotationalVelocity*inertialFrameTime-primeMeridianAngle+initialLongitude)*initialVelocityLaunchSite;
 
@@ -479,7 +495,12 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     aState(4) = initialVelocityInertialFrame(1);
     aState(5) = initialVelocityInertialFrame(2);
     aState(6) = 227;  // Mass [kg] from literature study
-
+/*
+    std::cout<<"initialRadius minus computed initial position inertial = "<<initialRadius-sqrt(aState(0)*aState(0)+aState(1)*aState(1)+aState(2)*aState(2))<<std::endl;
+    std::cout<<"initialRadius minus computed initial position rotational = "<<initialRadius-sqrt(initialCartesianPositionRotationalFrame(0)*initialCartesianPositionRotationalFrame(0)+
+                                                                                                 initialCartesianPositionRotationalFrame(1)*initialCartesianPositionRotationalFrame(1)+
+                                                                                                 initialCartesianPositionRotationalFrame(2)*initialCartesianPositionRotationalFrame(2))<<std::endl;
+*/
 
     StateAndTime currentStateAndTime(aState);        // Creating the current state class using the namespace and class directly
 
@@ -555,10 +576,27 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     Eigen::MatrixXd auxiliaryFunctions = Aux.getAuxiliaryFunctions(aState,currentTime,thrustAccelerationsBframe,auxiliaryEquations,auxiliaryDerivatives);
 
 ///*
-    std::cout<<"The auxiliaryEquations are "<<auxiliaryEquations<<std::endl;
+//    std::cout<<"The auxiliaryEquations are "<<auxiliaryEquations<<std::endl;
 //    std::cout<<"The auxiliaryDerivatives are "<<auxiliaryDerivatives<<std::endl;
 //    std::cout<<"The auxiliaryFunctions are "<<auxiliaryFunctions<<std::endl;
 //*/
+
+/*
+    std::cout<<"The computed initial latitude is "<<auxiliaryEquations(12)<<std::endl;
+    std::cout<<"The original initial latitude is "<<initialLatitude<<std::endl;
+    std::cout<<"The computed initial latitude in deg is "<<rad2deg(auxiliaryEquations(12))<<std::endl;
+    std::cout<<"The difference in rad is "<<initialLatitude-auxiliaryEquations(12)<<std::endl;
+    std::cout<<"The difference in deg is "<<initialLatitudeDeg-rad2deg(auxiliaryEquations(12))<<std::endl;
+ */
+/*
+    std::cout<<"Difference in radius = "<<initialRadius-auxiliaryEquations(20)<<std::endl;
+    std::cout<<"initialRadius minus computed initial position inertial = "<<initialRadius-sqrt(aState(0)*aState(0)+aState(1)*aState(1)+aState(2)*aState(2))<<std::endl;
+    std::cout<<"initialRadius minus computed initial position rotational = "<<initialRadius-sqrt(initialCartesianPositionRotationalFrame(0)*initialCartesianPositionRotationalFrame(0)+
+                                                                                                 initialCartesianPositionRotationalFrame(1)*initialCartesianPositionRotationalFrame(1)+
+                                                                                                 initialCartesianPositionRotationalFrame(2)*initialCartesianPositionRotationalFrame(2))<<std::endl;
+*/
+
+
 
 
 
