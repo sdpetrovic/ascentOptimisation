@@ -504,9 +504,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     StateAndTime currentStateAndTime(aState);        // Creating the current state class using the namespace and class directly
 
-    const tudat::basic_mathematics::Vector7d currentState = currentStateAndTime.getCurrentState();
-    const Eigen::Vector3d currentPosition = currentStateAndTime.getCurrentPosition();
-    const Eigen::Vector3d currentVelocity = currentStateAndTime.getCurrentVelocity();
+//    const tudat::basic_mathematics::Vector7d currentState = currentStateAndTime.getCurrentState();
+//    const Eigen::Vector3d currentPosition = currentStateAndTime.getCurrentPosition();
+//    const Eigen::Vector3d currentVelocity = currentStateAndTime.getCurrentVelocity();
     const double currentMass = currentStateAndTime.getCurrentMass();
     const double currentTime = currentStateAndTime.getCurrentTime();
 
@@ -596,8 +596,28 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                                                                                                  initialCartesianPositionRotationalFrame(2)*initialCartesianPositionRotationalFrame(2))<<std::endl;
 */
 
+/*
+    /// Debug ///
 
+    std::cout<<"w24,1 = "<<auxiliaryFunctions(24,1)<<std::endl;
+    std::cout<<"w24,2 = "<<auxiliaryFunctions(24,2)<<std::endl;
+    std::cout<<"w24,3 = "<<auxiliaryFunctions(24,3)<<std::endl;
+    std::cout<<"w24,4 = "<<auxiliaryFunctions(24,4)<<std::endl;
+    std::cout<<"w24,5 = "<<auxiliaryFunctions(24,5)<<std::endl;
+    std::cout<<"w24,6 = "<<auxiliaryFunctions(24,6)<<std::endl;
+    std::cout<<"w24,7 = "<<auxiliaryFunctions(24,7)<<std::endl;
+    std::cout<<"w24,8 = "<<auxiliaryFunctions(24,8)<<std::endl;
+    std::cout<<"w24,9 = "<<auxiliaryFunctions(24,9)<<std::endl;
+    std::cout<<"w24,10 = "<<auxiliaryFunctions(24,10)<<std::endl;
+    std::cout<<"w24,11 = "<<auxiliaryFunctions(24,11)<<std::endl;
+    std::cout<<"w24,12 = "<<auxiliaryFunctions(24,12)<<std::endl;
+    std::cout<<"w24,13 = "<<auxiliaryFunctions(24,13)<<std::endl;
+    std::cout<<"w24,14 = "<<auxiliaryFunctions(24,14)<<std::endl;
+    std::cout<<"w24,15 = "<<auxiliaryFunctions(24,15)<<std::endl;
+    std::cout<<"w24,16 = "<<auxiliaryFunctions(24,16)<<std::endl;
+    std::cout<<"w24,17 = "<<auxiliaryFunctions(24,17)<<std::endl;
 
+*/
 
 
     return 0;
