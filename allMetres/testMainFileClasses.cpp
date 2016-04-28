@@ -417,8 +417,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // Launch site characteristics
 
-//    const double initialAltitude = -0.6e3;             // Starting altitude [m MOLA]
-    const double initialAltitude = -0.6;                 // Starting altitude [km MOLA]
+    const double initialAltitude = -0.6e3;             // Starting altitude [m MOLA]
     const double initialLatitudeDeg = 21;               // Starting latitude [deg]
     const double initialLongitudeDeg = 74.5;            // Starting longitude [deg]
 
@@ -431,8 +430,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //    std::cout<<setprecision(15)<<"initialLatitude = "<<initialLatitude<<std::endl;
 
-    const double initialRadius = bodyReferenceRadius+initialAltitude;               // Starting radius in km
-//        const double initialRadius = bodyReferenceRadius+initialAltitude;               // Starting radius in m
+    const double initialRadius = bodyReferenceRadius+initialAltitude;               // Starting radius in m
 /*
     std::cout<<"initialRadius = "<<initialRadius<<std::endl;
     std::cout<<"initialAltitude = "<<initialAltitude<<std::endl;
@@ -587,8 +585,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     Eigen::MatrixXd auxiliaryFunctions = Aux.getAuxiliaryFunctions(aState,currentTime,thrustAccelerationsBframe,auxiliaryEquations,auxiliaryDerivatives);
 
 ///*
-    std::cout<<"The auxiliaryEquations are "<<auxiliaryEquations<<std::endl;
-//    std::cout<<"The auxiliaryDerivatives are "<<auxiliaryDerivatives<<std::endl;
+//    std::cout<<"The auxiliaryEquations are "<<auxiliaryEquations<<std::endl;
+    std::cout<<"The auxiliaryDerivatives are "<<auxiliaryDerivatives<<std::endl;
 //    std::cout<<"The auxiliaryFunctions are "<<auxiliaryFunctions<<std::endl;
 //*/
 

@@ -23,8 +23,7 @@
  *    OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *    Changelog
- *      YYMMDD    Author            Comment
- *      160411    S.D. Petrovic     File created
+ *      160411    S.D. Petrovic          File created
  *
  *    References
  *
@@ -87,9 +86,7 @@ public:
             specificImpulse_ = 328.6;        //[s]       Taken from Trinidad et al. 2012
 
             // Reference Area
-//            referenceArea_ = 0.091;          // [m^2]    Taken from Trinidad et al. 2012
-            referenceArea_ = 9.1e-8;          // [km^2]    Taken from Trinidad et al. 2012
-
+            referenceArea_ = 0.091;          // [m^2]    Taken from Trinidad et al. 2012
 
             // Drag Coefficient Polynomial Coefficients
                 dragCoefficientPolyCoefficients_ = Eigen::MatrixXd::Zero(6,2);    // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
@@ -118,31 +115,31 @@ public:
 
 
             // Mach range per section for the mach-drag coefficient curve
-                dragCoefficientMachRanges_ = Eigen::MatrixXd::Zero(6,2);
+                dragCoefficientMachranges_ = Eigen::MatrixXd::Zero(6,2);
 
                 // Section 1
-                dragCoefficientMachRanges_(0,0) = 0.0;   // Lower bound
-                dragCoefficientMachRanges_(0,1) = 0.5;   // Upper bound
+                dragCoefficientMachranges_(0,0) = 0.0;   // Lower bound
+                dragCoefficientMachranges_(0,1) = 0.5;   // Upper bound
 
                 // Section 2
-                dragCoefficientMachRanges_(1,0) = 0.5;   // Lower bound
-                dragCoefficientMachRanges_(1,1) = 1.0;   // Upper bound
+                dragCoefficientMachranges_(1,0) = 0.5;   // Lower bound
+                dragCoefficientMachranges_(1,1) = 1.0;   // Upper bound
 
                 // Section 3
-                dragCoefficientMachRanges_(2,0) = 1.0;   // Lower bound
-                dragCoefficientMachRanges_(2,1) = 1.3;   // Upper bound
+                dragCoefficientMachranges_(2,0) = 1.0;   // Lower bound
+                dragCoefficientMachranges_(2,1) = 1.3;   // Upper bound
 
                 // Section 4
-                dragCoefficientMachRanges_(3,0) = 1.3;   // Lower bound
-                dragCoefficientMachRanges_(3,1) = 2.5;   // Upper bound
+                dragCoefficientMachranges_(3,0) = 1.3;   // Lower bound
+                dragCoefficientMachranges_(3,1) = 2.5;   // Upper bound
 
                 // Section 5
-                dragCoefficientMachRanges_(4,0) = 2.5;   // Lower bound
-                dragCoefficientMachRanges_(4,1) = 4.0;   // Upper bound
+                dragCoefficientMachranges_(4,0) = 2.5;   // Lower bound
+                dragCoefficientMachranges_(4,1) = 4.0;   // Upper bound
 
                 // Section 6
-                dragCoefficientMachRanges_(5,0) = 4.0;   // Lower bound
-                dragCoefficientMachRanges_(5,1) = 100.0; // Upper bound
+                dragCoefficientMachranges_(5,0) = 4.0;   // Lower bound
+                dragCoefficientMachranges_(5,1) = 100.0; // Upper bound
 
 
 
@@ -155,13 +152,13 @@ public:
 
         else{
 
-            // Setting all parameters to 0
+            // Setting all paramters to 0
 
             Thrust_ = 0;                                                    // T     engine nominal thrust
             specificImpulse_ = 0;                                           // Isp     engine nominal specific impulse
             referenceArea_ = 0;                                             // S   vehicle reference area
             dragCoefficientPolyCoefficients_ = Eigen::MatrixXd::Zero(1,1);  // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
-            dragCoefficientMachRanges_ = Eigen::MatrixXd::Zero(1,1);        // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
+            dragCoefficientMachranges_ = Eigen::MatrixXd::Zero(1,1);        // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
 //            thrustAzimuth_ = Eigen::MatrixXd::Zero(1,1);                    // psiT   these are the thrust azimuth-gimbal angles as a function of time (including the time ranges)
 //            thrustElevation_ = Eigen::MatrixXd::Zero(1,1);                  // epsilonT   these are the thrust elevation-gimbal angles as a function of time (including the time ranges)
 
@@ -271,7 +268,7 @@ public:
     // Returning the different polynomial coefficient parameter matrices
 
     const Eigen::MatrixXd dragCoefficientPolyCoefficients() { return dragCoefficientPolyCoefficients_; }            // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
-    const Eigen::MatrixXd dragCoefficientMachRanges() { return dragCoefficientMachRanges_; }                        // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
+    const Eigen::MatrixXd dragCoefficientMachranges() { return dragCoefficientMachranges_; }                        // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
 
 
     // Returning the thrust angles as a function of time
@@ -284,12 +281,12 @@ public:
 
     //// Set functions ////
 
-    void setThrustAzimuth(const Eigen::MatrixXd updatedThrustAzimuthSet)            // This functions lets you provide the class with your own thrust azimuth angle set
+    void setThrustAzimuth(const Eigen::MatrixXd updatedThrustAzimuthSet)            // This functions lets you provide the class with
     {
         thrustAzimuth_ = updatedThrustAzimuthSet;
     }
 
-    void setThrustElevation(const Eigen::MatrixXd updatedThrustElevationSet)            // This functions lets you provide the class with your own thrust elevation angle set
+    void setThrustElevation(const Eigen::MatrixXd updatedThrustElevationSet)            // This functions lets you provide the class with
     {
         thrustElevation_ = updatedThrustElevationSet;
     }
@@ -309,7 +306,7 @@ private:
     // Creating the different polynomial coefficient parameter matrices
 
     Eigen::MatrixXd dragCoefficientPolyCoefficients_;               // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
-    Eigen::MatrixXd dragCoefficientMachRanges_;                     // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
+    Eigen::MatrixXd dragCoefficientMachranges_;                     // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
 
     // Creating the thrust angles as a function of time
 

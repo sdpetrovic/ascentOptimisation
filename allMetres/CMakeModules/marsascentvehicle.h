@@ -23,8 +23,7 @@
  *    OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *    Changelog
- *      YYMMDD    Author            Comment
- *      160411    S.D. Petrovic     File created
+ *      160411    S.D. Petrovic          File created
  *
  *    References
  *
@@ -72,7 +71,7 @@ public:
 
     MarsAscentVehicle(const std::string mav = "LiteratureBaseline"){
 
-        std::cout<<"You have chosen "<<mav<<" as your ascent vehicle"<<std::endl;
+        std::cout<<"You have chosen "<<mav<<" as your celestial body"<<std::endl;
 
         if (mav == "LiteratureBaseline" || mav == "literatureBaseline" || mav == "literaturebaseline" || mav == "Baseline" || mav == "baseline")
         {
@@ -81,15 +80,13 @@ public:
 
 
             // Thrust
-            Thrust_ = 5300;             //[N]           Taken from Trinidad et al. 2012
+            Thrust_ = ;             //[N]
 
             // Specific Impulse
-            specificImpulse_ = 328.6;        //[s]       Taken from Trinidad et al. 2012
+            specificImpulse_ = ;        //[s]
 
             // Reference Area
-//            referenceArea_ = 0.091;          // [m^2]    Taken from Trinidad et al. 2012
-            referenceArea_ = 9.1e-8;          // [km^2]    Taken from Trinidad et al. 2012
-
+            referenceArea_ = ;          // [m^2]
 
             // Drag Coefficient Polynomial Coefficients
                 dragCoefficientPolyCoefficients_ = Eigen::MatrixXd::Zero(6,2);    // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
@@ -118,34 +115,113 @@ public:
 
 
             // Mach range per section for the mach-drag coefficient curve
-                dragCoefficientMachRanges_ = Eigen::MatrixXd::Zero(6,2);
+                dragCoefficientMachranges_ = Eigen::matrixXd::Zero(6,2);
 
                 // Section 1
-                dragCoefficientMachRanges_(0,0) = 0.0;   // Lower bound
-                dragCoefficientMachRanges_(0,1) = 0.5;   // Upper bound
+                dragCoefficientMachranges_(0,0) = 0.0;   // Lower bound
+                dragCoefficientMachranges_(0,1) = 0.5;   // Upper bound
 
                 // Section 2
-                dragCoefficientMachRanges_(1,0) = 0.5;   // Lower bound
-                dragCoefficientMachRanges_(1,1) = 1.0;   // Upper bound
+                dragCoefficientMachranges_(1,0) = 0.5;   // Lower bound
+                dragCoefficientMachranges_(1,1) = 1.0;   // Upper bound
 
                 // Section 3
-                dragCoefficientMachRanges_(2,0) = 1.0;   // Lower bound
-                dragCoefficientMachRanges_(2,1) = 1.3;   // Upper bound
+                dragCoefficientMachranges_(2,0) = 1.0;   // Lower bound
+                dragCoefficientMachranges_(2,1) = 1.3;   // Upper bound
 
                 // Section 4
-                dragCoefficientMachRanges_(3,0) = 1.3;   // Lower bound
-                dragCoefficientMachRanges_(3,1) = 2.5;   // Upper bound
+                dragCoefficientMachranges_(3,0) = 1.3;   // Lower bound
+                dragCoefficientMachranges_(3,1) = 2.5;   // Upper bound
 
                 // Section 5
-                dragCoefficientMachRanges_(4,0) = 2.5;   // Lower bound
-                dragCoefficientMachRanges_(4,1) = 4.0;   // Upper bound
+                dragCoefficientMachranges_(4,0) = 2.5;   // Lower bound
+                dragCoefficientMachranges_(4,1) = 4.0;   // Upper bound
 
                 // Section 6
-                dragCoefficientMachRanges_(5,0) = 4.0;   // Lower bound
-                dragCoefficientMachRanges_(5,1) = 100.0; // Upper bound
+                dragCoefficientMachranges_(5,0) = 4.0;   // Lower bound
+                dragCoefficientMachranges_(5,1) = 100.0;   // Upper bound
 
 
+                /// Both thrust angles and the corresponding times will be optimised using the optimiser but can be set for validation purposes ///
 
+            // Thrust Azimuth-Gimbal Angles
+                thrustAzimuth_ = Eigen::MatrixXd::Zero(6,3); // psiT   these are the thrust azimuth-gimbal angles as a function of time (including the time ranges)
+
+                // Section 1
+                thrustAzimuth_(0,0) = 0.0;   // Lower bound time
+                thrustAzimuth_(0,1) = 0.0;   // Upper bound time
+
+                thrustAzimuth_(0,2) = 0.0;   // Thrust azimuth angle
+
+                // Section 2
+                thrustAzimuth_(1,0) = 0.0;   // Lower bound time
+                thrustAzimuth_(1,1) = 0.0;   // Upper bound time
+
+                thrustAzimuth_(1,2) = 0.0;   // Thrust azimuth angle
+
+                // Section 3
+                thrustAzimuth_(2,0) = 0.0;   // Lower bound time
+                thrustAzimuth_(2,1) = 0.0;   // Upper bound time
+
+                thrustAzimuth_(2,2) = 0.0;   // Thrust azimuth angle
+
+                // Section 4
+                thrustAzimuth_(3,0) = 0.0;   // Lower bound time
+                thrustAzimuth_(3,1) = 0.0;   // Upper bound time
+
+                thrustAzimuth_(3,2) = 0.0;   // Thrust azimuth angle
+
+                // Section 5
+                thrustAzimuth_(4,0) = 0.0;   // Lower bound time
+                thrustAzimuth_(4,1) = 0.0;   // Upper bound time
+
+                thrustAzimuth_(4,2) = 0.0;   // Thrust azimuth angle
+
+                // Section 6
+                thrustAzimuth_(5,0) = 0.0;   // Lower bound time
+                thrustAzimuth_(5,1) = 0.0;   // Upper bound time
+
+                thrustAzimuth_(5,2) = 0.0;   // Thrust azimuth angle
+
+
+                // Thrust Elevation-Gimbal Angles
+                    thrustElevation_ = Eigen::MatrixXd::Zero(6,3); // epsilonT   these are the thrust elevation-gimbal angles as a function of time (including the time ranges)
+
+                    // Section 1
+                    thrustElevation_(0,0) = 0.0;   // Lower bound time
+                    thrustElevation_(0,1) = 0.0;   // Upper bound time
+
+                    thrustElevation_(0,2) = 0.0;   // Thrust elevation angle
+
+                    // Section 2
+                    thrustElevation_(1,0) = 0.0;   // Lower bound time
+                    thrustElevation_(1,1) = 0.0;   // Upper bound time
+
+                    thrustElevation_(1,2) = 0.0;   // Thrust elevation angle
+
+                    // Section 3
+                    thrustElevation_(2,0) = 0.0;   // Lower bound time
+                    thrustElevation_(2,1) = 0.0;   // Upper bound time
+
+                    thrustElevation_(2,2) = 0.0;   // Thrust elevation angle
+
+                    // Section 4
+                    thrustElevation_(3,0) = 0.0;   // Lower bound time
+                    thrustElevation_(3,1) = 0.0;   // Upper bound time
+
+                    thrustElevation_(3,2) = 0.0;   // Thrust elevation angle
+
+                    // Section 5
+                    thrustElevation_(4,0) = 0.0;   // Lower bound time
+                    thrustElevation_(4,1) = 0.0;   // Upper bound time
+
+                    thrustElevation_(4,2) = 0.0;   // Thrust elevation angle
+
+                    // Section 6
+                    thrustElevation_(5,0) = 0.0;   // Lower bound time
+                    thrustElevation_(5,1) = 0.0;   // Upper bound time
+
+                    thrustElevation_(5,2) = 0.0;   // Thrust elevation angle
 
 
 
@@ -155,15 +231,15 @@ public:
 
         else{
 
-            // Setting all parameters to 0
+            // Setting all paramters to 0
 
             Thrust_ = 0;                                                    // T     engine nominal thrust
             specificImpulse_ = 0;                                           // Isp     engine nominal specific impulse
             referenceArea_ = 0;                                             // S   vehicle reference area
             dragCoefficientPolyCoefficients_ = Eigen::MatrixXd::Zero(1,1);  // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
-            dragCoefficientMachRanges_ = Eigen::MatrixXd::Zero(1,1);        // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
-//            thrustAzimuth_ = Eigen::MatrixXd::Zero(1,1);                    // psiT   these are the thrust azimuth-gimbal angles as a function of time (including the time ranges)
-//            thrustElevation_ = Eigen::MatrixXd::Zero(1,1);                  // epsilonT   these are the thrust elevation-gimbal angles as a function of time (including the time ranges)
+            dragCoefficientMachranges_ = Eigen::MatrixXd::Zero(1,1);        // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
+            thrustAzimuth_ = Eigen::MatrixXd::Zero(1,1);                    // psiT   these are the thrust azimuth-gimbal angles as a function of time (including the time ranges)
+            thrustElevation_ = Eigen::MatrixXd::Zero(1,1);                  // epsilonT   these are the thrust elevation-gimbal angles as a function of time (including the time ranges)
 
 
 
@@ -172,86 +248,7 @@ public:
         };
 
 
-        /// Both thrust angles and the corresponding times will be optimised using the optimiser but can be set for validation purposes. Default = zeros ///
 
-    // Thrust Azimuth-Gimbal Angles
-        thrustAzimuth_ = Eigen::MatrixXd::Zero(6,3); // psiT   these are the thrust azimuth-gimbal angles as a function of time (including the time ranges)
-
-        // Section 1
-        thrustAzimuth_(0,0) = 0.0;   // Lower bound time
-        thrustAzimuth_(0,1) = 0.0;   // Upper bound time
-
-        thrustAzimuth_(0,2) = 0.0;   // Thrust azimuth angle
-
-        // Section 2
-        thrustAzimuth_(1,0) = 0.0;   // Lower bound time
-        thrustAzimuth_(1,1) = 0.0;   // Upper bound time
-
-        thrustAzimuth_(1,2) = 0.0;   // Thrust azimuth angle
-
-        // Section 3
-        thrustAzimuth_(2,0) = 0.0;   // Lower bound time
-        thrustAzimuth_(2,1) = 0.0;   // Upper bound time
-
-        thrustAzimuth_(2,2) = 0.0;   // Thrust azimuth angle
-
-        // Section 4
-        thrustAzimuth_(3,0) = 0.0;   // Lower bound time
-        thrustAzimuth_(3,1) = 0.0;   // Upper bound time
-
-        thrustAzimuth_(3,2) = 0.0;   // Thrust azimuth angle
-
-        // Section 5
-        thrustAzimuth_(4,0) = 0.0;   // Lower bound time
-        thrustAzimuth_(4,1) = 0.0;   // Upper bound time
-
-        thrustAzimuth_(4,2) = 0.0;   // Thrust azimuth angle
-
-        // Section 6
-        thrustAzimuth_(5,0) = 0.0;   // Lower bound time
-        thrustAzimuth_(5,1) = 0.0;   // Upper bound time
-
-        thrustAzimuth_(5,2) = 0.0;   // Thrust azimuth angle
-
-
-        // Thrust Elevation-Gimbal Angles
-            thrustElevation_ = Eigen::MatrixXd::Zero(6,3); // epsilonT   these are the thrust elevation-gimbal angles as a function of time (including the time ranges)
-
-            // Section 1
-            thrustElevation_(0,0) = 0.0;   // Lower bound time
-            thrustElevation_(0,1) = 0.0;   // Upper bound time
-
-            thrustElevation_(0,2) = 0.0;   // Thrust elevation angle
-
-            // Section 2
-            thrustElevation_(1,0) = 0.0;   // Lower bound time
-            thrustElevation_(1,1) = 0.0;   // Upper bound time
-
-            thrustElevation_(1,2) = 0.0;   // Thrust elevation angle
-
-            // Section 3
-            thrustElevation_(2,0) = 0.0;   // Lower bound time
-            thrustElevation_(2,1) = 0.0;   // Upper bound time
-
-            thrustElevation_(2,2) = 0.0;   // Thrust elevation angle
-
-            // Section 4
-            thrustElevation_(3,0) = 0.0;   // Lower bound time
-            thrustElevation_(3,1) = 0.0;   // Upper bound time
-
-            thrustElevation_(3,2) = 0.0;   // Thrust elevation angle
-
-            // Section 5
-            thrustElevation_(4,0) = 0.0;   // Lower bound time
-            thrustElevation_(4,1) = 0.0;   // Upper bound time
-
-            thrustElevation_(4,2) = 0.0;   // Thrust elevation angle
-
-            // Section 6
-            thrustElevation_(5,0) = 0.0;   // Lower bound time
-            thrustElevation_(5,1) = 0.0;   // Upper bound time
-
-            thrustElevation_(5,2) = 0.0;   // Thrust elevation angle
 
                                                     } // End of constructor
 
@@ -271,7 +268,7 @@ public:
     // Returning the different polynomial coefficient parameter matrices
 
     const Eigen::MatrixXd dragCoefficientPolyCoefficients() { return dragCoefficientPolyCoefficients_; }            // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
-    const Eigen::MatrixXd dragCoefficientMachRanges() { return dragCoefficientMachRanges_; }                        // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
+    const Eigen::MatrixXd dragCoefficientMachranges() { return dragCoefficientMachranges_; }                        // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
 
 
     // Returning the thrust angles as a function of time
@@ -282,17 +279,7 @@ public:
 
 
 
-    //// Set functions ////
 
-    void setThrustAzimuth(const Eigen::MatrixXd updatedThrustAzimuthSet)            // This functions lets you provide the class with your own thrust azimuth angle set
-    {
-        thrustAzimuth_ = updatedThrustAzimuthSet;
-    }
-
-    void setThrustElevation(const Eigen::MatrixXd updatedThrustElevationSet)            // This functions lets you provide the class with your own thrust elevation angle set
-    {
-        thrustElevation_ = updatedThrustElevationSet;
-    }
 
 
 
@@ -309,7 +296,7 @@ private:
     // Creating the different polynomial coefficient parameter matrices
 
     Eigen::MatrixXd dragCoefficientPolyCoefficients_;               // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
-    Eigen::MatrixXd dragCoefficientMachRanges_;                     // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
+    Eigen::MatrixXd dragCoefficientMachranges_;                     // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
 
     // Creating the thrust angles as a function of time
 

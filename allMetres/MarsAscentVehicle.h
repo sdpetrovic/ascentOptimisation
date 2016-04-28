@@ -87,9 +87,7 @@ public:
             specificImpulse_ = 328.6;        //[s]       Taken from Trinidad et al. 2012
 
             // Reference Area
-//            referenceArea_ = 0.091;          // [m^2]    Taken from Trinidad et al. 2012
-            referenceArea_ = 9.1e-8;          // [km^2]    Taken from Trinidad et al. 2012
-
+            referenceArea_ = 0.091;          // [m^2]    Taken from Trinidad et al. 2012
 
             // Drag Coefficient Polynomial Coefficients
                 dragCoefficientPolyCoefficients_ = Eigen::MatrixXd::Zero(6,2);    // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
@@ -155,7 +153,7 @@ public:
 
         else{
 
-            // Setting all parameters to 0
+            // Setting all paramters to 0
 
             Thrust_ = 0;                                                    // T     engine nominal thrust
             specificImpulse_ = 0;                                           // Isp     engine nominal specific impulse

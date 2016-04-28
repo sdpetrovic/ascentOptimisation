@@ -90,16 +90,13 @@ public:
 
             // Specific Gas Constant
                 const double massOfMars = 0.004334;         // [kg/mol]
-//                const double gasConstant = 8.3144598;       // [m^2*kg/(s^2*K*mol)]
-                const double gasConstant = 8.3144598e-6;    // [km^2*kg/(s^2*K*mol)]
+                const double gasConstant = 8.3144598;       // [m^2*kg/(s^2*K*mol)]
 
-//                specificGasConstant_ = gasConstant/massOfMars;  // [m^2/(s^2*K)]
-                specificGasConstant_ = gasConstant/massOfMars;  // [km^2/(s^2*K)]
+                specificGasConstant_ = gasConstant/massOfMars;  // [m^2/(s^2*K)]
 
 
             // Standard gravitational parameter
-//                standardGravitationalParameter_ = 4.2828314e13;  // [m^3/s^2]
-                standardGravitationalParameter_ = 4.2828314e4;  // [km^3/s^2]
+                standardGravitationalParameter_ = 4.283e13;  // [m^3/s^2]
 
 
             // Rotational velocity
@@ -107,15 +104,14 @@ public:
 
 
             // Prime Meridian angle
-                primeMeridianAngle_ = 0;  // [rad]  (please note that this angle is defined negative in the positive direction when looking from the inertial frame to the rotating frame. I might change this later...)
+                primeMeridianAngle_ = 0;  // [rad]
 
 
             // Inertial Frame Time
                 inertialFrameTime_ = 0;  // [s]
 
             // MOLA radius of Mars
-//                bodyReferenceRadius_ = 3396e3; // [m]
-                bodyReferenceRadius_ = 3396; // [km]
+                bodyReferenceRadius_ = 3396e3; // [m]
 
 
             // Temperature Polynomial Coefficients

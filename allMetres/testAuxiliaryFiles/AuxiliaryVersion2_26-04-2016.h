@@ -151,7 +151,7 @@ public:
 
     Eigen::VectorXd getAuxiliaryEquations( const tudat::basic_mathematics::Vector7d& aState, const double time, const Eigen::Vector3d& thrustAccelerationsBframe){
 
-        auxiliaryEquationsVector = Eigen::VectorXd::Zero(49);       // Setting the complete vector and filling it with zeros for now
+        auxiliaryEquationsVector = Eigen::VectorXd::Zero(47);       // Setting the complete vector and filling it with zeros for now
 
         // The following expressions are described in the order in which the equations have to be computed corresponding to the respective vector entry
 
@@ -215,36 +215,14 @@ public:
             auxiliaryEquationsVector(45) = 0;
         }
         else {
-//        auxiliaryEquationsVector(45) = (auxiliaryEquationsVector(1)*auxiliaryEquationsVector(5)-auxiliaryEquationsVector(2)*auxiliaryEquationsVector(4))/auxiliaryEquationsVector(19);               // x45
-        auxiliaryEquationsVector(45) = (auxiliaryEquationsVector(1)*auxiliaryEquationsVector(5)*1E-6-auxiliaryEquationsVector(2)*auxiliaryEquationsVector(4)*1E-6)/(auxiliaryEquationsVector(19)*1E-6); // x45 in 1000 km/1000 km
+        auxiliaryEquationsVector(45) = (auxiliaryEquationsVector(1)*auxiliaryEquationsVector(5)-auxiliaryEquationsVector(2)*auxiliaryEquationsVector(4))/auxiliaryEquationsVector(19);               // x45
 };
-
-
-        /// Debug ///
-/*
-        std::cout<<"x45 = "<<auxiliaryEquationsVector(45)<<std::endl;
-        std::cout<<"x45-7.088e-05 = "<<auxiliaryEquationsVector(45)-7.088e-05<<std::endl;
-        std::cout<<"x1*x5-x2*x4 = "<<auxiliaryEquationsVector(1)*auxiliaryEquationsVector(5)-auxiliaryEquationsVector(2)*auxiliaryEquationsVector(4)<<std::endl;
-        std::cout<<"x19 = "<<auxiliaryEquationsVector(19)<<std::endl;
-
-        std::cout<<"x1*x5-x2*x4-712.211649225101 = "<<auxiliaryEquationsVector(1)*auxiliaryEquationsVector(5)-auxiliaryEquationsVector(2)*auxiliaryEquationsVector(4)-712.211649225101<<std::endl;
-        std::cout<<"x19-10048132.7486611 = "<<auxiliaryEquationsVector(19)-10048132.7486611<<std::endl;
-        std::cout<<"(x1*x5-x2*x4-712.211649225101)/(x19-10048132.7486611) = "<<(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(5)-auxiliaryEquationsVector(2)*auxiliaryEquationsVector(4)-712.211649225101)/
-                   (auxiliaryEquationsVector(19)-10048132.7486611)<<std::endl;
-        std::cout<<"712.211649225101/10048132.7486611 = "<<712.211649225101/10048132.7486611<<std::endl;
-
-        std::cout<<"x45 in Mm = "<<(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(5)*1E-6-auxiliaryEquationsVector(2)*auxiliaryEquationsVector(4)*1E-6)/(auxiliaryEquationsVector(19)*1E-6)<<std::endl;
-        std::cout<<"x45 in Mm-7.088e-05 = "<<(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(5)*1E-6-auxiliaryEquationsVector(2)*auxiliaryEquationsVector(4)*1E-6)/(auxiliaryEquationsVector(19)*1E-6)-7.088e-05<<std::endl;
-*/
-
         auxiliaryEquationsVector(12) = asin(auxiliaryEquationsVector(3)/auxiliaryEquationsVector(20)) ;              // x12
 
         auxiliaryEquationsVector(25) = auxiliaryEquationsVector(25)/(2*auxiliaryEquationsVector(20));              // x25
 
         // Please note that the altitude h (x31) is expressed in km MOLA (which is also the input for the density and temperature curves!)
-//        auxiliaryEquationsVector(31) = (auxiliaryEquationsVector(20)-bodyReferenceRadius)/1000;              // x31 [km]!!!
-//        auxiliaryEquationsVector(31) = (auxiliaryEquationsVector(20)*1e6-bodyReferenceRadius*1e6)/1e6;              // x31 [km]!!!
-        auxiliaryEquationsVector(31) = (auxiliaryEquationsVector(20)-bodyReferenceRadius);              // x31 [km]!!!
+        auxiliaryEquationsVector(31) = (auxiliaryEquationsVector(20)-bodyReferenceRadius)/1000;              // x31 [km]!!!
 /*
         std::cout<<"bodyReferenceRadius = "<<bodyReferenceRadius<<std::endl;
         std::cout<<"Computed initial radius = "<<auxiliaryEquationsVector(20)<<std::endl;
@@ -263,7 +241,7 @@ public:
         else {
 
         auxiliaryEquationsVector(24) = (auxiliaryEquationsVector(20)*auxiliaryEquationsVector(6)-auxiliaryEquationsVector(3)*auxiliaryEquationsVector(25))/
-                (auxiliaryEquationsVector(8)*sqrt(1-(auxiliaryEquationsVector(3)/auxiliaryEquationsVector(20))*(auxiliaryEquationsVector(3)/auxiliaryEquationsVector(20))));              // x24
+                (auxiliaryEquationsVector(8)*sqrt(1-pow((auxiliaryEquationsVector(3)/auxiliaryEquationsVector(20)),2)));              // x24
 
         };
 
@@ -330,12 +308,11 @@ public:
 
         auxiliaryEquationsVector(37) = auxiliaryEquationsVector(25)/auxiliaryEquationsVector(36);                // x37
 
-        auxiliaryEquationsVector(46) = auxiliaryEquationsVector(45)-rotationalVelocity;             // x46
-
-        auxiliaryEquationsVector(47) = cos(auxiliaryEquationsVector(12))*auxiliaryEquationsVector(45);               // x47
+        auxiliaryEquationsVector(46) = auxiliaryEquationsVector(45)-rotationalVelocity*cos(auxiliaryEquationsVector(12));             // x46
 
 //        auxiliaryEquationsVector(18) = auxiliaryEquationsVector(20)*auxiliaryEquationsVector(24);              // x18
 
+        auxiliaryEquationsVector(13) =  atan2(auxiliaryEquationsVector(46),auxiliaryEquationsVector(24));                   // x13
 
         auxiliaryEquationsVector(28) = exp(auxiliaryEquationsVector(30));              // x28
 
@@ -346,20 +323,15 @@ public:
 
         auxiliaryEquationsVector(38) = asin(auxiliaryEquationsVector(37));                // x38
 
-        auxiliaryEquationsVector(40) = atan2(auxiliaryEquationsVector(47),auxiliaryEquationsVector(24));               // x40
+        auxiliaryEquationsVector(40) = atan2(auxiliaryEquationsVector(45),auxiliaryEquationsVector(24));               // x40
 
         auxiliaryEquationsVector(41) = auxiliaryEquationsVector(35)*auxiliaryEquationsVector(36);                // x41
 
-        auxiliaryEquationsVector(48) = cos(auxiliaryEquationsVector(12))*auxiliaryEquationsVector(46);               // x48
-
-        /*
 //        auxiliaryEquationsVector(44) = auxiliaryEquationsVector(36)*cos(auxiliaryEquationsVector(38));                // x44
 
 //        auxiliaryEquationsVector(39) = auxiliaryEquationsVector(18)/auxiliaryEquationsVector(44);                // x39
 
 //        auxiliaryEquationsVector(40) = acos(auxiliaryEquationsVector(39));                // x40
-*/
-        auxiliaryEquationsVector(13) =  atan2(auxiliaryEquationsVector(48),auxiliaryEquationsVector(24));                   // x13
 
         auxiliaryEquationsVector(42) = cos(auxiliaryEquationsVector(38)*sin(auxiliaryEquationsVector(40)));                // x42
 
@@ -367,42 +339,40 @@ public:
 
         // Set tolerance for the velocity in case of rounding errors... It is set such that the the accuracy is 10 micro-metres/sec
 
-//        if (abs(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43))<=1E-10){
+        if (abs(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43))<=1E-10){
 
-//            auxiliaryEquationsVector(15) = 0;
+            auxiliaryEquationsVector(15) = 0;
 
 
-//        }
-//        else {
-//        auxiliaryEquationsVector(15) = sqrt(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43));              // x15
-        auxiliaryEquationsVector(15) = sqrt(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)*1e-6+auxiliaryEquationsVector(21)*1e-6-2*auxiliaryEquationsVector(43)*1e-6)/sqrt(1e-6);              // x15
-//};
+        }
+        else {
+        auxiliaryEquationsVector(15) = sqrt(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43));              // x15
+};
 
 
 
 /*
- // What the actual f*ck?!
-
-        std::cout<<"x35 = "<<auxiliaryEquationsVector(35)<<std::endl;
-        std::cout<<"x36 = "<<auxiliaryEquationsVector(36)<<std::endl;
+ * // What the actual f*ck?!
+ *
         std::cout<<"x35-x36 = "<<auxiliaryEquationsVector(35)-auxiliaryEquationsVector(36)<<std::endl;
         std::cout<<"x42 = "<<auxiliaryEquationsVector(42)<<std::endl;
         std::cout<<"x35^2-x43 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)-auxiliaryEquationsVector(43)<<std::endl;
         std::cout<<"x21-x43 = "<<auxiliaryEquationsVector(21)-auxiliaryEquationsVector(43)<<std::endl;
-        std::cout<<"x35*x35-x43+x21-x43 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)-auxiliaryEquationsVector(43)+auxiliaryEquationsVector(21)-auxiliaryEquationsVector(43)<<std::endl;
-        std::cout<<"x35*x35+x21-x43-x43 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-auxiliaryEquationsVector(43)-auxiliaryEquationsVector(43)<<std::endl;
-        std::cout<<"x35*x35+x21-2*x43 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43)<<std::endl;
-        std::cout<<"x35*x35-x43-x43+x21 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)-auxiliaryEquationsVector(43)-auxiliaryEquationsVector(43)+auxiliaryEquationsVector(21)<<std::endl;
+        std::cout<<"x35^2-x43+x21-x43 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)-auxiliaryEquationsVector(43)+auxiliaryEquationsVector(21)-auxiliaryEquationsVector(43)<<std::endl;
+        std::cout<<"x35^2+x21-x43-x43 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-auxiliaryEquationsVector(43)-auxiliaryEquationsVector(43)<<std::endl;
+        std::cout<<"x35^2+x21-2*x43 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43)<<std::endl;
+        std::cout<<"x35^2-x43-x43+x21 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)-auxiliaryEquationsVector(43)-auxiliaryEquationsVector(43)+auxiliaryEquationsVector(21)<<std::endl;
 
         std::cout<<"x35 = "<<auxiliaryEquationsVector(35)<<std::endl;
         std::cout<<"x35^2 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)<<std::endl;
 
+//        std::cout<<""
 
         std::cout<<"x21 = "<<auxiliaryEquationsVector(21)<<std::endl;
         std::cout<<"x43 = "<<auxiliaryEquationsVector(43)<<std::endl;
 
         std::cout<<"x15 (or V_R) = "<<auxiliaryEquationsVector(15)<<std::endl;
-//*/
+*/
 
 
         // If the velocity of the MAV in the rotating frame V_R (or x15) = 0 m/s then the flight path angle in that frame (gamma_R or x14) is not defined.
@@ -488,14 +458,14 @@ public:
 
     Eigen::VectorXd getAuxiliaryDerivatives( const tudat::basic_mathematics::Vector7d& aState, const double time, const Eigen::Vector3d& thrustAccelerationsBframe, const Eigen::VectorXd& auxiliaryEquationsVector){
 
-    auxiliaryDerivativesVector = Eigen::VectorXd::Zero(49);       // Setting the complete vector and filling it with zeros for now
+    auxiliaryDerivativesVector = Eigen::VectorXd::Zero(47);       // Setting the complete vector and filling it with zeros for now
 
     // The following expressions are described in the order in which the equations have to be computed corresponding to the respective vector entry
     // Which in this case means that the first entry of the vector is 0 and is not used.
 
     auxiliaryDerivativesVector(10) = 0;                // u10
 
-    auxiliaryDerivativesVector(35) = rotationalVelocity*(cos(auxiliaryEquationsVector(12))*auxiliaryEquationsVector(25)-auxiliaryEquationsVector(20)*auxiliaryEquationsVector(24)*sin(auxiliaryEquationsVector(12)));                // u35
+    auxiliaryDerivativesVector(35) = rotationalVelocity*(cos(auxiliaryEquationsVector(12))*auxiliaryEquationsVector(25)-auxiliaryEquationsVector(18)*sin(auxiliaryEquationsVector(12)));                // u35
 
     auxiliaryDerivativesVector(1) = auxiliaryEquationsVector(4);                // u1
 
@@ -528,29 +498,6 @@ public:
             thrustAccelerationsBframe(2)*(cos(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*sin(auxiliaryEquationsVector(14))-sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(14)));                // u6
 
 
-
-    /// Debug ///
-/*
-    std::cout<<"u4 = "<<auxiliaryDerivativesVector(4)<<std::endl;
-    std::cout<<"u5 = "<<auxiliaryDerivativesVector(5)<<std::endl;
-    std::cout<<"u6 = "<<auxiliaryDerivativesVector(6)<<std::endl;
-    std::cout<<"u4-4.89819672896927 = "<<auxiliaryDerivativesVector(4)-4.89819672896927<<std::endl;
-    std::cout<<"u5-17.6623268076567 = "<<auxiliaryDerivativesVector(5)-17.6623268076567<<std::endl;
-    std::cout<<"u6+23.1286117670555 = "<<auxiliaryDerivativesVector(6)+23.1286117670555<<std::endl;
-    std::cout<<"First part of u5-21.0044960630337 = "<<auxiliaryEquationsVector(0)*
-               (sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*(-sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14))+cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(14)))+
-                    cos(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*sin(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14)))-21.0044960630337<<std::endl;
-    std::cout<<"First part of u6+21.7972522486131 = "<<auxiliaryEquationsVector(0)*
-               (cos(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14))-cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(14)))+21.7972522486131<<std::endl;
-    std::cout<<"Second u5 = "<<sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*(-sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14))+cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(14)))<<std::endl;
-    std::cout<<"Third u5 = "<<cos(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*sin(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14))<<std::endl;
-    std::cout<<"Second u6 = "<<cos(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14))<<std::endl;
-    std::cout<<"Third u6 = "<<cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(14))<<std::endl;
-*/
-
-
-
-
     auxiliaryDerivativesVector(7) = -(Thrust/(tudat::physical_constants::STANDARD_EARTH_GRAVITATIONAL_ACCELERATION*specificImpulse));                // u7
 
     auxiliaryDerivativesVector(8) = 2*(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)+auxiliaryEquationsVector(3)*auxiliaryEquationsVector(6));                // u8
@@ -572,7 +519,7 @@ public:
     };
 */
 
-    auxiliaryDerivativesVector(11) = auxiliaryEquationsVector(45)-rotationalVelocity;                // u11
+    auxiliaryDerivativesVector(11) = auxiliaryEquationsVector(45)-rotationalVelocity*cos(auxiliaryEquationsVector(12));                // u11
 
     auxiliaryDerivativesVector(20) = auxiliaryEquationsVector(26)/(2*auxiliaryEquationsVector(20));                // u20 = \dot(r)
 
@@ -585,7 +532,7 @@ public:
     }
     else {
     auxiliaryDerivativesVector(12) = (auxiliaryEquationsVector(20)*auxiliaryEquationsVector(6)-auxiliaryEquationsVector(3)*auxiliaryEquationsVector(25))/
-            (auxiliaryEquationsVector(8)*sqrt(1-(auxiliaryEquationsVector(3)/auxiliaryEquationsVector(20))*(auxiliaryEquationsVector(3)/auxiliaryEquationsVector(20))));                // u12
+            (auxiliaryEquationsVector(8)*sqrt(1-pow((auxiliaryEquationsVector(3)/auxiliaryEquationsVector(20)),2)));                // u12
     };
 
     auxiliaryDerivativesVector(31) = auxiliaryDerivativesVector(20);                // u31
@@ -596,10 +543,6 @@ public:
 
         auxiliaryDerivativesVector(45) = 0;
     }
-    else if(auxiliaryEquationsVector(1)*auxiliaryDerivativesVector(5)-auxiliaryEquationsVector(2)*auxiliaryDerivativesVector(4)<=1E-8){                        // Set tolerance for the differences to 1E-8
-
-        auxiliaryDerivativesVector(45) = 0;
-    }
     else {
 
     auxiliaryDerivativesVector(45) = (auxiliaryEquationsVector(19)*(auxiliaryEquationsVector(1)*auxiliaryDerivativesVector(5)-auxiliaryEquationsVector(2)*auxiliaryDerivativesVector(4))
@@ -607,23 +550,7 @@ public:
             (auxiliaryEquationsVector(19)*auxiliaryEquationsVector(19));                // u45
     };
 
-    /// Debug ///
-/*
-    std::cout<<"x1*u5 = "<<auxiliaryEquationsVector(1)*auxiliaryDerivativesVector(5)<<std::endl;
-    std::cout<<"x2*u4 = "<<auxiliaryEquationsVector(2)*auxiliaryDerivativesVector(4)<<std::endl;
-    std::cout<<"x1*u5-x2*u4 = "<<auxiliaryEquationsVector(1)*auxiliaryDerivativesVector(5)-auxiliaryEquationsVector(2)*auxiliaryDerivativesVector(4)<<std::endl;
-    std::cout<<"x1*u5-14961992.1422484 = "<<auxiliaryEquationsVector(1)*auxiliaryDerivativesVector(5)-14961992.1422484<<std::endl;
-    std::cout<<"x2*u4-14961992.1422484 = "<<auxiliaryEquationsVector(2)*auxiliaryDerivativesVector(4)-14961992.1422484<<std::endl;
-    std::cout<<"x1 = "<<auxiliaryEquationsVector(1)<<std::endl;
-    std::cout<<"u5 = "<<auxiliaryDerivativesVector(5)<<std::endl;
-    std::cout<<"x2 = "<<auxiliaryEquationsVector(2)<<std::endl;
-    std::cout<<"u4 = "<<auxiliaryDerivativesVector(4)<<std::endl;
-    std::cout<<"x1-847113.311014168 = "<<auxiliaryEquationsVector(1)-847113.311014168<<std::endl;
-    std::cout<<"u5-17.6623268076567 = "<<auxiliaryDerivativesVector(5)-17.6623268076567<<std::endl;
-    std::cout<<"x2-3054591.91823781 = "<<auxiliaryEquationsVector(2)-3054591.91823781<<std::endl;
-    std::cout<<"u4-4.89819672896927 = "<<auxiliaryDerivativesVector(4)-4.89819672896927<<std::endl;
-    std::cout<<"x2/x9 = "<<auxiliaryEquationsVector(2)/auxiliaryEquationsVector(9)<<std::endl;
-*/
+
 
     auxiliaryDerivativesVector(21) = 2*(auxiliaryEquationsVector(4)*auxiliaryDerivativesVector(4)+auxiliaryEquationsVector(5)*auxiliaryDerivativesVector(5)+auxiliaryEquationsVector(6)*auxiliaryDerivativesVector(6));                // u21
 
@@ -727,14 +654,32 @@ public:
     auxiliaryDerivativesVector(36) = auxiliaryDerivativesVector(21)/(2*auxiliaryEquationsVector(36));                // u36
 
 
+    // Avoiding singularities
+    if ((auxiliaryEquationsVector(45)*auxiliaryEquationsVector(45)+auxiliaryEquationsVector(24)*auxiliaryEquationsVector(24))==0){
+
+        auxiliaryDerivativesVector(40) = 0;
+    }
+    else {
+    auxiliaryDerivativesVector(40) = (auxiliaryEquationsVector(24)*auxiliaryDerivativesVector(45)-auxiliaryEquationsVector(45)*auxiliaryDerivativesVector(24))/
+            (auxiliaryEquationsVector(45)*auxiliaryEquationsVector(45)+auxiliaryEquationsVector(24)*auxiliaryEquationsVector(24));                // u40
+
+    };
 
 
+    auxiliaryDerivativesVector(46) = auxiliaryDerivativesVector(45)+rotationalVelocity*sin(auxiliaryEquationsVector(12))*auxiliaryEquationsVector(24);                // u46
 
 
-    auxiliaryDerivativesVector(46) = auxiliaryDerivativesVector(45);                // u46
+    // Avoiding singularities
 
-    auxiliaryDerivativesVector(47) = auxiliaryDerivativesVector(45)*cos(auxiliaryEquationsVector(12))-auxiliaryEquationsVector(45)*auxiliaryDerivativesVector(12)*sin(auxiliaryEquationsVector(12));                // u47
+    if ((auxiliaryEquationsVector(46)*auxiliaryEquationsVector(46)+auxiliaryEquationsVector(24)*auxiliaryEquationsVector(24))==0){
 
+        auxiliaryDerivativesVector(13) = 0;
+    }
+    else{
+    auxiliaryDerivativesVector(13) = (auxiliaryEquationsVector(24)*auxiliaryDerivativesVector(46)-auxiliaryEquationsVector(46)*auxiliaryDerivativesVector(24))/
+            (auxiliaryEquationsVector(46)*auxiliaryEquationsVector(46)+auxiliaryEquationsVector(24)*auxiliaryEquationsVector(24));                // u13
+
+    };
 
     // If the spacecraft flies over a pole i.e. if +-z=r (or x3=x20) then the change in latitude is undefined and has to be set equal to zero here. This is done to avoid singularities.
 
@@ -780,48 +725,7 @@ public:
 
     auxiliaryDerivativesVector(41) = auxiliaryEquationsVector(36)*auxiliaryDerivativesVector(35)-auxiliaryEquationsVector(35)*auxiliaryDerivativesVector(36);                // u41
 
-    auxiliaryDerivativesVector(48) = auxiliaryDerivativesVector(46)*cos(auxiliaryEquationsVector(12))-auxiliaryEquationsVector(46)*auxiliaryDerivativesVector(12)*sin(auxiliaryEquationsVector(12));                // u47
-
-
 //    auxiliaryDerivativesVector(18) = auxiliaryEquationsVector(20)*auxiliaryDerivativesVector(24)+auxiliaryEquationsVector(24)*auxiliaryEquationsVector(25);                // u18
-
-    // Avoiding singularities
-    if ((auxiliaryEquationsVector(47)*auxiliaryEquationsVector(47)+auxiliaryEquationsVector(24)*auxiliaryEquationsVector(24))==0){
-
-        auxiliaryDerivativesVector(40) = 0;
-
-
-    }
-    else {
-    auxiliaryDerivativesVector(40) = (auxiliaryEquationsVector(24)*auxiliaryDerivativesVector(47)-auxiliaryEquationsVector(47)*auxiliaryDerivativesVector(24))/
-            (auxiliaryEquationsVector(47)*auxiliaryEquationsVector(47)+auxiliaryEquationsVector(24)*auxiliaryEquationsVector(24));                // u40
-
-    };
-
-    /// Debug ///
-/*
-    std::cout<<"x24 = "<<auxiliaryEquationsVector(24)<<std::endl;
-    std::cout<<"u47 = "<<auxiliaryDerivativesVector(47)<<std::endl;
-    std::cout<<"x47 = "<<auxiliaryEquationsVector(47)<<std::endl;
-    std::cout<<"u24 = "<<auxiliaryDerivativesVector(24)<<std::endl;
-*/
-
-
-    // Avoiding singularities
-
-    if ((auxiliaryEquationsVector(48)*auxiliaryEquationsVector(48)+auxiliaryEquationsVector(24)*auxiliaryEquationsVector(24))==0){
-
-        auxiliaryDerivativesVector(13) = 0;
-    }
-    else{
-    auxiliaryDerivativesVector(13) = (auxiliaryEquationsVector(24)*auxiliaryDerivativesVector(48)-auxiliaryEquationsVector(48)*auxiliaryDerivativesVector(24))/
-            (auxiliaryEquationsVector(48)*auxiliaryEquationsVector(48)+auxiliaryEquationsVector(24)*auxiliaryEquationsVector(24));                // u13
-
-    };
-
-
-
-
 
     // If x37 = +-1 then the derivative is undefined (should not happen)
     if (auxiliaryEquationsVector(37)==1 || auxiliaryEquationsVector(37)==-1){
@@ -933,7 +837,7 @@ public:
 Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d& aState, const double time, const Eigen::Vector3d& thrustAccelerationsBframe, const Eigen::VectorXd& auxiliaryEquationsVector,
                                          const Eigen::VectorXd& auxiliaryDerivativesVector){
 
-    auxiliaryFunctionsMatrix = Eigen::MatrixXd::Zero(49,25);       // Setting the complete matrix and filling it with zeros for now
+    auxiliaryFunctionsMatrix = Eigen::MatrixXd::Zero(47,25);       // Setting the complete matrix and filling it with zeros for now
 
     // The following expressions are described in the order in which the equations have to be computed corresponding to the respective vector entry
     // Which in this case means that the not all positions in the matrix will be used. The other values will simply be 0.
@@ -1032,15 +936,15 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(12,6) = auxiliaryEquationsVector(8)*auxiliaryFunctionsMatrix(12,5);
 
 
-// /*
+ /*
     std::cout<<"x8 = "<<auxiliaryEquationsVector(8)<<std::endl;
     std::cout<<"w12,5 = "<<auxiliaryFunctionsMatrix(12,5)<<std::endl;
-    std::cout<<"x8-11528741.16 = "<<auxiliaryEquationsVector(8)-11528741.16<<std::endl;
+    std::cout<<"x8-11528741160000 = "<<auxiliaryEquationsVector(8)-11528741160000<<std::endl;
     std::cout<<"w12,5-0.933580426497202 = "<<auxiliaryFunctionsMatrix(12,5)-0.933580426497202<<std::endl;
 
     std::cout<<"w12,6 = "<<auxiliaryFunctionsMatrix(12,6)<<std::endl;
-    std::cout<<"w12,6-10763007.0891286 = "<<auxiliaryFunctionsMatrix(12,6)-10763007.0891286<<std::endl;
-//*/
+    std::cout<<"w12,6-10763007089128 = "<<auxiliaryFunctionsMatrix(12,6)-10763007089128<<std::endl;
+*/
 
     // Avoiding singularities
     if (auxiliaryFunctionsMatrix(12,6) == 0){
@@ -1071,9 +975,9 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
 */
 
     // w13
-    auxiliaryFunctionsMatrix(13,1) = auxiliaryEquationsVector(24)*auxiliaryDerivativesVector(48);
-    auxiliaryFunctionsMatrix(13,2) = auxiliaryEquationsVector(48)*auxiliaryDerivativesVector(24);
-    auxiliaryFunctionsMatrix(13,3) = auxiliaryEquationsVector(48)*auxiliaryEquationsVector(48);
+    auxiliaryFunctionsMatrix(13,1) = auxiliaryEquationsVector(24)*auxiliaryDerivativesVector(46);
+    auxiliaryFunctionsMatrix(13,2) = auxiliaryEquationsVector(46)*auxiliaryDerivativesVector(24);
+    auxiliaryFunctionsMatrix(13,3) = auxiliaryEquationsVector(46)*auxiliaryEquationsVector(46);
     auxiliaryFunctionsMatrix(13,4) = auxiliaryEquationsVector(24)*auxiliaryEquationsVector(24);
 
     // Avoiding singularities
@@ -1376,8 +1280,7 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
 
     // w35
     auxiliaryFunctionsMatrix(35,1) = auxiliaryFunctionsMatrix(4,6)*auxiliaryEquationsVector(25);
-    auxiliaryFunctionsMatrix(35,2) = auxiliaryFunctionsMatrix(4,4)*auxiliaryEquationsVector(24);
-    auxiliaryFunctionsMatrix(35,3) = auxiliaryFunctionsMatrix(35,2)*auxiliaryEquationsVector(12);
+    auxiliaryFunctionsMatrix(35,2) = auxiliaryFunctionsMatrix(4,4)*auxiliaryEquationsVector(18);
 
 
 
@@ -1441,18 +1344,18 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
 */
 
     // w40
-    auxiliaryFunctionsMatrix(40,1) = auxiliaryEquationsVector(24)*auxiliaryDerivativesVector(47);
-    auxiliaryFunctionsMatrix(40,2) = auxiliaryEquationsVector(47)*auxiliaryDerivativesVector(24);
-    auxiliaryFunctionsMatrix(40,3) = auxiliaryEquationsVector(47)*auxiliaryEquationsVector(47);
-
+    auxiliaryFunctionsMatrix(40,1) = auxiliaryEquationsVector(24)*auxiliaryDerivativesVector(45);
+    auxiliaryFunctionsMatrix(40,2) = auxiliaryEquationsVector(45)*auxiliaryDerivativesVector(24);
+    auxiliaryFunctionsMatrix(40,3) = auxiliaryEquationsVector(45)*auxiliaryEquationsVector(45);
+    auxiliaryFunctionsMatrix(40,4) = auxiliaryEquationsVector(24)*auxiliaryEquationsVector(24);
 
     // Avoiding singularities
     if (auxiliaryFunctionsMatrix(40,3)+auxiliaryFunctionsMatrix(40,4) == 0){
 
-        auxiliaryFunctionsMatrix(40,4) = 0;
+        auxiliaryFunctionsMatrix(40,5) = 0;
     }
     else {
-    auxiliaryFunctionsMatrix(40,4) = (auxiliaryFunctionsMatrix(40,1)-auxiliaryFunctionsMatrix(40,2))/(auxiliaryFunctionsMatrix(40,3)+auxiliaryFunctionsMatrix(13,4));
+    auxiliaryFunctionsMatrix(40,5) = (auxiliaryFunctionsMatrix(40,1)-auxiliaryFunctionsMatrix(40,2))/(auxiliaryFunctionsMatrix(40,3)+auxiliaryFunctionsMatrix(40,4));
 };
 
 
@@ -1510,16 +1413,10 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(45,8) = (auxiliaryFunctionsMatrix(45,6)-auxiliaryFunctionsMatrix(45,7))/auxiliaryFunctionsMatrix(45,5);
 };
 
-    // w47
-    auxiliaryFunctionsMatrix(47,1) =  auxiliaryDerivativesVector(45)*auxiliaryFunctionsMatrix(4,6);
-    auxiliaryFunctionsMatrix(47,2) =  auxiliaryDerivativesVector(12)*auxiliaryFunctionsMatrix(4,4);
-    auxiliaryFunctionsMatrix(47,3) =  auxiliaryEquationsVector(45)*auxiliaryFunctionsMatrix(47,2);
-
-    // w48
-    auxiliaryFunctionsMatrix(48,1) =  auxiliaryDerivativesVector(46)*auxiliaryFunctionsMatrix(4,6);
-    auxiliaryFunctionsMatrix(48,2) =  auxiliaryEquationsVector(46)*auxiliaryFunctionsMatrix(47,2);
 
 
+    // w46
+    auxiliaryFunctionsMatrix(46,1) = auxiliaryFunctionsMatrix(4,4)*auxiliaryEquationsVector(24);
 
 
 // auxiliaryFunctionsMatrix(,)

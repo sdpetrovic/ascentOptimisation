@@ -152,17 +152,11 @@ const static double STEFAN_BOLTZMANN_CONSTANT = 2.0 *
         ( 15.0 * SPEED_OF_LIGHT * SPEED_OF_LIGHT *
           PLANCK_CONSTANT * PLANCK_CONSTANT * PLANCK_CONSTANT );
 
-////! Standard gravitational acceleration at Earth sea-level (g0).
-///*!
-// * The standard gravitational acceleration at Earth sea-level (g0) in  m / ( s^{2}  ), (NIST, 2013).
-// */
-//const static double STANDARD_EARTH_GRAVITATIONAL_ACCELERATION = 9.80665;
-
 //! Standard gravitational acceleration at Earth sea-level (g0).
 /*!
- * The standard gravitational acceleration at Earth sea-level (g0) in  km / ( s^{2}  ), (NIST, 2013).
+ * The standard gravitational acceleration at Earth sea-level (g0) in  m / ( s^{2}  ), (NIST, 2013).
  */
-const static double STANDARD_EARTH_GRAVITATIONAL_ACCELERATION = 9.80665e-3;
+const static double STANDARD_EARTH_GRAVITATIONAL_ACCELERATION = 9.80665;
 
 } // namespace physical_constants
 
