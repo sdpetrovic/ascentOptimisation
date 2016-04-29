@@ -180,6 +180,7 @@ endif( )
 set(PROJECTLIBRARIES_SOURCES
 #  "${SRCROOT}${PROJECTLIBRARIESDIR}/basicRecurrenceRelations.cpp"
     "${SRCROOT}/projectLibraries/basicRecurrenceRelations.cpp"
+    "${SRCROOT}/projectLibraries/allRecurrenceRelations.cpp"
 #    "${SRCROOT}/projectLibraries/referenceFrameTransformationsUpdated.cpp"  # Does not quite work yet, so leaving it out for now
 )
 
@@ -187,6 +188,7 @@ set(PROJECTLIBRARIES_SOURCES
 set(PROJECTLIBRARIES_HEADERS
 #  "${SRCROOT}${PROJECTLIBRARIESDIR}/basicRecurrenceRelations.h"
     "${SRCROOT}/projectLibraries/basicRecurrenceRelations.h"
+    "${SRCROOT}/projectLibraries/allRecurrenceRelations.h"
 #    "${SRCROOT}/projectLibraries/referenceFrameTransformationsUpdated.h"   # Does not quite work yet, so leaving it out for now
 )
 
