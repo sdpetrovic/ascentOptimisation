@@ -1032,7 +1032,7 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(12,6) = auxiliaryEquationsVector(8)*auxiliaryFunctionsMatrix(12,5);
 
 
-// /*
+ /*
     std::cout<<"x8 = "<<auxiliaryEquationsVector(8)<<std::endl;
     std::cout<<"w12,5 = "<<auxiliaryFunctionsMatrix(12,5)<<std::endl;
     std::cout<<"x8-11528741.16 = "<<auxiliaryEquationsVector(8)-11528741.16<<std::endl;

@@ -32,57 +32,96 @@
  *
  */
 
-#include "basicRecurrenceRelations.h"
+#ifndef BASICRECURRENCERELATIONS_H
+#define BASICRECURRENCERELATIONS_H
 
-//basicRecurrenceRelations::basicRecurrenceRelations()
+#include <iostream>
+#include <iomanip>
+#include <cmath>
+#include <Eigen/Core>
+
+//class basicRecurrenceRelations
 //{
+//public:
+//    basicRecurrenceRelations();
+//};
 
-//}
+
+
+////// Declare functions ///////
 
 /// Multiplication ///
+/// \brief getMultiplicationRecurrenceRelation
+/// \param F
+/// \param G
+/// \return
+///
+///
 double getMultiplicationRecurrenceRelation(
        const Eigen::VectorXd& F,
-       const Eigen::VectorXd& G){
-
-}
+       const Eigen::VectorXd& G);
 
 
 /// Division ///
+/// \brief getDivisionRecurrenceRelation
+/// \param F
+/// \param G
+/// \param Wdiv
+/// \return
+///
 double getDivisionRecurrenceRelation(
         const Eigen::VectorXd& F,
         const Eigen::VectorXd& G,
-        const Eigen::VectorXd& Wdiv){
-
-}
+        const Eigen::VectorXd& Wdiv);
 
 
 /// Power ///
+/// \brief getPowerRecurrenceRelation
+/// \param F
+/// \param Wpow
+/// \param power
+/// \return
+///
 double getPowerRecurrenceRelation(
         const Eigen::VectorXd& F,
-        const Eigen::VectorXd& Wpow){
-
-}
+        const Eigen::VectorXd& Wpow,
+        const double power);
 
 
 /// Exponential ///
+/// \brief getExponentialRecurrenceRelation
+/// \param F
+/// \param Wexp
+/// \return
+///
 double getExponentialRecurrenceRelation(
         const Eigen::VectorXd& F,
-        const Eigen::VectorXd& Wexp){
-
-}
+        const Eigen::VectorXd& Wexp);
 
 
 /// Cosine ///
+/// \brief getCosineRecurrenceRelation
+/// \param F
+/// \param Wsin
+/// \return
+///
 double getCosineRecurrenceRelation(
         const Eigen::VectorXd& F,
-        const Eigen::VectorXd& Wsin){
-
-}
+        const Eigen::VectorXd& Wsin);
 
 
 /// Sine ///
+/// \brief getSineRecurrenceRelation
+/// \param F
+/// \param Wcos
+/// \return
+///
 double getSineRecurrenceRelation(
         const Eigen::VectorXd& F,
-        const Eigen::VectorXd& Wcos){
+        const Eigen::VectorXd& Wcos);
 
-}
+
+
+
+
+#endif // BASICRECURRENCERELATIONS_H

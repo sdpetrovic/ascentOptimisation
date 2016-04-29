@@ -24,7 +24,7 @@
  *
  *    Changelog
  *      YYMMDD    Author            Comment
- *      160411    S.D. Petrovic     File created
+ *      160427    S.D. Petrovic     File created
  *
  *    References
  *
@@ -79,6 +79,11 @@
 
 /// Testing the auxiliary equations ///
 #include <thesisProject/Auxiliary.h>                // Original test file
+
+
+/// Testing the basic recurrence relations ///
+#include <thesisProject/projectLibraries/basicRecurrenceRelations.h>               // Original test file
+
 
 // testing
 
@@ -587,49 +592,214 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     Eigen::MatrixXd auxiliaryFunctions = Aux.getAuxiliaryFunctions(aState,currentTime,thrustAccelerationsBframe,auxiliaryEquations,auxiliaryDerivatives);
 
 ///*
-    std::cout<<"The auxiliaryEquations are "<<auxiliaryEquations<<std::endl;
+//    std::cout<<"The auxiliaryEquations are "<<auxiliaryEquations<<std::endl;
 //    std::cout<<"The auxiliaryDerivatives are "<<auxiliaryDerivatives<<std::endl;
 //    std::cout<<"The auxiliaryFunctions are "<<auxiliaryFunctions<<std::endl;
 //*/
 
-/*
-    std::cout<<"The computed initial latitude is "<<auxiliaryEquations(12)<<std::endl;
-    std::cout<<"The original initial latitude is "<<initialLatitude<<std::endl;
-    std::cout<<"The computed initial latitude in deg is "<<rad2deg(auxiliaryEquations(12))<<std::endl;
-    std::cout<<"The difference in rad is "<<initialLatitude-auxiliaryEquations(12)<<std::endl;
-    std::cout<<"The difference in deg is "<<initialLatitudeDeg-rad2deg(auxiliaryEquations(12))<<std::endl;
- */
-/*
-    std::cout<<"Difference in radius = "<<initialRadius-auxiliaryEquations(20)<<std::endl;
-    std::cout<<"initialRadius minus computed initial position inertial = "<<initialRadius-sqrt(aState(0)*aState(0)+aState(1)*aState(1)+aState(2)*aState(2))<<std::endl;
-    std::cout<<"initialRadius minus computed initial position rotational = "<<initialRadius-sqrt(initialCartesianPositionRotationalFrame(0)*initialCartesianPositionRotationalFrame(0)+
-                                                                                                 initialCartesianPositionRotationalFrame(1)*initialCartesianPositionRotationalFrame(1)+
-                                                                                                 initialCartesianPositionRotationalFrame(2)*initialCartesianPositionRotationalFrame(2))<<std::endl;
-*/
+//    std::cout<<"This should be the size of the vector = "<<auxiliaryEquations.size()<<std::endl;
 
-/*
-    /// Debug ///
+    /*
+        std::cout<<"The computed initial latitude is "<<auxiliaryEquations(12)<<std::endl;
+        std::cout<<"The original initial latitude is "<<initialLatitude<<std::endl;
+        std::cout<<"The computed initial latitude in deg is "<<rad2deg(auxiliaryEquations(12))<<std::endl;
+        std::cout<<"The difference in rad is "<<initialLatitude-auxiliaryEquations(12)<<std::endl;
+        std::cout<<"The difference in deg is "<<initialLatitudeDeg-rad2deg(auxiliaryEquations(12))<<std::endl;
+     */
+    /*
+        std::cout<<"Difference in radius = "<<initialRadius-auxiliaryEquations(20)<<std::endl;
+        std::cout<<"initialRadius minus computed initial position inertial = "<<initialRadius-sqrt(aState(0)*aState(0)+aState(1)*aState(1)+aState(2)*aState(2))<<std::endl;
+        std::cout<<"initialRadius minus computed initial position rotational = "<<initialRadius-sqrt(initialCartesianPositionRotationalFrame(0)*initialCartesianPositionRotationalFrame(0)+
+                                                                                                     initialCartesianPositionRotationalFrame(1)*initialCartesianPositionRotationalFrame(1)+
+                                                                                                     initialCartesianPositionRotationalFrame(2)*initialCartesianPositionRotationalFrame(2))<<std::endl;
+    */
 
-    std::cout<<"w24,1 = "<<auxiliaryFunctions(24,1)<<std::endl;
-    std::cout<<"w24,2 = "<<auxiliaryFunctions(24,2)<<std::endl;
-    std::cout<<"w24,3 = "<<auxiliaryFunctions(24,3)<<std::endl;
-    std::cout<<"w24,4 = "<<auxiliaryFunctions(24,4)<<std::endl;
-    std::cout<<"w24,5 = "<<auxiliaryFunctions(24,5)<<std::endl;
-    std::cout<<"w24,6 = "<<auxiliaryFunctions(24,6)<<std::endl;
-    std::cout<<"w24,7 = "<<auxiliaryFunctions(24,7)<<std::endl;
-    std::cout<<"w24,8 = "<<auxiliaryFunctions(24,8)<<std::endl;
-    std::cout<<"w24,9 = "<<auxiliaryFunctions(24,9)<<std::endl;
-    std::cout<<"w24,10 = "<<auxiliaryFunctions(24,10)<<std::endl;
-    std::cout<<"w24,11 = "<<auxiliaryFunctions(24,11)<<std::endl;
-    std::cout<<"w24,12 = "<<auxiliaryFunctions(24,12)<<std::endl;
-    std::cout<<"w24,13 = "<<auxiliaryFunctions(24,13)<<std::endl;
-    std::cout<<"w24,14 = "<<auxiliaryFunctions(24,14)<<std::endl;
-    std::cout<<"w24,15 = "<<auxiliaryFunctions(24,15)<<std::endl;
-    std::cout<<"w24,16 = "<<auxiliaryFunctions(24,16)<<std::endl;
-    std::cout<<"w24,17 = "<<auxiliaryFunctions(24,17)<<std::endl;
+    /*
+        /// Debug ///
 
-*/
+        std::cout<<"w24,1 = "<<auxiliaryFunctions(24,1)<<std::endl;
+        std::cout<<"w24,2 = "<<auxiliaryFunctions(24,2)<<std::endl;
+        std::cout<<"w24,3 = "<<auxiliaryFunctions(24,3)<<std::endl;
+        std::cout<<"w24,4 = "<<auxiliaryFunctions(24,4)<<std::endl;
+        std::cout<<"w24,5 = "<<auxiliaryFunctions(24,5)<<std::endl;
+        std::cout<<"w24,6 = "<<auxiliaryFunctions(24,6)<<std::endl;
+        std::cout<<"w24,7 = "<<auxiliaryFunctions(24,7)<<std::endl;
+        std::cout<<"w24,8 = "<<auxiliaryFunctions(24,8)<<std::endl;
+        std::cout<<"w24,9 = "<<auxiliaryFunctions(24,9)<<std::endl;
+        std::cout<<"w24,10 = "<<auxiliaryFunctions(24,10)<<std::endl;
+        std::cout<<"w24,11 = "<<auxiliaryFunctions(24,11)<<std::endl;
+        std::cout<<"w24,12 = "<<auxiliaryFunctions(24,12)<<std::endl;
+        std::cout<<"w24,13 = "<<auxiliaryFunctions(24,13)<<std::endl;
+        std::cout<<"w24,14 = "<<auxiliaryFunctions(24,14)<<std::endl;
+        std::cout<<"w24,15 = "<<auxiliaryFunctions(24,15)<<std::endl;
+        std::cout<<"w24,16 = "<<auxiliaryFunctions(24,16)<<std::endl;
+        std::cout<<"w24,17 = "<<auxiliaryFunctions(24,17)<<std::endl;
+
+    */
+
+
+
+
+    //// Testing the basic recurrence relations ////
+
+
+    Eigen::VectorXd F = Eigen::VectorXd::Zero(4);
+    Eigen::VectorXd G = Eigen::VectorXd::Zero(4);
+
+    int count = 0;
+
+    for (int i = 0; i < F.size(); i++){
+
+        F(i) = 1+i;
+        G(i) = 2+i;
+
+//        std::cout<<" F = "<<F<<std::endl;
+//        std::cout<<" G = "<<G<<std::endl;
+
+        count++;
+
+//                std::cout<<"Count = "<<count<<std::endl;
+    };
+
+
+    /// Multiplication ///
+    double Wmult = getMultiplicationRecurrenceRelation(F,G);
+
+
+    std::cout<<"F test vector = "<<F<<std::endl;
+    std::cout<<"G test vector = "<<G<<std::endl;
+    std::cout<<"Wmult test value = "<<Wmult<<std::endl;
+
+
+
+
+    /// Division ///
+    Eigen::VectorXd WdivVector(1);              // Initialising the 0th order solution and vector
+
+    WdivVector <<  F(0)/G(0);
+
+//    std::cout<<"WdivVector = "<<WdivVector<<std::endl;
+
+
+
+    for (int i=1; i<4; i++){
+
+        double Wdiv = getDivisionRecurrenceRelation(F.segment(0,i+1),G.segment(0,i+1),WdivVector);      // Calling the recurrence relation using the first i+1 values for F and G and the vector of output data
+
+//        std::cout<<"F.segment(0,"<<i+1<<") = "<<F.segment(0,i+1)<<std::endl;
+//        std::cout<<"G.segment(0,"<<i+1<<") = "<<G.segment(0,i+1)<<std::endl;
+//        std::cout<<"WdivVector = "<<WdivVector<<std::endl;
+
+        Eigen::VectorXd intVect(i+1);               // Creating a bigger vector
+
+        intVect << WdivVector.segment(0,i), Wdiv;       // Filling that bigger vector
+
+        WdivVector = intVect;                       // Updating the output vector
+
+//        std::cout<<"The output for WdivVector = "<<WdivVector<<std::endl;
+
+    };
+
+    std::cout<<"The output for WdivVector = "<<WdivVector<<std::endl;
+
+    /// Power ///
+    Eigen::VectorXd WpowVector(1);              // Initialising the 0th order solution and vector
+
+    WpowVector <<  F(0)*F(0);                   // Perform the initial calculation (is already known through the w values)
+
+    const double power = 2;                     // Set the power
+
+
+
+    for (int i=1; i<4; i++){
+
+        double Wpow = getPowerRecurrenceRelation(F.segment(0,i+1),WpowVector,power);      // Calling the recurrence relation using the first i+1 values for F and the vector of output data
+
+
+
+        Eigen::VectorXd intVect(i+1);               // Creating a bigger vector
+
+        intVect << WpowVector.segment(0,i), Wpow;       // Filling that bigger vector
+
+        WpowVector = intVect;                       // Updating the output vector
+
+
+    };
+
+    std::cout<<"The output for WpowVector = "<<WpowVector<<std::endl;
+
+
+    /// Exponential ///
+    Eigen::VectorXd WexpVector(1);              // Initialising the 0th order solution and vector
+
+    WexpVector <<  exp(F(0));                   // Perform the initial calculation (is already known through the w values)
+
+
+
+    for (int i=1; i<4; i++){
+
+        double Wexp = getExponentialRecurrenceRelation(F.segment(0,i+1),WexpVector);      // Calling the recurrence relation using the first i+1 values for F and the vector of output data
+
+
+
+        Eigen::VectorXd intVect(i+1);               // Creating a bigger vector
+
+        intVect << WexpVector.segment(0,i), Wexp;       // Filling that bigger vector
+
+        WexpVector = intVect;                       // Updating the output vector
+
+
+    };
+
+    std::cout<<"The output for WexpVector = "<<WexpVector<<std::endl;
+
+
+
+
+
+
+
+    /// Sine and Cosine ///
+
+//             const double& pi = tudat::mathematical_constants::LONG_PI;
+
+
+//            Eigen::VectorXd H(4);           // Creating a new testing vector with radians
+//            H << pi/6, pi/3, pi/2, pi;      // Update: that didn't really help actually...
+
+//            std::cout<<"H = "<<H<<std::endl;
+
+    Eigen::VectorXd WcosVector(1);              // Initialising the 0th order solution and vector
+    Eigen::VectorXd WsinVector(1);
+
+
+    WcosVector <<  cos(F(0));                   // Perform the initial calculation (is already known through the w values)
+    WsinVector <<  sin(F(0));
+
+
+    for (int i=1; i<4; i++){
+
+        double Wcos = getCosineRecurrenceRelation(F.segment(0,i+1),WsinVector);      // Calling the recurrence relation using the first i+1 values for F and the vector of output data
+        double Wsin = getSineRecurrenceRelation(F.segment(0,i+1),WcosVector);
+
+
+        Eigen::VectorXd intVectCos(i+1);               // Creating a bigger vector
+        Eigen::VectorXd intVectSin(i+1);
+
+        intVectCos << WcosVector.segment(0,i), Wcos;       // Filling that bigger vector
+        intVectSin << WsinVector.segment(0,i), Wsin;
+
+        WcosVector = intVectCos;                       // Updating the output vector
+        WsinVector = intVectSin;
+
+
+    };
+
+    std::cout<<"The output for WcosVector = "<<WcosVector<<std::endl;
+    std::cout<<"The output for WsinVector = "<<WsinVector<<std::endl;
 
 
     return 0;
 }
+
+

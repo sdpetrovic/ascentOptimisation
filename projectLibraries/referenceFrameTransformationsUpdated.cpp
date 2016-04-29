@@ -54,7 +54,7 @@
 
 #include "Tudat/Mathematics/BasicMathematics/mathematicalConstants.h"
 
-#include "tudatApplications/thesisProject/referenceFrameTransformationsUpdated.h"
+#include "referenceFrameTransformationsUpdated.h"
 
 //namespace tudat
 //{

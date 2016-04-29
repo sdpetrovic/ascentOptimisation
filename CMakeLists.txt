@@ -1,4 +1,4 @@
- #    Copyright (c) 2010-2013, Delft University of Technology
+ #    Copyright (c) 2010-2016, Delft University of Technology
  #    All rights reserved.
  #
  #    Redistribution and use in source and binary forms, with or without modification, are
@@ -39,6 +39,8 @@
  #                                  generation; removed -O3 flag since it is set by "Release"
  #                                  build type if selected; updated install steps; re-organized
  #                                  file to isolate user-specified section.
+ #      160401   S.D. Petrovic      Estimate of when file was created
+ #      160428   S.D. Petrovic      Added own libraries to include self made header and source files without it being a class
  #
  #    References
  #
@@ -170,6 +172,30 @@ else( )
 endif( )
 
 
+
+############ Own additions #############
+
+
+# Add source files.
+set(PROJECTLIBRARIES_SOURCES
+#  "${SRCROOT}${PROJECTLIBRARIESDIR}/basicRecurrenceRelations.cpp"
+    "${SRCROOT}/projectLibraries/basicRecurrenceRelations.cpp"
+#    "${SRCROOT}/projectLibraries/referenceFrameTransformationsUpdated.cpp"  # Does not quite work yet, so leaving it out for now
+)
+
+# Add header files.
+set(PROJECTLIBRARIES_HEADERS
+#  "${SRCROOT}${PROJECTLIBRARIESDIR}/basicRecurrenceRelations.h"
+    "${SRCROOT}/projectLibraries/basicRecurrenceRelations.h"
+#    "${SRCROOT}/projectLibraries/referenceFrameTransformationsUpdated.h"   # Does not quite work yet, so leaving it out for now
+)
+
+## Include the directory to the binary tree
+#include_directories("${SRCROOT}${PROJECTLIBRARIESDIR}")
+
+# Add static libraries
+add_library(project_libraries STATIC ${PROJECTLIBRARIES_SOURCES} ${PROJECTLIBRARIES_HEADERS})
+
 # Add application.
 add_executable(simple_verification_testMainFileClasses "${SRCROOT}/testMainFileClasses.cpp")
 setup_executable_target(simple_verification_testMainFileClasses "${SRCROOT}")
@@ -177,7 +203,7 @@ target_link_libraries(simple_verification_testMainFileClasses tudat_gravitation 
 
 add_executable(simple_verification_testMainFileClassesAndHeaderAndSource "${SRCROOT}/testMainFileClassesAndHeaderAndSource.cpp")
 setup_executable_target(simple_verification_testMainFileClassesAndHeaderAndSource "${SRCROOT}")
-target_link_libraries(simple_verification_testMainFileClassesAndHeaderAndSource tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
+target_link_libraries(simple_verification_testMainFileClassesAndHeaderAndSource project_libraries tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
 
 
 
