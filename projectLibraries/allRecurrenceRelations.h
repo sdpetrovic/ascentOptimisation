@@ -41,8 +41,8 @@
 #include <cmath>
 #include <Eigen/Core>
 
-#include <tudatApplications/thesisProject/projectLibraries/allRecurrenceRelations.h>  // Not sure if such a long path is needed, but just in case
-#include <tudatApplications/thesisProject/physicalConstantsUpdated.h>
+#include "tudatApplications/thesisProject/projectLibraries/allRecurrenceRelations.h"  // Not sure if such a long path is needed, but just in case
+
 
 
 /// Main function ///
@@ -71,7 +71,7 @@ Eigen::MatrixXd getTaylorCoefficients(
 
 /// Declare the auxiliary Equation vectors/matrix ///
 
-Eigen::MatrixXd XMatrix;
+//Eigen::MatrixXd XMatrix;
 
 
 /*
@@ -133,7 +133,7 @@ Eigen::VectorXd XVector48 = Eigen::VectorXd::Zero(maxOrder);     // X48
 
 /// Declare the auxiliary Derivative vectors/matrix ///
 
-Eigen::MatrixXd UMatrix;
+//Eigen::MatrixXd UMatrix;
 
 /*
 Eigen::VectorXd UVector1 = Eigen::VectorXd::Zero(maxOrder);     // X1
@@ -193,7 +193,7 @@ Eigen::VectorXd UVector48 = Eigen::VectorXd::Zero(maxOrder);     // X48
 
 /// Declare the auxiliary Function vectors ///
 
-
+/*
 Eigen::VectorXd WVector4_1;     // W4,1
 Eigen::VectorXd WVector4_2;     // W4,2
 Eigen::VectorXd WVector4_3;     // W4,3
@@ -416,6 +416,8 @@ Eigen::VectorXd WVector47_3;     // W47,3
 
 Eigen::VectorXd WVector48_1;     // W48,1
 Eigen::VectorXd WVector48_2;     // W48,2
+
+//*/
 
 /*
 Eigen::VectorXd WVector4_1 = Eigen::VectorXd::Zero(maxOrder);     // W4,1
@@ -644,8 +646,21 @@ Eigen::VectorXd WVector48_2 = Eigen::VectorXd::Zero(maxOrder);     // W48,2
 
 /// Declare the return matrix for x1 till x7 ///
 
-Eigen::MatrixXd stateTaylorCoefficients;
+//Eigen::MatrixXd stateTaylorCoefficients;
 
+/// Extra declarations ///
+
+//int sectionCD;                  // The CD section required
+
+//Eigen::VectorXd W9IntermediateVector;   // Intermediate vector created to be able to use the basic recurrence relations (should have done this from the start...)
+
+//Eigen::VectorXd onesVector;     // Vector containing ones where needed
+
+                                // Extra polynomial coefficient vectors for addition of vectors
+//Eigen::VectorXd densityPolyCoefficient_1;
+//Eigen::VectorXd temperaturePolyCoefficient_1_2;
+//Eigen::VectorXd temperaturePolyCoefficient_1_3;
+//Eigen::VectorXd temperaturePolyCoefficient_1_4;
 
 
 

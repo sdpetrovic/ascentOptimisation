@@ -645,7 +645,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     //// Testing the basic recurrence relations ////
 
-
+/*
     Eigen::VectorXd F = Eigen::VectorXd::Zero(4);
     Eigen::VectorXd G = Eigen::VectorXd::Zero(4);
 
@@ -800,6 +800,28 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     std::cout<<"The output for WcosVector = "<<WcosVector<<std::endl;
     std::cout<<"The output for WsinVector = "<<WsinVector<<std::endl;
+
+    //*/
+
+    /// Testing all the recurrence relations ///
+
+    const int maxOrder = 20;
+///*
+    Eigen::MatrixXd TaylorCoefficients = getTaylorCoefficients(adiabeticIndex, specificGasConstant, standardGravitationalParameter, rotationalVelocity, primeMeridianAngle,
+                          inertialFrameTime, bodyReferenceRadius,temperaturePolyCoefficients, temperatureAltitudeRanges,
+                          densityPolyCoefficients, Thrust, specificImpulse,
+                          referenceArea, dragCoefficientPolyCoefficients, dragCoefficientMachRanges,
+            thrustAccelerationsBframe,
+            auxiliaryEquations,
+            auxiliaryDerivatives,
+            auxiliaryFunctions,
+            currentTime,
+            maxOrder);
+/*
+        std::cout<<"The Taylor Coefficients are: "<<TaylorCoefficients<<std::endl;
+
+//*/
+
 
 
     return 0;

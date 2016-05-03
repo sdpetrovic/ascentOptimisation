@@ -1217,7 +1217,7 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(24,8) = auxiliaryFunctionsMatrix(8,3)/auxiliaryEquationsVector(8);
     auxiliaryFunctionsMatrix(24,9) = auxiliaryFunctionsMatrix(24,6)/auxiliaryFunctionsMatrix(24,7);
     auxiliaryFunctionsMatrix(24,10) = (2*auxiliaryFunctionsMatrix(24,9)-2*auxiliaryFunctionsMatrix(24,8))*(auxiliaryFunctionsMatrix(12,1)-auxiliaryFunctionsMatrix(12,2));
-    auxiliaryFunctionsMatrix(24,11) = auxiliaryDerivativesVector(8)*(auxiliaryFunctionsMatrix(12,1)*auxiliaryFunctionsMatrix(12,2));
+    auxiliaryFunctionsMatrix(24,11) = auxiliaryDerivativesVector(8)*(auxiliaryFunctionsMatrix(12,1)-auxiliaryFunctionsMatrix(12,2));
     auxiliaryFunctionsMatrix(24,12) = pow((1-auxiliaryFunctionsMatrix(12,4)),1.5);
     auxiliaryFunctionsMatrix(24,13) = auxiliaryEquationsVector(8)*auxiliaryEquationsVector(8);
     auxiliaryFunctionsMatrix(24,14) = auxiliaryEquationsVector(8)*auxiliaryFunctionsMatrix(24,12);
