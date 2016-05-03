@@ -948,7 +948,7 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(4,6) = cos(auxiliaryEquationsVector(12));
     auxiliaryFunctionsMatrix(4,7) = sin(auxiliaryEquationsVector(14));
     auxiliaryFunctionsMatrix(4,8) = sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11));
-    auxiliaryFunctionsMatrix(4,9) = sin(auxiliaryEquationsVector(10));
+    auxiliaryFunctionsMatrix(4,9) = sin(auxiliaryEquationsVector(13));
     auxiliaryFunctionsMatrix(4,10) = auxiliaryFunctionsMatrix(4,4)*auxiliaryFunctionsMatrix(4,5);
     auxiliaryFunctionsMatrix(4,11) = auxiliaryFunctionsMatrix(4,6)*auxiliaryFunctionsMatrix(4,7);
     auxiliaryFunctionsMatrix(4,12) = auxiliaryFunctionsMatrix(4,9)*auxiliaryEquationsVector(16);

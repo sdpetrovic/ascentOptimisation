@@ -42,11 +42,12 @@
 /// Multiplication ///
 double getMultiplicationRecurrenceRelation(
        const Eigen::VectorXd& F,
-       const Eigen::VectorXd& G){
+       const Eigen::VectorXd& G,
+        const int order){
 
     double Wmult_ = 0;                   // Setting the output to zero initially (just in case)
 
-const int order = F.size()-1;           // Determining the order of the computation, which is the length of the F vector minus one (because the first entry corresponds to the 0th order, etc.)
+//const int order = F.size()-1;           // Determining the order of the computation, which is the length of the F vector minus one (because the first entry corresponds to the 0th order, etc.)
 
 
 // Computing the recurrence value
@@ -67,21 +68,30 @@ for (int j=0; j < order+1; j++){                    // It goes till the order (t
 double getDivisionRecurrenceRelation(
         const Eigen::VectorXd& F,
         const Eigen::VectorXd& G,
-        const Eigen::VectorXd& Wdiv){               // Please note that the previous outcomes should be known
+        const Eigen::VectorXd& Wdiv,
+        const int order){               // Please note that the previous outcomes should be known
 
     double Wdiv_ = 0;               // Setting the outcome to zero to avoid previous answers that might be stored somewhere for some reason
     double interSum = 0;           // Defining an intermediate outcome for the summation
 
+    // Avoid singularities
 
-    const int order = F.size()-1;               // Determine the current order
+    if (G(0) != 0){
 
-    for (int j=1; j<order+1; j++){
+        //    const int order = F.size()-1;               // Determine the current order
 
-    interSum +=G(j)*Wdiv(order-j);              // Perform the summation
+            for (int j=1; j<order+1; j++){
 
-    };
+            interSum +=G(j)*Wdiv(order-j);              // Perform the summation
 
-    Wdiv_ = (1/G(0))*(F(order)-interSum);       // Compute the current value
+            };
+
+            Wdiv_ = (1/G(0))*(F(order)-interSum);       // Compute the current value
+
+    }
+
+
+
 
     return Wdiv_;
 
@@ -92,20 +102,29 @@ double getDivisionRecurrenceRelation(
 double getPowerRecurrenceRelation(
         const Eigen::VectorXd& F,
         const Eigen::VectorXd& Wpow,
-        const double power){
+        const double power,
+        const int order){
 
 
     double Wpow_ = 0;               // Setting the outcome to zero to avoid previous answers that might be stored somewhere for some reason
     double interSum = 0;            // Defining an intermediate outcome for the summation
 
-    const int order = F.size()-1;                   // Determine the current order
 
-    for (int j=0; j<order; j++){
+    // Avoid singularities (only compute if the denominator
 
-        interSum += (order*power-j*(power+1))*F(order-j)*Wpow(j);    // Perform the summation
-    };
+    if (F(0) != 0){
 
-    Wpow_ = interSum/(order*F(0));          // Compute the current value
+        //    const int order = F.size()-1;                   // Determine the current order
+
+            for (int j=0; j<order; j++){
+
+                interSum += (order*power-j*(power+1))*F(order-j)*Wpow(j);    // Perform the summation
+            };
+
+            Wpow_ = interSum/(order*F(0));          // Compute the current value
+    }
+
+
 
     return Wpow_;
 }
@@ -114,12 +133,13 @@ double getPowerRecurrenceRelation(
 /// Exponential ///
 double getExponentialRecurrenceRelation(
         const Eigen::VectorXd& F,
-        const Eigen::VectorXd& Wexp){
+        const Eigen::VectorXd& Wexp,
+        const int order){
 
     double Wexp_ = 0;               // Setting the outcome to zero to avoid previous answers that might be stored somewhere for some reason
     double interSum = 0;            // Defining an intermediate outcome for the summation
 
-    const int order = F.size()-1;                   // Determine the current order
+//    const int order = F.size()-1;                   // Determine the current order
 
     for (int j=0; j<order; j++){
 
@@ -139,13 +159,14 @@ double getExponentialRecurrenceRelation(
 /// Cosine ///
 double getCosineRecurrenceRelation(
         const Eigen::VectorXd& F,
-        const Eigen::VectorXd& Wsin){
+        const Eigen::VectorXd& Wsin,
+        const int order){
 
 
     double Wcos_ = 0;               // Setting the outcome to zero to avoid previous answers that might be stored somewhere for some reason
     double interSum = 0;            // Defining an intermediate outcome for the summation
 
-    const int order = F.size()-1;                   // Determine the current order
+//    const int order = F.size()-1;                   // Determine the current order
 
     for (int j=1; j<order+1; j++){
 
@@ -163,12 +184,13 @@ double getCosineRecurrenceRelation(
 /// Sine ///
 double getSineRecurrenceRelation(
         const Eigen::VectorXd& F,
-        const Eigen::VectorXd& Wcos){
+        const Eigen::VectorXd& Wcos,
+        const int order){
 
     double Wsin_ = 0;               // Setting the outcome to zero to avoid previous answers that might be stored somewhere for some reason
     double interSum = 0;            // Defining an intermediate outcome for the summation
 
-    const int order = F.size()-1;                   // Determine the current order
+//    const int order = F.size()-1;                   // Determine the current order
 
     for (int j=1; j<order+1; j++){
 

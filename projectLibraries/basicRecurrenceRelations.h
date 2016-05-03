@@ -59,7 +59,8 @@
 ///
 double getMultiplicationRecurrenceRelation(
        const Eigen::VectorXd& F,
-       const Eigen::VectorXd& G);
+       const Eigen::VectorXd& G,
+        const int order);
 
 
 /// Division ///
@@ -72,7 +73,8 @@ double getMultiplicationRecurrenceRelation(
 double getDivisionRecurrenceRelation(
         const Eigen::VectorXd& F,
         const Eigen::VectorXd& G,
-        const Eigen::VectorXd& Wdiv);
+        const Eigen::VectorXd& Wdiv,
+        const int order);
 
 
 /// Power ///
@@ -85,7 +87,8 @@ double getDivisionRecurrenceRelation(
 double getPowerRecurrenceRelation(
         const Eigen::VectorXd& F,
         const Eigen::VectorXd& Wpow,
-        const double power);
+        const double power,
+        const int order);
 
 
 /// Exponential ///
@@ -96,7 +99,8 @@ double getPowerRecurrenceRelation(
 ///
 double getExponentialRecurrenceRelation(
         const Eigen::VectorXd& F,
-        const Eigen::VectorXd& Wexp);
+        const Eigen::VectorXd& Wexp,
+        const int order);
 
 
 /// Cosine ///
@@ -107,7 +111,8 @@ double getExponentialRecurrenceRelation(
 ///
 double getCosineRecurrenceRelation(
         const Eigen::VectorXd& F,
-        const Eigen::VectorXd& Wsin);
+        const Eigen::VectorXd& Wsin,
+        const int order);
 
 
 /// Sine ///
@@ -118,7 +123,8 @@ double getCosineRecurrenceRelation(
 ///
 double getSineRecurrenceRelation(
         const Eigen::VectorXd& F,
-        const Eigen::VectorXd& Wcos);
+        const Eigen::VectorXd& Wcos,
+        const int order);
 
 
 

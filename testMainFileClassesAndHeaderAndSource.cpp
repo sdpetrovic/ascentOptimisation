@@ -84,6 +84,9 @@
 /// Testing the basic recurrence relations ///
 #include <thesisProject/projectLibraries/basicRecurrenceRelations.h>               // Original test file
 
+/// Testint all recurrence relations ///
+#include <thesisProject/projectLibraries/allRecurrenceRelations.h>          // Original test file
+
 
 // testing
 
