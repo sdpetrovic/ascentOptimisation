@@ -822,6 +822,21 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //*/
 
+    /// Testing the write capability to store the Taylor Coefficients ///
+
+/*
+        // Set directory where output files will be stored. By default, this is your project
+        // root-directory.
+        const std::string outputDirectory = basic_input_output::getApplicationRootPath( ) + "/";
+
+        std::cout<<"The output directory = "<<outputDirectory<<std::endl;
+
+//*/
+
+
+
+
+
 
 
     return 0;

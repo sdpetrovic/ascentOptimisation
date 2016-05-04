@@ -88,11 +88,24 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     Eigen::MatrixXd XMatrix = Eigen::MatrixXd::Zero(initialEquationsVector.size(),maxOrder+1);        // Create the initial X and U matrices
     Eigen::MatrixXd UMatrix = Eigen::MatrixXd::Zero(initialDerivativesVector.size(),maxOrder);
 
-    for (int i = 1; i < initialEquationsVector.size()+1; i++){                      // Fill the matrices
+    /// Debug ///
+/*
+    std::cout<<"initialEquationsVector = "<<initialEquationsVector<<std::endl;
+    std::cout<<"initialDerivativesVector = "<<initialDerivativesVector<<std::endl;
+    std::cout<<"initialEquationsVector.size() = "<<initialEquationsVector.size()<<std::endl;
+    std::cout<<"XMatrix.col(0).size() = "<<XMatrix.col(0).size()<<std::endl;
+    std::cout<<"initialEquationsVector(48) = "<<initialEquationsVector(48)<<std::endl;
+    std::cout<<"initialDerivativesVector(48) = "<<initialDerivativesVector(48)<<std::endl;
+//*/
+
+    for (int i = 1; i < initialEquationsVector.size(); i++){                      // Fill the matrices
 
       XMatrix(i,0) = initialEquationsVector(i);
       XMatrix(i,1) = initialDerivativesVector(i);
       UMatrix(i,0) = initialDerivativesVector(i);
+
+
+
 
     };
 
@@ -567,7 +580,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
     /// Debug ///
 
-    std::cout<<"So far so good 1"<<std::endl;
+//    std::cout<<"So far so good 1"<<std::endl;
 
 
 /// Recurrence computations ///
@@ -583,7 +596,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
     for (int k = 1; k< maxOrder;k++){
 
-    std::cout<<"So far so good 2"<<std::endl;
+//    std::cout<<"So far so good 2"<<std::endl;
 
         // Set general required vectors
 
@@ -599,7 +612,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         }
 
 
-    std::cout<<"So far so good 3"<<std::endl;
+//    std::cout<<"So far so good 3"<<std::endl;
 
         // 1
         UMatrix(1,k) = XMatrix(4,k);
@@ -639,7 +652,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         UMatrix(4,k) = -standardGravitationalParameter*WVector4_1(k)+WVector4_24(k)+thrustAccelerationsBframe(1)*(WVector4_19(k)-WVector4_14(k))+thrustAccelerationsBframe(2)*(WVector4_23(k)-WVector4_21(k));
 
-        std::cout<<"So far so good 4"<<std::endl;
+//        std::cout<<"So far so good 4"<<std::endl;
 
         // 5
 
@@ -1035,17 +1048,17 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         /// Compute all auxiliary Equation coefficients from the Derivative coefficients ///
 
-        for (int i = 1; i< initialEquationsVector_.size()+1; i++){
+        for (int i = 1; i< initialEquationsVector_.size(); i++){
 
             XMatrix(i,k+1) = UMatrix(i,k)/(k+1);
         }
 
 
-        std::cout<<"Number of runs "<<count<<std::endl;
+//        std::cout<<"Number of runs "<<count<<std::endl;
 
         count++;
 
-        std::cout<<"So far so good 5"<<std::endl;
+//        std::cout<<"So far so good 5"<<std::endl;
 
 //        std::cout<<"Length of W = "<<WVector4_1.size()<<std::endl;
 //        std::cout<<"Length of U = "<<UMatrix.row(0).size()<<std::endl;
@@ -1054,7 +1067,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
 
 
-    std::cout<<"So far so good 6"<<std::endl;
+//    std::cout<<"So far so good 6"<<std::endl;
 
     /// Set return matrix ///
 
@@ -1070,8 +1083,8 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
 
     /// Debug ///
-
-    std::cout<<"So far so good 7"<<std::endl;
+/*
+//    std::cout<<"So far so good 7"<<std::endl;
 
     std::cout<<"stateTaylorCoefficients = "<<stateTaylorCoefficients<<std::endl;
 
@@ -1082,7 +1095,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
 
     // So it works until it has to be returned... So... delete everything? :S
-
+//*/
     return stateTaylorCoefficients;
 
 } // end of function
