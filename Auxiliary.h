@@ -71,7 +71,7 @@ class Auxiliary
 {
 public:
 
-    /* In this case, the constructor does only takes celestial body and vehicle constant input. The class function will contain the variable parameters
+    /* In this case, the constructor only takes celestial body and vehicle constant input. The class function will contain the variable parameters
      *
      *    // The diferent celestial body constant parameters and polynomial coefficient parameter matrices
      *

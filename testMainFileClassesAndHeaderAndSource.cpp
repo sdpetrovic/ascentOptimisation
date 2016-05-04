@@ -89,8 +89,11 @@
 /// Testing the basic recurrence relations ///
 #include <thesisProject/projectLibraries/basicRecurrenceRelations.h>               // Original test file
 
-/// Testint all recurrence relations ///
+/// Testing all recurrence relations ///
 #include <thesisProject/projectLibraries/allRecurrenceRelations.h>          // Original test file
+
+/// Testing the stepSize class ///
+
 
 
 // testing
@@ -823,7 +826,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
             currentTime,
             maxOrder);
 
-        std::cout<<"The Taylor Coefficients are: "<<TaylorCoefficients<<std::endl;
+//        std::cout<<"The Taylor Coefficients are: "<<TaylorCoefficients<<std::endl;
 
 //*/
 
@@ -848,7 +851,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         // root-directory.
         const std::string outputDirectory = "/home/stachap/Documents/Thesis/03. Tudat/tudatBundle/tudatApplications/thesisProject/testOutputFolder/";
 
-        std::cout<<"The output directory = "<<outputDirectory<<std::endl;
+//        std::cout<<"The output directory = "<<outputDirectory<<std::endl;
 
 
 
@@ -876,7 +879,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         }
 
 
-        std::cout<<"Does the file exist? (0 = no, 1 = yes) "<<fexists<<std::endl;
+//        std::cout<<"Does the file exist? (0 = no, 1 = yes) "<<fexists<<std::endl;
 
 
 
@@ -905,6 +908,17 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
             exportFile1.close( );
         };
 
+
+        /// Testing the StepSize class ///
+
+/*
+        // Test to see how the order of magnitude works
+        double de = 1.2345E-5;
+        int orderOfMagnitude = floor(log10(de));
+
+        std::cout<<"The order of magnitude of de = "<<orderOfMagnitude<<std::endl;
+
+//*/
 
     return 0;
 }
