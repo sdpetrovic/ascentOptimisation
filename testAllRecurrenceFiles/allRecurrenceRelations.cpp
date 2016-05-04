@@ -98,8 +98,8 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     std::cout<<"initialDerivativesVector(48) = "<<initialDerivativesVector(48)<<std::endl;
 //*/
 
-    for (int i = 1; i < initialEquationsVector.size(); i++){                      // Fill the matrices. Please note that the number allocation and position allocation in the matrix/vector should always be the same.
-                                                                                  // This means that x1 will be in position (1) of the vector (which is the second vector entry!)
+    for (int i = 1; i < initialEquationsVector.size(); i++){                      // Fill the matrices
+
       XMatrix(i,0) = initialEquationsVector(i);
       XMatrix(i,1) = initialDerivativesVector(i);
       UMatrix(i,0) = initialDerivativesVector(i);

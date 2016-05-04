@@ -35,7 +35,12 @@
 // This is a test main file to test the different class files, header/source files to see if any output is produced (verification)
 
 #include <iostream>
+#include <fstream>
 #include <iomanip>
+#include <cstdlib>
+#include <sstream>
+
+
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <boost/function.hpp>
@@ -824,19 +829,81 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     /// Testing the write capability to store the Taylor Coefficients ///
 
-/*
+
+
+
+        Eigen::MatrixXd TaylorCoefficientsOutputMatrix = Eigen::MatrixXd::Zero(7,maxOrder+1);       // Create an output matrix for the file without the first empty row
+
+        TaylorCoefficientsOutputMatrix.row(0) = TaylorCoefficients.row(1);                  // The first line entries are the maxOrder+1 Taylor Series Coefficients for     the position in the x-direction
+        TaylorCoefficientsOutputMatrix.row(1) = TaylorCoefficients.row(2);                  // The second line entries are the maxOrder+1 Taylor Series Coefficients for    the position in the y-direction
+        TaylorCoefficientsOutputMatrix.row(2) = TaylorCoefficients.row(3);                  // The third line entries are the maxOrder+1 Taylor Series Coefficients for     the position in the z-direction
+        TaylorCoefficientsOutputMatrix.row(3) = TaylorCoefficients.row(4);                  // The fourth line entries are the maxOrder+1 Taylor Series Coefficients for    the velocity in the x-direction
+        TaylorCoefficientsOutputMatrix.row(4) = TaylorCoefficients.row(5);                  // The fifth line entries are the maxOrder+1 Taylor Series Coefficients for     the velocity in the y-direction
+        TaylorCoefficientsOutputMatrix.row(5) = TaylorCoefficients.row(6);                  // The sixth line entries are the maxOrder+1 Taylor Series Coefficients for     the velocity in the z-direction
+        TaylorCoefficientsOutputMatrix.row(6) = TaylorCoefficients.row(7);                  // The seventh line entries are the maxOrder+1 Taylor Series Coefficients for   the mass
+
+
+
         // Set directory where output files will be stored. By default, this is your project
         // root-directory.
-        const std::string outputDirectory = basic_input_output::getApplicationRootPath( ) + "/";
+        const std::string outputDirectory = "/home/stachap/Documents/Thesis/03. Tudat/tudatBundle/tudatApplications/thesisProject/testOutputFolder/";
 
         std::cout<<"The output directory = "<<outputDirectory<<std::endl;
 
-//*/
+
+
+        // Set output format for matrix output.
+        Eigen::IOFormat csvFormat( 15, 0, ", ", "\n" );
+
+        // Set absolute path to file containing the Taylor Series Coefficients.
+        const std::string taylorSeriesCoefficientsAbsolutePath = outputDirectory + "test4TaylorSeriesCoefficients.csv";
+
+
+        // Check if the file already exists.
+
+
+        std::ifstream ifile(taylorSeriesCoefficientsAbsolutePath.c_str()); // Check it as an input file
+
+        bool fexists = false;
+
+        if (ifile){
+
+
+           fexists = true;
+
+           ifile.close();
+
+        }
+
+
+        std::cout<<"Does the file exist? (0 = no, 1 = yes) "<<fexists<<std::endl;
 
 
 
+        // If so: append, if not: create new file and put data in
+
+        if (fexists == true){
+
+            // Export the Taylor Series Coefficients matrix.
+            std::ofstream exportFile1;                          // Define the file as an output file
 
 
+            exportFile1.open(taylorSeriesCoefficientsAbsolutePath.c_str(),std::ios_base::app);      // Open the file in append mode
+
+            exportFile1 << "\n";                                            // Make sure the new matrix
+
+            exportFile1 << TaylorCoefficientsOutputMatrix.format( csvFormat );
+
+
+            exportFile1.close( );
+}
+            else{
+
+            // Export the Taylor Series Coefficients matrix.
+            std::ofstream exportFile1( taylorSeriesCoefficientsAbsolutePath.c_str( ) );
+            exportFile1 << TaylorCoefficientsOutputMatrix.format( csvFormat );
+            exportFile1.close( );
+        };
 
 
     return 0;
