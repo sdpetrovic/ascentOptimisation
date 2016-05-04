@@ -817,7 +817,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
             auxiliaryFunctions,
             currentTime,
             maxOrder);
-/*
+
         std::cout<<"The Taylor Coefficients are: "<<TaylorCoefficients<<std::endl;
 
 //*/

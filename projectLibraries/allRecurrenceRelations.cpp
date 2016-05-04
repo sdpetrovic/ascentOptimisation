@@ -39,16 +39,45 @@
 
 
 
-Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex, const double specificGasConstant, const double standardGravitationalParameter, const double rotationalVelocity, const double primeMeridianAngle,
-                      const double inertialFrameTime, const double bodyReferenceRadius, const Eigen::MatrixXd temperaturePolyCoefficients, const Eigen::MatrixXd temperatureAltitudeRanges,
-                      const Eigen::VectorXd densityPolyCoefficients, const double Thrust, const double specificImpulse,
-                      const double referenceArea, const Eigen::MatrixXd dragCoefficientPolyCoefficients, const Eigen::MatrixXd dragCoefficientMachRanges,
-        const Eigen::VectorXd& thrustAccelerationsBframe,
-        const Eigen::VectorXd& initialEquationsVector,
-        const Eigen::VectorXd& initialDerivativesVector,
-        const Eigen::MatrixXd& initialFunctionsMatrix,
-        const double currentTime,
-        const int maxOrder){
+Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double specificGasConstant_, const double standardGravitationalParameter_, const double rotationalVelocity_, const double primeMeridianAngle_,
+                      const double inertialFrameTime_, const double bodyReferenceRadius_, const Eigen::MatrixXd temperaturePolyCoefficients_, const Eigen::MatrixXd temperatureAltitudeRanges_,
+                      const Eigen::VectorXd densityPolyCoefficients_, const double Thrust_, const double specificImpulse_,
+                      const double referenceArea_, const Eigen::MatrixXd dragCoefficientPolyCoefficients_, const Eigen::MatrixXd dragCoefficientMachRanges_,
+        const Eigen::VectorXd thrustAccelerationsBframe_,
+        const Eigen::VectorXd initialEquationsVector_,
+        const Eigen::VectorXd initialDerivativesVector_,
+        const Eigen::MatrixXd initialFunctionsMatrix_,
+        const double currentTime_,
+        const int maxOrder_){
+
+
+    // Create new variables to use in this function and be deleted afterwards... I hope... Update: Nope...
+    const double adiabeticIndex = adiabeticIndex_;
+    const double specificGasConstant = specificGasConstant_;
+    const double standardGravitationalParameter = standardGravitationalParameter_;
+    const double rotationalVelocity = rotationalVelocity_;
+//    const double primeMeridianAngle = primeMeridianAngle_;
+//    const double inertialFrameTime = inertialFrameTime_;
+//    const double bodyReferenceRadius = bodyReferenceRadius_;
+    const Eigen::MatrixXd temperaturePolyCoefficients = temperaturePolyCoefficients_;
+    const Eigen::MatrixXd temperatureAltitudeRanges = temperatureAltitudeRanges_;
+    const Eigen::VectorXd densityPolyCoefficients = densityPolyCoefficients_;
+//    const double Thrust = Thrust_;
+//    const double specificImpulse = specificImpulse_;
+    const double referenceArea = referenceArea_;
+    const Eigen::MatrixXd dragCoefficientPolyCoefficients = dragCoefficientPolyCoefficients_;
+    const Eigen::MatrixXd dragCoefficientMachRanges = dragCoefficientMachRanges_;
+    const Eigen::VectorXd thrustAccelerationsBframe = thrustAccelerationsBframe_;
+    const Eigen::VectorXd initialEquationsVector = initialEquationsVector_;
+    const Eigen::VectorXd initialDerivativesVector = initialDerivativesVector_;
+    const Eigen::MatrixXd initialFunctionsMatrix = initialFunctionsMatrix_;
+//    const double currentTime = currentTime_;
+    const int maxOrder = maxOrder_;
+
+
+
+
+
 
 
     /// Set initial values ///
@@ -56,7 +85,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex, const double 
 
 
 
-    Eigen::MatrixXd XMatrix = Eigen::MatrixXd::Zero(initialEquationsVector.size(),maxOrder);        // Create the initial X and U matrices
+    Eigen::MatrixXd XMatrix = Eigen::MatrixXd::Zero(initialEquationsVector.size(),maxOrder+1);        // Create the initial X and U matrices
     Eigen::MatrixXd UMatrix = Eigen::MatrixXd::Zero(initialDerivativesVector.size(),maxOrder);
 
     for (int i = 1; i < initialEquationsVector.size()+1; i++){                      // Fill the matrices
@@ -520,7 +549,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex, const double 
     WVector48_1(0) = initialFunctionsMatrix(48,1);     // W48,1
     WVector48_2(0) = initialFunctionsMatrix(48,2);     // W48,2
 
-    //////
+    ////// Declaring other Vectors and variables ///////
 
 
     Eigen::VectorXd W9IntermediateVector = Eigen::VectorXd::Zero(maxOrder);         // Intermediate vector created to be able to use the basic recurrence relations (should have done this from the start...)
@@ -536,6 +565,9 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex, const double 
 
     int sectionCD = 0;      // Drag coefficient function section and setting the default to zero
 
+    /// Debug ///
+
+    std::cout<<"So far so good 1"<<std::endl;
 
 
 /// Recurrence computations ///
@@ -547,10 +579,11 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex, const double 
     // getCosineRecurrenceRelation                          Cosine
     // getSineRecurrenceRelation                            Sine
 
+    int count = 1;  // Counter
 
     for (int k = 1; k< maxOrder;k++){
 
-
+    std::cout<<"So far so good 2"<<std::endl;
 
         // Set general required vectors
 
@@ -566,6 +599,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex, const double 
         }
 
 
+    std::cout<<"So far so good 3"<<std::endl;
 
         // 1
         UMatrix(1,k) = XMatrix(4,k);
@@ -604,6 +638,8 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex, const double 
         WVector4_24(k) = getMultiplicationRecurrenceRelation(WVector4_2,(WVector4_22-WVector4_18),k);
 
         UMatrix(4,k) = -standardGravitationalParameter*WVector4_1(k)+WVector4_24(k)+thrustAccelerationsBframe(1)*(WVector4_19(k)-WVector4_14(k))+thrustAccelerationsBframe(2)*(WVector4_23(k)-WVector4_21(k));
+
+        std::cout<<"So far so good 4"<<std::endl;
 
         // 5
 
@@ -999,12 +1035,26 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex, const double 
 
         /// Compute all auxiliary Equation coefficients from the Derivative coefficients ///
 
-        for (int i = 1; i< initialEquationsVector.size()+1; i++){
+        for (int i = 1; i< initialEquationsVector_.size()+1; i++){
 
             XMatrix(i,k+1) = UMatrix(i,k)/(k+1);
         }
 
+
+        std::cout<<"Number of runs "<<count<<std::endl;
+
+        count++;
+
+        std::cout<<"So far so good 5"<<std::endl;
+
+//        std::cout<<"Length of W = "<<WVector4_1.size()<<std::endl;
+//        std::cout<<"Length of U = "<<UMatrix.row(0).size()<<std::endl;
+
 } // end of for loop with k till K
+
+
+
+    std::cout<<"So far so good 6"<<std::endl;
 
     /// Set return matrix ///
 
@@ -1019,7 +1069,22 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex, const double 
     stateTaylorCoefficients.row(7) = XMatrix.row(7);
 
 
+    /// Debug ///
+
+    std::cout<<"So far so good 7"<<std::endl;
+
+    std::cout<<"stateTaylorCoefficients = "<<stateTaylorCoefficients<<std::endl;
+
+//    Eigen::VectorXd debugVecStateTaylorCoefficients = stateTaylorCoefficients.row(1);
+
+    std::cout<<"Length of stateTaylorCoefficients.row(1) = "<<stateTaylorCoefficients.row(1).size()<<std::endl;
+    std::cout<<"Length of XMatrix.row(1) = "<<XMatrix.row(1).size()<<std::endl;
+
+
+    // So it works until it has to be returned... So... delete everything? :S
+
     return stateTaylorCoefficients;
+
 } // end of function
 
 

@@ -81,7 +81,8 @@ public:
 
 
             // Thrust
-            Thrust_ = 5300;             //[N]           Taken from Trinidad et al. 2012
+//            Thrust_ = 5300;             //[N]           Taken from Trinidad et al. 2012
+            Thrust_ = 5.3;             //[kN]           Taken from Trinidad et al. 2012
 
             // Specific Impulse
             specificImpulse_ = 328.6;        //[s]       Taken from Trinidad et al. 2012

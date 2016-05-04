@@ -56,17 +56,16 @@
 /// \param currentTime
 /// \return
 ///
-Eigen::MatrixXd getTaylorCoefficients(
-        const double adiabeticIndex, const double specificGasConstant, const double standardGravitationalParameter, const double rotationalVelocity, const double primeMeridianAngle,
-                      const double inertialFrameTime, const double bodyReferenceRadius, const Eigen::MatrixXd temperaturePolyCoefficients, const Eigen::MatrixXd temperatureAltitudeRanges,
-                      const Eigen::VectorXd densityPolyCoefficients, const double Thrust, const double specificImpulse,
-                      const double referenceArea, const Eigen::MatrixXd dragCoefficientPolyCoefficients, const Eigen::MatrixXd dragCoefficientMachRanges,
-        const Eigen::VectorXd& thrustAccelerationsBframe,
-        const Eigen::VectorXd& initialEquationsVector,
-        const Eigen::VectorXd& initialDerivativesVector,
-        const Eigen::MatrixXd& initialFunctionsMatrix,
-        const double currentTime,
-        const int maxOrder);
+Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double specificGasConstant_, const double standardGravitationalParameter_, const double rotationalVelocity_, const double primeMeridianAngle_,
+                      const double inertialFrameTime_, const double bodyReferenceRadius_, const Eigen::MatrixXd temperaturePolyCoefficients_, const Eigen::MatrixXd temperatureAltitudeRanges_,
+                      const Eigen::VectorXd densityPolyCoefficients_, const double Thrust_, const double specificImpulse_,
+                      const double referenceArea_, const Eigen::MatrixXd dragCoefficientPolyCoefficients_, const Eigen::MatrixXd dragCoefficientMachRanges_,
+        const Eigen::VectorXd thrustAccelerationsBframe_,
+        const Eigen::VectorXd initialEquationsVector_,
+        const Eigen::VectorXd initialDerivativesVector_,
+        const Eigen::MatrixXd initialFunctionsMatrix_,
+        const double currentTime_,
+        const int maxOrder_);
 
 
 /// Declare the auxiliary Equation vectors/matrix ///
