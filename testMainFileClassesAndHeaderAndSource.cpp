@@ -937,7 +937,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         // Checking the default values
 
         double currentStepSize = stepSize.getCurrentStepSize();
-       double localErrorTolerance = stepSize.getLocalErrorTolerance();
+        double localErrorTolerance = stepSize.getLocalErrorTolerance();
         double stepMultiplicationFactor = stepSize.getStepMultiplicationFactor();
 
         std::cout<<"The current step-size = "<<currentStepSize<<std::endl;
@@ -983,7 +983,25 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
         /// Testing the actual Taylor Series expansion for every state variable ///
 
+        tudat::basic_mathematics::Vector7d updatedState;        // Create a vector for the updatedState
 
+        for (int n = 0; n<updatedState.size();n++){                 // All variables
+
+        for (int k = 0; k<maxOrder+1;k++){                      // Taylor series summation
+
+            updatedState(n) += TaylorCoefficients((n+1),k)*pow(currentStepSize,k);      // Perform one step of the taylor series expansion and then add it to the previous step
+
+        } // Taylor series summation
+
+}   // All variables
+
+
+
+        double updatedTime = currentTime+currentStepSize;           // Create the updated time variable
+
+        std::cout<<"updatedTime = "<<updatedTime<<std::endl;
+
+        std::cout<<"updatedState = "<<updatedState<<std::endl;
 
 
 
