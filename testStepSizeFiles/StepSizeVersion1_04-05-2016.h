@@ -25,7 +25,6 @@
  *    Changelog
  *      YYMMDD    Author            Comment
  *      160504    S.D. Petrovic     File created
- *      160505    S.D. Petrovic     Redefined M and added second step-size determination method. Also moved some of the calculations into private
  *
  *    References
  *
@@ -52,9 +51,8 @@
 class StepSize
 
         /* This class will provide the current step-size, a manner to manually update/set the step-size, local error tolerance and step multiplication factor.
-         * It will provide two different methods to determine the next step-size. But only one of these methods should be used at once!
+         * It will also provide the truncation error estimate and the truncation error per state variable.
          *
-         * ///////////////////////////////////////////////////////////////////////////////////////
          * The equations provided in this class are all taken from the following paper:
          *
          * "High Speed Solution of Spacecraft Trajectory Problems Using Taylor Series Integration"
@@ -83,11 +81,11 @@ public:
 
     // Initializing the StepSize class with de default setting for the step-size set to 1 sec
 
-    StepSize(const double currentStepSize_ = 0.2){
+    StepSize(const double currentStepSize_ = 1){
 
         currentStepSize = currentStepSize_;             // The current step-size
         stepMultiplicationFactor = 0.9;                 // Setting the step multiplication factor to the default value
-        localErrorTolerance = 1E-14;                     // Setting the local error tolerance to the default value
+        localErrorTolerance = 1E-2;                     // Setting the local error tolerance to the default value
 
 
     } // End of constructor
@@ -113,12 +111,11 @@ public:
         localErrorTolerance = updatedLocalErrorTolerance;
     }
 
-/*///// Calculations ////////////
 
     /// Determine the estimate of the truncation error ///
 
     void determineTruncationErrorEstimates(const tudat::basic_mathematics::Vector7d& penultimateCoefficients,
-                                                                               const tudat::basic_mathematics::Vector7d& lastCoefficients, const int maxOrder){         // Eq. 45 of reference paper
+                                                                               const tudat::basic_mathematics::Vector7d& lastCoefficients, const int maxOrder){
 
         truncationErrorEstimates(0) = abs(penultimateCoefficients(0))*pow(currentStepSize,(maxOrder-1))+abs(lastCoefficients(0))*pow(currentStepSize,maxOrder);     // Position in x-direction
         truncationErrorEstimates(1) = abs(penultimateCoefficients(1))*pow(currentStepSize,(maxOrder-1))+abs(lastCoefficients(1))*pow(currentStepSize,maxOrder);     // Position in y-direction
@@ -133,21 +130,28 @@ public:
 
     /// Determine the estimate of the maximum truncation error ///
 
+
+
+
     void determineMaximumTruncationErrorEstimate(const tudat::basic_mathematics::Vector7d& truncationErrorEstimates_){
 
         double max; // Define the maximum holding variable
 
-        max = truncationErrorEstimates_(0);                         // Define the first one to be max initially
+        for (int i = 0; i<truncationErrorEstimates_.size()-1;i++){
 
-        for (int i = 1; i<truncationErrorEstimates_.size();i++){                          //Check for all elements
+            if (truncationErrorEstimates_(i)>=truncationErrorEstimates_(i+1)){
 
-         if (max<truncationErrorEstimates_(i)){                     // See if current element is larger than the current max
+                max = truncationErrorEstimates_(i);
 
-                max = truncationErrorEstimates_(i);                 // If so, set the new max to be the current element value
+            } else if (truncationErrorEstimates_(i)<truncationErrorEstimates_(i+1)){
+
+                max = truncationErrorEstimates_(i+1);
             }
         }
 
         maximumTruncationErrorEstimate = max;
+
+//        maximumTruncationErrorEstimate = max(truncationErrorEstimates_);
 
 
     }
@@ -159,17 +163,18 @@ public:
 
 
         // Determine the order of magnitude of the maximum truncation error
-         orderMaxTruncErrorEstimate = maxOrder_;        // Apparently this should be the order of the last element of the taylor series, so if I am doing a 20 order taylor series, this should be 20 (?)
-
-        nextStepSize = stepMultiplicationFactor*currentStepSize*pow((localErrorTolerance/maximumTruncationErrorEstimate),(1/orderMaxTruncErrorEstimate)); // Eq. 44 of reference paper
+         orderMaxTruncErrorEstimate = maxOrder_;
 
 
-      /// Debug ///
+        nextStepSize = stepMultiplicationFactor*currentStepSize*pow((localErrorTolerance/maximumTruncationErrorEstimate),(1/orderMaxTruncErrorEstimate));
 
-//        std::cout<<"localErrorTolerance/maximumTruncationErrorEstimate = "<<localErrorTolerance/maximumTruncationErrorEstimate<<std::endl;
-//        std::cout<<"1/orderMaxTruncErrorEstimate = "<<(1/orderMaxTruncErrorEstimate)<<std::endl;
-//        std::cout<<"pow((localErrorTolerance/maximumTruncationErrorEstimate),(1/orderMaxTruncErrorEstimate)) = "<<pow((localErrorTolerance/maximumTruncationErrorEstimate),(1/orderMaxTruncErrorEstimate))<<std::endl;
 
+/*        /// Debug ///
+
+        std::cout<<"localErrorTolerance/maximumTruncationErrorEstimate = "<<localErrorTolerance/maximumTruncationErrorEstimate<<std::endl;
+        std::cout<<"1/orderMaxTruncErrorEstimate = "<<(1/orderMaxTruncErrorEstimate)<<std::endl;
+        std::cout<<"pow((localErrorTolerance/maximumTruncationErrorEstimate),(1/orderMaxTruncErrorEstimate)) = "<<pow((localErrorTolerance/maximumTruncationErrorEstimate),(1/orderMaxTruncErrorEstimate))<<std::endl;
+//*/
     }
 
 
@@ -198,7 +203,7 @@ public:
 
 //                    std::cout<<"differenceIntstepSize = "<<differenceIntStepSize<<std::endl;
 
-                    prevStepSize = newStepSize;                     // Updating step-size
+                    prevStepSize = newStepSize;
 
 //                    std::cout<<"newStepSize = "<<newStepSize<<std::endl;
             }
@@ -209,23 +214,25 @@ public:
 
         double min; // Define the minimum holding variable
 
-        min = allStepSizes(0);                          // Set the minimum value to the first element as default
+        for (int i = 0; i<allStepSizes.size()-1;i++){
 
-        for (int i = 1; i<allStepSizes.size();i++){     // Test all other elements
+            if (allStepSizes(i)>=allStepSizes(i+1)){
 
-           if (min>allStepSizes(i)){                    // See if the current element is smaller than the current minimum
+                min = allStepSizes(i+1);
 
-                min = allStepSizes(i);                  // If so, then the new minimum is set to be the current element value
+            } else if (allStepSizes(i)<allStepSizes(i+1)){
+
+                min = allStepSizes(i);
             }
         }
 
-//        std::cout<<"allStepSizes = "<<allStepSizes<<std::endl;
-//        std::cout<<"min = "<<min<<std::endl;
+        std::cout<<"allStepSizes = "<<allStepSizes<<std::endl;
+        std::cout<<"min = "<<min<<std::endl;
 
-        nextStepSize = stepMultiplicationFactor*min;   // The next step-size then becomes the minimum step-size times the stepMultiplicationFactor
+        nextStepSize = stepMultiplicationFactor*min;
 
     }
-//*/
+
 
     /// One overall function to update the next step-size (using the above mentioned functions) ///
 
@@ -273,119 +280,6 @@ public:
 
 
 private:
-
-    ///// Calculations ////////////
-
-        /// Determine the estimate of the truncation error ///
-
-        void determineTruncationErrorEstimates(const tudat::basic_mathematics::Vector7d& penultimateCoefficients,
-                                                                                   const tudat::basic_mathematics::Vector7d& lastCoefficients, const int maxOrder){         // Eq. 45 of reference paper
-
-            truncationErrorEstimates(0) = abs(penultimateCoefficients(0))*pow(currentStepSize,(maxOrder-1))+abs(lastCoefficients(0))*pow(currentStepSize,maxOrder);     // Position in x-direction
-            truncationErrorEstimates(1) = abs(penultimateCoefficients(1))*pow(currentStepSize,(maxOrder-1))+abs(lastCoefficients(1))*pow(currentStepSize,maxOrder);     // Position in y-direction
-            truncationErrorEstimates(2) = abs(penultimateCoefficients(2))*pow(currentStepSize,(maxOrder-1))+abs(lastCoefficients(2))*pow(currentStepSize,maxOrder);     // Position in z-direction
-            truncationErrorEstimates(3) = abs(penultimateCoefficients(3))*pow(currentStepSize,(maxOrder-1))+abs(lastCoefficients(3))*pow(currentStepSize,maxOrder);     // Velocity in x-direction
-            truncationErrorEstimates(4) = abs(penultimateCoefficients(4))*pow(currentStepSize,(maxOrder-1))+abs(lastCoefficients(4))*pow(currentStepSize,maxOrder);     // Velocity in y-direction
-            truncationErrorEstimates(5) = abs(penultimateCoefficients(5))*pow(currentStepSize,(maxOrder-1))+abs(lastCoefficients(5))*pow(currentStepSize,maxOrder);     // Velocity in z-direction
-            truncationErrorEstimates(6) = abs(penultimateCoefficients(6))*pow(currentStepSize,(maxOrder-1))+abs(lastCoefficients(6))*pow(currentStepSize,maxOrder);     // Mass
-
-        }
-
-
-        /// Determine the estimate of the maximum truncation error ///
-
-        void determineMaximumTruncationErrorEstimate(const tudat::basic_mathematics::Vector7d& truncationErrorEstimates_){
-
-            double max; // Define the maximum holding variable
-
-            max = truncationErrorEstimates_(0);                         // Define the first one to be max initially
-
-            for (int i = 1; i<truncationErrorEstimates_.size();i++){                          //Check for all elements
-
-             if (max<truncationErrorEstimates_(i)){                     // See if current element is larger than the current max
-
-                    max = truncationErrorEstimates_(i);                 // If so, set the new max to be the current element value
-                }
-            }
-
-            maximumTruncationErrorEstimate = max;
-
-
-        }
-
-
-        /// Determine the next step-size using the previous step-size///
-
-        void determineNextStepSizeUsingPreviousStepSize(const double maxOrder_){
-
-
-            // Determine the order of magnitude of the maximum truncation error
-             orderMaxTruncErrorEstimate = maxOrder_;        // Apparently this should be the order of the last element of the taylor series, so if I am doing a 20 order taylor series, this should be 20 (?)
-
-            nextStepSize = stepMultiplicationFactor*currentStepSize*pow((localErrorTolerance/maximumTruncationErrorEstimate),(1/orderMaxTruncErrorEstimate)); // Eq. 44 of reference paper
-
-
-    /*        /// Debug ///
-
-            std::cout<<"localErrorTolerance/maximumTruncationErrorEstimate = "<<localErrorTolerance/maximumTruncationErrorEstimate<<std::endl;
-            std::cout<<"1/orderMaxTruncErrorEstimate = "<<(1/orderMaxTruncErrorEstimate)<<std::endl;
-            std::cout<<"pow((localErrorTolerance/maximumTruncationErrorEstimate),(1/orderMaxTruncErrorEstimate)) = "<<pow((localErrorTolerance/maximumTruncationErrorEstimate),(1/orderMaxTruncErrorEstimate))<<std::endl;
-    //*/
-        }
-
-
-        /// Determine the next step-size using iteration and the local error tolerance directly ///
-
-        void determineNextStepSizeUsingIteration(const tudat::basic_mathematics::Vector7d& penultimateCoefficients_,
-                                                 const tudat::basic_mathematics::Vector7d& lastCoefficients_, const int maxOrder_){
-
-            double maxOrder = maxOrder_; // Making it a double such that it can be used for computations
-            tudat::basic_mathematics::Vector7d allStepSizes;        // Vector containing the step-sizes for each variable
-
-            for (int i = 0; i<penultimateCoefficients_.size();i++){             // Determining the required step-size for every variable
-
-                double prevStepSize = 1;        // Default
-                double newStepSize = 0;         // Default
-
-                double differenceIntStepSize = prevStepSize-newStepSize;        // Difference to determine if the while loop needs to keep going
-
-
-
-                while (abs(differenceIntStepSize) > 1e-15){                      // Accepting the step-size if the difference is 1e-6
-
-                        newStepSize = exp((1/(maxOrder-1))*log(localErrorTolerance/(abs(penultimateCoefficients_(i))+prevStepSize*abs(lastCoefficients_(i)))));  // Eq. 47 of the reference paper (High Speed Solution of Spacecraft Trajectory Problems using Taylor Series Integration
-
-                        differenceIntStepSize = prevStepSize-newStepSize;           // Determining the difference
-
-    //                    std::cout<<"differenceIntstepSize = "<<differenceIntStepSize<<std::endl;
-
-                        prevStepSize = newStepSize;                     // Updating step-size
-
-    //                    std::cout<<"newStepSize = "<<newStepSize<<std::endl;
-                }
-
-                allStepSizes(i) = prevStepSize;     // Storing the step-size
-
-            }
-
-            double min; // Define the minimum holding variable
-
-            min = allStepSizes(0);                          // Set the minimum value to the first element as default
-
-            for (int i = 1; i<allStepSizes.size();i++){     // Test all other elements
-
-               if (min>allStepSizes(i)){                    // See if the current element is smaller than the current minimum
-
-                    min = allStepSizes(i);                  // If so, then the new minimum is set to be the current element value
-                }
-            }
-
-    //        std::cout<<"allStepSizes = "<<allStepSizes<<std::endl;
-    //        std::cout<<"min = "<<min<<std::endl;
-
-            nextStepSize = stepMultiplicationFactor*min;   // The next step-size then becomes the minimum step-size times the stepMultiplicationFactor
-
-        }
 
         // Defining the different parameters
 

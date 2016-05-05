@@ -93,7 +93,7 @@
 #include <thesisProject/projectLibraries/allRecurrenceRelations.h>          // Original test file
 
 /// Testing the stepSize class ///
-
+#include <thesisProject/StepSize.h>             // Original test file
 
 
 // testing
@@ -919,6 +919,91 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         std::cout<<"The order of magnitude of de = "<<orderOfMagnitude<<std::endl;
 
 //*/
+        tudat::basic_mathematics::Vector7d penultimateCoefficients;
+        tudat::basic_mathematics::Vector7d lastCoefficients;
+
+        for (int i = 0; i<7; i++){
+
+            penultimateCoefficients(i)= TaylorCoefficients((i+1),maxOrder-1);
+            lastCoefficients(i)= TaylorCoefficients((i+1),(maxOrder));
+        }
+
+//        std::cout<<"The penultimateCoefficients are "<<penultimateCoefficients<<std::endl;
+//        std::cout<<"The lastCoefficients are "<<lastCoefficients<<std::endl;
+
+
+        StepSize stepSize; // Initializing the stepSize class. THIS SHOULD BE DONE BEFORE THE START OF THE INTEGRATION!!!!!
+
+        // Checking the default values
+
+        double currentStepSize = stepSize.getCurrentStepSize();
+       double localErrorTolerance = stepSize.getLocalErrorTolerance();
+        double stepMultiplicationFactor = stepSize.getStepMultiplicationFactor();
+
+        std::cout<<"The current step-size = "<<currentStepSize<<std::endl;
+        std::cout<<"The local error tolerance = "<<localErrorTolerance<<std::endl;
+        std::cout<<"The step multiplication factor = "<<stepMultiplicationFactor<<std::endl;
+//*/
+
+ /*       // Adjusting the values
+
+        stepSize.setCurrentStepSize(2.3);
+        stepSize.setLocalErrorTolerance(1E-7);
+        stepSize.setStepMultiplicationFactor(0.8);
+
+        currentStepSize = stepSize.getCurrentStepSize();
+        localErrorTolerance = stepSize.getLocalErrorTolerance();
+        stepMultiplicationFactor = stepSize.getStepMultiplicationFactor();
+
+        std::cout<<"The updated step-size = "<<currentStepSize<<std::endl;
+        std::cout<<"The updated local error tolerance = "<<localErrorTolerance<<std::endl;
+        std::cout<<"The updated step multiplication factor = "<<stepMultiplicationFactor<<std::endl;
+
+        //*/
+
+/*        // Updating the step-size using the previous step-size
+        stepSize.updateStepSizeUsingPreviousStepSize(penultimateCoefficients, lastCoefficients, maxOrder);
+
+        currentStepSize = stepSize.getCurrentStepSize();
+        localErrorTolerance = stepSize.getLocalErrorTolerance();
+        stepMultiplicationFactor = stepSize.getStepMultiplicationFactor();
+        double maximumTruncationErrorEstimate = stepSize.getMaximumTruncationErrorEstimate();
+//        double orderMaxTruncErrorEstimate = stepSize.getOrderMaxTruncErrorEstimate();
+//        tudat::basic_mathematics::Vector7d truncationErrorEstimates = stepSize.getTruncationErrorEstimates();
+
+        std::cout<<"The current step-size from previous step-size method = "<<currentStepSize<<std::endl;
+//        std::cout<<"The local error tolerance = "<<localErrorTolerance<<std::endl;
+//        std::cout<<"The step multiplication factor = "<<stepMultiplicationFactor<<std::endl;
+
+        std::cout<<"The maximumTruncationErrorEstimate = "<<maximumTruncationErrorEstimate<<std::endl;
+//        std::cout<<"The order of the maximumTruncationErrorEstimate = "<<orderMaxTruncErrorEstimate<<std::endl;
+//        std::cout<<"The truncation error estimates = "<<truncationErrorEstimates<<std::endl;
+//*/
+
+
+        /// Testing the actual Taylor Series expansion for every state variable ///
+
+
+
+
+
+
+///*        // Updating the step-size using the iteration method (This method was perferred by Scott and Martini [2008]
+
+
+       stepSize.updateStepSizeUsingIteration(penultimateCoefficients, lastCoefficients, maxOrder);
+
+       currentStepSize = stepSize.getCurrentStepSize();
+       localErrorTolerance = stepSize.getLocalErrorTolerance();
+       stepMultiplicationFactor = stepSize.getStepMultiplicationFactor();
+
+
+
+       std::cout<<"The current step-size from iteration method = "<<currentStepSize<<std::endl;
+       std::cout<<"The local error tolerance = "<<localErrorTolerance<<std::endl;
+       std::cout<<"The step multiplication factor = "<<stepMultiplicationFactor<<std::endl;
+//*/
+
 
     return 0;
 }
