@@ -181,6 +181,7 @@ set(PROJECTLIBRARIES_SOURCES
 #  "${SRCROOT}${PROJECTLIBRARIESDIR}/basicRecurrenceRelations.cpp"
     "${SRCROOT}/projectLibraries/basicRecurrenceRelations.cpp"
     "${SRCROOT}/projectLibraries/allRecurrenceRelations.cpp"
+    "${SRCROOT}/projectLibraries/TaylorSeriesIntegration.cpp"
 #    "${SRCROOT}/projectLibraries/referenceFrameTransformationsUpdated.cpp"  # Does not quite work yet, so leaving it out for now
 )
 
@@ -189,6 +190,7 @@ set(PROJECTLIBRARIES_HEADERS
 #  "${SRCROOT}${PROJECTLIBRARIESDIR}/basicRecurrenceRelations.h"
     "${SRCROOT}/projectLibraries/basicRecurrenceRelations.h"
     "${SRCROOT}/projectLibraries/allRecurrenceRelations.h"
+    "${SRCROOT}/projectLibraries/TaylorSeriesIntegration.h"
 #    "${SRCROOT}/projectLibraries/referenceFrameTransformationsUpdated.h"   # Does not quite work yet, so leaving it out for now
 )
 
@@ -207,6 +209,9 @@ add_executable(simple_verification_testMainFileClassesAndHeaderAndSource "${SRCR
 setup_executable_target(simple_verification_testMainFileClassesAndHeaderAndSource "${SRCROOT}")
 target_link_libraries(simple_verification_testMainFileClassesAndHeaderAndSource project_libraries tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
 
+add_executable(simple_verification_testMainFileTaylorSeriesIntegration "${SRCROOT}/testMainFileTaylorSeriesIntegration.cpp")
+setup_executable_target(simple_verification_testMainFileTaylorSeriesIntegration "${SRCROOT}")
+target_link_libraries(simple_verification_testMainFileTaylorSeriesIntegration project_libraries tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
 
 
 

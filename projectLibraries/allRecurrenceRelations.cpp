@@ -51,7 +51,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         const int maxOrder_){
 
 
-    // Create new variables to use in this function and be deleted afterwards... I hope... Update: Nope...
+    // Create new variables to use in this function and be deleted afterwards... I hope... Update: Nope... Update2: Yep :)
     const double adiabeticIndex = adiabeticIndex_;
     const double specificGasConstant = specificGasConstant_;
     const double standardGravitationalParameter = standardGravitationalParameter_;

@@ -46,7 +46,7 @@
 
 
 /// Main function ///
-/// \brief getTaylorCoefficients
+/// \brief getTaylorCoefficients is a function that computes the required Taylor Series Coefficients for the state variables
 /// \param planetCharacteristics
 /// \param vehicleCharacteristics
 /// \param thrustAccelerationsBframe

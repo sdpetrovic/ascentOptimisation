@@ -15,7 +15,7 @@ These are the steps:
 - # Add header files.
 - # Add static libraries.
 
-5. The new files will be added to the source files and header files respectively. Under # Add source files
+5. The new files will have to be added to the source files and header files respectively. Under # Add source files
 it should say set(PROJECTLIBRARIES_SOURCES
 	"${SRCROOT}/projectLibraries/basicRecurrenceRelations.cpp"
 

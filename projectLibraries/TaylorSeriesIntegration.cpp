@@ -1,0 +1,259 @@
+/*    Copyright (c) 2010-2016, Delft University of Technology
+ *    All rights reserved.
+ *
+ *    Redistribution and use in source and binary forms, with or without modification, are
+ *    permitted provided that the following conditions are met:
+ *      - Redistributions of source code must retain the above copyright notice, this list of
+ *        conditions and the following disclaimer.
+ *      - Redistributions in binary form must reproduce the above copyright notice, this list of
+ *        conditions and the following disclaimer in the documentation and/or other materials
+ *        provided with the distribution.
+ *      - Neither the name of the Delft University of Technology nor the names of its contributors
+ *        may be used to endorse or promote products derived from this software without specific
+ *        prior written permission.
+ *
+ *    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+ *    OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ *    COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ *    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+ *    GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ *    AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ *    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ *    OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *    Changelog
+ *      YYMMDD    Author            Comment
+ *      160505    S.D. Petrovic     File created
+ *
+ *    References
+ *
+ *    Notes
+ *
+ */
+
+#include "TaylorSeriesIntegration.h"
+
+Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_, const MarsAscentVehicle& MAV_, const StateAndTime& currentStateAndTime_, StepSize& stepSize, const double maxOrder_ = 20){
+
+    // The stepSize class is the only class that will be updated directly from this function!
+
+        // Create variables to be used in this function
+
+    celestialBody planet = planet_;                               // The celestial body class
+    MarsAscentVehicle MAV = MAV_;                                 // The MAV class
+    StateAndTime currentStateAndTime = currentStateAndTime_;      // The current state and time class
+    const double maxOrder = maxOrder_;                                  // The maximum order K (default value is 20)
+
+    // Getting the required information from the classes
+
+    // celestialBody
+    const double adiabeticIndex = planet.adiabeticIndex();                  // The adiabetic index gamma_a
+    const double specificGasConstant = planet.specificGasConstant();        // The specific gas constant Rstar
+    const double standardGravitationalParameter = planet.standardGravitationalParameter();  // The standard gravitational parameter mu
+    const double rotationalVelocity = planet.rotationalVelocity();          // The rotational velocity of the planet Omega
+    const double primeMeridianAngle = planet.primeMeridianAngle();          // The angle of the prime meridian when the inertial frame was set omega_p
+    const double inertialFrameTime = planet.inertialFrameTime();            // Time between start of simulation and when inertial frame was set
+
+    const double bodyReferenceRadius = planet.bodyReferenceRadius();         // Reference radius of the planet R
+
+
+    const Eigen::MatrixXd temperaturePolyCoefficients = planet.temperaturePolyCoefficients();   // Temperature polynomial coefficients for temperature curve P_Tn
+    const Eigen::MatrixXd temperatureAltitudeRanges = planet.temperatureAltitudeRanges();       // Temperature curve altitude ranges h
+    const Eigen::VectorXd densityPolyCoefficients = planet.densityPolyCoefficients();           // Density polynomial coefficients for density curve P_rho n
+
+    // MarsAscentVehicle
+    const double Thrust = MAV.Thrust();                                                          // T     engine nominal thrust
+    const double specificImpulse = MAV.specificImpulse();                                        // Isp     engine nominal specific impulse
+    const double referenceArea = MAV.referenceArea();                                             // S   vehicle reference area
+    const Eigen::MatrixXd dragCoefficientPolyCoefficients = MAV.dragCoefficientPolyCoefficients();            // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
+    const Eigen::MatrixXd dragCoefficientMachRanges = MAV.dragCoefficientMachRanges();                       // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
+    const Eigen::MatrixXd thrustAzimuth = MAV.thrustAzimuth();                                // psiT   these are the thrust azimuth-gimbal angles as a function of time (including the time ranges)
+    const Eigen::MatrixXd thrustElevation = MAV.thrustElevation();                                // epsilonT   these are the thrust elevation-gimbal angles as a function of time (including the time ranges)
+
+    // StateAndTime
+
+    const tudat::basic_mathematics::Vector7d currentState = currentStateAndTime.getCurrentState(); // The complete state including position, velocity and mass
+    const double currentMass = currentStateAndTime.getCurrentMass();                                // The mass seperately
+    const double currentTime = currentStateAndTime.getCurrentTime();                                // The current time
+
+    const double currentStepSize = stepSize.getCurrentStepSize();                      // The current step-size
+
+
+//////// Computations //////////
+
+    /// Thrust acceleration in B-frame ///   thrustAccelerationsBframe
+
+    const Eigen::Vector3d thrustAccelerationsPframe = Eigen::Vector3d((Thrust/currentMass),0,0);            // THIS HAS TO BE CHANGED IN THE FUTURE TO INCLUDE A WIDE RANGE OF THRUST AZIMUTH AND ELEVATION ANGLES!!!
+
+    const double thrustAzimuthTestDeg = 0;             // thrust azimuth gimbal angle [Deg] 10 for testing
+    const double thrustElevationTestDeg = 0;            // thrust elevation gimbal angle [Deg] 5 for testing
+
+    const double thrustAzimuthTest = deg2rad(thrustAzimuthTestDeg);     // thrust azimuth gimbal angle [rad]
+    const double thrustElevationTest = deg2rad(thrustElevationTestDeg); // thrust elevation gimbal angle [rad]
+
+
+    const Eigen::Vector3d thrustAccelerationsBframe = getPropulsionToBodyFrameTransformationMatrix(thrustAzimuthTest,thrustElevationTest)*thrustAccelerationsPframe;
+
+
+    /// Computing the auxiliary equations, derivatives and functions ///
+
+    Auxiliary Aux(adiabeticIndex, specificGasConstant,standardGravitationalParameter, rotationalVelocity, primeMeridianAngle,
+              inertialFrameTime, bodyReferenceRadius, temperaturePolyCoefficients, temperatureAltitudeRanges,
+              densityPolyCoefficients, Thrust, specificImpulse,
+              referenceArea, dragCoefficientPolyCoefficients, dragCoefficientMachRanges);
+
+
+    // Compute the auxiliary equations
+
+    Eigen::VectorXd auxiliaryEquations =  Aux.getAuxiliaryEquations(currentState,currentTime,thrustAccelerationsBframe);
+
+
+    // Compute the auxiliary derivatives
+
+    Eigen::VectorXd auxiliaryDerivatives = Aux.getAuxiliaryDerivatives(currentState,currentTime,thrustAccelerationsBframe,auxiliaryEquations);
+
+    // Compute the auxiliary functions
+
+    Eigen::MatrixXd auxiliaryFunctions = Aux.getAuxiliaryFunctions(currentState,currentTime,thrustAccelerationsBframe,auxiliaryEquations,auxiliaryDerivatives);
+
+
+    /// Computing the Taylor Coefficients ///
+
+    Eigen::MatrixXd TaylorCoefficients = getTaylorCoefficients(adiabeticIndex, specificGasConstant, standardGravitationalParameter, rotationalVelocity, primeMeridianAngle,
+                          inertialFrameTime, bodyReferenceRadius,temperaturePolyCoefficients, temperatureAltitudeRanges,
+                          densityPolyCoefficients, Thrust, specificImpulse,
+                          referenceArea, dragCoefficientPolyCoefficients, dragCoefficientMachRanges,
+            thrustAccelerationsBframe,
+            auxiliaryEquations,
+            auxiliaryDerivatives,
+            auxiliaryFunctions,
+            currentTime,
+            maxOrder);
+
+    /// Storing the Taylor Coefficients to a file ///
+
+
+        Eigen::MatrixXd TaylorCoefficientsOutputMatrix = Eigen::MatrixXd::Zero(7,maxOrder+1);       // Create an output matrix for the file without the first empty row
+
+        TaylorCoefficientsOutputMatrix.row(0) = TaylorCoefficients.row(1);                  // The first line entries are the maxOrder+1 Taylor Series Coefficients for     the position in the x-direction
+        TaylorCoefficientsOutputMatrix.row(1) = TaylorCoefficients.row(2);                  // The second line entries are the maxOrder+1 Taylor Series Coefficients for    the position in the y-direction
+        TaylorCoefficientsOutputMatrix.row(2) = TaylorCoefficients.row(3);                  // The third line entries are the maxOrder+1 Taylor Series Coefficients for     the position in the z-direction
+        TaylorCoefficientsOutputMatrix.row(3) = TaylorCoefficients.row(4);                  // The fourth line entries are the maxOrder+1 Taylor Series Coefficients for    the velocity in the x-direction
+        TaylorCoefficientsOutputMatrix.row(4) = TaylorCoefficients.row(5);                  // The fifth line entries are the maxOrder+1 Taylor Series Coefficients for     the velocity in the y-direction
+        TaylorCoefficientsOutputMatrix.row(5) = TaylorCoefficients.row(6);                  // The sixth line entries are the maxOrder+1 Taylor Series Coefficients for     the velocity in the z-direction
+        TaylorCoefficientsOutputMatrix.row(6) = TaylorCoefficients.row(7);                  // The seventh line entries are the maxOrder+1 Taylor Series Coefficients for   the mass
+
+
+
+        // Set directory where output files will be stored. By default, this is your project
+        // root-directory.
+        const std::string outputDirectory = "/tudatBundle/tudatApplications/thesisProject/testOutputFolder/";
+
+
+        // Set output format for matrix output.
+        Eigen::IOFormat csvFormat( 15, 0, ", ", "\n" );
+
+        // Set absolute path to file containing the Taylor Series Coefficients.
+        const std::string taylorSeriesCoefficientsAbsolutePath = outputDirectory + "test4TaylorSeriesCoefficients.csv";
+
+
+        // Check if the file already exists.
+
+
+        std::ifstream ifile(taylorSeriesCoefficientsAbsolutePath.c_str()); // Check it as an input file
+
+        bool fexists = false;   // Set the default to "It does not exist"
+
+        if (ifile){         // Attempt to open the file
+
+
+           fexists = true;      // If the file can be opened it must exist
+
+           ifile.close();   // Close the file
+
+        }
+
+
+        // If so: append, if not: create new file and put data in
+
+        if (fexists == true){
+
+            // Export the Taylor Series Coefficients matrix.
+            std::ofstream exportFile1;                          // Define the file as an output file
+
+
+            exportFile1.open(taylorSeriesCoefficientsAbsolutePath.c_str(),std::ios_base::app);      // Open the file in append mode
+
+            exportFile1 << "\n";                                            // Make sure the new matrix start on a new line
+
+            exportFile1 << TaylorCoefficientsOutputMatrix.format( csvFormat ); // Add the new values
+
+
+            exportFile1.close( );   // Close the file
+}
+            else{
+
+            // Export the Taylor Series Coefficients matrix.
+            std::ofstream exportFile1( taylorSeriesCoefficientsAbsolutePath.c_str( ) ); // Make the new file
+            exportFile1 << TaylorCoefficientsOutputMatrix.format( csvFormat );          // Store the new values
+            exportFile1.close( );   // Close the file
+        };
+
+
+        /// Performing the actual Taylor Series expansion for every state variable ///
+
+
+
+        tudat::basic_mathematics::Vector7d updatedState;        // Create a vector for the updatedState
+
+        for (int n = 0; n<updatedState.size();n++){                 // All variables
+
+        for (int k = 0; k<maxOrder+1;k++){                      // Taylor series summation
+
+            updatedState(n) += TaylorCoefficients((n+1),k)*pow(currentStepSize,k);      // Perform one step of the taylor series expansion and then add it to the previous step
+
+        } // Taylor series summation
+
+}   // All variables
+
+
+
+        double updatedTime = currentTime+currentStepSize;           // Create the updated time variable
+
+
+        /// Updating the step-size ///
+
+        tudat::basic_mathematics::Vector7d penultimateCoefficients;         // Define the Xn(K-1) vector
+        tudat::basic_mathematics::Vector7d lastCoefficients;                // Define the Xn(K) vector
+
+        for (int i = 0; i<7; i++){                                      // Fill the vectors
+
+            penultimateCoefficients(i)= TaylorCoefficients((i+1),maxOrder-1);       // Xn(K-1)
+            lastCoefficients(i)= TaylorCoefficients((i+1),(maxOrder));              // Xn(K)
+        }
+
+
+        stepSize.updateStepSizeUsingIteration(penultimateCoefficients, lastCoefficients, maxOrder); // Determining the new step-size and updating the current step-size to that
+
+        // Please note that instead of updateStepSizeUsingInteration, you can also use updateStepSizeUsingPreviousStepSize, however, this method does not work if the maximum truncation error estimate is larger
+        // than the local error tolerance and requires the previous step-size
+
+        /// Setting the ouput vector ///
+
+        Eigen::VectorXd updatedStateAndTime(8);
+
+        updatedStateAndTime(0) = updatedState(0);   // Updated position in the x-direction
+        updatedStateAndTime(1) = updatedState(1);   // Updated position in the y-direction
+        updatedStateAndTime(2) = updatedState(2);   // Updated position in the z-direction
+        updatedStateAndTime(3) = updatedState(3);   // Updated velocity in the x-direction
+        updatedStateAndTime(4) = updatedState(4);   // Updated velocity in the y-direction
+        updatedStateAndTime(5) = updatedState(5);   // Updated velocity in the z-direction
+        updatedStateAndTime(6) = updatedState(6);   // Updated mass
+        updatedStateAndTime(7) = updatedTime;   // Updated time
+
+
+
+    return updatedStateAndTime;
+
+} // End of the function
