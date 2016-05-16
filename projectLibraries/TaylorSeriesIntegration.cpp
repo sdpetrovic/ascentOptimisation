@@ -36,7 +36,7 @@
 
 
 
-///// Some required functions /////
+/* ///// Some required functions ///// (Moved to separate header and source file)
 
 /// deg2rad and rad2deg ///
 
@@ -101,7 +101,7 @@ Eigen::Quaterniond getPropulsionToBodyFrameTransformationQuaternion(
     return getBodyToPropulsionFrameTransformationQuaternion(
             thrustAzimuth, thrustElevation ).inverse( );
 }
-
+//*/
 
 /// Taylor series integration step ///
 

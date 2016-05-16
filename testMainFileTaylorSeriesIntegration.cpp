@@ -98,6 +98,9 @@
 /// Testing the actual Taylor Series integration fucntion ///
 #include <thesisProject/projectLibraries/TaylorSeriesIntegration.h>             // Original test file
 
+/// Testing the other required functions ///
+#include <thesisProject/projectLibraries/otherRequiredFunctions.h>              // Original test file
+
 
 // testing
 

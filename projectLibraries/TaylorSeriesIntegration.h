@@ -75,6 +75,8 @@
 
 #include <thesisProject/StepSize.h>             // Original test file
 
+#include <thesisProject/projectLibraries/otherRequiredFunctions.h>      // deg2rad, rad2deg and B-P transformations
+
 
 
 /// Main function ///
@@ -90,7 +92,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody &planet_,
 
 // Ouput is the updated state and time
 
-/// Some required functions ///
+/* /// Some required functions /// (Moved to separate header and source file)
 
 
 /// deg2rad ///
@@ -168,5 +170,7 @@ Eigen::Quaterniond getPropulsionToBodyFrameTransformationQuaternion(
 //    return getBodyToPropulsionFrameTransformationQuaternion(
 //            thrustAzimuth, thrustElevation ).inverse( );
 //}
+
+//*/
 
 #endif // TAYLORSERIESINTEGRATION_H
