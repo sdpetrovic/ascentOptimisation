@@ -34,6 +34,78 @@
 
 #include "TaylorSeriesIntegration.h"
 
+
+
+///// Some required functions /////
+
+/// deg2rad and rad2deg ///
+
+const double deg2rad(const double deg){
+
+    const double rad = deg*tudat::mathematical_constants::LONG_PI/180;
+
+    return rad;
+}
+
+const double rad2deg(const double rad){
+
+    const double deg = rad*180/tudat::mathematical_constants::LONG_PI;
+
+    return deg;
+}
+
+
+/// B-P frame transformations ///
+
+
+
+//! Get transformation quaternion from the Body (B) to the Propulsion (P) frame.
+Eigen::Quaterniond getBodyToPropulsionFrameTransformationQuaternion(
+        const double thrustAzimuth, const double thrustElevation )
+{
+    // Compute transformation quaternion.
+    // Note the sign change, because how angleAxisd is defined.
+    Eigen::AngleAxisd RotationAroundZaxis = Eigen::AngleAxisd(
+                -1.0 * thrustAzimuth, Eigen::Vector3d::UnitZ( ) );
+    Eigen::AngleAxisd RotationAroundYaxis = Eigen::AngleAxisd(
+                -1.0 * thrustElevation,
+                Eigen::Vector3d::UnitY( ) );
+    Eigen::Quaterniond frameTransformationQuaternion = Eigen::Quaterniond(
+                ( RotationAroundYaxis * RotationAroundZaxis ) );
+
+    // Return transformation quaternion.
+    return frameTransformationQuaternion;
+}
+
+
+//! Get transformation matrix from the Body (B) to the Propulsion (P) frame.
+Eigen::Matrix3d getBodyToPropulsionFrameTransformationMatrix(
+    const double thrustAzimuth, const double thrustElevation )
+{
+    return getBodyToPropulsionFrameTransformationQuaternion(
+            thrustAzimuth, thrustElevation ).toRotationMatrix( );
+}
+
+//! Get transformation matrix from the Propulsion (P) to the Body (B) frame.
+Eigen::Matrix3d getPropulsionToBodyFrameTransformationMatrix(
+    const double thrustAzimuth, const double thrustElevation )
+{
+    return getBodyToPropulsionFrameTransformationMatrix(
+            thrustAzimuth, thrustElevation ).transpose( );
+}
+
+//! Get transformation quaternion from the Propulsion (P) to the Body (B) frame.
+Eigen::Quaterniond getPropulsionToBodyFrameTransformationQuaternion(
+        const double thrustAzimuth, const double thrustElevation )
+{
+    return getBodyToPropulsionFrameTransformationQuaternion(
+            thrustAzimuth, thrustElevation ).inverse( );
+}
+
+
+/// Taylor series integration step ///
+
+
 Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_, const MarsAscentVehicle& MAV_, const StateAndTime& currentStateAndTime_, StepSize& stepSize, const double maxOrder_ = 20){
 
     // The stepSize class is the only class that will be updated directly from this function!
@@ -145,17 +217,29 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
         TaylorCoefficientsOutputMatrix.row(6) = TaylorCoefficients.row(7);                  // The seventh line entries are the maxOrder+1 Taylor Series Coefficients for   the mass
 
 
+ /*       /// Start debug ///
 
-        // Set directory where output files will be stored. By default, this is your project
-        // root-directory.
-        const std::string outputDirectory = "/tudatBundle/tudatApplications/thesisProject/testOutputFolder/";
+        std::cout<<"Does this even work? :S"<<std::endl;
+
+        std::cout<<"x-position coefficients are: "<<TaylorCoefficientsOutputMatrix.row(0)<<std::endl;
+        std::cout<<"y-position coefficients are: "<<TaylorCoefficientsOutputMatrix.row(1)<<std::endl;
+        std::cout<<"z-position coefficients are: "<<TaylorCoefficientsOutputMatrix.row(2)<<std::endl;
+        std::cout<<"x-velocity coefficients are: "<<TaylorCoefficientsOutputMatrix.row(3)<<std::endl;
+        std::cout<<"y-velocity coefficients are: "<<TaylorCoefficientsOutputMatrix.row(4)<<std::endl;
+        std::cout<<"z-velocity coefficients are: "<<TaylorCoefficientsOutputMatrix.row(5)<<std::endl;
+        std::cout<<"mass coefficients are: "<<TaylorCoefficientsOutputMatrix.row(6)<<std::endl;
+
+ //*/       /// End debug ///
+
+        // Set directory where output files will be stored. THIS REQUIRES THE COMPLETE PATH IN ORDER TO WORK!!
+        const std::string outputDirectory = "/home/stachap/Documents/Thesis/03. Tudat/tudatBundle/tudatApplications/thesisProject/testOutputFolder/";
 
 
         // Set output format for matrix output.
         Eigen::IOFormat csvFormat( 15, 0, ", ", "\n" );
 
         // Set absolute path to file containing the Taylor Series Coefficients.
-        const std::string taylorSeriesCoefficientsAbsolutePath = outputDirectory + "test4TaylorSeriesCoefficients.csv";
+        const std::string taylorSeriesCoefficientsAbsolutePath = outputDirectory + "test6TaylorSeriesCoefficients.csv";
 
 
         // Check if the file already exists.
@@ -189,6 +273,8 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
             exportFile1 << TaylorCoefficientsOutputMatrix.format( csvFormat ); // Add the new values
 
+            std::cout<<"The file called "<<taylorSeriesCoefficientsAbsolutePath<<" has been appended"<<std::endl;
+
 
             exportFile1.close( );   // Close the file
 }
@@ -196,6 +282,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
             // Export the Taylor Series Coefficients matrix.
             std::ofstream exportFile1( taylorSeriesCoefficientsAbsolutePath.c_str( ) ); // Make the new file
+            std::cout<<"New file called "<<taylorSeriesCoefficientsAbsolutePath<<" has been created"<<std::endl;
             exportFile1 << TaylorCoefficientsOutputMatrix.format( csvFormat );          // Store the new values
             exportFile1.close( );   // Close the file
         };

@@ -859,7 +859,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         Eigen::IOFormat csvFormat( 15, 0, ", ", "\n" );
 
         // Set absolute path to file containing the Taylor Series Coefficients.
-        const std::string taylorSeriesCoefficientsAbsolutePath = outputDirectory + "test4TaylorSeriesCoefficients.csv";
+        const std::string taylorSeriesCoefficientsAbsolutePath = outputDirectory + "test5TaylorSeriesCoefficients.csv";
 
 
         // Check if the file already exists.
@@ -897,6 +897,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
             exportFile1 << TaylorCoefficientsOutputMatrix.format( csvFormat );
 
+                        std::cout<<"The file called "<<taylorSeriesCoefficientsAbsolutePath<<" has been appended"<<std::endl;
+
 
             exportFile1.close( );
 }
@@ -904,6 +906,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
             // Export the Taylor Series Coefficients matrix.
             std::ofstream exportFile1( taylorSeriesCoefficientsAbsolutePath.c_str( ) );
+
+                        std::cout<<"New file called "<<taylorSeriesCoefficientsAbsolutePath<<" has been created"<<std::endl;
+
             exportFile1 << TaylorCoefficientsOutputMatrix.format( csvFormat );
             exportFile1.close( );
         };

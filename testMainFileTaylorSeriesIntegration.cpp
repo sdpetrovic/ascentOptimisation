@@ -198,15 +198,24 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
         StepSize stepSize; // Initializing the stepSize class. THIS SHOULD BE DONE BEFORE THE START OF THE INTEGRATION!!!!!
 
+//        const double currentStepSize = stepSize.getCurrentStepSize();
 
+//        std::cout<<"The current stepSize = "<<currentStepSize<<std::endl;
 
         /// Performing the actual TSI integration ///
 
 
 
         Eigen::VectorXd updatedStateAndTimeVector = performTaylorSeriesIntegrationStep(Mars, MAV, currentStateAndTime, stepSize, maxOrder);
+        // This function has the output: updated position, updated velocity, updated mass and updated time
 
         std::cout<<"updatedStateAndTimeVector = "<<updatedStateAndTimeVector<<std::endl;
+
+
+        // Check to see if the class has been updated from within the TSI function
+//        const double nextStepSize = stepSize.getCurrentStepSize();
+
+//        std::cout<<"The next stepSize = "<<nextStepSize<<std::endl;
 
 
     return 0;
