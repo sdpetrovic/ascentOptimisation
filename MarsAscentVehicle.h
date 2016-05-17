@@ -99,20 +99,20 @@ public:
                 dragCoefficientPolyCoefficients_(0,0) = 0.2;
 
                 // Section 2: Mach range 0.5 to 1
-                dragCoefficientPolyCoefficients_(1,0) = -2.483e-16;
+                dragCoefficientPolyCoefficients_(1,0) = -2.482534153247274e-16; //-2.483e-16;
                 dragCoefficientPolyCoefficients_(1,1) = 0.4;
 
                 // Section 3: Mach range 1 to 1.3
-                dragCoefficientPolyCoefficients_(2,0) = -0.167;
-                dragCoefficientPolyCoefficients_(2,1) = 0.567;
+                dragCoefficientPolyCoefficients_(2,0) = -0.166666666666666; //-0.167;
+                dragCoefficientPolyCoefficients_(2,1) = 0.566666666666666; //0.567;
 
                 // Section 4: Mach range 1.3 to 2.5
-                dragCoefficientPolyCoefficients_(3,0) = 0.754;
-                dragCoefficientPolyCoefficients_(3,1) = -0.142;
+                dragCoefficientPolyCoefficients_(3,0) = 0.754166666666666; //0.754;
+                dragCoefficientPolyCoefficients_(3,1) = -0.1416666666666666; //-0.142;
 
                 // Section 5: Mach range 2.5 to 4
-                dragCoefficientPolyCoefficients_(4,0) = 0.567;
-                dragCoefficientPolyCoefficients_(4,1) = -0.0667;
+                dragCoefficientPolyCoefficients_(4,0) = 0.566666666666667; //0.567;
+                dragCoefficientPolyCoefficients_(4,1) = -0.06666666666667; //-0.0667;
 
                 // Section 6: Mach range > 4
                 dragCoefficientPolyCoefficients_(5,0) = 0.3;

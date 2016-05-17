@@ -123,33 +123,33 @@ public:
 
 
                 // Section 1: -0.6 to 5.04 km MOLA
-                temperaturePolyCoefficients_(0,0) = 194.165;
-                temperaturePolyCoefficients_(0,1) = 3.415;
+                temperaturePolyCoefficients_(0,0) = 1.941652034325321e2; //194.165;
+                temperaturePolyCoefficients_(0,1) = 3.415126502921027; //3.415;
 
                 // Section 2: 5.04 to 35.53 km MOLA
-                temperaturePolyCoefficients_(1,0) = 222.051;
-                temperaturePolyCoefficients_(1,1) = -2.130;
-                temperaturePolyCoefficients_(1,2) = 0.006;
+                temperaturePolyCoefficients_(1,0) = 2.220519114287426e2; //222.051;
+                temperaturePolyCoefficients_(1,1) = -2.129543575042308; //-2.130;
+                temperaturePolyCoefficients_(1,2) = 0.005776725906697; //0.006;
 
                 // Section 3: 35.53 to 75.07 km MOLA
-                temperaturePolyCoefficients_(2,0) = -1.167e4;
-                temperaturePolyCoefficients_(2,1) = 1.407e3;
-                temperaturePolyCoefficients_(2,2) = -68.294;
-                temperaturePolyCoefficients_(2,3) = 1.733;
-                temperaturePolyCoefficients_(2,4) = -0.0243;
-                temperaturePolyCoefficients_(2,5) = 1.785e-4;
-                temperaturePolyCoefficients_(2,6) = -5.388e-7;
+                temperaturePolyCoefficients_(2,0) = -1.166700024356974e4; //-1.167e4;
+                temperaturePolyCoefficients_(2,1) = 1.407033824881397e3; //1.407e3;
+                temperaturePolyCoefficients_(2,2) = -68.293490289773885; //-68.294;
+                temperaturePolyCoefficients_(2,3) = 1.732604336852450; //1.733;
+                temperaturePolyCoefficients_(2,4) = -0.024282109172326; //-0.0243;
+                temperaturePolyCoefficients_(2,5) = 1.785414835183911e-4; //1.785e-4;
+                temperaturePolyCoefficients_(2,6) = -5.388211105876920e-7; //-5.388e-7;
 
                 // Section 4: 75.07 to 170.05 km MOLA
-                temperaturePolyCoefficients_(3,0) = 2.236e5;
-                temperaturePolyCoefficients_(3,1) = -1.523e4;
-                temperaturePolyCoefficients_(3,2) = 447.378;
-                temperaturePolyCoefficients_(3,3) = -7.405;
-                temperaturePolyCoefficients_(3,4) = 0.076;
-                temperaturePolyCoefficients_(3,5) = -4.862e-4;
-                temperaturePolyCoefficients_(3,6) = 1.931e-6;
-                temperaturePolyCoefficients_(3,7) = -4.328e-9;
-                temperaturePolyCoefficients_(3,8) = 4.1942e-12;
+                temperaturePolyCoefficients_(3,0) = 2.235938205082397e5; //2.236e5;
+                temperaturePolyCoefficients_(3,1) = -1.522453634203182e4; //-1.523e4;
+                temperaturePolyCoefficients_(3,2) = 4.473778178802255e2; //447.378;
+                temperaturePolyCoefficients_(3,3) = -7.404992496139436; //-7.405;
+                temperaturePolyCoefficients_(3,4) = 0.075523662530184; //0.076;
+                temperaturePolyCoefficients_(3,5) = -4.862260819979541e-4; //-4.862e-4;
+                temperaturePolyCoefficients_(3,6) = 1.930903736685301e-6; //1.931e-6;
+                temperaturePolyCoefficients_(3,7) = -4.327597099336157e-9; //-4.328e-9;
+                temperaturePolyCoefficients_(3,8) = 4.194150230099975e-12; //4.1942e-12;
 
                 // Section 5: 170.05 to 320.0 km MOLA
                 temperaturePolyCoefficients_(4,0) = 136.5;
@@ -182,17 +182,17 @@ public:
             // Density Polynomial Coefficients
                 densityPolyCoefficients_ = Eigen::VectorXd::Zero(11);  // Prho n Density polynomial coefficients
 
-                densityPolyCoefficients_(0) = -4.172;
-                densityPolyCoefficients_(1) = -0.0962;
-                densityPolyCoefficients_(2) = 1.414e-3;
-                densityPolyCoefficients_(3) = -9.604e-5;
-                densityPolyCoefficients_(4) = 2.273e-6;
-                densityPolyCoefficients_(5) = -2.884e-8;
-                densityPolyCoefficients_(6) = 2.146e-10;
-                densityPolyCoefficients_(7) = -9.620e-13;
-                densityPolyCoefficients_(8) = 2.559e-15;
-                densityPolyCoefficients_(9) = -3.724e-18;
-                densityPolyCoefficients_(10) = 2.287e-21;
+                densityPolyCoefficients_(0) = -4.172119763435839; //-4.172;
+                densityPolyCoefficients_(1) = -0.096179484326282; //-0.0962;
+                densityPolyCoefficients_(2) = 0.001413771036602; //1.414e-3;
+                densityPolyCoefficients_(3) = -9.603504536940288e-5; //-9.604e-5;
+                densityPolyCoefficients_(4) = 2.272923177465556e-6; //2.273e-6;
+                densityPolyCoefficients_(5) = -2.883775814622154e-8; //-2.884e-8;
+                densityPolyCoefficients_(6) = 2.145912177247706e-10; //2.146e-10;
+                densityPolyCoefficients_(7) = -9.620258504409526e-13; //-9.620e-13;
+                densityPolyCoefficients_(8) = 2.558809216119519e-15; //2.559e-15;
+                densityPolyCoefficients_(9) = -3.724118893425651e-18; //-3.724e-18;
+                densityPolyCoefficients_(10) = 2.287447109373264e-21; //2.287e-21;
 
 
 

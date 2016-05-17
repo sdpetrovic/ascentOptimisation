@@ -184,6 +184,7 @@ set(PROJECTLIBRARIES_SOURCES
     "${SRCROOT}/projectLibraries/TaylorSeriesIntegration.cpp"
     "${SRCROOT}/projectLibraries/otherRequiredFunctions.cpp"
     "${SRCROOT}/projectLibraries/airTemperature.cpp"
+    "${SRCROOT}/projectLibraries/airDensity.cpp"
 #    "${SRCROOT}/projectLibraries/referenceFrameTransformationsUpdated.cpp"  # Does not quite work yet, so leaving it out for now
 )
 
@@ -195,6 +196,7 @@ set(PROJECTLIBRARIES_HEADERS
     "${SRCROOT}/projectLibraries/TaylorSeriesIntegration.h"
     "${SRCROOT}/projectLibraries/otherRequiredFunctions.h"
     "${SRCROOT}/projectLibraries/airTemperature.h"
+    "${SRCROOT}/projectLibraries/airDensity.h"
 #    "${SRCROOT}/projectLibraries/referenceFrameTransformationsUpdated.h"   # Does not quite work yet, so leaving it out for now
 )
 

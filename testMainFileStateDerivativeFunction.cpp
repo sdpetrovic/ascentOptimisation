@@ -95,6 +95,8 @@
 /// Testing the airTemperature functions ///
 #include <thesisProject/projectLibraries/airTemperature.h>      // Original test file
 
+/// Testing the airDensity function ///
+#include <thesisProject/projectLibraries/airDensity.h>          // Original test file
 
 // testing
 
@@ -319,22 +321,26 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //*/
 
 
-/// Testing the local air temperature class ///
+/// Testing the local air temperature function ///
 
-    const double currentAltitude = Radius-Mars.bodyReferenceRadius();
+    const double currentAltitude = Radius-Mars.bodyReferenceRadius()+50;
 
     const double currentTemperature = air_temperature::airTemperature(Mars.temperaturePolyCoefficients(), Mars.temperatureAltitudeRanges(),currentAltitude);
 
-/*    // Check output
+   // Check output
     std::cout<<"currentAltitude = "<<currentAltitude<<std::endl;
     std::cout<<"currentTemperature = "<<currentTemperature<<std::endl;
-    std::cout<<"Radius = "<<Radius<<std::endl;
+ /*   std::cout<<"Radius = "<<Radius<<std::endl;
     std::cout<<"R_MOLA = "<<Mars.bodyReferenceRadius()<<std::endl;
     std::cout<<"Radius-3395.4 = "<<Radius-3395.4<<std::endl;
     std::cout<<"R_MOLA-3396 = "<<Mars.bodyReferenceRadius()-3396<<std::endl;
 //*/
 
+/// Testing the local air density function ///
 
+    const double currentDensity= air_density::airDensity(Mars.densityPolyCoefficients(),  currentAltitude);
+
+    std::cout<<"The current air density = "<<currentDensity<<std::endl;
 
 
 
