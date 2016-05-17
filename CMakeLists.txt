@@ -183,6 +183,7 @@ set(PROJECTLIBRARIES_SOURCES
     "${SRCROOT}/projectLibraries/allRecurrenceRelations.cpp"
     "${SRCROOT}/projectLibraries/TaylorSeriesIntegration.cpp"
     "${SRCROOT}/projectLibraries/otherRequiredFunctions.cpp"
+    "${SRCROOT}/projectLibraries/airTemperature.cpp"
 #    "${SRCROOT}/projectLibraries/referenceFrameTransformationsUpdated.cpp"  # Does not quite work yet, so leaving it out for now
 )
 
@@ -193,6 +194,7 @@ set(PROJECTLIBRARIES_HEADERS
     "${SRCROOT}/projectLibraries/allRecurrenceRelations.h"
     "${SRCROOT}/projectLibraries/TaylorSeriesIntegration.h"
     "${SRCROOT}/projectLibraries/otherRequiredFunctions.h"
+    "${SRCROOT}/projectLibraries/airTemperature.h"
 #    "${SRCROOT}/projectLibraries/referenceFrameTransformationsUpdated.h"   # Does not quite work yet, so leaving it out for now
 )
 
@@ -215,6 +217,9 @@ add_executable(simple_verification_testMainFileTaylorSeriesIntegration "${SRCROO
 setup_executable_target(simple_verification_testMainFileTaylorSeriesIntegration "${SRCROOT}")
 target_link_libraries(simple_verification_testMainFileTaylorSeriesIntegration project_libraries tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
 
+add_executable(simple_verification_testMainFileStateDerivativeFunction "${SRCROOT}/testMainFileStateDerivativeFunction.cpp")
+setup_executable_target(simple_verification_testMainFileStateDerivativeFunction "${SRCROOT}")
+target_link_libraries(simple_verification_testMainFileStateDerivativeFunction project_libraries tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
 
 
 
