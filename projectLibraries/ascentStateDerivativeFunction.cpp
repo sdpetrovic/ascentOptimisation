@@ -236,13 +236,13 @@ const tudat::basic_mathematics::Vector7d ascentStateDerivativeFunction(const cel
 
     const Eigen::Vector3d thrustAccelerationsBframe = getPropulsionToBodyFrameTransformationMatrix(thrustAzimuthTest,thrustElevationTest)*thrustAccelerationsPframe;
 
-//    std::cout<<"The thrust accelerations in the B-frame are "<<thrustAccelerationsBframe<<std::endl;
+    std::cout<<"The thrust accelerations in the B-frame are "<<thrustAccelerationsBframe<<std::endl;
 
     /// Drag acceleration in B-frame ///
 
     const Eigen::Vector3d dragAccelerationsBframe = Eigen::Vector3d((-currentDrag/massMAV),0,0);
 
-//    std::cout<<"The drag accelerations in the B-frame are "<<dragAccelerationsBframe<<std::endl;
+    std::cout<<"The drag accelerations in the B-frame are "<<dragAccelerationsBframe<<std::endl;
 
 /// Transfer to the inertial frame ///
 ///
@@ -281,6 +281,8 @@ const tudat::basic_mathematics::Vector7d ascentStateDerivativeFunction(const cel
 
 //    std::cout<<"The thrust accelerations in the I-frame are "<<thrustAccelerationsIframe<<std::endl;
 //    std::cout<<"The drag accelerations in the I-frame are "<<dragAccelerationsIframe<<std::endl;
+
+//    std::cout<<"The thrust+drag accelerations in the I-frame are "<<thrustAccelerationsIframe+dragAccelerationsIframe<<std::endl;
 
 
 /// Compute gravitational acceleration ///

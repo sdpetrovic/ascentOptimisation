@@ -523,11 +523,17 @@ public:
                                           cos(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*sin(auxiliaryEquationsVector(13))*sin(auxiliaryEquationsVector(14)));                // u5
 
     auxiliaryDerivativesVector(6) = -standardGravitationalParameter*(auxiliaryEquationsVector(3)/auxiliaryEquationsVector(9))+auxiliaryEquationsVector(0)*
-            (cos(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14))-cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(14)))-
+            (cos(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14))+sin(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(14)))-
             thrustAccelerationsBframe(1)*cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(13))+
             thrustAccelerationsBframe(2)*(cos(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*sin(auxiliaryEquationsVector(14))-sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(14)));                // u6
 
+    // u6 changed becuase of the mistake found in the complete transformation matrix:
+    // (cos(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14))-cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(14))) [wrong] =>
+    // (cos(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14))+sin(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(14))) [correct]
 
+//    std::cout<<"The initial acceleration in the x-direction = "<<auxiliaryDerivativesVector(4)<<std::endl;
+//    std::cout<<"The initial acceleration in the y-direction = "<<auxiliaryDerivativesVector(5)<<std::endl;
+//    std::cout<<"The initial acceleration in the z-direction = "<<auxiliaryDerivativesVector(6)<<std::endl;
 
     /// Debug ///
 /*
@@ -980,12 +986,13 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
 
 
     // w6
+    auxiliaryFunctionsMatrix(6,0) = auxiliaryFunctionsMatrix(4,4)*auxiliaryFunctionsMatrix(4,7);  // Added because of the mistake found in the complete transformation matrix
     auxiliaryFunctionsMatrix(6,1) = auxiliaryEquationsVector(3)/auxiliaryEquationsVector(9);
     auxiliaryFunctionsMatrix(6,2) = auxiliaryFunctionsMatrix(4,5)*auxiliaryFunctionsMatrix(4,15);
     auxiliaryFunctionsMatrix(6,3) = auxiliaryFunctionsMatrix(4,6)*auxiliaryFunctionsMatrix(4,9);
     auxiliaryFunctionsMatrix(6,4) = auxiliaryFunctionsMatrix(4,5)*auxiliaryFunctionsMatrix(4,11);
     auxiliaryFunctionsMatrix(6,5) = auxiliaryFunctionsMatrix(4,4)*auxiliaryEquationsVector(16);
-    auxiliaryFunctionsMatrix(6,6) = auxiliaryFunctionsMatrix(4,2)*(auxiliaryFunctionsMatrix(6,2)-auxiliaryFunctionsMatrix(4,11));
+    auxiliaryFunctionsMatrix(6,6) = auxiliaryFunctionsMatrix(4,2)*(auxiliaryFunctionsMatrix(6,2)+auxiliaryFunctionsMatrix(6,0)); // Changed becuase of the mistake found in the complete transformation matrix
 
 
 

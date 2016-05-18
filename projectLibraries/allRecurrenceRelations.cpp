@@ -150,6 +150,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     Eigen::VectorXd WVector5_8 = Eigen::VectorXd::Zero(maxOrder);     // W5,8
 
 
+    Eigen::VectorXd WVector6_0 = Eigen::VectorXd::Zero(maxOrder);     // W6,0  // Added because of the mistake found in the complete transformation matrix
     Eigen::VectorXd WVector6_1 = Eigen::VectorXd::Zero(maxOrder);     // W6,1
     Eigen::VectorXd WVector6_2 = Eigen::VectorXd::Zero(maxOrder);     // W6,2
     Eigen::VectorXd WVector6_3 = Eigen::VectorXd::Zero(maxOrder);     // W6,3
@@ -376,6 +377,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     WVector5_8(0) = initialFunctionsMatrix(5,8);     // W5,8
 
 
+    WVector6_0(0) = initialFunctionsMatrix(6,0);     // W6,0  // Added because of the mistake found in the complete transformation matrix
     WVector6_1(0) = initialFunctionsMatrix(6,1);     // W6,1
     WVector6_2(0) = initialFunctionsMatrix(6,2);     // W6,2
     WVector6_3(0) = initialFunctionsMatrix(6,3);     // W6,3
@@ -670,12 +672,13 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         // 6
 
+        WVector6_0(k) = getMultiplicationRecurrenceRelation(WVector4_4,WVector4_7,k);               // Added because of the mistake found in the complete transformation matrix
         WVector6_1(k) = getDivisionRecurrenceRelation(XMatrix.row(3),XMatrix.row(9),WVector6_1,k);
         WVector6_2(k) = getMultiplicationRecurrenceRelation(WVector4_5,WVector4_15,k);
         WVector6_3(k) = getMultiplicationRecurrenceRelation(WVector4_6,WVector4_9,k);
         WVector6_4(k) = getMultiplicationRecurrenceRelation(WVector4_5,WVector4_11,k);
         WVector6_5(k) = getMultiplicationRecurrenceRelation(WVector4_4,XMatrix.row(16),k);
-        WVector6_6(k) = getMultiplicationRecurrenceRelation(WVector4_2,(WVector6_2-WVector4_11),k);
+        WVector6_6(k) = getMultiplicationRecurrenceRelation(WVector4_2,(WVector6_2+WVector6_0),k); // Changed because of the mistake found in the complete transformation matrix
 
         UMatrix(6,k) = -standardGravitationalParameter*WVector6_1(k)+WVector6_6(k)-thrustAccelerationsBframe(1)*WVector6_3(k)+thrustAccelerationsBframe(2)*(WVector6_4(k)-WVector6_5(k));
 
