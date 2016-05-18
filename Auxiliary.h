@@ -25,6 +25,7 @@
  *    Changelog
  *      YYMMDD    Author            Comment
  *      160413    S.D. Petrovic     File created
+ *      160518    S.D. Petrovic     Fixed the mistake I made with the transformation matrix T_IB which resulted in a mistake in u6
  *
  *    References
  *

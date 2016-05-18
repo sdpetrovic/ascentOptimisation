@@ -25,6 +25,8 @@
  *    Changelog
  *      YYMMDD    Author            Comment
  *      160517    S.D. Petrovic     File created
+ *      160518    S.D. Petrovic     Changed the state derivative function header/source file structure into a class. Now the input for the function itself is simply time and state.
+ *                                  This way, it should be able to be used by the existing RKF integrator from the tudat library.
  *
  *    References
  *
@@ -106,6 +108,9 @@
 
 /// Testing the ascentStateDerivativeFunction ///
 #include <thesisProject/projectLibraries/ascentStateDerivativeFunction.h>   // Original test file
+
+/// Testing the ascentStateDerivativeFunctionClass ///
+#include <thesisProject/ascentStateDerivativeFunctionClass.h>       // Adapted file from thesisProject/projectLibraries/ascentStateDerivativeFunction.h
 
 // testing
 
@@ -210,9 +215,38 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 ///////////////////////////////////////////////////////////////////////////////////
 
 
+    /// Testing with the state derivative function header and source file
     const tudat::basic_mathematics::Vector7d stateDerivativeVector = ascentStateDerivativeFunction(Mars,MAV,stateAndTime);
 
     std::cout<<"The state derivative vector is "<<stateDerivativeVector<<std::endl;
+
+
+    /// Testing with the state derivative function class
+
+    // Initial test
+//    ascentStateDerivativeFunctionClass stateDerivativeFunctionClass;    // Initialize the class
+
+//    const tudat::basic_mathematics::Vector7d stateDerivativeClassVector = stateDerivativeFunctionClass.ascentStateDerivativeFunction(Mars,MAV,stateAndTime);
+
+//    std::cout<<"The state derivative vector obtained from the class is "<<stateDerivativeClassVector<<std::endl;
+
+    // Full complete test
+
+    std::cout<<"It should not be re-initilizing the class, especially here..."<<std::endl;
+
+    ascentStateDerivativeFunctionClass stateDerivativeFunctionClass(Mars,MAV);     // Initialize the class
+
+    const tudat::basic_mathematics::Vector7d stateDerivativeClassVector = stateDerivativeFunctionClass.ascentStateDerivativeFunction(stateAndTime.getCurrentTime(),stateAndTime.getCurrentState());
+
+    std::cout<<"The state derivative vector obtained from the class is "<<stateDerivativeClassVector<<std::endl;
+
+
+///// Testing the implementation in the integrator ///
+
+//    const double initialStepSize = 0.2;     // Using the same initial step-size as defined for TSI
+
+
+
 
 
     return 0;

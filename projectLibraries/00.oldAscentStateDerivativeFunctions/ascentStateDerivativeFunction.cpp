@@ -236,13 +236,13 @@ const tudat::basic_mathematics::Vector7d ascentStateDerivativeFunction(const cel
 
     const Eigen::Vector3d thrustAccelerationsBframe = getPropulsionToBodyFrameTransformationMatrix(thrustAzimuthTest,thrustElevationTest)*thrustAccelerationsPframe;
 
-//    std::cout<<"The thrust accelerations in the B-frame are "<<thrustAccelerationsBframe<<std::endl;
+    std::cout<<"The thrust accelerations in the B-frame are "<<thrustAccelerationsBframe<<std::endl;
 
     /// Drag acceleration in B-frame ///
 
     const Eigen::Vector3d dragAccelerationsBframe = Eigen::Vector3d((-currentDrag/massMAV),0,0);
 
-//    std::cout<<"The drag accelerations in the B-frame are "<<dragAccelerationsBframe<<std::endl;
+    std::cout<<"The drag accelerations in the B-frame are "<<dragAccelerationsBframe<<std::endl;
 
 /// Transfer to the inertial frame ///
 ///
@@ -313,9 +313,9 @@ const tudat::basic_mathematics::Vector7d ascentStateDerivativeFunction(const cel
 
 
 
-//    std::cout<<"The velocities in the I-frame are "<<stateAndTime.getCurrentVelocity()<<std::endl;
-//    std::cout<<"The total accelerations in the I-frame are "<<totalAccelerationsIframe<<std::endl;
-//    std::cout<<"The mass flow rate = "<<massFlowRate<<std::endl;
+    std::cout<<"The velocities in the I-frame are "<<stateAndTime.getCurrentVelocity()<<std::endl;
+    std::cout<<"The total accelerations in the I-frame are "<<totalAccelerationsIframe<<std::endl;
+    std::cout<<"The mass flow rate = "<<massFlowRate<<std::endl;
 
 
 /// Define the output vector and fill it ///
