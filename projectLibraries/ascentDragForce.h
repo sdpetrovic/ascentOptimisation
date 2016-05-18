@@ -32,30 +32,34 @@
  *
  */
 
-#ifndef AIRTEMPERATURE_H
-#define AIRTEMPERATURE_H
-
+#ifndef ASCENTDRAGFORCE_H
+#define ASCENTDRAGFORCE_H
 
 #include <iostream>
 #include <Eigen/Core>
 #include <cmath>
 
+#include <thesisProject/projectLibraries/dragCoefficient.h>     // Drag coefficient function
 
-namespace air_temperature
+namespace Drag
 {
 
-/// Air Temperature function ///
-/// \brief airTemperature   Computes the current air temperature in [K]
-/// \param temperaturePolyCoefficients  The polynomial coefficients for the temperature curve
-/// \param temperatureAltitudeRanges    The altitudes defining each section of the temperature curve [km]
-/// \param altitude r-R_MOLA [km]
+/// Drag force function ///
+/// \brief ascentDragForce Function that computes the drag in kN
+/// \param rotationalVelocity       The velocity of the MAV in the rotational reference frame
+/// \param temp         The current temperature
+/// \param adiabeticIndex   The adiabetic index gamma_a of the Martian atmosphere
+/// \param specificGasConstant The specific gas constant R_a_star of the Martian atmosphere
+/// \param dragCoefficientPolyCoefficients The polynomial coefficients for the drag coefficient curves
+/// \param dragCoefficientMachRanges    The Mach ranges corresponding to the different sections of the drag coefficient curves
+/// \param referenceArea    The reference area S [km^2]
+/// \param currentAirDensity   The current air density
 /// \return
 ///
-const double airTemperature(const Eigen::MatrixXd temperaturePolyCoefficients, const Eigen::MatrixXd temperatureAltitudeRanges, const double altitude);
 
+const double ascentDragForce(const double rotationalVelocity, const double temp, const double adiabeticIndex, const double specificGasConstant,
+                             const Eigen::MatrixXd dragCoefficientPolyCoefficients, const Eigen::MatrixXd dragCoefficientMachRanges, const double referenceArea, const double currentAirDensity);
 
+} // end namespace Drag
 
-
-} // end namespace air_temperature
-
-#endif // AIRTEMPERATURE_H
+#endif // ASCENTDRAGFORCE_H

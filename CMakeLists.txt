@@ -185,6 +185,9 @@ set(PROJECTLIBRARIES_SOURCES
     "${SRCROOT}/projectLibraries/otherRequiredFunctions.cpp"
     "${SRCROOT}/projectLibraries/airTemperature.cpp"
     "${SRCROOT}/projectLibraries/airDensity.cpp"
+    "${SRCROOT}/projectLibraries/ascentDragForce.cpp"
+    "${SRCROOT}/projectLibraries/dragCoefficient.cpp"
+    "${SRCROOT}/projectLibraries/ascentStateDerivativeFunction.cpp"
 #    "${SRCROOT}/projectLibraries/referenceFrameTransformationsUpdated.cpp"  # Does not quite work yet, so leaving it out for now
 )
 
@@ -197,6 +200,9 @@ set(PROJECTLIBRARIES_HEADERS
     "${SRCROOT}/projectLibraries/otherRequiredFunctions.h"
     "${SRCROOT}/projectLibraries/airTemperature.h"
     "${SRCROOT}/projectLibraries/airDensity.h"
+    "${SRCROOT}/projectLibraries/ascentDragForce.h"
+    "${SRCROOT}/projectLibraries/dragCoefficient.h"
+    "${SRCROOT}/projectLibraries/ascentStateDerivativeFunction.h"
 #    "${SRCROOT}/projectLibraries/referenceFrameTransformationsUpdated.h"   # Does not quite work yet, so leaving it out for now
 )
 
@@ -223,6 +229,8 @@ add_executable(simple_verification_testMainFileStateDerivativeFunction "${SRCROO
 setup_executable_target(simple_verification_testMainFileStateDerivativeFunction "${SRCROOT}")
 target_link_libraries(simple_verification_testMainFileStateDerivativeFunction project_libraries tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
 
+add_executable(simple_verification_testMainFileRKF "${SRCROOT}/testMainFileRKF.cpp")
+setup_executable_target(simple_verification_testMainFileRKF "${SRCROOT}")
+target_link_libraries(simple_verification_testMainFileRKF project_libraries tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
 
 
- 

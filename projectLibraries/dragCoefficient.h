@@ -32,8 +32,9 @@
  *
  */
 
-#ifndef AIRTEMPERATURE_H
-#define AIRTEMPERATURE_H
+#ifndef DRAGCOEFFICIENT_H
+#define DRAGCOEFFICIENT_H
+
 
 
 #include <iostream>
@@ -41,21 +42,19 @@
 #include <cmath>
 
 
-namespace air_temperature
+namespace Drag
 {
 
-/// Air Temperature function ///
-/// \brief airTemperature   Computes the current air temperature in [K]
-/// \param temperaturePolyCoefficients  The polynomial coefficients for the temperature curve
-/// \param temperatureAltitudeRanges    The altitudes defining each section of the temperature curve [km]
-/// \param altitude r-R_MOLA [km]
+/// Drag coefficient function ///
+/// \brief dragCoefficient  Computed the drag coefficient depending on the Mach number and the corresponding section of the C_D curve
+/// \param machNumber   The current Mach number
+/// \param dragCoefficientPolyCoefficients The drag coefficient polynomial curve fit coefficients
+/// \param dragCoefficientMachRanges The drag coefficient section Mach ranges
 /// \return
 ///
-const double airTemperature(const Eigen::MatrixXd temperaturePolyCoefficients, const Eigen::MatrixXd temperatureAltitudeRanges, const double altitude);
 
+const double dragCoefficient(const double machNumber, const Eigen::MatrixXd dragCoefficientPolyCoefficients, const Eigen::MatrixXd dragCoefficientMachRanges);
 
+} // end of namespace Drag
 
-
-} // end namespace air_temperature
-
-#endif // AIRTEMPERATURE_H
+#endif // DRAGCOEFFICIENT_H
