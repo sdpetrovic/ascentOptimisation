@@ -39,7 +39,10 @@
 #include <iomanip>
 #include <cstdlib>
 #include <sstream>
+#include <stdio.h>
 
+#include <time.h>   // To determine the current computer time
+#include <sys/time.h> // To determine the current computer time
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -196,6 +199,155 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     StateAndTime currentStateAndTime(aState);        // Creating the current state class using the namespace and class directly
 
+//////////////////////////////////////////////////////////////////////////////////
+////////////////////// Testing the Taylor series integrator //////////////////////
+//////////////////////////////////////////////////////////////////////////////////
+
+/// Setting the data collection file for TSI and inserting the first values ///
+
+    // Set directory where output files will be stored. THIS REQUIRES THE COMPLETE PATH IN ORDER TO WORK!!
+    const std::string outputDirectory = "/home/stachap/Documents/Thesis/03. Tudat/tudatBundle/tudatApplications/thesisProject/01.integrationResults/TSI/";
+
+
+    // Set output format for matrix output.
+    Eigen::IOFormat csvFormat( 15, 0, ", ", "\n" );
+
+    // Set absolute path to file containing the Taylor Series Coefficients.
+    std::string taylorSeriesCoefficientsAbsolutePath = outputDirectory + "test2TSIstateAndTime.csv";
+
+    // Create a row vector for the storing of the data
+    Eigen::MatrixXd outputVector = Eigen::MatrixXd::Zero(1,8); // Create a row vector for the storing of the data
+
+    // Getting the initial conditions for storage
+    const tudat::basic_mathematics::Vector7d initialState = currentStateAndTime.getCurrentState();
+
+    // Filling the output vector
+    outputVector(0,0) = currentStateAndTime.getCurrentTime();   // Storing the initial time
+    outputVector(0,1) = initialState(0);   // Storing the initial x position
+    outputVector(0,2) = initialState(1);   // Storing the initial y position
+    outputVector(0,3) = initialState(2);   // Storing the initial z position
+    outputVector(0,4) = initialState(3);   // Storing the initial x velocity
+    outputVector(0,5) = initialState(4);   // Storing the initial y velocity
+    outputVector(0,6) = initialState(5);   // Storing the initial z velocity
+    outputVector(0,7) = initialState(6);   // Storing the initial MAV mass
+
+    // Storing the data
+
+    std::ifstream ifile(taylorSeriesCoefficientsAbsolutePath.c_str()); // Check it as an input file
+
+    bool fexists = false;   // Set the default to "It does not exist"
+
+    if (ifile){         // Attempt to open the file
+
+
+       fexists = true;      // If the file can be opened it must exist
+
+       ifile.close();   // Close the file
+
+    }
+
+
+    // If so: error and create temporary file, if not: create new file and put data in
+
+    if (fexists == true){
+
+
+        /// Get time ///
+
+        time_t rawtime;
+        struct tm * timeinfo;
+
+        time ( &rawtime );
+        timeinfo = localtime ( &rawtime );
+//        printf ( "Current local time and date: %s", asctime (timeinfo) );         // (from stackoverflow.com/questions/997946/how-to-get-current-time-and-date-in-c and from stackoverflow.com/questions/1442116/how-to-get-date-and-time-value-in-c-program)
+//        std::cout<<"time = "<<time ( &rawtime )<<std::endl;
+//        std::cout<< (timeinfo->tm_year+1900) << "-"
+//                 << (timeinfo->tm_mon + 1) << "-"
+//                 << timeinfo->tm_mday << " "
+//                 << timeinfo->tm_hour << ":"
+//                 << timeinfo->tm_min << ":"
+//                 << timeinfo->tm_sec <<std::endl;
+
+        ostringstream ConvertHour;
+        ConvertHour << timeinfo->tm_hour;
+        std::string currentHour = ConvertHour.str();
+
+//        std::cout<<"currentHour = "<<currentHour<<std::endl;
+
+        ostringstream ConvertMin;
+        ConvertMin << timeinfo->tm_min;
+        std::string currentMin = ConvertMin.str();
+
+//        std::cout<<"currentMin = "<<currentMin<<std::endl;
+
+        ostringstream ConvertSec;
+        ConvertSec << timeinfo->tm_sec;
+        std::string currentSec = ConvertSec.str();
+
+//        std::cout<<"currentSec = "<<currentSec<<std::endl;
+
+
+
+//        std::string currentRealTime = timeinfo->tm_hour + ";" + timeinfo->tm_min + ":" + timeinfo->tm_sec;
+
+//        std::cout<<"currentRealTime = "<<currentRealTime<<std::endl;
+
+        /// Get time end ///
+
+//        const double currentComputerTime = 11;   // The current CPU time used to make a new file if file already exists (code from stackoverflow.com/questions/17432502/how-can-i-measure-cpu-time-and-wall-clock-time-on-both-linux-windows)
+
+//        std::string ComputerTimeString;      // Creating a string to hold the CPU time
+
+//        ostringstream convert;          // Stream used for the conversion (as by www.cplusplus.com/articles/D9j2Nwbp/ )
+
+//        convert << currentComputerTime;      // Input the number to be converted
+
+//        ComputerTimeString = convert.str();  // Convert to string and store
+
+        if(currentSec.size() == 1){
+            currentSec = "0" + currentSec;
+        }
+
+        if (currentMin.size() == 1){
+            currentMin = "0" + currentMin;
+        }
+
+        if (currentHour.size() == 1){
+            currentHour = "0" + currentHour;
+        }
+
+
+//        std::cout<<"The length of currentSec = "<<currentSec.size()<<" and the value = "<<currentSec<<std::endl;
+
+        std::string ComputerTimeString = currentHour + ":" + currentMin + ":" + currentSec;  // Convert to string and store
+
+        std::string newFileName = "backupTSIFileAtTime_" + ComputerTimeString + ".csv";
+
+    std::cerr<<"The file name that you have chosen already exists, a new file with name "<<newFileName<<" will be created to store the data for now"<<std::endl;
+
+    // Set new absolute path to file containing the Taylor Series Coefficients.
+    taylorSeriesCoefficientsAbsolutePath = outputDirectory + newFileName;
+
+    // Export the Taylor Series Coefficients matrix.
+    std::ofstream exportFile1( taylorSeriesCoefficientsAbsolutePath.c_str( ) ); // Make the new file
+    std::cout<<"New file called "<<taylorSeriesCoefficientsAbsolutePath<<" has been created"<<std::endl;
+    exportFile1 << outputVector.format( csvFormat );          // Store the new values
+    exportFile1.close( );   // Close the file
+
+
+}
+        else{
+
+        // Export the Taylor Series Coefficients matrix.
+        std::ofstream exportFile1( taylorSeriesCoefficientsAbsolutePath.c_str( ) ); // Make the new file
+        std::cout<<"New file called "<<taylorSeriesCoefficientsAbsolutePath<<" has been created"<<std::endl;
+        exportFile1 << outputVector.format( csvFormat );          // Store the new values
+        exportFile1.close( );   // Close the file
+    };
+
+
+
+/// Defining the order and initializing the StepSize class ///
 
     const int maxOrder = 20;
 
@@ -205,7 +357,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //        std::cout<<"The current stepSize = "<<currentStepSize<<std::endl;
 
-        /// Performing the actual TSI integration ///
+/// Performing the actual TSI integration ///
 
 
 
@@ -219,6 +371,62 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //        const double nextStepSize = stepSize.getCurrentStepSize();
 
 //        std::cout<<"The next stepSize = "<<nextStepSize<<std::endl;
+
+/// Storing the values ///
+
+        outputVector = Eigen::MatrixXd::Zero(1,8); // Setting the output vector to zero again to be sure.
+
+        // Filling the output vector
+        outputVector(0,0) = updatedStateAndTimeVector(7);   // Storing the updated time
+        outputVector(0,1) = updatedStateAndTimeVector(0);   // Storing the updated x position
+        outputVector(0,2) = updatedStateAndTimeVector(1);   // Storing the updated y position
+        outputVector(0,3) = updatedStateAndTimeVector(2);   // Storing the updated z position
+        outputVector(0,4) = updatedStateAndTimeVector(3);   // Storing the updated x velocity
+        outputVector(0,5) = updatedStateAndTimeVector(4);   // Storing the updated y velocity
+        outputVector(0,6) = updatedStateAndTimeVector(5);   // Storing the updated z velocity
+        outputVector(0,7) = updatedStateAndTimeVector(6);   // Storing the updated MAV mass
+
+
+        // Check if the file already exists.
+
+
+        std::ifstream ifile2(taylorSeriesCoefficientsAbsolutePath.c_str()); // Check it as an input file
+
+        fexists = false;   // Set the default to "It does not exist"
+
+        if (ifile2){         // Attempt to open the file
+
+
+           fexists = true;      // If the file can be opened it must exist
+
+           ifile2.close();   // Close the file
+
+        }
+
+
+        // If so: append, if not: create new file and put data in
+
+        if (fexists == true){
+
+            // Export the Taylor Series Coefficients matrix.
+            std::ofstream exportFile1;                          // Define the file as an output file
+
+
+            exportFile1.open(taylorSeriesCoefficientsAbsolutePath.c_str(),std::ios_base::app);      // Open the file in append mode
+
+            exportFile1 << "\n";                                            // Make sure the new matrix start on a new line
+
+            exportFile1 << outputVector.format( csvFormat ); // Add the new values
+
+            std::cout<<"The file called "<<taylorSeriesCoefficientsAbsolutePath<<" has been appended"<<std::endl;
+
+
+            exportFile1.close( );   // Close the file
+}
+            else{
+
+            std::cerr<<"Error: values could not be stored because storage file does not exist"<<std::endl;
+        };
 
 
     return 0;

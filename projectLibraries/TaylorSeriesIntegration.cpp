@@ -232,14 +232,14 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
  //*/       /// End debug ///
 
         // Set directory where output files will be stored. THIS REQUIRES THE COMPLETE PATH IN ORDER TO WORK!!
-        const std::string outputDirectory = "/home/stachap/Documents/Thesis/03. Tudat/tudatBundle/tudatApplications/thesisProject/testOutputFolder/";
+        const std::string outputDirectory = "/home/stachap/Documents/Thesis/03. Tudat/tudatBundle/tudatApplications/thesisProject/02.taylorSeriesCoefficientsOutputFolder/";
 
 
         // Set output format for matrix output.
         Eigen::IOFormat csvFormat( 15, 0, ", ", "\n" );
 
         // Set absolute path to file containing the Taylor Series Coefficients.
-        const std::string taylorSeriesCoefficientsAbsolutePath = outputDirectory + "test6TaylorSeriesCoefficients.csv";
+        const std::string taylorSeriesCoefficientsAbsolutePath = outputDirectory + "test1TaylorSeriesCoefficients.csv";
 
 
         // Check if the file already exists.

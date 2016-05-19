@@ -227,6 +227,132 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 ////////////////////// Testing the State Derivative Function //////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 
+    /// Setting the data collection file for RKF and inserting the first values ///
+
+        // Set directory where output files will be stored. THIS REQUIRES THE COMPLETE PATH IN ORDER TO WORK!!
+        const std::string outputDirectory = "/home/stachap/Documents/Thesis/03. Tudat/tudatBundle/tudatApplications/thesisProject/01.integrationResults/RKF/";
+
+
+        // Set output format for matrix output.
+        Eigen::IOFormat csvFormat( 15, 0, ", ", "\n" );
+
+        // Set absolute path to file containing the data.
+        std::string dataAbsolutePath = outputDirectory + "test1RKFstateAndTime.csv";
+
+        // Create a row vector for the storing of the data
+        Eigen::MatrixXd outputVector = Eigen::MatrixXd::Zero(1,8); // Create a row vector for the storing of the data
+
+        // Getting the initial conditions for storage
+        const tudat::basic_mathematics::Vector7d initialState = currentStateAndTime.getCurrentState();
+
+        // Filling the output vector
+        outputVector(0,0) = currentStateAndTime.getCurrentTime();   // Storing the initial time
+        outputVector(0,1) = initialState(0);   // Storing the initial x position
+        outputVector(0,2) = initialState(1);   // Storing the initial y position
+        outputVector(0,3) = initialState(2);   // Storing the initial z position
+        outputVector(0,4) = initialState(3);   // Storing the initial x velocity
+        outputVector(0,5) = initialState(4);   // Storing the initial y velocity
+        outputVector(0,6) = initialState(5);   // Storing the initial z velocity
+        outputVector(0,7) = initialState(6);   // Storing the initial MAV mass
+
+        // Storing the data
+
+        std::ifstream ifile(dataAbsolutePath.c_str()); // Check it as an input file
+
+        bool fexists = false;   // Set the default to "It does not exist"
+
+        if (ifile){         // Attempt to open the file
+
+
+           fexists = true;      // If the file can be opened it must exist
+
+           ifile.close();   // Close the file
+
+        }
+
+
+        // If so: error and create temporary file, if not: create new file and put data in
+
+        if (fexists == true){
+
+
+            // Get time //
+
+            time_t rawtime;
+            struct tm * timeinfo;
+
+            time ( &rawtime );
+            timeinfo = localtime ( &rawtime );
+    //        printf ( "Current local time and date: %s", asctime (timeinfo) );         // (from stackoverflow.com/questions/997946/how-to-get-current-time-and-date-in-c and from stackoverflow.com/questions/1442116/how-to-get-date-and-time-value-in-c-program)
+    //        std::cout<<"time = "<<time ( &rawtime )<<std::endl;
+    //        std::cout<< (timeinfo->tm_year+1900) << "-"
+    //                 << (timeinfo->tm_mon + 1) << "-"
+    //                 << timeinfo->tm_mday << " "
+    //                 << timeinfo->tm_hour << ":"
+    //                 << timeinfo->tm_min << ":"
+    //                 << timeinfo->tm_sec <<std::endl;
+
+            ostringstream ConvertHour;
+            ConvertHour << timeinfo->tm_hour;
+            std::string currentHour = ConvertHour.str();
+
+    //        std::cout<<"currentHour = "<<currentHour<<std::endl;
+
+            ostringstream ConvertMin;
+            ConvertMin << timeinfo->tm_min;
+            std::string currentMin = ConvertMin.str();
+
+    //        std::cout<<"currentMin = "<<currentMin<<std::endl;
+
+            ostringstream ConvertSec;
+            ConvertSec << timeinfo->tm_sec;
+            std::string currentSec = ConvertSec.str();
+
+
+
+            if(currentSec.size() == 1){
+                currentSec = "0" + currentSec;
+            }
+
+            if (currentMin.size() == 1){
+                currentMin = "0" + currentMin;
+            }
+
+            if (currentHour.size() == 1){
+                currentHour = "0" + currentHour;
+            }
+
+
+    //        std::cout<<"The length of currentSec = "<<currentSec.size()<<" and the value = "<<currentSec<<std::endl;
+
+            // Create new file name
+
+            std::string ComputerTimeString = currentHour + ":" + currentMin + ":" + currentSec;  // Convert to string and store
+
+            std::string newFileName = "backupRKFFileAtTime_" + ComputerTimeString + ".csv";
+
+        std::cerr<<"The file name that you have chosen already exists, a new file with name "<<newFileName<<" will be created to store the data for now"<<std::endl;
+
+        // Set new absolute path to file containing the data.
+        dataAbsolutePath = outputDirectory + newFileName;
+
+        // Export the data.
+        std::ofstream exportFile1( dataAbsolutePath.c_str( ) ); // Make the new file
+        std::cout<<"New file called "<<dataAbsolutePath<<" has been created"<<std::endl;
+        exportFile1 << outputVector.format( csvFormat );          // Store the new values
+        exportFile1.close( );   // Close the file
+
+
+    }
+            else{
+
+            // Export the data.
+            std::ofstream exportFile1( dataAbsolutePath.c_str( ) ); // Make the new file
+            std::cout<<"New file called "<<dataAbsolutePath<<" has been created"<<std::endl;
+            exportFile1 << outputVector.format( csvFormat );          // Store the new values
+            exportFile1.close( );   // Close the file
+        };
+
 
     /// Testing with the state derivative function header and source file
 //    const tudat::basic_mathematics::Vector7d stateDerivativeVector = ascentStateDerivativeFunction(Mars,MAV,stateAndTime);
@@ -283,8 +409,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     double stepSize = 0.2;          // Using the same initial step-size as defined for TSI
 
     // Tolerances.
-    const double relativeTolerance = 1e-3;     // 1e-14 is used by TSI, original setting was 1e-15
-    const double absoluteTolerance = 1e-3;     // 1e-14 is used by TSI, original setting was 1e-15
+    const double relativeTolerance = 1e-8;     // 1e-14 is used by TSI, original setting was 1e-15
+    const double absoluteTolerance = 1e-8;     // 1e-14 is used by TSI, original setting was 1e-15
 
     // For RKF7(8) a step-size of 0.2 is only used if the tolerances are 1e-3.... and is accepted till 1e-8
     // For RKF4(5) a step-size of 0.2 is only used if the tolerances are 1e-7.... and is accepted till 1e-10
@@ -321,7 +447,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //                         stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
 //                         infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
-
+/*/// Debug ///
 //          std::cout<<"They initialize just fine..."<<std::endl;
 
        // Perform a single integration step.
@@ -335,9 +461,10 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
        std::cout<<"The RKF end state is "<<RKFendState<<std::endl;
        std::cout<<"The running time = "<<integrator.getCurrentIndependentVariable()<<std::endl;
        std::cout<<"The next step-size = "<<integrator.getNextStepSize()<<std::endl;
+/// Debug ///
+       //*/
 
-
- /*      // Set initial running time. This is updated after each step that the numerical integrator takes.
+       // Set initial running time. This is updated after each step that the numerical integrator takes.
     double runningTime = 0.0;
     int count = 0;
 
@@ -362,9 +489,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
         count++;
 
-        Eigen::VectorXd currentState = integrator.getCurrentState();
+//        Eigen::VectorXd currentState = integrator.getCurrentState();
 
-        std::cout<<"The current stepSize is "<<prevStepSize<<" s, and the current velocity is "<<currentState(1)<<" m/s"<<std::endl;
+        std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
 
 
     }while( !( endTime - runningTime <= std::numeric_limits< double >::epsilon( ) ) );
@@ -375,7 +502,6 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     std::cout<<"Final number of integration steps is "<<count<<std::endl;
     std::cout<<"The end state is "<<endState<<std::endl;
 
-//*/
 
     return 0;
 }
