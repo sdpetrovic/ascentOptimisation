@@ -213,7 +213,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     Eigen::IOFormat csvFormat( 15, 0, ", ", "\n" );
 
     // Set absolute path to file containing the Taylor Series Coefficients.
-    std::string taylorSeriesCoefficientsAbsolutePath = outputDirectory + "test2TSIstateAndTime.csv";
+    std::string dataAbsolutePath = outputDirectory + "test2TSIstateAndTime.csv";
 
     // Create a row vector for the storing of the data
     Eigen::MatrixXd outputVector = Eigen::MatrixXd::Zero(1,8); // Create a row vector for the storing of the data
@@ -233,7 +233,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // Storing the data
 
-    std::ifstream ifile(taylorSeriesCoefficientsAbsolutePath.c_str()); // Check it as an input file
+    std::ifstream ifile(dataAbsolutePath.c_str()); // Check it as an input file
 
     bool fexists = false;   // Set the default to "It does not exist"
 
@@ -325,12 +325,12 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     std::cerr<<"The file name that you have chosen already exists, a new file with name "<<newFileName<<" will be created to store the data for now"<<std::endl;
 
-    // Set new absolute path to file containing the Taylor Series Coefficients.
-    taylorSeriesCoefficientsAbsolutePath = outputDirectory + newFileName;
+    // Set new absolute path to file containing the data.
+    dataAbsolutePath = outputDirectory + newFileName;
 
-    // Export the Taylor Series Coefficients matrix.
-    std::ofstream exportFile1( taylorSeriesCoefficientsAbsolutePath.c_str( ) ); // Make the new file
-    std::cout<<"New file called "<<taylorSeriesCoefficientsAbsolutePath<<" has been created"<<std::endl;
+    // Export the data.
+    std::ofstream exportFile1( dataAbsolutePath.c_str( ) ); // Make the new file
+    std::cout<<"New file called "<<dataAbsolutePath<<" has been created"<<std::endl;
     exportFile1 << outputVector.format( csvFormat );          // Store the new values
     exportFile1.close( );   // Close the file
 
@@ -338,9 +338,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 }
         else{
 
-        // Export the Taylor Series Coefficients matrix.
-        std::ofstream exportFile1( taylorSeriesCoefficientsAbsolutePath.c_str( ) ); // Make the new file
-        std::cout<<"New file called "<<taylorSeriesCoefficientsAbsolutePath<<" has been created"<<std::endl;
+        // Export the data.
+        std::ofstream exportFile1( dataAbsolutePath.c_str( ) ); // Make the new file
+        std::cout<<"New file called "<<dataAbsolutePath<<" has been created"<<std::endl;
         exportFile1 << outputVector.format( csvFormat );          // Store the new values
         exportFile1.close( );   // Close the file
     };
@@ -390,7 +390,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         // Check if the file already exists.
 
 
-        std::ifstream ifile2(taylorSeriesCoefficientsAbsolutePath.c_str()); // Check it as an input file
+        std::ifstream ifile2(dataAbsolutePath.c_str()); // Check it as an input file
 
         fexists = false;   // Set the default to "It does not exist"
 
@@ -412,13 +412,13 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
             std::ofstream exportFile1;                          // Define the file as an output file
 
 
-            exportFile1.open(taylorSeriesCoefficientsAbsolutePath.c_str(),std::ios_base::app);      // Open the file in append mode
+            exportFile1.open(dataAbsolutePath.c_str(),std::ios_base::app);      // Open the file in append mode
 
             exportFile1 << "\n";                                            // Make sure the new matrix start on a new line
 
             exportFile1 << outputVector.format( csvFormat ); // Add the new values
 
-            std::cout<<"The file called "<<taylorSeriesCoefficientsAbsolutePath<<" has been appended"<<std::endl;
+            std::cout<<"The file called "<<dataAbsolutePath<<" has been appended"<<std::endl;
 
 
             exportFile1.close( );   // Close the file

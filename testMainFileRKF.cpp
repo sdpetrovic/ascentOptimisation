@@ -217,7 +217,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     aState(5) = initialVelocityInertialFrame(2);
     aState(6) = 227;  // Mass [kg] from literature study
 
-    StateAndTime stateAndTime(aState);        // Creating the current state class using the namespace and class directly
+    StateAndTime currentStateAndTime(aState);        // Creating the current state class using the namespace and class directly
 
 
 
@@ -396,8 +396,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
  ///// Testing the implementation in the integrator ///
 
     // Initial conditions.
-    const double initialTime = stateAndTime.getCurrentTime();                            // Time.
-    Eigen::VectorXd initialState = stateAndTime.getCurrentState(); // State: start with zero velocity at the origin.
+    const double initialTime = currentStateAndTime.getCurrentTime();                            // Time.
+//    Eigen::VectorXd initialState = currentStateAndTime.getCurrentState(); // State: start with zero velocity at the origin.
 
     const double endTime = 0.2;     // Using the same initial step-size as defined for TSI
 
@@ -409,14 +409,14 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     double stepSize = 0.2;          // Using the same initial step-size as defined for TSI
 
     // Tolerances.
-    const double relativeTolerance = 1e-8;     // 1e-14 is used by TSI, original setting was 1e-15
-    const double absoluteTolerance = 1e-8;     // 1e-14 is used by TSI, original setting was 1e-15
+    const double relativeTolerance = 1e-3;     // 1e-14 is used by TSI, original setting was 1e-15
+    const double absoluteTolerance = 1e-3;     // 1e-14 is used by TSI, original setting was 1e-15
 
     // For RKF7(8) a step-size of 0.2 is only used if the tolerances are 1e-3.... and is accepted till 1e-8
     // For RKF4(5) a step-size of 0.2 is only used if the tolerances are 1e-7.... and is accepted till 1e-10
     // For DP8(7) a step-size of 0.2 is only used if the tolerances are 1e-7.... and is accepted till 1e-9
 
-    // RungeKutta4 numerical integrator.
+    /// RungeKutta4 numerical integrator.
 
     tudat::numerical_integrators::RungeKutta4IntegratorXd RK4integrator(
         stateDerivativeFunction, initialTime, initialState );
@@ -426,21 +426,21 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     std::cout<<"The RK4 end state is "<<RK4endState<<std::endl;
 
-    // Runge-Kutta-Fehlberg 7(8) integrator.
+    /// Runge-Kutta-Fehlberg 7(8) integrator.
        tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
                    tudat::numerical_integrators::RungeKuttaCoefficients::get(
                        tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg78),
                    stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
                    infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
-//       // Runge-Kutta-Fehlberg 4(5) integrator.
+//       /// Runge-Kutta-Fehlberg 4(5) integrator.
 //          tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
 //                      tudat::numerical_integrators::RungeKuttaCoefficients::get(
 //                          tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg45),
 //                      stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
 //                      infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
-//          // Dormand-Prince 8(7) integrator.
+//          /// Dormand-Prince 8(7) integrator.
 //             tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
 //                         tudat::numerical_integrators::RungeKuttaCoefficients::get(
 //                             tudat::numerical_integrators::RungeKuttaCoefficients::rungeKutta87DormandPrince),
@@ -489,9 +489,70 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
         count++;
 
-//        Eigen::VectorXd currentState = integrator.getCurrentState();
+        Eigen::VectorXd currentState = integrator.getCurrentState();
 
         std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
+
+
+        /// Storing the values ///
+
+                outputVector = Eigen::MatrixXd::Zero(1,8); // Setting the output vector to zero again to be sure.
+
+                // Filling the output vector
+                outputVector(0,0) = integrator.getCurrentIndependentVariable();   // Storing the updated time
+                outputVector(0,1) = currentState(0);   // Storing the updated x position
+                outputVector(0,2) = currentState(1);   // Storing the updated y position
+                outputVector(0,3) = currentState(2);   // Storing the updated z position
+                outputVector(0,4) = currentState(3);   // Storing the updated x velocity
+                outputVector(0,5) = currentState(4);   // Storing the updated y velocity
+                outputVector(0,6) = currentState(5);   // Storing the updated z velocity
+                outputVector(0,7) = currentState(6);   // Storing the updated MAV mass
+
+
+                // Check if the file already exists.
+
+
+                std::ifstream ifile2(dataAbsolutePath.c_str()); // Check it as an input file
+
+                fexists = false;   // Set the default to "It does not exist"
+
+                if (ifile2){         // Attempt to open the file
+
+
+                   fexists = true;      // If the file can be opened it must exist
+
+                   ifile2.close();   // Close the file
+
+                }
+
+
+                // If so: append, if not: create new file and put data in
+
+                if (fexists == true){
+
+                    // Export the Taylor Series Coefficients matrix.
+                    std::ofstream exportFile1;                          // Define the file as an output file
+
+
+                    exportFile1.open(dataAbsolutePath.c_str(),std::ios_base::app);      // Open the file in append mode
+
+                    exportFile1 << "\n";                                            // Make sure the new matrix start on a new line
+
+                    exportFile1 << outputVector.format( csvFormat ); // Add the new values
+
+                    std::cout<<"The file called "<<dataAbsolutePath<<" has been appended"<<std::endl;
+
+
+                    exportFile1.close( );   // Close the file
+        }
+                    else{
+
+                    std::cerr<<"Error: values could not be stored because storage file does not exist"<<std::endl;
+                };
+
+
+
+
 
 
     }while( !( endTime - runningTime <= std::numeric_limits< double >::epsilon( ) ) );
@@ -501,6 +562,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     std::cout<<"Final number of integration steps is "<<count<<std::endl;
     std::cout<<"The end state is "<<endState<<std::endl;
+
+
 
 
     return 0;
