@@ -245,13 +245,11 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // Full complete test
 
-//    std::cout<<"It should not be re-initilizing the class, especially here..."<<std::endl;
-
     ascentStateDerivativeFunctionClass stateDerivativeFunctionClass(Mars,MAV);     // Initialize the class
 
-    const tudat::basic_mathematics::Vector7d stateDerivativeClassVector = stateDerivativeFunctionClass.ascentStateDerivativeFunction(stateAndTime.getCurrentTime(),stateAndTime.getCurrentState());
+//    const tudat::basic_mathematics::Vector7d stateDerivativeClassVector = stateDerivativeFunctionClass.ascentStateDerivativeFunction(stateAndTime.getCurrentTime(),stateAndTime.getCurrentState());
 
-    std::cout<<"The state derivative vector obtained from the class is "<<stateDerivativeClassVector<<std::endl;
+//    std::cout<<"The state derivative vector obtained from the class is "<<stateDerivativeClassVector<<std::endl;
 
 /// Creating pointer for the state derivative function, such that it can be called from the integrator ///  as by the boost tutorial of the Tudat wiki
 /*
@@ -285,27 +283,29 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     double stepSize = 0.2;          // Using the same initial step-size as defined for TSI
 
     // Tolerances.
-    const double relativeTolerance = 1e-14;
-    const double absoluteTolerance = 1e-14;
+    const double relativeTolerance = 1e-3;     // 1e-14 is used by TSI, original setting was 1e-15
+    const double absoluteTolerance = 1e-3;     // 1e-14 is used by TSI, original setting was 1e-15
 
-
+    // For RKF7(8) a step-size of 0.2 is only used if the tolerances are 1e-3.... and is accepted till 1e-8
+    // For RKF4(5) a step-size of 0.2 is only used if the tolerances are 1e-7.... and is accepted till 1e-10
+    // For DP8(7) a step-size of 0.2 is only used if the tolerances are 1e-7.... and is accepted till 1e-9
 
     // RungeKutta4 numerical integrator.
 
-    tudat::numerical_integrators::RungeKutta4IntegratorXd integrator(
+    tudat::numerical_integrators::RungeKutta4IntegratorXd RK4integrator(
         stateDerivativeFunction, initialTime, initialState );
 
     // Integrate to the specified end time.
-    Eigen::VectorXd endState = integrator.integrateTo( endTime, stepSize );
+    Eigen::VectorXd RK4endState = RK4integrator.integrateTo( endTime, stepSize );
 
-    std::cout<<"The end state is "<<endState<<std::endl;
+    std::cout<<"The RK4 end state is "<<RK4endState<<std::endl;
 
-//    // Runge-Kutta-Fehlberg 7(8) integrator.
-//       tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
-//                   tudat::numerical_integrators::RungeKuttaCoefficients::get(
-//                       tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg78),
-//                   stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
-//                   infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
+    // Runge-Kutta-Fehlberg 7(8) integrator.
+       tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
+                   tudat::numerical_integrators::RungeKuttaCoefficients::get(
+                       tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg78),
+                   stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
+                   infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
 //       // Runge-Kutta-Fehlberg 4(5) integrator.
 //          tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
@@ -322,16 +322,19 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //                         infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
 
+//          std::cout<<"They initialize just fine..."<<std::endl;
 
-//       // Perform a single integration step.
-//       integrator.performIntegrationStep( stepSize );
+       // Perform a single integration step.
+       integrator.performIntegrationStep( stepSize );
 
 
 
-//       // The result of the integration.
-//       Eigen::VectorXd endState = integrator.getCurrentState( );
+       // The result of the integration.
+       Eigen::VectorXd RKFendState = integrator.getCurrentState( );
 
-//       std::cout<<"The end state is "<<endState<<std::endl;
+       std::cout<<"The RKF end state is "<<RKFendState<<std::endl;
+       std::cout<<"The running time = "<<integrator.getCurrentIndependentVariable()<<std::endl;
+       std::cout<<"The next step-size = "<<integrator.getNextStepSize()<<std::endl;
 
 
  /*      // Set initial running time. This is updated after each step that the numerical integrator takes.
