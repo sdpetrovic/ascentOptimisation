@@ -52,6 +52,19 @@
 #include <string>
 #include <cmath>
 
+// Used for the RKF integrator
+#include <Tudat/Astrodynamics/BasicAstrodynamics/orbitalElementConversions.h>
+//#include <Tudat/Mathematics/BasicMathematics/mathematicalConstants.h>
+//#include <Tudat/Mathematics/BasicMathematics/linearAlgebraTypes.h>
+//#include <boost/make_shared.hpp>
+//#include <boost/shared_ptr.hpp>
+#include <Tudat/Mathematics/NumericalIntegrators/euler.h>
+//#include <boost/bind.hpp>
+#include <Tudat/Mathematics/NumericalIntegrators/rungeKutta4Integrator.h>
+#include <Tudat/Mathematics/NumericalIntegrators/rungeKuttaCoefficients.h>
+#include <Tudat/Mathematics/NumericalIntegrators/rungeKuttaVariableStepSizeIntegrator.h>
+
+// Used by my own functions
 //#include <Tudat/Mathematics/BasicMathematics/linearAlgebraTypes.h>
 #include <tudatApplications/thesisProject/linearAlgebraTypesUpdated.h>
 #include <Tudat/Mathematics/BasicMathematics/coordinateConversions.h>
@@ -107,7 +120,7 @@
 #include <thesisProject/projectLibraries/dragCoefficient.h>     // Original test file
 
 /// Testing the ascentStateDerivativeFunction ///
-#include <thesisProject/projectLibraries/ascentStateDerivativeFunction.h>   // Original test file
+//#include <thesisProject/projectLibraries/ascentStateDerivativeFunction.h>   // Original test file
 
 /// Testing the ascentStateDerivativeFunctionClass ///
 #include <thesisProject/ascentStateDerivativeFunctionClass.h>       // Adapted file from thesisProject/projectLibraries/ascentStateDerivativeFunction.h
@@ -216,9 +229,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 
     /// Testing with the state derivative function header and source file
-    const tudat::basic_mathematics::Vector7d stateDerivativeVector = ascentStateDerivativeFunction(Mars,MAV,stateAndTime);
+//    const tudat::basic_mathematics::Vector7d stateDerivativeVector = ascentStateDerivativeFunction(Mars,MAV,stateAndTime);
 
-    std::cout<<"The state derivative vector is "<<stateDerivativeVector<<std::endl;
+//    std::cout<<"The state derivative vector is "<<stateDerivativeVector<<std::endl;
 
 
     /// Testing with the state derivative function class
@@ -232,7 +245,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // Full complete test
 
-    std::cout<<"It should not be re-initilizing the class, especially here..."<<std::endl;
+//    std::cout<<"It should not be re-initilizing the class, especially here..."<<std::endl;
 
     ascentStateDerivativeFunctionClass stateDerivativeFunctionClass(Mars,MAV);     // Initialize the class
 
@@ -240,14 +253,126 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     std::cout<<"The state derivative vector obtained from the class is "<<stateDerivativeClassVector<<std::endl;
 
+/// Creating pointer for the state derivative function, such that it can be called from the integrator ///  as by the boost tutorial of the Tudat wiki
+/*
+    typedef boost::shared_ptr< ascentStateDerivativeFunctionClass > stateDerivativePointer; // Create a typedef for the shared_ptr to an ascentStateDerivativeFunctionClass
 
-///// Testing the implementation in the integrator ///
+    stateDerivativePointer exampleStateDerivativePointer( new ascentStateDerivativeFunctionClass(Mars,MAV)); // Create a boost shared pointer
 
-//    const double initialStepSize = 0.2;     // Using the same initial step-size as defined for TSI
+    stateDerivativePointer newExampleStateDerivativePointer = boost::make_shared< ascentStateDerivativeFunctionClass >(Mars,MAV);   // Create a boost shared pointer using boost::make_shared instead of new
+//*/
+
+    // Just using boost::bind
+
+    boost::function< tudat::basic_mathematics::Vector7d( const double, const tudat::basic_mathematics::Vector7d ) > stateDerivativeFunction // Using boost::function to create the passing function
+            =boost::bind( &ascentStateDerivativeFunctionClass::ascentStateDerivativeFunction, &stateDerivativeFunctionClass, _1, _2);       // Then using boost::bind to bind the function as per class stateDerivativeFunctionClass which requires two inputs:
+                                                                                                                                            // _1 which is the current time and _2 which is the current state
+    
+
+ ///// Testing the implementation in the integrator ///
+
+    // Initial conditions.
+    const double initialTime = stateAndTime.getCurrentTime();                            // Time.
+    Eigen::VectorXd initialState = stateAndTime.getCurrentState(); // State: start with zero velocity at the origin.
+
+    const double endTime = 0.2;     // Using the same initial step-size as defined for TSI
+
+    // Step-size settings.
+    // The minimum and maximum step-size are set such that the input data is fully accepted by the
+    // integrator, to determine the steps to be taken.
+    const double zeroMinimumStepSize = std::numeric_limits< double >::epsilon( );
+    const double infiniteMaximumStepSize = std::numeric_limits< double >::infinity( );
+    double stepSize = 0.2;          // Using the same initial step-size as defined for TSI
+
+    // Tolerances.
+    const double relativeTolerance = 1e-14;
+    const double absoluteTolerance = 1e-14;
 
 
 
+    // RungeKutta4 numerical integrator.
 
+    tudat::numerical_integrators::RungeKutta4IntegratorXd integrator(
+        stateDerivativeFunction, initialTime, initialState );
+
+    // Integrate to the specified end time.
+    Eigen::VectorXd endState = integrator.integrateTo( endTime, stepSize );
+
+    std::cout<<"The end state is "<<endState<<std::endl;
+
+//    // Runge-Kutta-Fehlberg 7(8) integrator.
+//       tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
+//                   tudat::numerical_integrators::RungeKuttaCoefficients::get(
+//                       tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg78),
+//                   stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
+//                   infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
+
+//       // Runge-Kutta-Fehlberg 4(5) integrator.
+//          tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
+//                      tudat::numerical_integrators::RungeKuttaCoefficients::get(
+//                          tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg45),
+//                      stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
+//                      infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
+
+//          // Dormand-Prince 8(7) integrator.
+//             tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
+//                         tudat::numerical_integrators::RungeKuttaCoefficients::get(
+//                             tudat::numerical_integrators::RungeKuttaCoefficients::rungeKutta87DormandPrince),
+//                         stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
+//                         infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
+
+
+
+//       // Perform a single integration step.
+//       integrator.performIntegrationStep( stepSize );
+
+
+
+//       // The result of the integration.
+//       Eigen::VectorXd endState = integrator.getCurrentState( );
+
+//       std::cout<<"The end state is "<<endState<<std::endl;
+
+
+ /*      // Set initial running time. This is updated after each step that the numerical integrator takes.
+    double runningTime = 0.0;
+    int count = 0;
+
+    do
+    {
+        // Make sure the integrator does not integrate beyond the end time.
+
+
+
+        if ( std::fabs( endTime - runningTime )
+             <= std::fabs( stepSize ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) )
+        {
+            stepSize = endTime - integrator.getCurrentIndependentVariable( );
+        }
+
+        double prevStepSize = stepSize;
+
+        // Perform a single integration step. Then update the step-size and running time.
+        integrator.performIntegrationStep( stepSize );
+        stepSize = integrator.getNextStepSize( );
+        runningTime = integrator.getCurrentIndependentVariable( );
+
+        count++;
+
+        Eigen::VectorXd currentState = integrator.getCurrentState();
+
+        std::cout<<"The current stepSize is "<<prevStepSize<<" s, and the current velocity is "<<currentState(1)<<" m/s"<<std::endl;
+
+
+    }while( !( endTime - runningTime <= std::numeric_limits< double >::epsilon( ) ) );
+
+    // The result of the integration.
+    Eigen::VectorXd endState = integrator.getCurrentState( );
+
+    std::cout<<"Final number of integration steps is "<<count<<std::endl;
+    std::cout<<"The end state is "<<endState<<std::endl;
+
+//*/
 
     return 0;
 }

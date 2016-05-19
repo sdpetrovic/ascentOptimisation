@@ -231,6 +231,6 @@ target_link_libraries(simple_verification_testMainFileStateDerivativeFunction pr
 
 add_executable(simple_verification_testMainFileRKF "${SRCROOT}/testMainFileRKF.cpp")
 setup_executable_target(simple_verification_testMainFileRKF "${SRCROOT}")
-target_link_libraries(simple_verification_testMainFileRKF project_libraries tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
+target_link_libraries(simple_verification_testMainFileRKF project_libraries tudat_numerical_integrators tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
 
 

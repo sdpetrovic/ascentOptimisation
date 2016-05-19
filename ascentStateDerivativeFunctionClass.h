@@ -103,7 +103,7 @@ public:
 
     /// Debug ///
 
-    const tudat::basic_mathematics::Vector7d ascentStateDerivativeFunction(const double currentTime_, const tudat::basic_mathematics::Vector7d currentState){
+    tudat::basic_mathematics::Vector7d ascentStateDerivativeFunction(const double currentTime_, const tudat::basic_mathematics::Vector7d& currentState){
 
 
 
