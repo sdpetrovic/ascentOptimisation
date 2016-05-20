@@ -200,7 +200,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     StateAndTime currentStateAndTime(aState);        // Creating the current state class using the namespace and class directly
 
 //////////////////////////////////////////////////////////////////////////////////
-////////////////////// Testing the Taylor series integrator //////////////////////
+/*////////////////////// Testing the Taylor series integrator //////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 
 /// Setting the data collection file for TSI and inserting the first values ///
@@ -427,6 +427,11 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
             std::cerr<<"Error: values could not be stored because storage file does not exist"<<std::endl;
         };
+
+//*/
+
+
+
 
 
     return 0;

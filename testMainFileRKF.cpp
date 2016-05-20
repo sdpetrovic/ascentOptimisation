@@ -42,6 +42,8 @@
 #include <cstdlib>
 #include <sstream>
 
+#include <time.h>   // To determine the current computer time
+#include <sys/time.h> // To determine the current computer time
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
