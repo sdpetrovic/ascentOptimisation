@@ -180,10 +180,14 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
     Eigen::VectorXd auxiliaryEquations =  Aux.getAuxiliaryEquations(currentState,currentTime,thrustAccelerationsBframe);
 
+//    std::cout<<"The auxiliaryEquations are "<<auxiliaryEquations<<std::endl;
+
 
     // Compute the auxiliary derivatives
 
     Eigen::VectorXd auxiliaryDerivatives = Aux.getAuxiliaryDerivatives(currentState,currentTime,thrustAccelerationsBframe,auxiliaryEquations);
+
+//    std::cout<<"The auxiliaryDerivatives are "<<auxiliaryDerivatives<<std::endl;
 
     // Compute the auxiliary functions
 
@@ -239,7 +243,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
         Eigen::IOFormat csvFormat( 15, 0, ", ", "\n" );
 
         // Set absolute path to file containing the Taylor Series Coefficients.
-        const std::string taylorSeriesCoefficientsAbsolutePath = outputDirectory + "test2TaylorSeriesCoefficients.csv";
+        const std::string taylorSeriesCoefficientsAbsolutePath = outputDirectory + "test5TaylorSeriesCoefficients.csv";
 
 
         // Check if the file already exists.
@@ -292,13 +296,20 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
 
 
-        tudat::basic_mathematics::Vector7d updatedState;        // Create a vector for the updatedState
+        tudat::basic_mathematics::Vector7d updatedState = tudat::basic_mathematics::Vector7d::Zero();        // Create a vector for the updatedState and setting it to zero
 
         for (int n = 0; n<updatedState.size();n++){                 // All variables
 
         for (int k = 0; k<maxOrder+1;k++){                      // Taylor series summation
 
             updatedState(n) += TaylorCoefficients((n+1),k)*pow(currentStepSize,k);      // Perform one step of the taylor series expansion and then add it to the previous step
+
+//            if (n==6){
+//           std::cout<<"updatedState(6) = "<<updatedState(6)<<std::endl;
+//           std::cout<<"currentStepSize = "<<currentStepSize<<std::endl;
+//           std::cout<<"TaylorCoefficients((n+1),k) = "<<TaylorCoefficients((n+1),k)<<std::endl;
+
+//            }
 
         } // Taylor series summation
 

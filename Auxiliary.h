@@ -26,6 +26,8 @@
  *      YYMMDD    Author            Comment
  *      160413    S.D. Petrovic     File created
  *      160518    S.D. Petrovic     Fixed the mistake I made with the transformation matrix T_IB which resulted in a mistake in u6
+ *      160520    S.D. Petrovic     Fixed mistake in x25 where it said x25 = x25/(2*x20) which should be x25 = x26/(2*x20). Also, u41 had a - instead of a +.
+ *                                  Also, at u45 and u21 the tolerance had to include an abs function!
  *
  *    References
  *
@@ -240,7 +242,7 @@ public:
 
         auxiliaryEquationsVector(12) = asin(auxiliaryEquationsVector(3)/auxiliaryEquationsVector(20)) ;              // x12
 
-        auxiliaryEquationsVector(25) = auxiliaryEquationsVector(25)/(2*auxiliaryEquationsVector(20));              // x25
+        auxiliaryEquationsVector(25) = auxiliaryEquationsVector(26)/(2*auxiliaryEquationsVector(20));              // x25
 
         // Please note that the altitude h (x31) is expressed in km MOLA (which is also the input for the density and temperature curves!)
 //        auxiliaryEquationsVector(31) = (auxiliaryEquationsVector(20)-bodyReferenceRadius)/1000;              // x31 [km]!!!
@@ -600,15 +602,18 @@ public:
 
     // Avoiding singularities
     if (auxiliaryEquationsVector(19) == 0){
-
+//std::cout<<"The equation goes here 1"<<std::endl;
         auxiliaryDerivativesVector(45) = 0;
     }
-    else if(auxiliaryEquationsVector(1)*auxiliaryDerivativesVector(5)-auxiliaryEquationsVector(2)*auxiliaryDerivativesVector(4)<=1E-8){                        // Set tolerance for the differences to 1E-8
+    else if(abs(auxiliaryEquationsVector(1)*auxiliaryDerivativesVector(5)-auxiliaryEquationsVector(2)*auxiliaryDerivativesVector(4))<=1E-8){                        // Set tolerance for the differences to 1E-8
+
+//        std::cout<<"The equation goes here 2"<<std::endl;
+//        std::cout<<"(x1*u5-x2*u4) = "<<(auxiliaryEquationsVector(1)*auxiliaryDerivativesVector(5)-auxiliaryEquationsVector(2)*auxiliaryDerivativesVector(4))<<std::endl;
 
         auxiliaryDerivativesVector(45) = 0;
     }
     else {
-
+//std::cout<<"The equation goes here 3"<<std::endl;
     auxiliaryDerivativesVector(45) = (auxiliaryEquationsVector(19)*(auxiliaryEquationsVector(1)*auxiliaryDerivativesVector(5)-auxiliaryEquationsVector(2)*auxiliaryDerivativesVector(4))
                                       -auxiliaryDerivativesVector(19)*(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(5)-auxiliaryEquationsVector(2)*auxiliaryEquationsVector(4)))/
             (auxiliaryEquationsVector(19)*auxiliaryEquationsVector(19));                // u45
@@ -635,7 +640,7 @@ public:
     auxiliaryDerivativesVector(21) = 2*(auxiliaryEquationsVector(4)*auxiliaryDerivativesVector(4)+auxiliaryEquationsVector(5)*auxiliaryDerivativesVector(5)+auxiliaryEquationsVector(6)*auxiliaryDerivativesVector(6));                // u21
 
     // Set tolerance for the derivative of the inertial velocity squared to 1E-10
-    if (auxiliaryDerivativesVector(21)<=1E-10){
+    if (abs(auxiliaryDerivativesVector(21))<=1E-10){
 
         auxiliaryDerivativesVector(21) = 0;
     }
@@ -785,7 +790,7 @@ public:
 
     auxiliaryDerivativesVector(37) = (auxiliaryEquationsVector(36)*auxiliaryDerivativesVector(25)-auxiliaryEquationsVector(25)*auxiliaryDerivativesVector(36))/(auxiliaryEquationsVector(36)*auxiliaryEquationsVector(36));                // u37
 
-    auxiliaryDerivativesVector(41) = auxiliaryEquationsVector(36)*auxiliaryDerivativesVector(35)-auxiliaryEquationsVector(35)*auxiliaryDerivativesVector(36);                // u41
+    auxiliaryDerivativesVector(41) = auxiliaryEquationsVector(36)*auxiliaryDerivativesVector(35)+auxiliaryEquationsVector(35)*auxiliaryDerivativesVector(36);                // u41
 
     auxiliaryDerivativesVector(48) = auxiliaryDerivativesVector(46)*cos(auxiliaryEquationsVector(12))-auxiliaryEquationsVector(46)*auxiliaryDerivativesVector(12)*sin(auxiliaryEquationsVector(12));                // u47
 
@@ -853,6 +858,19 @@ public:
 };
 */
     auxiliaryDerivativesVector(42) = cos(auxiliaryEquationsVector(38))*cos(auxiliaryEquationsVector(40))*auxiliaryDerivativesVector(40)-auxiliaryDerivativesVector(38)*sin(auxiliaryEquationsVector(38))*sin(auxiliaryEquationsVector(40));                // u42
+
+//    /// Debug ///
+//    std::cout<<"u42 = "<<auxiliaryDerivativesVector(42)<<std::endl;
+//    std::cout<<"cos(x38)*cos(x40)*u40-u38*sin(x38)*sin(x40) = "<<cos(auxiliaryEquationsVector(38))*cos(auxiliaryEquationsVector(40))*auxiliaryDerivativesVector(40)-auxiliaryDerivativesVector(38)*sin(auxiliaryEquationsVector(38))*sin(auxiliaryEquationsVector(40))<<std::endl;
+//    std::cout<<"cos(x38)*cos(x40)*u40 = "<<cos(auxiliaryEquationsVector(38))*cos(auxiliaryEquationsVector(40))*auxiliaryDerivativesVector(40)<<std::endl;
+//    std::cout<<"u38*sin(x38)*sin(x40) = "<<auxiliaryDerivativesVector(38)*sin(auxiliaryEquationsVector(38))*sin(auxiliaryEquationsVector(40))<<std::endl;
+//    std::cout<<"cos(x38) = "<<cos(auxiliaryEquationsVector(38))<<std::endl;
+//    std::cout<<"cos(x40) = "<<cos(auxiliaryEquationsVector(40))<<std::endl;
+//    std::cout<<"u40 = "<<auxiliaryDerivativesVector(40)<<std::endl;
+//    std::cout<<"x38 = "<<auxiliaryEquationsVector(38)<<std::endl;
+//    std::cout<<"x40 = "<<auxiliaryEquationsVector(40)<<std::endl;
+//    std::cout<<"x40 - 1.5707963267949 = "<<auxiliaryEquationsVector(40)-1.5707963267949<<std::endl;
+//    /// Debug ///
 
     auxiliaryDerivativesVector(43) = auxiliaryEquationsVector(41)*auxiliaryDerivativesVector(42)+auxiliaryEquationsVector(42)*auxiliaryDerivativesVector(41);                // u43
 

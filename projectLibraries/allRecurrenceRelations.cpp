@@ -26,6 +26,7 @@
  *      YYMMDD    Author            Comment
  *      160428    S.D. Petrovic     File created
  *      160518    S.D. Petrovic     Fixed the mistake I made with the transformation matrix T_IB which resulted in a mistake in u6
+ *      160520    S.D. Petrovic     Fixed the mistake where I had written W40_1 and W40_2 instead of W41_1 and W41_2
  *
  *    References
  *
@@ -655,7 +656,6 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         UMatrix(4,k) = -standardGravitationalParameter*WVector4_1(k)+WVector4_24(k)+thrustAccelerationsBframe(1)*(WVector4_19(k)-WVector4_14(k))+thrustAccelerationsBframe(2)*(WVector4_23(k)-WVector4_21(k));
 
-//        std::cout<<"So far so good 4"<<std::endl;
 
         // 5
 
@@ -702,7 +702,8 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         // 11
 
-        UMatrix(11,k) = XMatrix(45,k)-rotationalVelocity;
+//        UMatrix(11,k) = XMatrix(45,k)-rotationalVelocity;
+        UMatrix(11,k) = XMatrix(45,k);
 
 
         // 12
@@ -906,7 +907,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         WVector33(k) = getDivisionRecurrenceRelation(UMatrix.row(34),XMatrix.row(33),WVector33,k);
 
-        UMatrix(33,k) = WVector33(k)*(adiabeticIndex*specificGasConstant)/2;
+        UMatrix(33,k) = WVector33(k)*((adiabeticIndex*specificGasConstant)/2);
 
         // 37
 
@@ -919,8 +920,8 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         // 41
 
-        WVector40_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(36),UMatrix.row(35),k);
-        WVector40_2(k) = getMultiplicationRecurrenceRelation(XMatrix.row(35),UMatrix.row(36),k);
+        WVector41_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(36),UMatrix.row(35),k);
+        WVector41_2(k) = getMultiplicationRecurrenceRelation(XMatrix.row(35),UMatrix.row(36),k);
 
         UMatrix(41,k) = WVector41_1(k)+WVector41_2(k);
 
@@ -938,6 +939,10 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         WVector13_3(k) = getMultiplicationRecurrenceRelation(XMatrix.row(48),XMatrix.row(48),k);
         WVector13_4(k) = getMultiplicationRecurrenceRelation(XMatrix.row(24),XMatrix.row(24),k);
         WVector13_5(k) = getDivisionRecurrenceRelation((WVector13_1-WVector13_2),(WVector13_3+WVector13_4),WVector13_5,k);
+
+//        std::cout<<"(WVector13_1-WVector13_2) = "<<(WVector13_1-WVector13_2)<<std::endl;
+//        std::cout<<"(WVector13_3+WVector13_4) = "<<(WVector13_3+WVector13_4)<<std::endl;
+//        std::cout<<"WVector13_5 = "<<WVector13_5<<std::endl;
 
 
         UMatrix(13,k) = WVector13_5(k);
@@ -1099,7 +1104,13 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
 
     // So it works until it has to be returned... So... delete everything? :S
-//*/
+ //*/
+
+//    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
+//    std::cout<<"UMatrix = "<<UMatrix<<std::endl;
+
+
+
     return stateTaylorCoefficients;
 
 } // end of function

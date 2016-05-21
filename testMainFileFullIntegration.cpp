@@ -255,7 +255,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     Eigen::IOFormat csvFormat( 15, 0, ", ", "\n" );
 
     // Set absolute path to file containing the Taylor Series Coefficients.
-    std::string dataAbsolutePath = outputDirectory + "test2FullIntegrationTSIstateAndTime.csv";
+    std::string dataAbsolutePath = outputDirectory + "test5FullIntegrationTSIstateAndTime.csv";
 
     // Create a row vector for the storing of the data
     Eigen::MatrixXd outputVector = Eigen::MatrixXd::Zero(1,8); // Create a row vector for the storing of the data
@@ -376,7 +376,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 /// Defining the order and initializing the StepSize class ///
 
-    const int maxOrder = 20;
+    const int maxOrder = 6; // Eventually want order 20
 
         StepSize stepSize; // Initializing the stepSize class. THIS SHOULD BE DONE BEFORE THE START OF THE INTEGRATION!!!!!
 
@@ -409,8 +409,10 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
      double runningTime = 0.0;
      int count = 0;
 
-	do
-	{
+//	do
+//	{
+
+     for (int i = 0; i<2; i++){
          /// Debug ///
     std::cout<<"The current step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
     std::cout<<"The current runningTime = "<<runningTime<<std::endl;
@@ -478,8 +480,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 
      count++;
+     };
 
-    }while( !( endTime - runningTime <= std::numeric_limits< double >::epsilon( ) ) );
+//    }while( !( endTime - runningTime <= std::numeric_limits< double >::epsilon( ) ) );
 
         /// Adding the values to the file ///
 
