@@ -285,14 +285,24 @@ public:
 
     //// Set functions ////
 
-    void setThrustAzimuth(const Eigen::MatrixXd updatedThrustAzimuthSet)            // This functions lets you provide the class with your own thrust azimuth angle set
+    void setThrustAzimuth(const Eigen::MatrixXd updatedThrustAzimuthSet)            // This function lets you provide the class with your own thrust azimuth angle set
     {
         thrustAzimuth_ = updatedThrustAzimuthSet;
     }
 
-    void setThrustElevation(const Eigen::MatrixXd updatedThrustElevationSet)            // This functions lets you provide the class with your own thrust elevation angle set
+    void setThrustElevation(const Eigen::MatrixXd updatedThrustElevationSet)            // This function lets you provide the class with your own thrust elevation angle set
     {
         thrustElevation_ = updatedThrustElevationSet;
+    }
+
+    void setReferenceArea(const double updatedReferenceArea)                // This function can be used to change the reference area of the MAV. If set to 0 the drag can be neglected in all equations
+    {
+        referenceArea_ = updatedReferenceArea;
+    }
+
+    void setThrust(const double updatedThrust)                      // This funciton can be used to change the thrust value. If set to 0 the thrust can be neglected in all equations
+    {
+        Thrust_ = updatedThrust;
     }
 
 

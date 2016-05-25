@@ -1092,19 +1092,15 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
 
     /// Debug ///
-/*
+
 //    std::cout<<"So far so good 7"<<std::endl;
 
-    std::cout<<"stateTaylorCoefficients = "<<stateTaylorCoefficients<<std::endl;
+//    std::cout<<"stateTaylorCoefficients = "<<stateTaylorCoefficients<<std::endl;
 
 //    Eigen::VectorXd debugVecStateTaylorCoefficients = stateTaylorCoefficients.row(1);
 
-    std::cout<<"Length of stateTaylorCoefficients.row(1) = "<<stateTaylorCoefficients.row(1).size()<<std::endl;
-    std::cout<<"Length of XMatrix.row(1) = "<<XMatrix.row(1).size()<<std::endl;
-
-
-    // So it works until it has to be returned... So... delete everything? :S
- //*/
+//    std::cout<<"Length of stateTaylorCoefficients.row(1) = "<<stateTaylorCoefficients.row(1).size()<<std::endl;
+//    std::cout<<"Length of XMatrix.row(1) = "<<XMatrix.row(1).size()<<std::endl;
 
 //    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
 //    std::cout<<"UMatrix = "<<UMatrix<<std::endl;

@@ -164,6 +164,14 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     celestialBody Mars;
 
+    // No Gravity
+
+//    Mars.setStandardGravitationalParameter(0);
+
+    if (Mars.standardGravitationalParameter() == 0){
+        std::cout<<"NO GRAVITY"<<std::endl;
+    }
+
 //    const double adiabeticIndex = Mars.adiabeticIndex();
 //    const double specificGasConstant = Mars.specificGasConstant();
 //    const double standardGravitationalParameter = Mars.standardGravitationalParameter();
@@ -173,22 +181,36 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
    const double bodyReferenceRadius = Mars.bodyReferenceRadius();
 
-//    celestialBody Mars(planet);
-//    Mars.setPlanet(planet);  // Does not exist in the class anymore!
+
 
 
     /// Setting the vehicle class ///
 
     MarsAscentVehicle MAV;
 
+    // No Drag
 
+    MAV.setReferenceArea(0);
+
+    if (MAV.referenceArea() == 0){
+        std::cout<<"NO DRAG"<<std::endl;
+    }
+
+    // No Thrust
+
+    MAV.setThrust(0);
+
+    if (MAV.Thrust() == 0){
+        std::cout<<"NO THRUST"<<std::endl;
+    }
 
   /// Initial conditions ///
 
     // Launch site characteristics
 
 //    const double initialAltitude = -0.6e3;             // Starting altitude [m MOLA]
-    const double initialAltitude = -0.6;                 // Starting altitude [km MOLA]
+    const double initialAltitude = 20;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
+    std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
     const double initialLatitudeDeg = 21;               // Starting latitude [deg]
     const double initialLongitudeDeg = 74.5;            // Starting longitude [deg]
 
@@ -231,7 +253,30 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     aState(5) = initialVelocityInertialFrame(2);
     aState(6) = 227;  // Mass [kg] from literature study
 
+//    /// Debug ///
+
+//        aState(0) = 852.252774466749;
+//        aState(1) = 3073.12422474535;
+//        aState(2) = 1224.18491564675;
+//        aState(3) = -0.21782304504995;
+//        aState(4) = 0.0604076766542031;
+//        aState(5) = 0;
+//        aState(6) = 227;  // Mass [kg] from literature study
+
+//    /// Debug //
+
     StateAndTime currentStateAndTime(aState);        // Creating the current state class using the namespace and class directly
+
+//    std::cout<<"aState = "<<aState<<std::endl;
+//    std::cout<<"x1-852.252774466749 = "<<aState(0)-852.252774466749<<std::endl;
+//    std::cout<<"x1-850 = "<<aState(0)-850<<std::endl;
+//    std::cout<<"x2-3073.12422474535 = "<<aState(1)-3073.12422474535<<std::endl;
+//    std::cout<<"x3-1224.18491564675 = "<<aState(2)-1224.18491564675<<std::endl;
+//    std::cout<<"x4+0.21782304504995 = "<<aState(3)+0.21782304504995<<std::endl;
+//    std::cout<<"x5-0.0604076766542031 = "<<aState(4)-0.0604076766542031<<std::endl;
+//    std::cout<<"x6-0 = "<<aState(5)-0<<std::endl;
+//    std::cout<<"x7-227 = "<<aState(6)-227<<std::endl;
+
 
 /////////////////////////////////////////////////////////////////////
 ////////////////////// Testing the integrators //////////////////////
@@ -255,7 +300,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     Eigen::IOFormat csvFormat( 15, 0, ", ", "\n" );
 
     // Set absolute path to file containing the Taylor Series Coefficients.
-    std::string dataAbsolutePath = outputDirectory + "test5FullIntegrationTSIstateAndTime.csv";
+    std::string dataAbsolutePath = outputDirectory + "test6FullIntegrationTSIstateAndTime.csv";
 
     // Create a row vector for the storing of the data
     Eigen::MatrixXd outputVector = Eigen::MatrixXd::Zero(1,8); // Create a row vector for the storing of the data
@@ -310,6 +355,18 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //                 << timeinfo->tm_min << ":"
 //                 << timeinfo->tm_sec <<std::endl;
 
+        ostringstream ConvertYear;
+        ConvertYear << (timeinfo->tm_year+1900);
+        std::string currentYear = ConvertYear.str();
+
+        ostringstream ConvertMonth;
+        ConvertMonth << (timeinfo->tm_mon+1);
+        std::string currentMonth = ConvertMonth.str();
+
+        ostringstream ConvertDay;
+        ConvertDay << timeinfo->tm_mday;
+        std::string currentDay = ConvertDay.str();
+
         ostringstream ConvertHour;
         ConvertHour << timeinfo->tm_hour;
         std::string currentHour = ConvertHour.str();
@@ -328,7 +385,15 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //        std::cout<<"currentSec = "<<currentSec<<std::endl;
 
+        // Making sure each one of the representation has at two numbers
+        if(currentMonth.size() == 1){
+            currentMonth = "0" + currentMonth;
+        }
 
+
+        if(currentDay.size() == 1){
+            currentDay = "0" + currentDay;
+        }
 
 
         if(currentSec.size() == 1){
@@ -346,9 +411,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //        std::cout<<"The length of currentSec = "<<currentSec.size()<<" and the value = "<<currentSec<<std::endl;
 
-        std::string ComputerTimeString = currentHour + ":" + currentMin + ":" + currentSec;  // Convert to string and store
+        std::string ComputerTimeString = currentYear + "-" + currentMonth + "-" + currentDay + "_" + currentHour + ":" + currentMin + ":" + currentSec;  // Convert to string and store
 
-        std::string newFileName = "backupTSIFileAtTime_" + ComputerTimeString + ".csv";
+        std::string newFileName = "backupTSIFileAtDateAndTime_" + ComputerTimeString + ".csv";
 
     std::cerr<<"The file name that you have chosen already exists, a new file with name "<<newFileName<<" will be created to store the data for now"<<std::endl;
 
@@ -376,9 +441,12 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 /// Defining the order and initializing the StepSize class ///
 
-    const int maxOrder = 6; // Eventually want order 20
+    const int maxOrder = 8; // Eventually want order 20
+    std::cout<<"The order of TSI = "<<maxOrder<<std::endl;
 
         StepSize stepSize; // Initializing the stepSize class. THIS SHOULD BE DONE BEFORE THE START OF THE INTEGRATION!!!!!
+
+        stepSize.setLocalErrorTolerance(1e-8);  // Setting the local error tolerance to the lowest possible value in order to compare to RKF7(8) and the others
 
 //        /// Debug ///
 
@@ -402,6 +470,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         // Set the end time
         const double endTime = 10; // sec
 
+//        std::cout<<"It works till here 1"<<std::endl;
+
 
 /// The integeration do-loop ///
 
@@ -412,7 +482,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //	do
 //	{
 
-     for (int i = 0; i<2; i++){
+//     std::cout<<"It works till here 2"<<std::endl;
+
+     for (int i = 0; i<1; i++){
          /// Debug ///
     std::cout<<"The current step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
     std::cout<<"The current runningTime = "<<runningTime<<std::endl;
@@ -427,7 +499,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         Eigen::VectorXd updatedStateAndTimeVector = performTaylorSeriesIntegrationStep(Mars, MAV, currentStateAndTime, stepSize, maxOrder);
         // This function has the output: updated position, updated velocity, updated mass and updated time
 
-//        std::cout<<"updatedStateAndTimeVector = "<<updatedStateAndTimeVector<<std::endl;
+        std::cout<<"updatedStateAndTimeVector = "<<updatedStateAndTimeVector<<std::endl;
 
 
         // Check to see if the class has been updated from within the TSI function
@@ -528,6 +600,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         };
 //*/
 
+//        std::cout<<"It works till here 3"<<std::endl;
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /*////////////////////// Testing the RKF and other higher order integrators //////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -598,6 +671,18 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                     //                 << timeinfo->tm_min << ":"
                     //                 << timeinfo->tm_sec <<std::endl;
 
+                            ostringstream ConvertYear;
+                            ConvertYear << (timeinfo->tm_year+1900);
+                            std::string currentYear = ConvertYear.str();
+
+                            ostringstream ConvertMonth;
+                            ConvertMonth << (timeinfo->tm_mon+1);
+                            std::string currentMonth = ConvertMonth.str();
+
+                            ostringstream ConvertDay;
+                            ConvertDay << timeinfo->tm_mday;
+                            std::string currentDay = ConvertDay.str();
+
                             ostringstream ConvertHour;
                             ConvertHour << timeinfo->tm_hour;
                             std::string currentHour = ConvertHour.str();
@@ -615,6 +700,15 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                             std::string currentSec = ConvertSec.str();
 
 
+                            // Making sure each one of the representation has at two numbers
+                            if(currentMonth.size() == 1){
+                                currentMonth = "0" + currentMonth;
+                            }
+
+
+                            if(currentDay.size() == 1){
+                                currentDay = "0" + currentDay;
+                            }
 
                             if(currentSec.size() == 1){
                                 currentSec = "0" + currentSec;
@@ -633,9 +727,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
                             // Create new file name
 
-                            std::string ComputerTimeString = currentHour + ":" + currentMin + ":" + currentSec;  // Convert to string and store
+                            std::string ComputerTimeString = currentYear + "-" + currentMonth + "-" + currentDay + "_" + currentHour + ":" + currentMin + ":" + currentSec;  // Convert to string and store
 
-                            std::string newFileName = "backupRKFFileAtTime_" + ComputerTimeString + ".csv";
+                            std::string newFileName = "backupRKFFileAtDateAndTime_" + ComputerTimeString + ".csv";
 
                         std::cerr<<"The file name that you have chosen already exists, a new file with name "<<newFileName<<" will be created to store the data for now"<<std::endl;
 
@@ -681,7 +775,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                     const double initialTime = currentStateAndTime.getCurrentTime();                            // Time.
                 //    Eigen::VectorXd initialState = currentStateAndTime.getCurrentState(); // State: start with zero velocity at the origin.
 
-                    const double endTime = 120;     // Using the same initial step-size as defined for TSI
+                    const double endTime = 0.2;     // Using the same initial step-size as defined for TSI
 
                     // Step-size settings.
                     // The minimum and maximum step-size are set such that the input data is fully accepted by the
@@ -761,6 +855,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                         Eigen::VectorXd currentState = integrator.getCurrentState();
 
 //                        std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
+                        std::cout<<"The current running time is "<<runningTime<<std::endl;
 
 
                         /// Storing the values ///
@@ -796,6 +891,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                     }while( !( endTime - runningTime <= std::numeric_limits< double >::epsilon( ) ) );
 
                     /// Storing the values to the file ///
+
 
                     // Check if the file already exists.
 

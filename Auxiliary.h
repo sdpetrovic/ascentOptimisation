@@ -166,6 +166,8 @@ public:
         auxiliaryEquationsVector(6) = aState(5);              // x6
         auxiliaryEquationsVector(7) = aState(6);              // x7
 
+
+
         auxiliaryEquationsVector(8) = auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2)+
                 auxiliaryEquationsVector(3)*auxiliaryEquationsVector(3) ;              // x8
 
@@ -178,18 +180,25 @@ public:
         auxiliaryEquationsVector(21) = auxiliaryEquationsVector(4)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(5)*auxiliaryEquationsVector(5)+
                 auxiliaryEquationsVector(6)*auxiliaryEquationsVector(6) ;              // x21
 
-        auxiliaryEquationsVector(26) = 2*(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)+
-                                          auxiliaryEquationsVector(3)*auxiliaryEquationsVector(6));              // x26
+//        auxiliaryEquationsVector(26) = 2*(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)+
+//                                          auxiliaryEquationsVector(3)*auxiliaryEquationsVector(6));              // x26
+        ///Debug///
+        auxiliaryEquationsVector(26) = 2*((auxiliaryEquationsVector(1)/1000)*(auxiliaryEquationsVector(4)/1000)+(auxiliaryEquationsVector(2)/1000)*(auxiliaryEquationsVector(5)/1000)+
+                                          (auxiliaryEquationsVector(3)/1000)*(auxiliaryEquationsVector(6)/1000))*1000;              // x26
 
-//        std::cout<<setprecision(15)<<"x26 = "<<auxiliaryEquationsVector(26)<<std::endl;
-        /*
-        std::cout<<setprecision(15)<<"x1*x4 = "<<auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)<<std::endl;
-        std::cout<<setprecision(15)<<"x2*x5 = "<<auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)<<std::endl;
-        std::cout<<setprecision(15)<<"x3*x6 = "<<auxiliaryEquationsVector(3)*auxiliaryEquationsVector(6)<<std::endl;
-        std::cout<<setprecision(15)<<"x1*x4+x2*x5 = "<<(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4))+(auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5))<<std::endl;
-        std::cout<<setprecision(15)<<"x1*x4+x2*x5+x3*x6 = "<<auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)+
-                   auxiliaryEquationsVector(3)*auxiliaryEquationsVector(6)<<std::endl;
-                   */
+//      std::cout<<setprecision(15)<<"x26 = "<<auxiliaryEquationsVector(26)<<std::endl;
+
+//        std::cout<<"x1 = "<<auxiliaryEquationsVector(1)<<std::endl;
+//        std::cout<<"x1-852.252774466749 = "<<auxiliaryEquationsVector(1)-852.252774466749<<std::endl;
+//        std::cout<<setprecision(15)<<"x1*x4 = "<<auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)<<std::endl;
+//        std::cout<<setprecision(15)<<"x1*x4+185.640294486616 = "<<auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)+185.640294486616<<std::endl;
+//        std::cout<<setprecision(15)<<"x2*x5 = "<<auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)<<std::endl;
+//        std::cout<<setprecision(15)<<"x2*x5-185.640294486616 = "<<auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)-185.640294486616<<std::endl;
+//        std::cout<<setprecision(15)<<"x3*x6 = "<<auxiliaryEquationsVector(3)*auxiliaryEquationsVector(6)<<std::endl;
+//        std::cout<<setprecision(15)<<"x1*x4+x2*x5 = "<<(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4))+(auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5))<<std::endl;
+//        std::cout<<setprecision(15)<<"x1*x4+x2*x5+x3*x6 = "<<auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)+
+//                   auxiliaryEquationsVector(3)*auxiliaryEquationsVector(6)<<std::endl;
+//        ///Debug///
 
         auxiliaryEquationsVector(11) = atan2(auxiliaryEquationsVector(2),auxiliaryEquationsVector(1))-auxiliaryEquationsVector(10);              // x11
 

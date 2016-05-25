@@ -180,7 +180,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
     Eigen::VectorXd auxiliaryEquations =  Aux.getAuxiliaryEquations(currentState,currentTime,thrustAccelerationsBframe);
 
-//    std::cout<<"The auxiliaryEquations are "<<auxiliaryEquations<<std::endl;
+    std::cout<<"The auxiliaryEquations are "<<auxiliaryEquations<<std::endl;
 
 
     // Compute the auxiliary derivatives
@@ -243,7 +243,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
         Eigen::IOFormat csvFormat( 15, 0, ", ", "\n" );
 
         // Set absolute path to file containing the Taylor Series Coefficients.
-        const std::string taylorSeriesCoefficientsAbsolutePath = outputDirectory + "test5TaylorSeriesCoefficients.csv";
+        const std::string taylorSeriesCoefficientsAbsolutePath = outputDirectory + "test6TaylorSeriesCoefficients(bugSearch24-05-2016).csv";
 
 
         // Check if the file already exists.
@@ -331,8 +331,11 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
             lastCoefficients(i)= TaylorCoefficients((i+1),(maxOrder));              // Xn(K)
         }
 
+//        std::cout<<"TaylorSeriesIntegration works till here 1"<<std::endl;
 
         stepSize.updateStepSizeUsingIteration(penultimateCoefficients, lastCoefficients, maxOrder); // Determining the new step-size and updating the current step-size to that
+
+//        std::cout<<"TaylorSeriesIntegration works till here 2"<<std::endl;
 
         // Please note that instead of updateStepSizeUsingInteration, you can also use updateStepSizeUsingPreviousStepSize, however, this method does not work if the maximum truncation error estimate is larger
         // than the local error tolerance and requires the previous step-size
@@ -350,7 +353,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
         updatedStateAndTime(6) = updatedState(6);   // Updated mass
         updatedStateAndTime(7) = updatedTime;   // Updated time
 
-
+//        std::cout<<"TaylorSeriesIntegration works till here 3"<<std::endl;
 
     return updatedStateAndTime;
 

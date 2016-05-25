@@ -341,6 +341,7 @@ private:
 
             double maxOrder = maxOrder_; // Making it a double such that it can be used for computations
             tudat::basic_mathematics::Vector7d allStepSizes;        // Vector containing the step-sizes for each variable
+            allStepSizes << 1, 1, 1, 1, 1, 1, 1; // Fill with default value of 1 sec
 
             for (int i = 0; i<penultimateCoefficients_.size();i++){             // Determining the required step-size for every variable
 
@@ -348,25 +349,60 @@ private:
                 double newStepSize = 0;         // Default
 
                 double differenceIntStepSize = prevStepSize-newStepSize;        // Difference to determine if the while loop needs to keep going
+                double prevDifferenceIntStepSize = 0;                           // Difference to compare to the current difference to avoid oscillation
+                double nNotChanged = 0;             // Set the number of not changed double loops to 0
 
-
-
-                while (abs(differenceIntStepSize) > 1e-15){                      // Accepting the step-size if the difference is 1e-6
+                if (abs(penultimateCoefficients_(i)) == 0 && abs(lastCoefficients_(i)) == 0){
+                    allStepSizes(i) = -log(0);
+                }
+                else{
+                while ((abs(differenceIntStepSize) > 1e-15) && (nNotChanged < 4)){                      // Accepting the step-size if the difference is 1e-15
+//                    std::cout<<"nNotchanged = "<<nNotChanged<<std::endl;
+//                    std::cout<<"i = "<<i<<std::endl;
+//                    std::cout<<"prevStepSize = "<<prevStepSize<<std::endl;
+//                    std::cout<<"newStepSize before = "<<newStepSize<<std::endl;
 
                         newStepSize = exp((1/(maxOrder-1))*log(localErrorTolerance/(abs(penultimateCoefficients_(i))+prevStepSize*abs(lastCoefficients_(i)))));  // Eq. 47 of the reference paper (High Speed Solution of Spacecraft Trajectory Problems using Taylor Series Integration
 
+//                        /// Debug start ///
+
+//                        std::cout<<"newStepSize after = "<<newStepSize<<std::endl;
+//                        std::cout<<"1/(maxOrder-1) = "<<1/(maxOrder-1)<<std::endl;
+//                        std::cout<<"maxOrder = "<<maxOrder<<std::endl;
+//                        std::cout<<"abs(penultimateCoefficients_(i)) = "<<abs(penultimateCoefficients_(i))<<std::endl;
+//                        std::cout<<"abs(lastCoefficients_(i)) = "<<abs(lastCoefficients_(i))<<std::endl;
+//                        std::cout<<"(abs(penultimateCoefficients_(i))+prevStepSize*abs(lastCoefficients_(i))) = "<<(abs(penultimateCoefficients_(i))+prevStepSize*abs(lastCoefficients_(i)))<<std::endl;
+//                        std::cout<<"(localErrorTolerance/(abs(penultimateCoefficients_(i))+prevStepSize*abs(lastCoefficients_(i)))) = "<<(localErrorTolerance/(abs(penultimateCoefficients_(i))+prevStepSize*abs(lastCoefficients_(i))))<<std::endl;
+//                        std::cout<<"log(localErrorTolerance/(abs(penultimateCoefficients_(i))+prevStepSize*abs(lastCoefficients_(i)))) = "<<log(localErrorTolerance/(abs(penultimateCoefficients_(i))+prevStepSize*abs(lastCoefficients_(i))))<<std::endl;
+
+
+//                        /// Debug end ///
+
+
                         differenceIntStepSize = prevStepSize-newStepSize;           // Determining the difference
 
-    //                    std::cout<<"differenceIntstepSize = "<<differenceIntStepSize<<std::endl;
+                        if (prevDifferenceIntStepSize+differenceIntStepSize == 0){
+
+                            nNotChanged++;
+
+                        }
+
+//                        std::cout<<"prevDifferenceIntStepSize+differenceIntStepSize = "<<prevDifferenceIntStepSize+differenceIntStepSize<<std::endl;
+                        prevDifferenceIntStepSize = differenceIntStepSize;          // Update the previous difference
+
+//                        std::cout<<"differenceIntStepSize = "<<differenceIntStepSize<<std::endl;
+//                        std::cout<<"prevDifferenceIntStepSize = "<<differenceIntStepSize<<std::endl;
+
 
                         prevStepSize = newStepSize;                     // Updating step-size
 
-    //                    std::cout<<"newStepSize = "<<newStepSize<<std::endl;
-                }
+//                        std::cout<<"newStepSize = "<<newStepSize<<std::endl;
+                }   // end while loop
 
                 allStepSizes(i) = prevStepSize;     // Storing the step-size
 
-            }
+            }       // end else statement
+            }   // end for loop
 
             double min; // Define the minimum holding variable
 
@@ -381,7 +417,7 @@ private:
             }
 
     //        std::cout<<"allStepSizes = "<<allStepSizes<<std::endl;
-    //        std::cout<<"min = "<<min<<std::endl;
+//            std::cout<<"min = "<<min<<std::endl;
 
             nextStepSize = stepMultiplicationFactor*min;   // The next step-size then becomes the minimum step-size times the stepMultiplicationFactor
 

@@ -231,6 +231,12 @@ public:
     ///////// PLEASE NOTE THAT IF NOT ALL INFORMATION IS PROVIDED IT COULD BE THAT A VALUE CLOSE TO 0 IS PROVIDED INSTEAD!//////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // Set functions
+
+    void setStandardGravitationalParameter(const double updatedStandardGravitationalParameter)  // This function can be used to set the value of the Standard gravitational parameter of the planet. If set to 0, gravity is not taken into account in the equations
+    {
+        standardGravitationalParameter_ = updatedStandardGravitationalParameter;
+    }
 
 
     // Returning the different constant parameters
