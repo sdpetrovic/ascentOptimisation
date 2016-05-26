@@ -180,11 +180,16 @@ public:
         auxiliaryEquationsVector(21) = auxiliaryEquationsVector(4)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(5)*auxiliaryEquationsVector(5)+
                 auxiliaryEquationsVector(6)*auxiliaryEquationsVector(6) ;              // x21
 
-//        auxiliaryEquationsVector(26) = 2*(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)+
-//                                          auxiliaryEquationsVector(3)*auxiliaryEquationsVector(6));              // x26
+        auxiliaryEquationsVector(26) = 2*(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)+
+                                          auxiliaryEquationsVector(3)*auxiliaryEquationsVector(6));              // x26
+        // Setting accuracy for x26 to 1 mm^2/s
+        if (auxiliaryEquationsVector(26)<=1e-12){
+            auxiliaryEquationsVector(26) = 0;
+        };
+
         ///Debug///
-        auxiliaryEquationsVector(26) = 2*((auxiliaryEquationsVector(1)/1000)*(auxiliaryEquationsVector(4)/1000)+(auxiliaryEquationsVector(2)/1000)*(auxiliaryEquationsVector(5)/1000)+
-                                          (auxiliaryEquationsVector(3)/1000)*(auxiliaryEquationsVector(6)/1000))*1000;              // x26
+//        auxiliaryEquationsVector(26) = 2*((auxiliaryEquationsVector(1)/1e6)*(auxiliaryEquationsVector(4))+(auxiliaryEquationsVector(2)/1e6)*(auxiliaryEquationsVector(5))+
+//                                          (auxiliaryEquationsVector(3)/1e6)*(auxiliaryEquationsVector(6)))*1e6;              // x26
 
 //      std::cout<<setprecision(15)<<"x26 = "<<auxiliaryEquationsVector(26)<<std::endl;
 
@@ -227,8 +232,8 @@ public:
             auxiliaryEquationsVector(45) = 0;
         }
         else {
-//        auxiliaryEquationsVector(45) = (auxiliaryEquationsVector(1)*auxiliaryEquationsVector(5)-auxiliaryEquationsVector(2)*auxiliaryEquationsVector(4))/auxiliaryEquationsVector(19);               // x45
-        auxiliaryEquationsVector(45) = (auxiliaryEquationsVector(1)*auxiliaryEquationsVector(5)*1E-6-auxiliaryEquationsVector(2)*auxiliaryEquationsVector(4)*1E-6)/(auxiliaryEquationsVector(19)*1E-6); // x45 in 1000 km/1000 km
+        auxiliaryEquationsVector(45) = (auxiliaryEquationsVector(1)*auxiliaryEquationsVector(5)-auxiliaryEquationsVector(2)*auxiliaryEquationsVector(4))/auxiliaryEquationsVector(19);               // x45
+//        auxiliaryEquationsVector(45) = ((auxiliaryEquationsVector(1)/1e6)*auxiliaryEquationsVector(5)-(auxiliaryEquationsVector(2)/1e6)*auxiliaryEquationsVector(4))/(auxiliaryEquationsVector(19)/1e6); // x45 in 1e6 km/1e6 km
 };
 
 
@@ -344,6 +349,11 @@ public:
 
         auxiliaryEquationsVector(46) = auxiliaryEquationsVector(45)-rotationalVelocity;             // x46
 
+        // Set tolerance for the velocity in case of rounding errors... It is set such that the the accuracy is 10 micro-metres/sec of surface movement
+        if (auxiliaryEquationsVector(46)<=1e-11){
+            auxiliaryEquationsVector(46) = 0;
+        }
+
         auxiliaryEquationsVector(47) = cos(auxiliaryEquationsVector(12))*auxiliaryEquationsVector(45);               // x47
 
 //        auxiliaryEquationsVector(18) = auxiliaryEquationsVector(20)*auxiliaryEquationsVector(24);              // x18
@@ -377,23 +387,29 @@ public:
 
         auxiliaryEquationsVector(43) = auxiliaryEquationsVector(41)*auxiliaryEquationsVector(42);                // x43
 
+        auxiliaryEquationsVector(15) = sqrt(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43));              // x15
+
         // Set tolerance for the velocity in case of rounding errors... It is set such that the the accuracy is 10 micro-metres/sec
+        if (auxiliaryEquationsVector(15)<=1E-8){
 
-//        if (abs(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43))<=1E-10){
-
-//            auxiliaryEquationsVector(15) = 0;
+            auxiliaryEquationsVector(15) = 0;
 
 
-//        }
+        }
 //        else {
 //        auxiliaryEquationsVector(15) = sqrt(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43));              // x15
-        auxiliaryEquationsVector(15) = sqrt(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)*1e-6+auxiliaryEquationsVector(21)*1e-6-2*auxiliaryEquationsVector(43)*1e-6)/sqrt(1e-6);              // x15
+//        auxiliaryEquationsVector(15) = sqrt(((auxiliaryEquationsVector(35)/1e6)*(auxiliaryEquationsVector(35))+(auxiliaryEquationsVector(21)/1e6)-2*(auxiliaryEquationsVector(43)/1e6))*1e6);              // x15
 //};
 
 
 
 /*
  // What the actual f*ck?!
+        std::cout<<"((auxiliaryEquationsVector(35)/1e6)*(auxiliaryEquationsVector(35)/1e6)+(auxiliaryEquationsVector(21)/1e6)-2*(auxiliaryEquationsVector(43)/1e6))*1e6 = "<<((auxiliaryEquationsVector(35)/1e6)*(auxiliaryEquationsVector(35)/1e6)+(auxiliaryEquationsVector(21)/1e6)-2*(auxiliaryEquationsVector(43)/1e6))*1e6<<std::endl;
+        std::cout<<"(auxiliaryEquationsVector(35)/1e6)*(auxiliaryEquationsVector(35)) = "<<(auxiliaryEquationsVector(35)/1e6)*(auxiliaryEquationsVector(35))<<std::endl;
+        std::cout<<"(auxiliaryEquationsVector(21)/1e6) = "<<(auxiliaryEquationsVector(21)/1e6)<<std::endl;
+        std::cout<<"2*(auxiliaryEquationsVector(43)/1e6) = "<<2*(auxiliaryEquationsVector(43)/1e6)<<std::endl;
+        std::cout<<"(auxiliaryEquationsVector(35)/1e6) = "<<(auxiliaryEquationsVector(35)/1e6)<<std::endl;
 
         std::cout<<"x35 = "<<auxiliaryEquationsVector(35)<<std::endl;
         std::cout<<"x36 = "<<auxiliaryEquationsVector(36)<<std::endl;
@@ -432,7 +448,13 @@ public:
 
         auxiliaryEquationsVector(14) = asin(auxiliaryEquationsVector(23));              // x14
 
+        // Dealing with the inaccuracy in pi
+        if (auxiliaryEquationsVector(23) == 1 || auxiliaryEquationsVector(23) == -1){
+            auxiliaryEquationsVector(16) = 0;
+        }
+        else{
         auxiliaryEquationsVector(16) = cos(auxiliaryEquationsVector(14));              // x16
+        };
 
         auxiliaryEquationsVector(32) = auxiliaryEquationsVector(15)/auxiliaryEquationsVector(33);              // x32
 

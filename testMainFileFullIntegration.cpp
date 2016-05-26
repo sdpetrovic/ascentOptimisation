@@ -166,7 +166,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // No Gravity
 
-//    Mars.setStandardGravitationalParameter(0);
+    Mars.setStandardGravitationalParameter(0);
 
     if (Mars.standardGravitationalParameter() == 0){
         std::cout<<"NO GRAVITY"<<std::endl;
@@ -198,13 +198,19 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // No Thrust
 
-    MAV.setThrust(0);
+//    MAV.setThrust(0);
 
     if (MAV.Thrust() == 0){
         std::cout<<"NO THRUST"<<std::endl;
     }
 
   /// Initial conditions ///
+
+    /// TSI settings ///
+    const int maxOrder = 2; // Eventually want order 20 (testing is 8)
+    const double chosenLocalErrorTolerance = 1e-8;      // The chosen local error tolerance for TSI
+    /// TSI settings ///
+
 
     // Launch site characteristics
 
@@ -441,12 +447,12 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 /// Defining the order and initializing the StepSize class ///
 
-    const int maxOrder = 8; // Eventually want order 20
+
     std::cout<<"The order of TSI = "<<maxOrder<<std::endl;
 
         StepSize stepSize; // Initializing the stepSize class. THIS SHOULD BE DONE BEFORE THE START OF THE INTEGRATION!!!!!
 
-        stepSize.setLocalErrorTolerance(1e-8);  // Setting the local error tolerance to the lowest possible value in order to compare to RKF7(8) and the others
+        stepSize.setLocalErrorTolerance(chosenLocalErrorTolerance);  // Setting the local error tolerance to the lowest possible value in order to compare to RKF7(8) and the others
 
 //        /// Debug ///
 
@@ -484,19 +490,22 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //     std::cout<<"It works till here 2"<<std::endl;
 
-     for (int i = 0; i<1; i++){
+     for (int i = 0; i<2; i++){
          /// Debug ///
     std::cout<<"The current step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
     std::cout<<"The current runningTime = "<<runningTime<<std::endl;
+    std::cout<<"std::fabs(endTime-runningTime) = "<<std::fabs(endTime-runningTime)<<std::endl;
+    std::cout<<"std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) = "<<std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) )<<std::endl;
          /// Debug ///
 
 	if ( std::fabs( endTime - runningTime )
                              <= std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) )
                         {
+        std::cout<<"It is indeed smaller than the step-size"<<std::endl;
                             stepSize.setCurrentStepSize(endTime - runningTime);
                         }
-
-        Eigen::VectorXd updatedStateAndTimeVector = performTaylorSeriesIntegrationStep(Mars, MAV, currentStateAndTime, stepSize, maxOrder);
+        std::cout<<"The new step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
+        Eigen::VectorXd updatedStateAndTimeVector = performTaylorSeriesIntegrationStep(Mars, MAV, currentStateAndTime, stepSize, maxOrder); /// The actual integration step
         // This function has the output: updated position, updated velocity, updated mass and updated time
 
         std::cout<<"updatedStateAndTimeVector = "<<updatedStateAndTimeVector<<std::endl;

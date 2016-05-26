@@ -209,6 +209,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
     /// Storing the Taylor Coefficients to a file ///
 
+//    std::cout<<"Does this even work1?"<<std::endl;
 
         Eigen::MatrixXd TaylorCoefficientsOutputMatrix = Eigen::MatrixXd::Zero(7,maxOrder+1);       // Create an output matrix for the file without the first empty row
 
@@ -221,11 +222,11 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
         TaylorCoefficientsOutputMatrix.row(6) = TaylorCoefficients.row(7);                  // The seventh line entries are the maxOrder+1 Taylor Series Coefficients for   the mass
 
 
- /*       /// Start debug ///
+        /// Start debug ///
 
-        std::cout<<"Does this even work? :S"<<std::endl;
+//        std::cout<<"Does this even work2? :S"<<std::endl;
 
-        std::cout<<"x-position coefficients are: "<<TaylorCoefficientsOutputMatrix.row(0)<<std::endl;
+/*        std::cout<<"x-position coefficients are: "<<TaylorCoefficientsOutputMatrix.row(0)<<std::endl;
         std::cout<<"y-position coefficients are: "<<TaylorCoefficientsOutputMatrix.row(1)<<std::endl;
         std::cout<<"z-position coefficients are: "<<TaylorCoefficientsOutputMatrix.row(2)<<std::endl;
         std::cout<<"x-velocity coefficients are: "<<TaylorCoefficientsOutputMatrix.row(3)<<std::endl;
@@ -291,6 +292,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
             exportFile1.close( );   // Close the file
         };
 
+//std::cout<<"Does this even work3?"<<std::endl;
 
         /// Performing the actual Taylor Series expansion for every state variable ///
 
@@ -316,7 +318,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 }   // All variables
 
 
-
+//std::cout<<"Does this even work4?"<<std::endl;
         double updatedTime = currentTime+currentStepSize;           // Create the updated time variable
 
 
@@ -339,6 +341,8 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
         // Please note that instead of updateStepSizeUsingInteration, you can also use updateStepSizeUsingPreviousStepSize, however, this method does not work if the maximum truncation error estimate is larger
         // than the local error tolerance and requires the previous step-size
+
+//        std::cout<<"Does this even work5?"<<std::endl;
 
         /// Setting the ouput vector ///
 

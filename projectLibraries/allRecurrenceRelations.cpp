@@ -630,7 +630,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         // 4
 
         WVector4_1(k) = getDivisionRecurrenceRelation(XMatrix.row(1),XMatrix.row(9),WVector4_1,k); //  XMatrix(1,k)/XMatrix(9,k);
-        WVector4_2(k) = thrustAccelerationsBframe(0)-getDivisionRecurrenceRelation(XMatrix.row(27),XMatrix.row(7),WVector4_2,k);
+        WVector4_2(k) = thrustAccelerationsBframe(0)-getDivisionRecurrenceRelation(XMatrix.row(27),XMatrix.row(7),WVector4_2,k); /// This is wrong! For the division only the previous division should be taken. So an extra WVector should be added!!
         WVector4_3(k) = getCosineRecurrenceRelation((XMatrix.row(10)+XMatrix.row(11)),WVector4_8,k);
         WVector4_4(k) = getSineRecurrenceRelation(XMatrix.row(12),WVector4_6,k);
         WVector4_5(k) = getCosineRecurrenceRelation(XMatrix.row(13),WVector4_9,k);
@@ -1102,7 +1102,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //    std::cout<<"Length of stateTaylorCoefficients.row(1) = "<<stateTaylorCoefficients.row(1).size()<<std::endl;
 //    std::cout<<"Length of XMatrix.row(1) = "<<XMatrix.row(1).size()<<std::endl;
 
-//    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
+    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
 //    std::cout<<"UMatrix = "<<UMatrix<<std::endl;
 
 

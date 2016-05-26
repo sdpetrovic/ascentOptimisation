@@ -362,8 +362,12 @@ private:
 //                    std::cout<<"prevStepSize = "<<prevStepSize<<std::endl;
 //                    std::cout<<"newStepSize before = "<<newStepSize<<std::endl;
 
+                    if (maxOrder == 1){
+                        newStepSize = exp(1*log(localErrorTolerance/(abs(penultimateCoefficients_(i))+prevStepSize*abs(lastCoefficients_(i)))));
+                    }
+                    else{
                         newStepSize = exp((1/(maxOrder-1))*log(localErrorTolerance/(abs(penultimateCoefficients_(i))+prevStepSize*abs(lastCoefficients_(i)))));  // Eq. 47 of the reference paper (High Speed Solution of Spacecraft Trajectory Problems using Taylor Series Integration
-
+};
 //                        /// Debug start ///
 
 //                        std::cout<<"newStepSize after = "<<newStepSize<<std::endl;
