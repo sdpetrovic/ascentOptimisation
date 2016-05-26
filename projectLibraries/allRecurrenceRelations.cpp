@@ -27,6 +27,7 @@
  *      160428    S.D. Petrovic     File created
  *      160518    S.D. Petrovic     Fixed the mistake I made with the transformation matrix T_IB which resulted in a mistake in u6
  *      160520    S.D. Petrovic     Fixed the mistake where I had written W40_1 and W40_2 instead of W41_1 and W41_2
+ *      160526    S.D. Petrovic     Added W4,0 to be able to properly evaluate the recurrence relation of W4,2
  *
  *    References
  *
@@ -114,6 +115,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
     // Create the auxiliary functions vectors
 
+    Eigen::VectorXd WVector4_0 = Eigen::VectorXd::Zero(maxOrder);     // W4,0   // Added because of the mistake found in the recurrence relation of W4,2
     Eigen::VectorXd WVector4_1 = Eigen::VectorXd::Zero(maxOrder);     // W4,1
     Eigen::VectorXd WVector4_2 = Eigen::VectorXd::Zero(maxOrder);     // W4,2
     Eigen::VectorXd WVector4_3 = Eigen::VectorXd::Zero(maxOrder);     // W4,3
@@ -341,6 +343,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
     // And fill them
 
+    WVector4_0(0) = initialFunctionsMatrix(4,0);     // W4,0   // Added because of the mistake found in the recurrence relation of W4,2
     WVector4_1(0) = initialFunctionsMatrix(4,1);     // W4,1
     WVector4_2(0) = initialFunctionsMatrix(4,2);     // W4,2
     WVector4_3(0) = initialFunctionsMatrix(4,3);     // W4,3
@@ -629,8 +632,10 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         // 4
 
+        WVector4_0(k) = getDivisionRecurrenceRelation(XMatrix.row(27),XMatrix.row(7),WVector4_0,k); // Added because of the mistake found in the recurrence relation of W4,2
         WVector4_1(k) = getDivisionRecurrenceRelation(XMatrix.row(1),XMatrix.row(9),WVector4_1,k); //  XMatrix(1,k)/XMatrix(9,k);
-        WVector4_2(k) = thrustAccelerationsBframe(0)-getDivisionRecurrenceRelation(XMatrix.row(27),XMatrix.row(7),WVector4_2,k); /// This is wrong! For the division only the previous division should be taken. So an extra WVector should be added!!
+//        WVector4_2(k) = thrustAccelerationsBframe(0)-WVector4_0(k);                                     /// This is wrong! For the division only the previous division should be taken. So an extra WVector should be added!!  Update: done
+        WVector4_2(k) = -WVector4_0(k);             // Constant in second derivative should be zero
         WVector4_3(k) = getCosineRecurrenceRelation((XMatrix.row(10)+XMatrix.row(11)),WVector4_8,k);
         WVector4_4(k) = getSineRecurrenceRelation(XMatrix.row(12),WVector4_6,k);
         WVector4_5(k) = getCosineRecurrenceRelation(XMatrix.row(13),WVector4_9,k);
@@ -656,6 +661,42 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         UMatrix(4,k) = -standardGravitationalParameter*WVector4_1(k)+WVector4_24(k)+thrustAccelerationsBframe(1)*(WVector4_19(k)-WVector4_14(k))+thrustAccelerationsBframe(2)*(WVector4_23(k)-WVector4_21(k));
 
+
+        /// Debug ///
+
+        double Wdiv_ = 0;               // Setting the outcome to zero to avoid previous answers that might be stored somewhere for some reason
+        double interSum = 0;           // Defining an intermediate outcome for the summation
+
+        // Avoid singularities
+        const Eigen::VectorXd G = XMatrix.row(7);
+        const Eigen::VectorXd F = XMatrix.row(27);
+        const Eigen::VectorXd Wdiv = WVector4_0;
+        const int order = k;
+
+        if (G(0) != 0){
+
+            //    const int order = F.size()-1;               // Determine the current order
+
+                for (int j=1; j<order+1; j++){
+
+                interSum +=G(j)*Wdiv(order-j);              // Perform the summation
+                std::cout<<"interSum = "<<interSum<<std::endl;
+
+                };
+
+                Wdiv_ = (1/G(0))*(F(order)-interSum);       // Compute the current value
+
+                std::cout<<"F(order) = "<<F(order)<<std::endl;
+                std::cout<<"order = "<<order<<std::endl;
+                std::cout<<"G(0) = "<<G(0)<<std::endl;
+                std::cout<<"(1/G(0)) = "<<(1/G(0))<<std::endl;
+                std::cout<<"Wdiv_ = "<<Wdiv_<<std::endl;
+
+        }
+
+//        std::cout<<"standardGravitationalParameter = "<<standardGravitationalParameter<<std::endl;
+
+        /// Debug ///
 
         // 5
 
@@ -1101,6 +1142,10 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
 //    std::cout<<"Length of stateTaylorCoefficients.row(1) = "<<stateTaylorCoefficients.row(1).size()<<std::endl;
 //    std::cout<<"Length of XMatrix.row(1) = "<<XMatrix.row(1).size()<<std::endl;
+
+    std::cout<<"WVector4_1 = "<<WVector4_1<<std::endl;
+
+
 
     std::cout<<"XMatrix = "<<XMatrix<<std::endl;
 //    std::cout<<"UMatrix = "<<UMatrix<<std::endl;

@@ -206,8 +206,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
   /// Initial conditions ///
 
+
     /// TSI settings ///
-    const int maxOrder = 2; // Eventually want order 20 (testing is 8)
+    const int maxOrder = 20; // Eventually want order 20 (testing is 8)
     const double chosenLocalErrorTolerance = 1e-8;      // The chosen local error tolerance for TSI
     /// TSI settings ///
 
@@ -215,7 +216,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     // Launch site characteristics
 
 //    const double initialAltitude = -0.6e3;             // Starting altitude [m MOLA]
-    const double initialAltitude = 20;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
+    const double initialAltitude = -0.6;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
     const double initialLatitudeDeg = 21;               // Starting latitude [deg]
     const double initialLongitudeDeg = 74.5;            // Starting longitude [deg]

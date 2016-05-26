@@ -28,6 +28,7 @@
  *      160518    S.D. Petrovic     Fixed the mistake I made with the transformation matrix T_IB which resulted in a mistake in u6
  *      160520    S.D. Petrovic     Fixed mistake in x25 where it said x25 = x25/(2*x20) which should be x25 = x26/(2*x20). Also, u41 had a - instead of a +.
  *                                  Also, at u45 and u21 the tolerance had to include an abs function!
+ *      160526    S.D. Petrovic     Added W4,0 to be able to properly evaluate the recurrence relation of W4,2
  *
  *    References
  *
@@ -500,6 +501,13 @@ public:
 
 
         auxiliaryEquationsVector(27) = 0.5*referenceArea*auxiliaryEquationsVector(28)*auxiliaryEquationsVector(15)*auxiliaryEquationsVector(15)*auxiliaryEquationsVector(29);              // x27
+
+        /// Debug ///
+
+        std::cout<<"x27 = "<<auxiliaryEquationsVector(27)<<std::endl;
+        std::cout<<"referenceArea = "<<referenceArea<<std::endl;
+
+        /// Debug ///
 
 //        auxiliaryEquationsVector(13) = acos(auxiliaryEquationsVector(22));              // x13
 
@@ -996,6 +1004,7 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
 
 
     // w4
+    auxiliaryFunctionsMatrix(4,0) = auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7);   // Added because of the mistake found in the recurrence relation of W4,2
     auxiliaryFunctionsMatrix(4,1) = auxiliaryEquationsVector(1)/auxiliaryEquationsVector(9);
     auxiliaryFunctionsMatrix(4,2) = auxiliaryEquationsVector(0);
     auxiliaryFunctionsMatrix(4,3) = cos(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11));
