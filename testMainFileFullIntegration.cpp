@@ -198,7 +198,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // No Thrust
 
-//    MAV.setThrust(0);
+    MAV.setThrust(0);
 
     if (MAV.Thrust() == 0){
         std::cout<<"NO THRUST"<<std::endl;
@@ -274,7 +274,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     StateAndTime currentStateAndTime(aState);        // Creating the current state class using the namespace and class directly
 
-//    std::cout<<"aState = "<<aState<<std::endl;
+    std::cout<<"aState = "<<aState<<std::endl;
 //    std::cout<<"x1-852.252774466749 = "<<aState(0)-852.252774466749<<std::endl;
 //    std::cout<<"x1-850 = "<<aState(0)-850<<std::endl;
 //    std::cout<<"x2-3073.12422474535 = "<<aState(1)-3073.12422474535<<std::endl;
@@ -294,7 +294,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 
 //////////////////////////////////////////////////////////////////////////////////
-////////////////////// Testing the Taylor series integrator //////////////////////
+/*////////////////////// Testing the Taylor series integrator //////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 
 /// Setting the data collection file for TSI and inserting the first values ///
@@ -612,7 +612,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //        std::cout<<"It works till here 3"<<std::endl;
 ////////////////////////////////////////////////////////////////////////////////////////////////
-/*////////////////////// Testing the RKF and other higher order integrators //////////////////////
+////////////////////// Testing the RKF and other higher order integrators //////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
                     /// Setting the data collection file for RKF and inserting the first values ///
@@ -785,7 +785,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                     const double initialTime = currentStateAndTime.getCurrentTime();                            // Time.
                 //    Eigen::VectorXd initialState = currentStateAndTime.getCurrentState(); // State: start with zero velocity at the origin.
 
-                    const double endTime = 0.2;     // Using the same initial step-size as defined for TSI
+                    const double endTime = 1000;     // Using the same initial step-size as defined for TSI
 
                     // Step-size settings.
                     // The minimum and maximum step-size are set such that the input data is fully accepted by the
@@ -867,6 +867,119 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //                        std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
                         std::cout<<"The current running time is "<<runningTime<<std::endl;
 
+                        /// Debug ///
+
+                        const double rotationalVelocityMars = Mars.rotationalVelocity();
+                        const double primeMeridianAngle = Mars.primeMeridianAngle();
+                        const double inertialFrameTime = Mars.inertialFrameTime();
+
+                        const double xPosition = currentState(0);            // x position coordinate definition
+                        const double yPosition = currentState(1);            // y position coordinate definition
+                        const double zPosition = currentState(2);            // z position coordinate definition
+                        const double xVelocity = currentState(3);            // x velocity coordinate definition
+                        const double yVelocity = currentState(4);            // y velocity coordinate definition
+                        const double zVelocity = currentState(5);            // z velocity coordinate definition
+                        const double massMAV = currentState(6);              // MAV mass definition
+                        const double currentTime = runningTime;   // current time definition
+
+                        const double Radius = sqrt(xPosition*xPosition+yPosition*yPosition+zPosition*zPosition);         // r [km]
+
+                        const double inertialVelocity = sqrt(xVelocity*xVelocity+yVelocity*yVelocity+zVelocity*zVelocity);       // V_I [km/s]
+
+                        const double inertialLongitude = atan2(yPosition,xPosition);         // lambda [rad]
+
+                        const double Latitude = asin(zPosition/Radius);              // delta [rad]
+
+                        const double rotationalLongitude = inertialLongitude-rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle;  // tau [rad]
+
+                        double inertialLongitudeChange_;       // lambda_dot [rad/s] (placeholder)
+
+                        // Avoiding singularities
+                        if ((xPosition*xPosition+yPosition*yPosition) == 0){
+
+                            inertialLongitudeChange_ = 0;
+                        }
+                        else {
+                            inertialLongitudeChange_ = (xPosition*yVelocity-yPosition*xVelocity)/(xPosition*xPosition+yPosition*yPosition);
+                        };
+
+                        const double inertialLongitudeChange = inertialLongitudeChange_;        // lambda_dot [rad/s] (actual parameter)
+
+                        double rotationalLongitudeChange_ = inertialLongitudeChange-rotationalVelocityMars;     // tau_dot [rad/s] (placeholder)
+
+                        if (rotationalLongitudeChange_<=1e-15){  // Setting the accuracy to 1e-15 to avoid problems in the beginning with rounding errors...
+
+                            rotationalLongitudeChange_ = 0;
+
+                        };
+
+                        const double rotationalLongitudeChange = rotationalLongitudeChange_;    // tau_dot [rad/s] (actual parameter)
+
+                    /*    /// Debug ///
+
+                        std::cout<<"rotationalVelocityMars = "<<rotationalVelocityMars<<std::endl;
+                        std::cout<<"inertialLongitudeChange = "<<inertialLongitudeChange<<std::endl;
+                        std::cout<<"rotationalVelocityMars-7.088e-05 = "<<rotationalVelocityMars-7.088e-05<<std::endl;
+                        std::cout<<"inertialLongitudeChange-7.088e-05 = "<<inertialLongitudeChange-7.088e-05<<std::endl;
+                        std::cout<<"(xPosition*yVelocity-yPosition*xVelocity) = "<<(xPosition*yVelocity-yPosition*xVelocity)<<std::endl;
+                        std::cout<<"(xPosition*xPosition+yPosition*yPosition) = "<<(xPosition*xPosition+yPosition*yPosition)<<std::endl;
+                    //*/
+
+
+                        const double RadiusChange = (xPosition*xVelocity+yPosition*yVelocity+zPosition*zVelocity)/(Radius);      // radial velocity [km/s]
+
+                        double LatitudeChange_; // delta_dot [rad/s] (placeholder)
+
+                        if ((Radius*Radius*sqrt(1-(zPosition/Radius)*(zPosition/Radius))) == 0){
+                            LatitudeChange_ = 0;
+                        }
+                        else{
+                            LatitudeChange_ = (Radius*zVelocity-zPosition*RadiusChange)/(Radius*Radius*sqrt(1-(zPosition/Radius)*(zPosition/Radius)));
+                        };
+
+                        const double LatitudeChange = LatitudeChange_;  // delta_dot [rad/s] (actual parameter)
+
+                        const double localMarsRotationalVelocity = rotationalVelocityMars*Radius*cos(Latitude);  // V_M [km/s]
+
+                        const double inertialFlightPathAngle = asin(RadiusChange/inertialVelocity);          // gamma_I [rad]
+
+                        const double inertialAzimuth = atan2((inertialLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_I [rad]
+
+                        const double rotationalVelocity = sqrt(localMarsRotationalVelocity*localMarsRotationalVelocity+inertialVelocity*inertialVelocity-2*localMarsRotationalVelocity*inertialVelocity*cos(inertialFlightPathAngle)*sin(inertialAzimuth));  // V_R [km/s]
+
+                        double rotationalFlightPathAngle_; // gamma_R [rad]  (placeholder)
+
+                        if (rotationalVelocity == 0){       // Setting the initial flight path angle in the rotational frame to 90 deg (or pi/s)
+
+                            rotationalFlightPathAngle_ = tudat::mathematical_constants::LONG_PI/2;
+                        }
+                        else {
+                            rotationalFlightPathAngle_ = asin(RadiusChange/rotationalVelocity);
+                        };
+
+                        const double rotationalFlightPathAngle = rotationalFlightPathAngle_;    // gamma_R [rad] (actual parameter)
+
+
+                        const double rotationalAzimuth = atan2((rotationalLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_R [rad]
+
+                        // Check output
+                            std::cout<<"Radius = "<<Radius<<std::endl;
+                            std::cout<<"inertialVelocity = "<<inertialVelocity<<std::endl;
+                            std::cout<<"inertialLongitude = "<<inertialLongitude<<std::endl;
+                            std::cout<<"Latitude = "<<Latitude<<std::endl;
+                            std::cout<<"rotationalLongitude = "<<rotationalLongitude<<std::endl;
+                            std::cout<<"inertialLongitudeChange = "<<inertialLongitudeChange<<std::endl;
+                            std::cout<<"rotationalLongitudeChange = "<<rotationalLongitudeChange<<std::endl;
+                            std::cout<<"RadiusChange = "<<RadiusChange<<std::endl;
+                            std::cout<<"LatitudeChange = "<<LatitudeChange<<std::endl;
+                            std::cout<<"localMarsRotationalVelocity = "<<localMarsRotationalVelocity<<std::endl;
+                            std::cout<<"inertialFlightPathAngle = "<<inertialFlightPathAngle<<std::endl;
+                            std::cout<<"inertialAzimuth = "<<inertialAzimuth<<std::endl;
+                            std::cout<<"rotationalVelocity = "<<rotationalVelocity<<std::endl;
+                            std::cout<<"rotationalFlightPathAngle = "<<rotationalFlightPathAngle<<std::endl;
+                            std::cout<<"rotationalAzimuth = "<<rotationalAzimuth<<std::endl;
+
+                        /// Debug ///
 
                         /// Storing the values ///
 

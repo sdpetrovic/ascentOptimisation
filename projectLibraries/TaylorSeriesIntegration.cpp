@@ -152,6 +152,8 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
     const double currentStepSize = stepSize.getCurrentStepSize();                      // The current step-size
 
 
+//    std::cout<<"This works right 1?"<<std::endl;
+
 //////// Computations //////////
 
     /// Thrust acceleration in B-frame ///   thrustAccelerationsBframe
@@ -167,6 +169,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
     const Eigen::Vector3d thrustAccelerationsBframe = getPropulsionToBodyFrameTransformationMatrix(thrustAzimuthTest,thrustElevationTest)*thrustAccelerationsPframe;
 
+//std::cout<<"This works right 2?"<<std::endl;
 
     /// Computing the auxiliary equations, derivatives and functions ///
 
@@ -175,13 +178,14 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
               densityPolyCoefficients, Thrust, specificImpulse,
               referenceArea, dragCoefficientPolyCoefficients, dragCoefficientMachRanges);
 
+//    std::cout<<"This works right 3?"<<std::endl;
 
     // Compute the auxiliary equations
 
     Eigen::VectorXd auxiliaryEquations =  Aux.getAuxiliaryEquations(currentState,currentTime,thrustAccelerationsBframe);
 
-    std::cout<<"The auxiliaryEquations are "<<auxiliaryEquations<<std::endl;
-
+//    std::cout<<"The auxiliaryEquations are "<<auxiliaryEquations<<std::endl;
+//std::cout<<"This works right 4?"<<std::endl;
 
     // Compute the auxiliary derivatives
 

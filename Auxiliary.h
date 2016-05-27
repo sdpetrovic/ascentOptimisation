@@ -167,7 +167,7 @@ public:
         auxiliaryEquationsVector(6) = aState(5);              // x6
         auxiliaryEquationsVector(7) = aState(6);              // x7
 
-
+//        std::cout<<"Surely this works 1..."<<std::endl;
 
         auxiliaryEquationsVector(8) = auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2)+
                 auxiliaryEquationsVector(3)*auxiliaryEquationsVector(3) ;              // x8
@@ -189,6 +189,7 @@ public:
         };
 
         ///Debug///
+//        std::cout<<"Surely this works 2..."<<std::endl;
 //        auxiliaryEquationsVector(26) = 2*((auxiliaryEquationsVector(1)/1e6)*(auxiliaryEquationsVector(4))+(auxiliaryEquationsVector(2)/1e6)*(auxiliaryEquationsVector(5))+
 //                                          (auxiliaryEquationsVector(3)/1e6)*(auxiliaryEquationsVector(6)))*1e6;              // x26
 
@@ -239,6 +240,7 @@ public:
 
 
         /// Debug ///
+//        std::cout<<"Surely this works 3..."<<std::endl;
 /*
         std::cout<<"x45 = "<<auxiliaryEquationsVector(45)<<std::endl;
         std::cout<<"x45-7.088e-05 = "<<auxiliaryEquationsVector(45)-7.088e-05<<std::endl;
@@ -335,6 +337,7 @@ public:
                         powerT = 1;
 
         };
+//        std::cout<<"Surely this works 4..."<<std::endl;
 
         // Computing the polynomial fit using the altitude and fit parameters for temperature
         for (int i=0; i < powerT+1;i++){
@@ -354,7 +357,7 @@ public:
         if (auxiliaryEquationsVector(46)<=1e-11){
             auxiliaryEquationsVector(46) = 0;
         }
-
+//std::cout<<"Surely this works 5..."<<std::endl;
         auxiliaryEquationsVector(47) = cos(auxiliaryEquationsVector(12))*auxiliaryEquationsVector(45);               // x47
 
 //        auxiliaryEquationsVector(18) = auxiliaryEquationsVector(20)*auxiliaryEquationsVector(24);              // x18
@@ -374,7 +377,7 @@ public:
         auxiliaryEquationsVector(41) = auxiliaryEquationsVector(35)*auxiliaryEquationsVector(36);                // x41
 
         auxiliaryEquationsVector(48) = cos(auxiliaryEquationsVector(12))*auxiliaryEquationsVector(46);               // x48
-
+//std::cout<<"Surely this works 6..."<<std::endl;
         /*
 //        auxiliaryEquationsVector(44) = auxiliaryEquationsVector(36)*cos(auxiliaryEquationsVector(38));                // x44
 
@@ -391,12 +394,14 @@ public:
         auxiliaryEquationsVector(15) = sqrt(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43));              // x15
 
         // Set tolerance for the velocity in case of rounding errors... It is set such that the the accuracy is 10 micro-metres/sec
-        if (auxiliaryEquationsVector(15)<=1E-8){
+        if (sqrt(abs(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43)))<=1E-8){
 
             auxiliaryEquationsVector(15) = 0;
 
 
         }
+
+//        std::cout<<"Surely this works 7..."<<std::endl;
 //        else {
 //        auxiliaryEquationsVector(15) = sqrt(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43));              // x15
 //        auxiliaryEquationsVector(15) = sqrt(((auxiliaryEquationsVector(35)/1e6)*(auxiliaryEquationsVector(35))+(auxiliaryEquationsVector(21)/1e6)-2*(auxiliaryEquationsVector(43)/1e6))*1e6);              // x15
@@ -404,18 +409,21 @@ public:
 
 
 
-/*
- // What the actual f*ck?!
+/* // What the actual f*ck?!
         std::cout<<"((auxiliaryEquationsVector(35)/1e6)*(auxiliaryEquationsVector(35)/1e6)+(auxiliaryEquationsVector(21)/1e6)-2*(auxiliaryEquationsVector(43)/1e6))*1e6 = "<<((auxiliaryEquationsVector(35)/1e6)*(auxiliaryEquationsVector(35)/1e6)+(auxiliaryEquationsVector(21)/1e6)-2*(auxiliaryEquationsVector(43)/1e6))*1e6<<std::endl;
         std::cout<<"(auxiliaryEquationsVector(35)/1e6)*(auxiliaryEquationsVector(35)) = "<<(auxiliaryEquationsVector(35)/1e6)*(auxiliaryEquationsVector(35))<<std::endl;
         std::cout<<"(auxiliaryEquationsVector(21)/1e6) = "<<(auxiliaryEquationsVector(21)/1e6)<<std::endl;
         std::cout<<"2*(auxiliaryEquationsVector(43)/1e6) = "<<2*(auxiliaryEquationsVector(43)/1e6)<<std::endl;
         std::cout<<"(auxiliaryEquationsVector(35)/1e6) = "<<(auxiliaryEquationsVector(35)/1e6)<<std::endl;
 
+        std::cout<<"x25 = "<<auxiliaryEquationsVector(25)<<std::endl;
+        std::cout<<"x26 = "<<auxiliaryEquationsVector(26)<<std::endl;
         std::cout<<"x35 = "<<auxiliaryEquationsVector(35)<<std::endl;
         std::cout<<"x36 = "<<auxiliaryEquationsVector(36)<<std::endl;
         std::cout<<"x35-x36 = "<<auxiliaryEquationsVector(35)-auxiliaryEquationsVector(36)<<std::endl;
         std::cout<<"x42 = "<<auxiliaryEquationsVector(42)<<std::endl;
+        std::cout<<"x41 = "<<auxiliaryEquationsVector(41)<<std::endl;
+        std::cout<<"x35*x36 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(36)<<std::endl;
         std::cout<<"x35^2-x43 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)-auxiliaryEquationsVector(43)<<std::endl;
         std::cout<<"x21-x43 = "<<auxiliaryEquationsVector(21)-auxiliaryEquationsVector(43)<<std::endl;
         std::cout<<"x35*x35-x43+x21-x43 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)-auxiliaryEquationsVector(43)+auxiliaryEquationsVector(21)-auxiliaryEquationsVector(43)<<std::endl;
@@ -445,8 +453,13 @@ public:
         auxiliaryEquationsVector(23) = auxiliaryEquationsVector(25)/auxiliaryEquationsVector(15);              // x23
 };
 
+/// Debug ///
+//std::cout<<"Surely this works 8..."<<std::endl;
 
+//std::cout<<"x23 = "<<auxiliaryEquationsVector(23)<<std::endl;
+//std::cout<<"The whole vector = "<<auxiliaryEquationsVector<<std::endl;
 
+/// Debug ///
         auxiliaryEquationsVector(14) = asin(auxiliaryEquationsVector(23));              // x14
 
         // Dealing with the inaccuracy in pi
@@ -484,7 +497,7 @@ public:
         auxiliaryEquationsVector(29) = dragCoefficientPolyCoefficients(sectionCD,1)*auxiliaryEquationsVector(32)+dragCoefficientPolyCoefficients(sectionCD,0);              // x29
 //        std::cout<<"No?"<<std::endl;
 
-
+//std::cout<<"Surely this works 9..."<<std::endl;
         /*
         // Similar to the flight path angle, if V_R (or x15) = 0 m/s then the azimuth angle is not defined. It is also not defined if the flight path angle is +-90 degrees (i.e. if x23 = +-1)
         // To avoid singularities x22 is set to be equal to 1, such that the azimuth angle is 0.
@@ -499,16 +512,16 @@ public:
 //}; */
 
 
-
+//std::cout<<"Surely this works 10..."<<std::endl;
         auxiliaryEquationsVector(27) = 0.5*referenceArea*auxiliaryEquationsVector(28)*auxiliaryEquationsVector(15)*auxiliaryEquationsVector(15)*auxiliaryEquationsVector(29);              // x27
 
         /// Debug ///
 
-        std::cout<<"x27 = "<<auxiliaryEquationsVector(27)<<std::endl;
-        std::cout<<"referenceArea = "<<referenceArea<<std::endl;
+//        std::cout<<"x27 = "<<auxiliaryEquationsVector(27)<<std::endl;
+//        std::cout<<"referenceArea = "<<referenceArea<<std::endl;
 
         /// Debug ///
-
+//std::cout<<"Surely this works 11..."<<std::endl;
 //        auxiliaryEquationsVector(13) = acos(auxiliaryEquationsVector(22));              // x13
 
         auxiliaryEquationsVector(0) = thrustAccelerationsBframe(0)-(auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7));              // w4,2
@@ -520,7 +533,7 @@ public:
 // auxiliaryEquationsVector() = ;               // x
 
 
-
+//std::cout<<"Surely this works end..."<<std::endl;
 
 
        return auxiliaryEquationsVector;

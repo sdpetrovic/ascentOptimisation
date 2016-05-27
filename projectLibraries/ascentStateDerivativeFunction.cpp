@@ -148,7 +148,10 @@ const tudat::basic_mathematics::Vector7d ascentStateDerivativeFunction(const cel
 
     const double rotationalFlightPathAngle = rotationalFlightPathAngle_;    // gamma_R [rad] (actual parameter)
 
-
+    /// Debug ///
+//    std::cout<<"rotationalFlightPathAngle = "<<rotationalFlightPathAngle<<std::endl;
+//    std::cout<<"rotationalVelocity = "<<rotationalVelocity<<std::endl;
+    /// Debug ///
 
     const double rotationalAzimuth = atan2((rotationalLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_R [rad]
 

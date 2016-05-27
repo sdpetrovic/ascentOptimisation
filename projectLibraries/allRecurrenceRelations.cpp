@@ -191,7 +191,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     Eigen::VectorXd WVector14_2 = Eigen::VectorXd::Zero(maxOrder);     // W14,2
     Eigen::VectorXd WVector14_3 = Eigen::VectorXd::Zero(maxOrder);     // W14,3
 
-
+    Eigen::VectorXd WVector15_0 = Eigen::VectorXd::Zero(maxOrder);     // W15,0     // Replacement vector to hold intermediate values to create the sum vector of 2*w15,1+u21-2*u43 because of the way the UMatrix.row and WVector are created. (WVector is maxOrder by 1 and UMatrix.row is 1 by maxOrder)
     Eigen::VectorXd WVector15_1 = Eigen::VectorXd::Zero(maxOrder);     // W15,1
     Eigen::VectorXd WVector15_2 = Eigen::VectorXd::Zero(maxOrder);     // W15,2
 
@@ -419,7 +419,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     WVector14_2(0) = initialFunctionsMatrix(14,2);     // W14,2
     WVector14_3(0) = initialFunctionsMatrix(14,3);     // W14,3
 
-
+    WVector15_0(0) = UMatrix(21,0)-2*UMatrix(43,0);    // W15,0         // Replacement vector required to properly calculate U15
     WVector15_1(0) = initialFunctionsMatrix(15,1);     // W15,1
     WVector15_2(0) = initialFunctionsMatrix(15,2);     // W15,2
 
@@ -664,37 +664,86 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         /// Debug ///
 
-        double Wdiv_ = 0;               // Setting the outcome to zero to avoid previous answers that might be stored somewhere for some reason
-        double interSum = 0;           // Defining an intermediate outcome for the summation
+//        /// Multiplication ///
 
-        // Avoid singularities
-        const Eigen::VectorXd G = XMatrix.row(7);
-        const Eigen::VectorXd F = XMatrix.row(27);
-        const Eigen::VectorXd Wdiv = WVector4_0;
-        const int order = k;
+//               const Eigen::VectorXd F = WVector4_9;
+//               const Eigen::VectorXd G = XMatrix.row(16);
+//                const int order = k;
 
-        if (G(0) != 0){
+//            double Wmult_ = 0;                   // Setting the output to zero initially (just in case)
 
-            //    const int order = F.size()-1;               // Determine the current order
+//        //const int order = F.size()-1;           // Determining the order of the computation, which is the length of the F vector minus one (because the first entry corresponds to the 0th order, etc.)
 
-                for (int j=1; j<order+1; j++){
 
-                interSum +=G(j)*Wdiv(order-j);              // Perform the summation
-                std::cout<<"interSum = "<<interSum<<std::endl;
+//        // Computing the recurrence value
+//        for (int j=0; j < order+1; j++){                    // It goes till the order (till k), and stops as soon as j becomes k+1
 
-                };
 
-                Wdiv_ = (1/G(0))*(F(order)-interSum);       // Compute the current value
+//             Wmult_ += F(order)*G(order-j);          // Wmult += ... means Wmult = Wmult + ...
 
-                std::cout<<"F(order) = "<<F(order)<<std::endl;
-                std::cout<<"order = "<<order<<std::endl;
-                std::cout<<"G(0) = "<<G(0)<<std::endl;
-                std::cout<<"(1/G(0)) = "<<(1/G(0))<<std::endl;
-                std::cout<<"Wdiv_ = "<<Wdiv_<<std::endl;
+//             std::cout<<"Wmult_ = "<<Wmult_<<std::endl;
 
-        }
 
-//        std::cout<<"standardGravitationalParameter = "<<standardGravitationalParameter<<std::endl;
+//        };
+
+//        std::cout<<"F(0) = "<<F(0)<<std::endl;
+//        std::cout<<"F(1) = "<<F(1)<<std::endl;
+//        std::cout<<"F(2) = "<<F(2)<<std::endl;
+//        std::cout<<"F(3) = "<<F(3)<<std::endl;
+//        std::cout<<"F(4) = "<<F(4)<<std::endl;
+//        std::cout<<"F(5) = "<<F(5)<<std::endl;
+//        std::cout<<"F(6) = "<<F(6)<<std::endl;
+//        std::cout<<"F(7) = "<<F(7)<<std::endl;
+//        std::cout<<"F(8) = "<<F(8)<<std::endl;
+//        std::cout<<"F = "<<F<<std::endl;
+
+//        std::cout<<"G(0) = "<<G(0)<<std::endl;
+//        std::cout<<"G(1) = "<<G(1)<<std::endl;
+//        std::cout<<"G(2) = "<<G(2)<<std::endl;
+//        std::cout<<"G(3) = "<<G(3)<<std::endl;
+//        std::cout<<"G(4) = "<<G(4)<<std::endl;
+//        std::cout<<"G(5) = "<<G(5)<<std::endl;
+//        std::cout<<"G(6) = "<<G(6)<<std::endl;
+//        std::cout<<"G(7) = "<<G(7)<<std::endl;
+//        std::cout<<"G(8) = "<<G(8)<<std::endl;
+//        std::cout<<"G = "<<G<<std::endl;
+
+
+
+
+
+
+//        double Wdiv_ = 0;               // Setting the outcome to zero to avoid previous answers that might be stored somewhere for some reason
+//        double interSum = 0;           // Defining an intermediate outcome for the summation
+
+//        // Avoid singularities
+//        const Eigen::VectorXd G = WVector4_9;
+//        const Eigen::VectorXd F = XMatrix.row(16);
+//        const Eigen::VectorXd Wdiv = WVector4_0;
+//        const int order = k;
+
+//        if (G(0) != 0){
+
+//            //    const int order = F.size()-1;               // Determine the current order
+
+//                for (int j=1; j<order+1; j++){
+
+//                interSum +=G(j)*Wdiv(order-j);              // Perform the summation
+//                std::cout<<"interSum = "<<interSum<<std::endl;
+
+//                };
+
+//                Wdiv_ = (1/G(0))*(F(order)-interSum);       // Compute the current value
+
+//                std::cout<<"F(order) = "<<F(order)<<std::endl;
+//                std::cout<<"order = "<<order<<std::endl;
+//                std::cout<<"G(0) = "<<G(0)<<std::endl;
+//                std::cout<<"(1/G(0)) = "<<(1/G(0))<<std::endl;
+//                std::cout<<"Wdiv_ = "<<Wdiv_<<std::endl;
+
+//        }
+
+////        std::cout<<"standardGravitationalParameter = "<<standardGravitationalParameter<<std::endl;
 
         /// Debug ///
 
@@ -841,13 +890,28 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         WVector30_7(k) = getPowerRecurrenceRelation(XMatrix.row(31),WVector30_7,3,k);
         WVector30_8(k) = getPowerRecurrenceRelation(XMatrix.row(31),WVector30_8,2,k);
 
+        // Deal with wrong vector orientation...
+        Eigen::VectorXd x31Transpose = XMatrix.row(31);
+//        x31.row(0)=XMatrix.row(31);
+//        Eigen::MatrixXd x31Transpose = x31.transpose();
 
         WVector30_9(k) = getMultiplicationRecurrenceRelation(UMatrix.row(31),(10*densityPolyCoefficients(10)*WVector30_1+9*densityPolyCoefficients(9)*WVector30_2+8*densityPolyCoefficients(8)*WVector30_3+
                                           7*densityPolyCoefficients(7)*WVector30_4+6*densityPolyCoefficients(6)*WVector30_5+5*densityPolyCoefficients(5)*WVector30_6+
-                                          4*densityPolyCoefficients(4)*WVector30_7+3*densityPolyCoefficients(3)*WVector30_8+2*densityPolyCoefficients(2)*XMatrix.row(31)+densityPolyCoefficient_1),k);
+                                          4*densityPolyCoefficients(4)*WVector30_7+3*densityPolyCoefficients(3)*WVector30_8+2*densityPolyCoefficients(2)*x31Transpose+densityPolyCoefficient_1),k);
                             // change to Eigen::VectorXd
 
         UMatrix(30,k) = WVector30_9(k);
+
+//        /// Debug ///
+
+//        std::cout<<"XMatrix.row(31) = "<<XMatrix.row(31)<<std::endl;
+//        std::cout<<"3*densityPolyCoefficients(3)*WVector30_8+2*densityPolyCoefficients(2)*XMatrix.row(31)+densityPolyCoefficient_1 = "<<3*densityPolyCoefficients(3)*WVector30_8+2*densityPolyCoefficients(2)*XMatrix.row(31)+densityPolyCoefficient_1<<std::endl;
+//        std::cout<<"densityPolyCoefficient_1 = "<<densityPolyCoefficient_1<<std::endl;
+//        std::cout<<"densityPolyCoefficients(2) = "<<densityPolyCoefficients(2)<<std::endl;
+//        std::cout<<"UMatrix.row(30) = "<<UMatrix.row(30)<<std::endl;
+//        std::cout<<"x31 transpose = "<<x31Transpose<<std::endl;
+
+//        /// Debug ///
 
         // 34
         // First it has to be determined which equation has to be used and which values have to be computed
@@ -859,7 +923,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         else if (temperatureAltitudeRanges(1,0)<=XMatrix(31,0) && XMatrix(31,0)<temperatureAltitudeRanges(1,1)){
 
-            WVector34_2(k) = getMultiplicationRecurrenceRelation(UMatrix.row(31),(3*temperaturePolyCoefficients(1,2)*WVector30_8+2*temperaturePolyCoefficients(1,1)*XMatrix.row(31)+temperaturePolyCoefficient_1_2),k);
+            WVector34_2(k) = getMultiplicationRecurrenceRelation(UMatrix.row(31),(3*temperaturePolyCoefficients(1,2)*WVector30_8+2*temperaturePolyCoefficients(1,1)*x31Transpose+temperaturePolyCoefficient_1_2),k);
         // change to Eigen::VectorXd
 
             UMatrix(34,k) = WVector34_2(k);
@@ -868,7 +932,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         else if (temperatureAltitudeRanges(2,0)<=XMatrix(31,0) && XMatrix(31,0)<temperatureAltitudeRanges(2,1)){
 
             WVector34_3(k) = getMultiplicationRecurrenceRelation(UMatrix.row(31),(6*temperaturePolyCoefficients(2,5)*WVector30_5+5*temperaturePolyCoefficients(2,4)*WVector30_6+4*temperaturePolyCoefficients(2,3)*WVector30_7+
-                                                                                  3*temperaturePolyCoefficients(2,2)*WVector30_8+2*temperaturePolyCoefficients(2,1)*XMatrix.row(31)+temperaturePolyCoefficient_1_3),k);
+                                                                                  3*temperaturePolyCoefficients(2,2)*WVector30_8+2*temperaturePolyCoefficients(2,1)*x31Transpose+temperaturePolyCoefficient_1_3),k);
             // change to Eigen::VectorXd
 
             UMatrix(34,k) = WVector34_3(k);
@@ -879,7 +943,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
             WVector34_4(k) = getMultiplicationRecurrenceRelation(UMatrix.row(31),(8*temperaturePolyCoefficients(3,7)*WVector30_3+7*temperaturePolyCoefficients(3,6)*WVector30_4+
                                                                      6*temperaturePolyCoefficients(3,5)*WVector30_5+5*temperaturePolyCoefficients(3,4)*WVector30_6+4*temperaturePolyCoefficients(3,3)*WVector30_7+
-                                                                                  3*temperaturePolyCoefficients(3,2)*WVector30_8+2*temperaturePolyCoefficients(3,1)*XMatrix.row(31)+temperaturePolyCoefficient_1_4),k);
+                                                                                  3*temperaturePolyCoefficients(3,2)*WVector30_8+2*temperaturePolyCoefficients(3,1)*x31Transpose+temperaturePolyCoefficient_1_4),k);
             // change to Eigen::VectorXd
 
             UMatrix(34,k) = WVector34_4(k);
@@ -1030,10 +1094,67 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         // 15
 
+        WVector15_0(k) = UMatrix(21,k)-2*UMatrix(43,k);   // Replacement vector
         WVector15_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(35),UMatrix.row(35),k);
-        WVector15_2(k) = getDivisionRecurrenceRelation((2*WVector15_1+UMatrix.row(21)-2*UMatrix.row(43)),XMatrix.row(15),WVector15_2,k);
+        WVector15_2(k) = getDivisionRecurrenceRelation((2*WVector15_1+WVector15_0),XMatrix.row(15),WVector15_2,k);
 
         UMatrix(15,k) = 0.5*WVector15_2(k);
+
+        /// Debug ///
+
+
+
+//        std::cout<<"(2*WVector15_1+UMatrix.row(21)-2*UMatrix.row(43)) = "<<(2*WVector15_1+UMatrix.row(21)-2*UMatrix.row(43))<<std::endl;
+//        std::cout<<"(2*WVector15_1+WVector15_0) = "<<(2*WVector15_1+WVector15_0)<<std::endl;
+//        std::cout<<"WVector15_1 = "<<WVector15_1<<std::endl;
+//        std::cout<<"UMatrix.row(21) = "<<UMatrix.row(21)<<std::endl;
+//        std::cout<<"UMatrix.row(43) = "<<UMatrix.row(43)<<std::endl;
+//        std::cout<<"XMatrix.row(15) = "<<XMatrix.row(15)<<std::endl;
+
+
+//                double Wdiv_ = 0;               // Setting the outcome to zero to avoid previous answers that might be stored somewhere for some reason
+//                double interSum = 0;           // Defining an intermediate outcome for the summation
+
+//                // Avoid singularities
+//                const Eigen::VectorXd F = WVector15_0;
+//                std::cout<<"F(0) = "<<F(0)<<std::endl;
+//                std::cout<<"F(1) = "<<F(1)<<std::endl;
+//                std::cout<<"F(2) = "<<F(2)<<std::endl;
+//                std::cout<<"F(3) = "<<F(3)<<std::endl;
+//                std::cout<<"F(4) = "<<F(4)<<std::endl;
+//                std::cout<<"F(5) = "<<F(5)<<std::endl;
+//                std::cout<<"F(6) = "<<F(6)<<std::endl;
+//                std::cout<<"F(7) = "<<F(7)<<std::endl;
+//                std::cout<<"F(8) = "<<F(8)<<std::endl;
+//                std::cout<<"F(9) = "<<F(9)<<std::endl;
+//                const Eigen::VectorXd G = XMatrix.row(15);
+//                const Eigen::VectorXd Wdiv = WVector15_2;
+//                const int order = k;
+
+//                if (G(0) != 0){
+
+//                    //    const int order = F.size()-1;               // Determine the current order
+
+//                        for (int j=1; j<order+1; j++){
+
+//                        interSum +=G(j)*Wdiv(order-j);              // Perform the summation
+//                        std::cout<<"interSum = "<<interSum<<std::endl;
+
+//                        };
+
+//                        Wdiv_ = (1/G(0))*(F(order)-interSum);       // Compute the current value
+
+//                        std::cout<<"F(order) = "<<F(order)<<std::endl;
+//                        std::cout<<"order = "<<order<<std::endl;
+//                        std::cout<<"G(0) = "<<G(0)<<std::endl;
+//                        std::cout<<"(1/G(0)) = "<<(1/G(0))<<std::endl;
+//                        std::cout<<"Wdiv_ = "<<Wdiv_<<std::endl;
+
+//                }
+
+
+
+        /// Debug ///
 
         // 23
 
@@ -1143,12 +1264,17 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //    std::cout<<"Length of stateTaylorCoefficients.row(1) = "<<stateTaylorCoefficients.row(1).size()<<std::endl;
 //    std::cout<<"Length of XMatrix.row(1) = "<<XMatrix.row(1).size()<<std::endl;
 
-    std::cout<<"WVector4_1 = "<<WVector4_1<<std::endl;
+//    std::cout<<"WVector4_1 = "<<WVector4_1<<std::endl;
 
 
 
-    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
+//    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
 //    std::cout<<"UMatrix = "<<UMatrix<<std::endl;
+
+//    std::cout<<"XMatrix.row(15) = "<<XMatrix.row(15)<<std::endl;
+//    std::cout<<"XMatrix.row(21) = "<<XMatrix.row(21)<<std::endl;
+//    std::cout<<"XMatrix.row(35) = "<<XMatrix.row(35)<<std::endl;
+//    std::cout<<"XMatrix.row(43) = "<<XMatrix.row(43)<<std::endl;
 
 
 
