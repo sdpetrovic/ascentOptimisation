@@ -155,8 +155,8 @@ const tudat::basic_mathematics::Vector7d ascentStateDerivativeFunction(const cel
 
     const double rotationalAzimuth = atan2((rotationalLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_R [rad]
 
-/*    // Check output
-    std::cout<<"Radius = "<<Radius<<std::endl;
+    // Check output
+    std::cerr<<"Radius = "<<Radius<<std::endl;
     std::cout<<"inertialVelocity = "<<inertialVelocity<<std::endl;
     std::cout<<"inertialLongitude = "<<inertialLongitude<<std::endl;
     std::cout<<"Latitude = "<<Latitude<<std::endl;

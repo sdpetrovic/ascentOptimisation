@@ -37,7 +37,12 @@
 namespace air_temperature
 {
 
-const double airTemperature(const Eigen::MatrixXd temperaturePolyCoefficients, const Eigen::MatrixXd temperatureAltitudeRanges, const double altitude){
+const double airTemperature(const Eigen::MatrixXd temperaturePolyCoefficients, const Eigen::MatrixXd temperatureAltitudeRanges, double altitude){
+
+    if (altitude <= -0.6){
+        std::cerr<<"You have gone through the planet! The temperature will be set equal to the surface temperature"<<std::endl;
+        altitude = -0.6;
+    }
 
 int section = 0;    // Define the section and setting the default to 0
 
@@ -77,6 +82,8 @@ for (int j = 0; j<order+1; j++){
 
     currentTemperature += temperaturePolyCoefficients(section,j)*pow(altitude,j);
 };
+
+
 
 return currentTemperature;
 

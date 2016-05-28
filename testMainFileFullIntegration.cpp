@@ -166,7 +166,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // No Gravity
 
-    Mars.setStandardGravitationalParameter(0);
+//    Mars.setStandardGravitationalParameter(0);
 
     if (Mars.standardGravitationalParameter() == 0){
         std::cout<<"NO GRAVITY"<<std::endl;
@@ -208,7 +208,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 
     /// TSI settings ///
-    const int maxOrder = 20; // Eventually want order 20 (testing is 8)
+    const int maxOrder = 1; // Eventually want order 20 (testing is 8)
     const double chosenLocalErrorTolerance = 1e-8;      // The chosen local error tolerance for TSI
     /// TSI settings ///
 
@@ -216,7 +216,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     // Launch site characteristics
 
 //    const double initialAltitude = -0.6e3;             // Starting altitude [m MOLA]
-    const double initialAltitude = -0.6;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
+    const double initialAltitude = 20;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
     const double initialLatitudeDeg = 21;               // Starting latitude [deg]
     const double initialLongitudeDeg = 74.5;            // Starting longitude [deg]
@@ -289,12 +289,149 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 ////////////////////// Testing the integrators //////////////////////
 /////////////////////////////////////////////////////////////////////
 
+/*    /// Debug ///
+
+    const double rotationalVelocityMars = Mars.rotationalVelocity();
+    const double primeMeridianAngleMars = Mars.primeMeridianAngle();
+    const double inertialFrameTimeMars = Mars.inertialFrameTime();
+
+    const tudat::basic_mathematics::Vector7d currentState = currentStateAndTime.getCurrentState();
+
+    const double xPosition = currentState(0);            // x position coordinate definition
+    const double yPosition = currentState(1);            // y position coordinate definition
+    const double zPosition = currentState(2);            // z position coordinate definition
+    const double xVelocity = currentState(3);            // x velocity coordinate definition
+    const double yVelocity = currentState(4);            // y velocity coordinate definition
+    const double zVelocity = currentState(5);            // z velocity coordinate definition
+    const double massMAV = currentState(6);              // MAV mass definition
+    const double currentTime = currentStateAndTime.getCurrentTime();   // current time definition
+
+    const double Radius = sqrt(xPosition*xPosition+yPosition*yPosition+zPosition*zPosition);         // r [km]
+
+    const double inertialVelocity = sqrt(xVelocity*xVelocity+yVelocity*yVelocity+zVelocity*zVelocity);       // V_I [km/s]
+
+    const double inertialLongitude = atan2(yPosition,xPosition);         // lambda [rad]
+
+    const double Latitude = asin(zPosition/Radius);              // delta [rad]
+
+    const double rotationalLongitude = inertialLongitude-rotationalVelocityMars*(inertialFrameTimeMars+currentTime)+primeMeridianAngleMars;  // tau [rad]
+
+    double inertialLongitudeChange_;       // lambda_dot [rad/s] (placeholder)
+
+    // Avoiding singularities
+    if ((xPosition*xPosition+yPosition*yPosition) == 0){
+
+        inertialLongitudeChange_ = 0;
+    }
+    else {
+        inertialLongitudeChange_ = (xPosition*yVelocity-yPosition*xVelocity)/(xPosition*xPosition+yPosition*yPosition);
+    };
+
+    const double inertialLongitudeChange = inertialLongitudeChange_;        // lambda_dot [rad/s] (actual parameter)
+
+    double rotationalLongitudeChange_ = inertialLongitudeChange-rotationalVelocityMars;     // tau_dot [rad/s] (placeholder)
+
+    if (rotationalLongitudeChange_<=1e-15){  // Setting the accuracy to 1e-15 to avoid problems in the beginning with rounding errors...
+
+        rotationalLongitudeChange_ = 0;
+
+    };
+
+    const double rotationalLongitudeChange = rotationalLongitudeChange_;    // tau_dot [rad/s] (actual parameter)
 
 
+    const double RadiusChange = (xPosition*xVelocity+yPosition*yVelocity+zPosition*zVelocity)/(Radius);      // radial velocity [km/s]
+
+    double LatitudeChange_; // delta_dot [rad/s] (placeholder)
+
+    if ((Radius*Radius*sqrt(1-(zPosition/Radius)*(zPosition/Radius))) == 0){
+        LatitudeChange_ = 0;
+    }
+    else{
+        LatitudeChange_ = (Radius*zVelocity-zPosition*RadiusChange)/(Radius*Radius*sqrt(1-(zPosition/Radius)*(zPosition/Radius)));
+    };
+
+    const double LatitudeChange = LatitudeChange_;  // delta_dot [rad/s] (actual parameter)
+
+    const double localMarsRotationalVelocity = rotationalVelocityMars*Radius*cos(Latitude);  // V_M [km/s]
+
+    const double inertialFlightPathAngle = asin(RadiusChange/inertialVelocity);          // gamma_I [rad]
+
+    const double inertialAzimuth = atan2((inertialLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_I [rad]
+
+    const double rotationalVelocityMAV = sqrt(localMarsRotationalVelocity*localMarsRotationalVelocity+inertialVelocity*inertialVelocity-2*localMarsRotationalVelocity*inertialVelocity*cos(inertialFlightPathAngle)*sin(inertialAzimuth));  // V_R [km/s]
+
+    double rotationalFlightPathAngle_; // gamma_R [rad]  (placeholder)
+
+    if (rotationalVelocityMAV == 0){       // Setting the initial flight path angle in the rotational frame to 90 deg (or pi/s)
+
+        rotationalFlightPathAngle_ = tudat::mathematical_constants::LONG_PI/2;
+    }
+    else {
+        rotationalFlightPathAngle_ = asin(RadiusChange/rotationalVelocityMAV);
+    };
+
+    const double rotationalFlightPathAngle = rotationalFlightPathAngle_;    // gamma_R [rad] (actual parameter)
+
+
+    const double rotationalAzimuth = atan2((rotationalLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_R [rad]
+
+    // Check output
+        std::cout<<"Radius = "<<Radius<<std::endl;
+        std::cout<<"inertialVelocity = "<<inertialVelocity<<std::endl;
+        std::cout<<"inertialLongitude = "<<inertialLongitude<<std::endl;
+        std::cout<<"Latitude = "<<Latitude<<std::endl;
+        std::cout<<"rotationalLongitude = "<<rotationalLongitude<<std::endl;
+        std::cout<<"inertialLongitudeChange = "<<inertialLongitudeChange<<std::endl;
+        std::cout<<"rotationalLongitudeChange = "<<rotationalLongitudeChange<<std::endl;
+        std::cout<<"RadiusChange = "<<RadiusChange<<std::endl;
+        std::cout<<"LatitudeChange = "<<LatitudeChange<<std::endl;
+        std::cout<<"localMarsRotationalVelocity = "<<localMarsRotationalVelocity<<std::endl;
+        std::cout<<"inertialFlightPathAngle = "<<inertialFlightPathAngle<<std::endl;
+        std::cout<<"inertialAzimuth = "<<inertialAzimuth<<std::endl;
+        std::cout<<"rotationalVelocityMAV = "<<rotationalVelocityMAV<<std::endl;
+        std::cout<<"rotationalFlightPathAngle = "<<rotationalFlightPathAngle<<std::endl;
+        std::cout<<"rotationalAzimuth = "<<rotationalAzimuth<<std::endl;
+
+
+
+        /// Testing the local air temperature function ///
+
+            const double currentAltitude = Radius-Mars.bodyReferenceRadius();
+
+            const double currentTemperature = air_temperature::airTemperature(Mars.temperaturePolyCoefficients(), Mars.temperatureAltitudeRanges(),currentAltitude);
+
+           // Check output
+            std::cout<<"currentAltitude = "<<currentAltitude<<std::endl;
+            std::cout<<"currentTemperature = "<<currentTemperature<<std::endl;
+            std::cout<<"Radius = "<<Radius<<std::endl;
+//            std::cout<<"R_MOLA = "<<Mars.bodyReferenceRadius()<<std::endl;
+//            std::cout<<"Radius-3395.4 = "<<Radius-3395.4<<std::endl;
+//            std::cout<<"R_MOLA-3396 = "<<Mars.bodyReferenceRadius()-3396<<std::endl;
+
+
+        /// Testing the local air density function ///
+
+            const double currentDensity= air_density::airDensity(Mars.densityPolyCoefficients(),  currentAltitude);
+
+            std::cout<<"The current air density = "<<currentDensity<<std::endl;
+
+        /// Testing the ascentDragForce function ///
+
+
+
+            const double currentDrag = Drag::ascentDragForce(rotationalVelocityMAV,currentTemperature,Mars.adiabeticIndex(),Mars.specificGasConstant(),
+                                                             MAV.dragCoefficientPolyCoefficients(),MAV.dragCoefficientMachRanges(),
+                                                             MAV.referenceArea(), currentDensity);
+
+            std::cout<<"currentDrag = "<<currentDrag<<std::endl;
+
+    /// Debug ///
+//*/
 
 
 //////////////////////////////////////////////////////////////////////////////////
-/*////////////////////// Testing the Taylor series integrator //////////////////////
+////////////////////// Testing the Taylor series integrator //////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 
 /// Setting the data collection file for TSI and inserting the first values ///
@@ -475,7 +612,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         Eigen::MatrixXd dataStoringMatrix(1,8); // The size of this matrix will change in the do-loop
 
         // Set the end time
-        const double endTime = 10; // sec
+        const double endTime = 0.200; // sec
 
 //        std::cout<<"It works till here 1"<<std::endl;
 
@@ -486,12 +623,12 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
      double runningTime = 0.0;
      int count = 0;
 
-//	do
-//	{
+    do
+    {
 
 //     std::cout<<"It works till here 2"<<std::endl;
 
-     for (int i = 0; i<2; i++){
+//     for (int i = 0; i<4; i++){
          /// Debug ///
     std::cout<<"The current step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
     std::cout<<"The current runningTime = "<<runningTime<<std::endl;
@@ -562,9 +699,11 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 
      count++;
-     };
 
-//    }while( !( endTime - runningTime <= std::numeric_limits< double >::epsilon( ) ) );
+     std::cout<<"count = "<<count<<std::endl;
+//     }; // end of for-loop
+
+    }while( !( endTime - runningTime <= std::numeric_limits< double >::epsilon( ) ) );
 
         /// Adding the values to the file ///
 
@@ -610,9 +749,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         };
 //*/
 
-//        std::cout<<"It works till here 3"<<std::endl;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////// Testing the RKF and other higher order integrators //////////////////////
+/*////////////////////// Testing the RKF and other higher order integrators //////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
                     /// Setting the data collection file for RKF and inserting the first values ///
@@ -785,7 +924,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                     const double initialTime = currentStateAndTime.getCurrentTime();                            // Time.
                 //    Eigen::VectorXd initialState = currentStateAndTime.getCurrentState(); // State: start with zero velocity at the origin.
 
-                    const double endTime = 1000;     // Using the same initial step-size as defined for TSI
+                    const double endTime = 0.2;     // Using the same initial step-size as defined for TSI
 
                     // Step-size settings.
                     // The minimum and maximum step-size are set such that the input data is fully accepted by the
@@ -803,7 +942,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                     // For DP8(7) a step-size of 0.2 is only used if the tolerances are 1e-7.... and is accepted till 1e-9
 
 //                    /// RungeKutta4 numerical integrator.
-
+//                    std::cout<<"You have chosen RK4 as your integration method"<<std::endl;
 //                    tudat::numerical_integrators::RungeKutta4IntegratorXd RK4integrator(
 //                        stateDerivativeFunction, initialTime, initialState );
 
@@ -811,31 +950,35 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //                    Eigen::VectorXd RK4endState = RK4integrator.integrateTo( endTime, stepSize );
 
 //                    std::cout<<"The RK4 end state is "<<RK4endState<<std::endl;
+//                    /// End of RungeKutta4 numerical integrator
 
                     /// Runge-Kutta-Fehlberg 7(8) integrator.
+                    std::cout<<"You have chosen RKF7(8) as your integration method"<<std::endl;
                        tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
                                    tudat::numerical_integrators::RungeKuttaCoefficients::get(
                                        tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg78),
                                    stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
                                    infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
-                //       /// Runge-Kutta-Fehlberg 4(5) integrator.
-                //          tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
-                //                      tudat::numerical_integrators::RungeKuttaCoefficients::get(
-                //                          tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg45),
-                //                      stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
-                //                      infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
+//                       /// Runge-Kutta-Fehlberg 4(5) integrator.
+//                       std::cout<<"You have chosen RKF4(5) as your integration method"<<std::endl;
+//                          tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
+//                                      tudat::numerical_integrators::RungeKuttaCoefficients::get(
+//                                          tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg45),
+//                                      stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
+//                                      infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
-                //          /// Dormand-Prince 8(7) integrator.
-                //             tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
-                //                         tudat::numerical_integrators::RungeKuttaCoefficients::get(
-                //                             tudat::numerical_integrators::RungeKuttaCoefficients::rungeKutta87DormandPrince),
-                //                         stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
-                //                         infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
+//                          /// Dormand-Prince 8(7) integrator.
+//                          std::cout<<"You have chosen DOPRIN8(7) as your integration method"<<std::endl;
+//                             tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
+//                                         tudat::numerical_integrators::RungeKuttaCoefficients::get(
+//                                             tudat::numerical_integrators::RungeKuttaCoefficients::rungeKutta87DormandPrince),
+//                                         stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
+//                                         infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
 
 
-                       // Set initial running time. This is updated after each step that the numerical integrator takes.
+                      // Set initial running time. This is updated after each step that the numerical integrator takes.
                     double runningTime = 0.0;
                     int count = 0;
 
@@ -855,7 +998,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                             stepSize = endTime - integrator.getCurrentIndependentVariable( );
                         }
 
-//                        double prevStepSize = stepSize;
+                        double prevStepSize = stepSize;
+
+                         std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
 
                         // Perform a single integration step. Then update the step-size and running time.
                         integrator.performIntegrationStep( stepSize );
@@ -868,117 +1013,143 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                         std::cout<<"The current running time is "<<runningTime<<std::endl;
 
                         /// Debug ///
+//    std::cout<<"///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////"<<std::endl;
 
-                        const double rotationalVelocityMars = Mars.rotationalVelocity();
-                        const double primeMeridianAngle = Mars.primeMeridianAngle();
-                        const double inertialFrameTime = Mars.inertialFrameTime();
+//                        const double rotationalVelocityMars = Mars.rotationalVelocity();
+//                        const double primeMeridianAngle = Mars.primeMeridianAngle();
+//                        const double inertialFrameTime = Mars.inertialFrameTime();
 
-                        const double xPosition = currentState(0);            // x position coordinate definition
-                        const double yPosition = currentState(1);            // y position coordinate definition
-                        const double zPosition = currentState(2);            // z position coordinate definition
-                        const double xVelocity = currentState(3);            // x velocity coordinate definition
-                        const double yVelocity = currentState(4);            // y velocity coordinate definition
-                        const double zVelocity = currentState(5);            // z velocity coordinate definition
-                        const double massMAV = currentState(6);              // MAV mass definition
-                        const double currentTime = runningTime;   // current time definition
+//                        const double xPosition = currentState(0);            // x position coordinate definition
+//                        const double yPosition = currentState(1);            // y position coordinate definition
+//                        const double zPosition = currentState(2);            // z position coordinate definition
+//                        const double xVelocity = currentState(3);            // x velocity coordinate definition
+//                        const double yVelocity = currentState(4);            // y velocity coordinate definition
+//                        const double zVelocity = currentState(5);            // z velocity coordinate definition
+//                        const double massMAV = currentState(6);              // MAV mass definition
+//                        const double currentTime = runningTime;   // current time definition
+//                        std::cout<<"currentState = "<<currentState<<std::endl;
 
-                        const double Radius = sqrt(xPosition*xPosition+yPosition*yPosition+zPosition*zPosition);         // r [km]
+//                        std::cout<<"The current running time is "<<runningTime<<std::endl;
 
-                        const double inertialVelocity = sqrt(xVelocity*xVelocity+yVelocity*yVelocity+zVelocity*zVelocity);       // V_I [km/s]
+//                        const double Radius = sqrt(xPosition*xPosition+yPosition*yPosition+zPosition*zPosition);         // r [km]
 
-                        const double inertialLongitude = atan2(yPosition,xPosition);         // lambda [rad]
+//                        const double inertialVelocity = sqrt(xVelocity*xVelocity+yVelocity*yVelocity+zVelocity*zVelocity);       // V_I [km/s]
 
-                        const double Latitude = asin(zPosition/Radius);              // delta [rad]
+//                        const double inertialLongitude = atan2(yPosition,xPosition);         // lambda [rad]
 
-                        const double rotationalLongitude = inertialLongitude-rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle;  // tau [rad]
+//                        const double Latitude = asin(zPosition/Radius);              // delta [rad]
 
-                        double inertialLongitudeChange_;       // lambda_dot [rad/s] (placeholder)
+//                        const double rotationalLongitude = inertialLongitude-rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle;  // tau [rad]
 
-                        // Avoiding singularities
-                        if ((xPosition*xPosition+yPosition*yPosition) == 0){
+//                        double inertialLongitudeChange_;       // lambda_dot [rad/s] (placeholder)
 
-                            inertialLongitudeChange_ = 0;
-                        }
-                        else {
-                            inertialLongitudeChange_ = (xPosition*yVelocity-yPosition*xVelocity)/(xPosition*xPosition+yPosition*yPosition);
-                        };
+//                        // Avoiding singularities
+//                        if ((xPosition*xPosition+yPosition*yPosition) == 0){
 
-                        const double inertialLongitudeChange = inertialLongitudeChange_;        // lambda_dot [rad/s] (actual parameter)
+//                            inertialLongitudeChange_ = 0;
+//                        }
+//                        else {
+//                            inertialLongitudeChange_ = (xPosition*yVelocity-yPosition*xVelocity)/(xPosition*xPosition+yPosition*yPosition);
+//                        };
 
-                        double rotationalLongitudeChange_ = inertialLongitudeChange-rotationalVelocityMars;     // tau_dot [rad/s] (placeholder)
+//                        const double inertialLongitudeChange = inertialLongitudeChange_;        // lambda_dot [rad/s] (actual parameter)
 
-                        if (rotationalLongitudeChange_<=1e-15){  // Setting the accuracy to 1e-15 to avoid problems in the beginning with rounding errors...
+//                        double rotationalLongitudeChange_ = inertialLongitudeChange-rotationalVelocityMars;     // tau_dot [rad/s] (placeholder)
 
-                            rotationalLongitudeChange_ = 0;
+//                        if (rotationalLongitudeChange_<=1e-15){  // Setting the accuracy to 1e-15 to avoid problems in the beginning with rounding errors...
 
-                        };
+//                            rotationalLongitudeChange_ = 0;
 
-                        const double rotationalLongitudeChange = rotationalLongitudeChange_;    // tau_dot [rad/s] (actual parameter)
+//                        };
 
-                    /*    /// Debug ///
-
-                        std::cout<<"rotationalVelocityMars = "<<rotationalVelocityMars<<std::endl;
-                        std::cout<<"inertialLongitudeChange = "<<inertialLongitudeChange<<std::endl;
-                        std::cout<<"rotationalVelocityMars-7.088e-05 = "<<rotationalVelocityMars-7.088e-05<<std::endl;
-                        std::cout<<"inertialLongitudeChange-7.088e-05 = "<<inertialLongitudeChange-7.088e-05<<std::endl;
-                        std::cout<<"(xPosition*yVelocity-yPosition*xVelocity) = "<<(xPosition*yVelocity-yPosition*xVelocity)<<std::endl;
-                        std::cout<<"(xPosition*xPosition+yPosition*yPosition) = "<<(xPosition*xPosition+yPosition*yPosition)<<std::endl;
-                    //*/
+//                        const double rotationalLongitudeChange = rotationalLongitudeChange_;    // tau_dot [rad/s] (actual parameter)
 
 
-                        const double RadiusChange = (xPosition*xVelocity+yPosition*yVelocity+zPosition*zVelocity)/(Radius);      // radial velocity [km/s]
+//                        const double RadiusChange = (xPosition*xVelocity+yPosition*yVelocity+zPosition*zVelocity)/(Radius);      // radial velocity [km/s]
 
-                        double LatitudeChange_; // delta_dot [rad/s] (placeholder)
+//                        double LatitudeChange_; // delta_dot [rad/s] (placeholder)
 
-                        if ((Radius*Radius*sqrt(1-(zPosition/Radius)*(zPosition/Radius))) == 0){
-                            LatitudeChange_ = 0;
-                        }
-                        else{
-                            LatitudeChange_ = (Radius*zVelocity-zPosition*RadiusChange)/(Radius*Radius*sqrt(1-(zPosition/Radius)*(zPosition/Radius)));
-                        };
+//                        if ((Radius*Radius*sqrt(1-(zPosition/Radius)*(zPosition/Radius))) == 0){
+//                            LatitudeChange_ = 0;
+//                        }
+//                        else{
+//                            LatitudeChange_ = (Radius*zVelocity-zPosition*RadiusChange)/(Radius*Radius*sqrt(1-(zPosition/Radius)*(zPosition/Radius)));
+//                        };
 
-                        const double LatitudeChange = LatitudeChange_;  // delta_dot [rad/s] (actual parameter)
+//                        const double LatitudeChange = LatitudeChange_;  // delta_dot [rad/s] (actual parameter)
 
-                        const double localMarsRotationalVelocity = rotationalVelocityMars*Radius*cos(Latitude);  // V_M [km/s]
+//                        const double localMarsRotationalVelocity = rotationalVelocityMars*Radius*cos(Latitude);  // V_M [km/s]
 
-                        const double inertialFlightPathAngle = asin(RadiusChange/inertialVelocity);          // gamma_I [rad]
+//                        const double inertialFlightPathAngle = asin(RadiusChange/inertialVelocity);          // gamma_I [rad]
 
-                        const double inertialAzimuth = atan2((inertialLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_I [rad]
+//                        const double inertialAzimuth = atan2((inertialLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_I [rad]
 
-                        const double rotationalVelocity = sqrt(localMarsRotationalVelocity*localMarsRotationalVelocity+inertialVelocity*inertialVelocity-2*localMarsRotationalVelocity*inertialVelocity*cos(inertialFlightPathAngle)*sin(inertialAzimuth));  // V_R [km/s]
+//                        const double rotationalVelocity = sqrt(localMarsRotationalVelocity*localMarsRotationalVelocity+inertialVelocity*inertialVelocity-2*localMarsRotationalVelocity*inertialVelocity*cos(inertialFlightPathAngle)*sin(inertialAzimuth));  // V_R [km/s]
 
-                        double rotationalFlightPathAngle_; // gamma_R [rad]  (placeholder)
+//                        double rotationalFlightPathAngle_; // gamma_R [rad]  (placeholder)
 
-                        if (rotationalVelocity == 0){       // Setting the initial flight path angle in the rotational frame to 90 deg (or pi/s)
+//                        if (rotationalVelocity == 0){       // Setting the initial flight path angle in the rotational frame to 90 deg (or pi/s)
 
-                            rotationalFlightPathAngle_ = tudat::mathematical_constants::LONG_PI/2;
-                        }
-                        else {
-                            rotationalFlightPathAngle_ = asin(RadiusChange/rotationalVelocity);
-                        };
+//                            rotationalFlightPathAngle_ = tudat::mathematical_constants::LONG_PI/2;
+//                        }
+//                        else {
+//                            rotationalFlightPathAngle_ = asin(RadiusChange/rotationalVelocity);
+//                        };
 
-                        const double rotationalFlightPathAngle = rotationalFlightPathAngle_;    // gamma_R [rad] (actual parameter)
+//                        const double rotationalFlightPathAngle = rotationalFlightPathAngle_;    // gamma_R [rad] (actual parameter)
 
 
-                        const double rotationalAzimuth = atan2((rotationalLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_R [rad]
+//                        const double rotationalAzimuth = atan2((rotationalLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_R [rad]
 
-                        // Check output
-                            std::cout<<"Radius = "<<Radius<<std::endl;
-                            std::cout<<"inertialVelocity = "<<inertialVelocity<<std::endl;
-                            std::cout<<"inertialLongitude = "<<inertialLongitude<<std::endl;
-                            std::cout<<"Latitude = "<<Latitude<<std::endl;
-                            std::cout<<"rotationalLongitude = "<<rotationalLongitude<<std::endl;
-                            std::cout<<"inertialLongitudeChange = "<<inertialLongitudeChange<<std::endl;
-                            std::cout<<"rotationalLongitudeChange = "<<rotationalLongitudeChange<<std::endl;
-                            std::cout<<"RadiusChange = "<<RadiusChange<<std::endl;
-                            std::cout<<"LatitudeChange = "<<LatitudeChange<<std::endl;
-                            std::cout<<"localMarsRotationalVelocity = "<<localMarsRotationalVelocity<<std::endl;
-                            std::cout<<"inertialFlightPathAngle = "<<inertialFlightPathAngle<<std::endl;
-                            std::cout<<"inertialAzimuth = "<<inertialAzimuth<<std::endl;
-                            std::cout<<"rotationalVelocity = "<<rotationalVelocity<<std::endl;
-                            std::cout<<"rotationalFlightPathAngle = "<<rotationalFlightPathAngle<<std::endl;
-                            std::cout<<"rotationalAzimuth = "<<rotationalAzimuth<<std::endl;
+//                        // Check output
+//                            std::cout<<"Radius = "<<Radius<<std::endl;
+//                            std::cout<<"inertialVelocity = "<<inertialVelocity<<std::endl;
+//                            std::cout<<"inertialLongitude = "<<inertialLongitude<<std::endl;
+//                            std::cout<<"Latitude = "<<Latitude<<std::endl;
+//                            std::cout<<"rotationalLongitude = "<<rotationalLongitude<<std::endl;
+//                            std::cout<<"inertialLongitudeChange = "<<inertialLongitudeChange<<std::endl;
+//                            std::cout<<"rotationalLongitudeChange = "<<rotationalLongitudeChange<<std::endl;
+//                            std::cout<<"RadiusChange = "<<RadiusChange<<std::endl;
+//                            std::cout<<"LatitudeChange = "<<LatitudeChange<<std::endl;
+//                            std::cout<<"localMarsRotationalVelocity = "<<localMarsRotationalVelocity<<std::endl;
+//                            std::cout<<"inertialFlightPathAngle = "<<inertialFlightPathAngle<<std::endl;
+//                            std::cout<<"inertialAzimuth = "<<inertialAzimuth<<std::endl;
+//                            std::cout<<"rotationalVelocity = "<<rotationalVelocity<<std::endl;
+//                            std::cout<<"rotationalFlightPathAngle = "<<rotationalFlightPathAngle<<std::endl;
+//                            std::cout<<"rotationalAzimuth = "<<rotationalAzimuth<<std::endl;
 
+//                            /// Testing the local air temperature function ///
+
+//                                const double currentAltitude = Radius-Mars.bodyReferenceRadius();
+
+//                                const double currentTemperature = air_temperature::airTemperature(Mars.temperaturePolyCoefficients(), Mars.temperatureAltitudeRanges(),currentAltitude);
+
+//                               // Check output
+//                                std::cout<<"currentAltitude = "<<currentAltitude<<std::endl;
+//                                std::cout<<"currentTemperature = "<<currentTemperature<<std::endl;
+//                                std::cout<<"Radius = "<<Radius<<std::endl;
+//                    //            std::cout<<"R_MOLA = "<<Mars.bodyReferenceRadius()<<std::endl;
+//                    //            std::cout<<"Radius-3395.4 = "<<Radius-3395.4<<std::endl;
+//                    //            std::cout<<"R_MOLA-3396 = "<<Mars.bodyReferenceRadius()-3396<<std::endl;
+
+
+//                            /// Testing the local air density function ///
+
+//                                const double currentDensity= air_density::airDensity(Mars.densityPolyCoefficients(),  currentAltitude);
+
+//                                std::cout<<"The current air density = "<<currentDensity<<std::endl;
+
+//                            /// Testing the ascentDragForce function ///
+
+
+
+//                                const double currentDrag = Drag::ascentDragForce(rotationalVelocity,currentTemperature,Mars.adiabeticIndex(),Mars.specificGasConstant(),
+//                                                                                 MAV.dragCoefficientPolyCoefficients(),MAV.dragCoefficientMachRanges(),
+//                                                                                 MAV.referenceArea(), currentDensity);
+
+//                                std::cout<<"currentDrag = "<<currentDrag<<std::endl;
+
+//                                std::cout<<"///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////"<<std::endl;
                         /// Debug ///
 
                         /// Storing the values ///

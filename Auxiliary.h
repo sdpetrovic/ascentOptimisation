@@ -29,6 +29,7 @@
  *      160520    S.D. Petrovic     Fixed mistake in x25 where it said x25 = x25/(2*x20) which should be x25 = x26/(2*x20). Also, u41 had a - instead of a +.
  *                                  Also, at u45 and u21 the tolerance had to include an abs function!
  *      160526    S.D. Petrovic     Added W4,0 to be able to properly evaluate the recurrence relation of W4,2
+ *      160527    S.D. Petrovic     Corrected mistake in x42
  *
  *    References
  *
@@ -183,8 +184,11 @@ public:
 
         auxiliaryEquationsVector(26) = 2*(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)+
                                           auxiliaryEquationsVector(3)*auxiliaryEquationsVector(6));              // x26
+
+//        std::cout<<"auxiliaryEquationsVector(26) = "<<auxiliaryEquationsVector(26)<<std::endl;
+
         // Setting accuracy for x26 to 1 mm^2/s
-        if (auxiliaryEquationsVector(26)<=1e-12){
+        if (abs(auxiliaryEquationsVector(26))<=1e-12){
             auxiliaryEquationsVector(26) = 0;
         };
 
@@ -387,9 +391,22 @@ public:
 */
         auxiliaryEquationsVector(13) =  atan2(auxiliaryEquationsVector(48),auxiliaryEquationsVector(24));                   // x13
 
-        auxiliaryEquationsVector(42) = cos(auxiliaryEquationsVector(38)*sin(auxiliaryEquationsVector(40)));                // x42
+        auxiliaryEquationsVector(42) = cos(auxiliaryEquationsVector(38))*sin(auxiliaryEquationsVector(40));                // x42
 
-        auxiliaryEquationsVector(43) = auxiliaryEquationsVector(41)*auxiliaryEquationsVector(42);                // x43
+//        /// Debug ///
+
+//        std::cout<<"cos(x38) = "<<cos(auxiliaryEquationsVector(38))<<std::endl;
+//        std::cout<<"sin(x40) = "<<sin(auxiliaryEquationsVector(40))<<std::endl;
+//        std::cout<<"cos(x38)*sin(x40) = "<<cos(auxiliaryEquationsVector(38))*sin(auxiliaryEquationsVector(40))<<std::endl;
+//        std::cout<<"x42 = "<<auxiliaryEquationsVector(42)<<std::endl;
+//        std::cout<<"x42-cos(x38)*sin(x40) = "<<auxiliaryEquationsVector(42)-cos(auxiliaryEquationsVector(38))*sin(auxiliaryEquationsVector(40))<<std::endl;
+//        std::cout<<"cos(x38)*sin(x40)-0.99999999989952-4.44089209850063e-16 = "<<cos(auxiliaryEquationsVector(38))*sin(auxiliaryEquationsVector(40))-0.99999999989952-4.44089209850063e-16<<std::endl;
+//        std::cout<<"x42-0.99999999989952-4.44089209850063e-16 = "<<auxiliaryEquationsVector(42)-0.99999999989952-4.44089209850063e-16<<std::endl;
+
+//        /// Debug ///
+
+//        auxiliaryEquationsVector(43) = auxiliaryEquationsVector(41)*auxiliaryEquationsVector(42);                // x43
+        auxiliaryEquationsVector(43) = auxiliaryEquationsVector(41)*cos(auxiliaryEquationsVector(38))*sin(auxiliaryEquationsVector(40));                // x43
 
         auxiliaryEquationsVector(15) = sqrt(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43));              // x15
 
@@ -409,7 +426,7 @@ public:
 
 
 
-/* // What the actual f*ck?!
+ /*// What the actual f*ck?!
         std::cout<<"((auxiliaryEquationsVector(35)/1e6)*(auxiliaryEquationsVector(35)/1e6)+(auxiliaryEquationsVector(21)/1e6)-2*(auxiliaryEquationsVector(43)/1e6))*1e6 = "<<((auxiliaryEquationsVector(35)/1e6)*(auxiliaryEquationsVector(35)/1e6)+(auxiliaryEquationsVector(21)/1e6)-2*(auxiliaryEquationsVector(43)/1e6))*1e6<<std::endl;
         std::cout<<"(auxiliaryEquationsVector(35)/1e6)*(auxiliaryEquationsVector(35)) = "<<(auxiliaryEquationsVector(35)/1e6)*(auxiliaryEquationsVector(35))<<std::endl;
         std::cout<<"(auxiliaryEquationsVector(21)/1e6) = "<<(auxiliaryEquationsVector(21)/1e6)<<std::endl;
@@ -430,6 +447,18 @@ public:
         std::cout<<"x35*x35+x21-x43-x43 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-auxiliaryEquationsVector(43)-auxiliaryEquationsVector(43)<<std::endl;
         std::cout<<"x35*x35+x21-2*x43 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43)<<std::endl;
         std::cout<<"x35*x35-x43-x43+x21 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)-auxiliaryEquationsVector(43)-auxiliaryEquationsVector(43)+auxiliaryEquationsVector(21)<<std::endl;
+        std::cout<<"x35*x35+x21-2*x43 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43)<<std::endl;
+        std::cout<<"x35*x35+x21-2*41*42 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(41)*auxiliaryEquationsVector(42)<<std::endl;
+        std::cout<<"x35*x35+x21-2*41*cos(x38)*sin(x40) = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(41)*cos(auxiliaryEquationsVector(38))*sin(auxiliaryEquationsVector(40))<<std::endl;
+        std::cout<<"x35*x35+x21-2*41*sin(x40)*cos(x38) = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(41)*sin(auxiliaryEquationsVector(40))*cos(auxiliaryEquationsVector(38))<<std::endl;
+        std::cout<<"-2*41*42 = "<<-2*auxiliaryEquationsVector(41)*auxiliaryEquationsVector(42)<<std::endl;
+        std::cout<<"-2*41*cos(x38)*sin(x40) = "<<-2*auxiliaryEquationsVector(41)*cos(auxiliaryEquationsVector(38))*sin(auxiliaryEquationsVector(40))<<std::endl;
+        std::cout<<"x35*x35+x21 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)<<std::endl;
+        std::cout<<"x35*x35+x21-0.10096312339415 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-0.10096312339415<<std::endl;
+
+        std::cout<<"-2*41*42+0.10096312339415 = "<<-2*auxiliaryEquationsVector(41)*auxiliaryEquationsVector(42)+0.10096312339415<<std::endl;
+        std::cout<<"-2*41*cos(x38)*sin(x40)+0.10096312339415 = "<<-2*auxiliaryEquationsVector(41)*cos(auxiliaryEquationsVector(38))*sin(auxiliaryEquationsVector(40))+0.10096312339415<<std::endl;
+
 
         std::cout<<"x35 = "<<auxiliaryEquationsVector(35)<<std::endl;
         std::cout<<"x35^2 = "<<auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)<<std::endl;

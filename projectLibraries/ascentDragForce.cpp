@@ -58,20 +58,24 @@ const double ascentDragForce(const double rotationalVelocity, const double temp,
     // Computing the local speed of sound
 const double speedOfSound = sqrt(adiabeticIndex*specificGasConstant*temp);
 
-/* // Testing the output
-std::cout<<"speedOfSound = "<<speedOfSound<<std::endl;
-std::cout<<"rotationalVelocity = "<<rotationalVelocity<<std::endl;
-std::cout<<"temp = "<<temp<<std::endl;
-std::cout<<"adiabeticIndex = "<<adiabeticIndex<<std::endl;
-std::cout<<"specificGasConstant = "<<specificGasConstant<<std::endl;
-//*/
+ // Testing the output
+//std::cout<<"temp = "<<temp<<std::endl;
+//std::cout<<"speedOfSound = "<<speedOfSound<<std::endl;
+//std::cout<<"rotationalVelocity = "<<rotationalVelocity<<std::endl;
+//std::cout<<"temp = "<<temp<<std::endl;
+//std::cout<<"adiabeticIndex = "<<adiabeticIndex<<std::endl;
+//std::cout<<"specificGasConstant = "<<specificGasConstant<<std::endl;
+
 
 // Computing the Mach number
 const double machNumber = rotationalVelocity/speedOfSound;
 
+//std::cout<<"machNumber = "<<machNumber<<std::endl;
 
 // Computing the current drag coefficient
 const double currentDragCoefficient = Drag::dragCoefficient(machNumber, dragCoefficientPolyCoefficients, dragCoefficientMachRanges);
+
+//std::cout<<"currentDragCoefficient = "<<currentDragCoefficient<<std::endl;
 
 // Computing the current drag
 const double currentDrag = 0.5*currentAirDensity*rotationalVelocity*rotationalVelocity*referenceArea*currentDragCoefficient;
