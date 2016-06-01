@@ -179,9 +179,26 @@ public:
 
         const double LatitudeChange = LatitudeChange_;  // delta_dot [rad/s] (actual parameter)
 
-        const double localMarsRotationalVelocity = rotationalVelocityMars*Radius*cos(Latitude);  // V_M [km/s]
+        double localMarsRotationalVelocity = rotationalVelocityMars*Radius*cos(Latitude);  // V_M [km/s]
+        // Avoid cosine rounding errors
+        if (abs(cos(Latitude))<6.2e-17){
+          localMarsRotationalVelocity = 0;
+        }
 
-        const double inertialFlightPathAngle = asin(RadiusChange/inertialVelocity);          // gamma_I [rad]
+        double inertialFlightPathAngle = asin(RadiusChange/inertialVelocity);          // gamma_I [rad]
+        // Avoid singularities
+        if (inertialVelocity == 0){
+            inertialFlightPathAngle = 0;
+        }
+        // And dealing with round-off errors
+        else if ((RadiusChange/inertialVelocity) < 0 && ((RadiusChange/inertialVelocity)+1) > -1e-15){
+            inertialFlightPathAngle = asin(-1);
+//            std::cout<<"Rounding to -1"<<std::endl;
+        }
+        else if ((RadiusChange/inertialVelocity) > 0 && ((RadiusChange/inertialVelocity)-1) < 1e-15){
+            inertialFlightPathAngle = asin(1);
+//            std::cout<<"Rounding to 1"<<std::endl;
+        }
 
         const double inertialAzimuth = atan2((inertialLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_I [rad]
 
@@ -193,6 +210,12 @@ public:
 
             rotationalFlightPathAngle_ = tudat::mathematical_constants::LONG_PI/2;
         }
+        else if ((RadiusChange/rotationalVelocity)<0 && ((RadiusChange/rotationalVelocity)+1)>-1e-15){
+            rotationalFlightPathAngle_=asin(-1);
+        }
+        else if ((RadiusChange/rotationalVelocity)>0 && ((RadiusChange/rotationalVelocity)-1)<1e-15){
+            rotationalFlightPathAngle_ = asin(1);
+        }
         else {
             rotationalFlightPathAngle_ = asin(RadiusChange/rotationalVelocity);
         };
@@ -203,7 +226,7 @@ public:
 
         const double rotationalAzimuth = atan2((rotationalLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_R [rad]
 
-    /*    // Check output
+/*        // Check output
         std::cout<<"Radius = "<<Radius<<std::endl;
         std::cout<<"inertialVelocity = "<<inertialVelocity<<std::endl;
         std::cout<<"inertialLongitude = "<<inertialLongitude<<std::endl;
@@ -212,6 +235,9 @@ public:
         std::cout<<"inertialLongitudeChange = "<<inertialLongitudeChange<<std::endl;
         std::cout<<"rotationalLongitudeChange = "<<rotationalLongitudeChange<<std::endl;
         std::cout<<"RadiusChange = "<<RadiusChange<<std::endl;
+        std::cout<<"RadiusChange/rotationalVelocity = "<<RadiusChange/rotationalVelocity<<std::endl;
+        std::cout<<"RadiusChange/rotationalVelocity+1 = "<<RadiusChange/rotationalVelocity+1<<std::endl;
+        std::cout<<"asin(RadiusChange/rotationalVelocity) = "<<asin(RadiusChange/rotationalVelocity)<<std::endl;
         std::cout<<"LatitudeChange = "<<LatitudeChange<<std::endl;
         std::cout<<"localMarsRotationalVelocity = "<<localMarsRotationalVelocity<<std::endl;
         std::cout<<"inertialFlightPathAngle = "<<inertialFlightPathAngle<<std::endl;

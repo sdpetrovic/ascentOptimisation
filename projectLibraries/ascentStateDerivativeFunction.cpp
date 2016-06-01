@@ -69,6 +69,153 @@ const tudat::basic_mathematics::Vector7d ascentStateDerivativeFunction(const cel
     const double massMAV = currentStateAndTime(6);              // MAV mass definition
     const double currentTime = stateAndTime.getCurrentTime();   // current time definition
 
+/*    /// Setting the data collection file for RKF and inserting the first values ///
+
+        // Set directory where output files will be stored. THIS REQUIRES THE COMPLETE PATH IN ORDER TO WORK!!
+        const std::string outputDirectory = "/home/stachap/Documents/Thesis/03. Tudat/tudatBundle/tudatApplications/thesisProject/04.Verification/00.RKFintermediateStateOutput/";
+
+
+        // Set output format for matrix output.
+        Eigen::IOFormat csvFormat( 15, 0, ", ", "\n" );
+
+        // Set absolute path to file containing the data.
+        std::string dataAbsolutePath = outputDirectory + "test1FullIntegrationRK4stateAndTime.csv";
+
+        // Create a row vector for the storing of the data
+        Eigen::MatrixXd outputVector = Eigen::MatrixXd::Zero(1,8); // Create a row vector for the storing of the data
+
+        // Filling the output vector
+        outputVector(0,0) = currentTime;   // Storing the initial time
+        outputVector(0,1) = xPosition;   // Storing the initial x position
+        outputVector(0,2) = yPosition;   // Storing the initial y position
+        outputVector(0,3) = zPosition;   // Storing the initial z position
+        outputVector(0,4) = xVelocity;   // Storing the initial x velocity
+        outputVector(0,5) = yVelocity;   // Storing the initial y velocity
+        outputVector(0,6) = zVelocity;   // Storing the initial z velocity
+        outputVector(0,7) = massMAV;   // Storing the initial MAV mass
+
+
+        // Storing the data
+
+        std::ifstream ifile(dataAbsolutePath.c_str()); // Check it as an input file
+
+        bool fexists = false;   // Set the default to "It does not exist"
+
+        if (ifile){         // Attempt to open the file
+
+
+           fexists = true;      // If the file can be opened it must exist
+
+           ifile.close();   // Close the file
+
+        }
+
+
+        // If so: error and create temporary file, if not: create new file and put data in
+
+        if (fexists == true){
+
+
+            // Get time //
+
+            time_t rawtime;
+            struct tm * timeinfo;
+
+            time ( &rawtime );
+            timeinfo = localtime ( &rawtime );
+    //        printf ( "Current local time and date: %s", asctime (timeinfo) );         // (from stackoverflow.com/questions/997946/how-to-get-current-time-and-date-in-c and from stackoverflow.com/questions/1442116/how-to-get-date-and-time-value-in-c-program)
+    //        std::cout<<"time = "<<time ( &rawtime )<<std::endl;
+    //        std::cout<< (timeinfo->tm_year+1900) << "-"
+    //                 << (timeinfo->tm_mon + 1) << "-"
+    //                 << timeinfo->tm_mday << " "
+    //                 << timeinfo->tm_hour << ":"
+    //                 << timeinfo->tm_min << ":"
+    //                 << timeinfo->tm_sec <<std::endl;
+
+            ostringstream ConvertYear;
+            ConvertYear << (timeinfo->tm_year+1900);
+            std::string currentYear = ConvertYear.str();
+
+            ostringstream ConvertMonth;
+            ConvertMonth << (timeinfo->tm_mon+1);
+            std::string currentMonth = ConvertMonth.str();
+
+            ostringstream ConvertDay;
+            ConvertDay << timeinfo->tm_mday;
+            std::string currentDay = ConvertDay.str();
+
+            ostringstream ConvertHour;
+            ConvertHour << timeinfo->tm_hour;
+            std::string currentHour = ConvertHour.str();
+
+    //        std::cout<<"currentHour = "<<currentHour<<std::endl;
+
+            ostringstream ConvertMin;
+            ConvertMin << timeinfo->tm_min;
+            std::string currentMin = ConvertMin.str();
+
+    //        std::cout<<"currentMin = "<<currentMin<<std::endl;
+
+            ostringstream ConvertSec;
+            ConvertSec << timeinfo->tm_sec;
+            std::string currentSec = ConvertSec.str();
+
+
+            // Making sure each one of the representation has at two numbers
+            if(currentMonth.size() == 1){
+                currentMonth = "0" + currentMonth;
+            }
+
+
+            if(currentDay.size() == 1){
+                currentDay = "0" + currentDay;
+            }
+
+            if(currentSec.size() == 1){
+                currentSec = "0" + currentSec;
+            }
+
+            if (currentMin.size() == 1){
+                currentMin = "0" + currentMin;
+            }
+
+            if (currentHour.size() == 1){
+                currentHour = "0" + currentHour;
+            }
+
+
+    //        std::cout<<"The length of currentSec = "<<currentSec.size()<<" and the value = "<<currentSec<<std::endl;
+
+            // Create new file name
+
+            std::string ComputerTimeString = currentYear + "-" + currentMonth + "-" + currentDay + "_" + currentHour + ":" + currentMin + ":" + currentSec;  // Convert to string and store
+
+            std::string newFileName = "backupRKFFileAtDateAndTime_" + ComputerTimeString + ".csv";
+
+        std::cerr<<"The file name that you have chosen already exists, a new file with name "<<newFileName<<" will be created to store the data for now"<<std::endl;
+
+        // Set new absolute path to file containing the data.
+        dataAbsolutePath = outputDirectory + newFileName;
+
+        // Export the data.
+        std::ofstream exportFile1( dataAbsolutePath.c_str( ) ); // Make the new file
+        std::cout<<"New file called "<<dataAbsolutePath<<" has been created"<<std::endl;
+        exportFile1 << outputVector.format( csvFormat );          // Store the new values
+        exportFile1.close( );   // Close the file
+
+
+    }
+            else{
+
+            // Export the data.
+            std::ofstream exportFile1( dataAbsolutePath.c_str( ) ); // Make the new file
+            std::cout<<"New file called "<<dataAbsolutePath<<" has been created"<<std::endl;
+            exportFile1 << outputVector.format( csvFormat );          // Store the new values
+            exportFile1.close( );   // Close the file
+        };
+        //*/
+
+
 // Computations
 
     const double Radius = sqrt(xPosition*xPosition+yPosition*yPosition+zPosition*zPosition);         // r [km]
@@ -128,9 +275,21 @@ const tudat::basic_mathematics::Vector7d ascentStateDerivativeFunction(const cel
 
     const double LatitudeChange = LatitudeChange_;  // delta_dot [rad/s] (actual parameter)
 
-    const double localMarsRotationalVelocity = rotationalVelocityMars*Radius*cos(Latitude);  // V_M [km/s]
+    // Avoid cosine round-off errors
+    double localMarsRotationalVelocity = rotationalVelocityMars*Radius*cos(Latitude);  // V_M [km/s]
 
-    const double inertialFlightPathAngle = asin(RadiusChange/inertialVelocity);          // gamma_I [rad]
+    if (abs(cos(Latitude))<6.2e-17){
+      localMarsRotationalVelocity = 0;
+    }
+
+//    std::cout<<"RadiusChange = "<<RadiusChange<<std::endl;
+//    std::cout<<"inertialVelocity = "<<inertialVelocity<<std::endl;
+
+    double inertialFlightPathAngle = asin(RadiusChange/inertialVelocity);          // gamma_I [rad]
+    // Avoid singularities
+    if (inertialVelocity == 0){
+        inertialFlightPathAngle = 0;
+    }
 
     const double inertialAzimuth = atan2((inertialLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_I [rad]
 
@@ -138,7 +297,7 @@ const tudat::basic_mathematics::Vector7d ascentStateDerivativeFunction(const cel
 
     double rotationalFlightPathAngle_; // gamma_R [rad]  (placeholder)
 
-    if (rotationalVelocity == 0){       // Setting the initial flight path angle in the rotational frame to 90 deg (or pi/s)
+    if (rotationalVelocity == 0){       // Setting the initial flight path angle in the rotational frame to 90 deg (or pi/2)
 
         rotationalFlightPathAngle_ = tudat::mathematical_constants::LONG_PI/2;
     }
@@ -321,7 +480,7 @@ const tudat::basic_mathematics::Vector7d ascentStateDerivativeFunction(const cel
 //    std::cout<<"The mass flow rate = "<<massFlowRate<<std::endl;
 
 
-/// Define the output vector and fill it ///
+///// Define the output vector and fill it ///
 
 
     tudat::basic_mathematics::Vector7d stateDerivativeVector;
@@ -333,6 +492,54 @@ const tudat::basic_mathematics::Vector7d ascentStateDerivativeFunction(const cel
     stateDerivativeVector(4) = totalAccelerationsIframe(1);
     stateDerivativeVector(5) = totalAccelerationsIframe(2);
     stateDerivativeVector(6) = massFlowRate;
+
+
+/*    /// Storing the values to the file ///
+
+
+//    // Check if the file already exists.
+
+
+//    std::ifstream ifile2(dataAbsolutePath.c_str()); // Check it as an input file
+
+//    fexists = false;   // Set the default to "It does not exist"
+
+//    if (ifile2){         // Attempt to open the file
+
+
+//       fexists = true;      // If the file can be opened it must exist
+
+//       ifile2.close();   // Close the file
+
+//    }
+
+
+//    // If so: append, if not: create new file and put data in
+
+//    if (fexists == true){
+
+//        // Export the Taylor Series Coefficients matrix.
+//        std::ofstream exportFile1;                          // Define the file as an output file
+
+
+//        exportFile1.open(dataAbsolutePath.c_str(),std::ios_base::app);      // Open the file in append mode
+
+//        exportFile1 << "\n";                                            // Make sure the new matrix start on a new line
+
+//        exportFile1 << stateDerivativeVector.format( csvFormat ); // Add the new values
+
+//        std::cout<<"The file called "<<dataAbsolutePath<<" has been appended"<<std::endl;
+
+
+//        exportFile1.close( );   // Close the file
+//}
+//        else{
+
+//        std::cerr<<"Error: values could not be stored because storage file does not exist"<<std::endl;
+//    };
+    //*/
+
+
 
     return stateDerivativeVector;
     } // end of the state derivative function

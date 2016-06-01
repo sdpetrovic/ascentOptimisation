@@ -30,6 +30,7 @@
  *                                  Also, at u45 and u21 the tolerance had to include an abs function!
  *      160526    S.D. Petrovic     Added W4,0 to be able to properly evaluate the recurrence relation of W4,2
  *      160527    S.D. Petrovic     Corrected mistake in x42
+ *      160531    S.D. Petrovic     Added more ways to deal with rounding errors
  *
  *    References
  *
@@ -168,7 +169,7 @@ public:
         auxiliaryEquationsVector(6) = aState(5);              // x6
         auxiliaryEquationsVector(7) = aState(6);              // x7
 
-//        std::cout<<"Surely this works 1..."<<std::endl;
+       std::cout<<"Surely this works 1..."<<std::endl;
 
         auxiliaryEquationsVector(8) = auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2)+
                 auxiliaryEquationsVector(3)*auxiliaryEquationsVector(3) ;              // x8
@@ -182,6 +183,8 @@ public:
         auxiliaryEquationsVector(21) = auxiliaryEquationsVector(4)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(5)*auxiliaryEquationsVector(5)+
                 auxiliaryEquationsVector(6)*auxiliaryEquationsVector(6) ;              // x21
 
+//        std::cout<<"x21 = "<<auxiliaryEquationsVector(21)<<std::endl;
+
         auxiliaryEquationsVector(26) = 2*(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)+
                                           auxiliaryEquationsVector(3)*auxiliaryEquationsVector(6));              // x26
 
@@ -193,7 +196,7 @@ public:
         };
 
         ///Debug///
-//        std::cout<<"Surely this works 2..."<<std::endl;
+        std::cout<<"Surely this works 2..."<<std::endl;
 //        auxiliaryEquationsVector(26) = 2*((auxiliaryEquationsVector(1)/1e6)*(auxiliaryEquationsVector(4))+(auxiliaryEquationsVector(2)/1e6)*(auxiliaryEquationsVector(5))+
 //                                          (auxiliaryEquationsVector(3)/1e6)*(auxiliaryEquationsVector(6)))*1e6;              // x26
 
@@ -244,7 +247,7 @@ public:
 
 
         /// Debug ///
-//        std::cout<<"Surely this works 3..."<<std::endl;
+        std::cout<<"Surely this works 3..."<<std::endl;
 /*
         std::cout<<"x45 = "<<auxiliaryEquationsVector(45)<<std::endl;
         std::cout<<"x45-7.088e-05 = "<<auxiliaryEquationsVector(45)-7.088e-05<<std::endl;
@@ -341,7 +344,7 @@ public:
                         powerT = 1;
 
         };
-//        std::cout<<"Surely this works 4..."<<std::endl;
+        std::cout<<"Surely this works 4..."<<std::endl;
 
         // Computing the polynomial fit using the altitude and fit parameters for temperature
         for (int i=0; i < powerT+1;i++){
@@ -351,9 +354,34 @@ public:
 //        std::cout<<"x34 interval "<<i<<" = "<<auxiliaryEquationsVector(34)<<std::endl;
 
 };
+        // Avoid cosine round-off errors
+        if (abs(cos(auxiliaryEquationsVector(12)))<6.2e-17){
+            auxiliaryEquationsVector(35) = 0;
+        }
+        else {
         auxiliaryEquationsVector(35) = rotationalVelocity*auxiliaryEquationsVector(20)*cos(auxiliaryEquationsVector(12));                // x35
-
+}
+        // Avoid singularities
+        if (auxiliaryEquationsVector(36) == 0){
+            auxiliaryEquationsVector(37) = 0;
+        }
+        // And dealing with round-off errors
+        else if ((auxiliaryEquationsVector(25)/auxiliaryEquationsVector(36)) < 0 && ((auxiliaryEquationsVector(25)/auxiliaryEquationsVector(36))+1) > -1e-15){
+            auxiliaryEquationsVector(37) = -1;
+//            std::cout<<"Rounding to -1"<<std::endl;
+        }
+        else if ((auxiliaryEquationsVector(25)/auxiliaryEquationsVector(36)) > 0 && ((auxiliaryEquationsVector(25)/auxiliaryEquationsVector(36))-1) < 1e-15){
+            auxiliaryEquationsVector(37) = 1;
+//            std::cout<<"Rounding to 1"<<std::endl;
+        }
+        else {
         auxiliaryEquationsVector(37) = auxiliaryEquationsVector(25)/auxiliaryEquationsVector(36);                // x37
+}
+        /// Debug ///
+
+//        std::cout<<"x37 = "<<auxiliaryEquationsVector(37)<<std::endl;
+
+        /// Debug ///
 
         auxiliaryEquationsVector(46) = auxiliaryEquationsVector(45)-rotationalVelocity;             // x46
 
@@ -361,7 +389,7 @@ public:
         if (auxiliaryEquationsVector(46)<=1e-11){
             auxiliaryEquationsVector(46) = 0;
         }
-//std::cout<<"Surely this works 5..."<<std::endl;
+std::cout<<"Surely this works 5..."<<std::endl;
         auxiliaryEquationsVector(47) = cos(auxiliaryEquationsVector(12))*auxiliaryEquationsVector(45);               // x47
 
 //        auxiliaryEquationsVector(18) = auxiliaryEquationsVector(20)*auxiliaryEquationsVector(24);              // x18
@@ -374,6 +402,7 @@ public:
 
 //        std::cout<<"x33 (or speed of sound) = "<<auxiliaryEquationsVector(33)<<std::endl;
 
+
         auxiliaryEquationsVector(38) = asin(auxiliaryEquationsVector(37));                // x38
 
         auxiliaryEquationsVector(40) = atan2(auxiliaryEquationsVector(47),auxiliaryEquationsVector(24));               // x40
@@ -381,7 +410,7 @@ public:
         auxiliaryEquationsVector(41) = auxiliaryEquationsVector(35)*auxiliaryEquationsVector(36);                // x41
 
         auxiliaryEquationsVector(48) = cos(auxiliaryEquationsVector(12))*auxiliaryEquationsVector(46);               // x48
-//std::cout<<"Surely this works 6..."<<std::endl;
+std::cout<<"Surely this works 6..."<<std::endl;
         /*
 //        auxiliaryEquationsVector(44) = auxiliaryEquationsVector(36)*cos(auxiliaryEquationsVector(38));                // x44
 
@@ -418,7 +447,9 @@ public:
 
         }
 
-//        std::cout<<"Surely this works 7..."<<std::endl;
+        std::cout<<"Surely this works 7..."<<std::endl;
+
+//        std::cout<<"x15 = "<<auxiliaryEquationsVector(15)<<std::endl;
 //        else {
 //        auxiliaryEquationsVector(15) = sqrt(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43));              // x15
 //        auxiliaryEquationsVector(15) = sqrt(((auxiliaryEquationsVector(35)/1e6)*(auxiliaryEquationsVector(35))+(auxiliaryEquationsVector(21)/1e6)-2*(auxiliaryEquationsVector(43)/1e6))*1e6);              // x15
@@ -426,7 +457,7 @@ public:
 
 
 
- /*// What the actual f*ck?!
+/* // What the actual f*ck?!
         std::cout<<"((auxiliaryEquationsVector(35)/1e6)*(auxiliaryEquationsVector(35)/1e6)+(auxiliaryEquationsVector(21)/1e6)-2*(auxiliaryEquationsVector(43)/1e6))*1e6 = "<<((auxiliaryEquationsVector(35)/1e6)*(auxiliaryEquationsVector(35)/1e6)+(auxiliaryEquationsVector(21)/1e6)-2*(auxiliaryEquationsVector(43)/1e6))*1e6<<std::endl;
         std::cout<<"(auxiliaryEquationsVector(35)/1e6)*(auxiliaryEquationsVector(35)) = "<<(auxiliaryEquationsVector(35)/1e6)*(auxiliaryEquationsVector(35))<<std::endl;
         std::cout<<"(auxiliaryEquationsVector(21)/1e6) = "<<(auxiliaryEquationsVector(21)/1e6)<<std::endl;
@@ -478,15 +509,26 @@ public:
 
             auxiliaryEquationsVector(23) = 1;
         }
+        // And dealing with round-off errors
+        else if ((auxiliaryEquationsVector(25)/auxiliaryEquationsVector(15)) < 0 && ((auxiliaryEquationsVector(25)/auxiliaryEquationsVector(15))+1) > -1e-15){
+            auxiliaryEquationsVector(23) = -1;
+//            std::cout<<"Rounding to -1"<<std::endl;
+        }
+        else if ((auxiliaryEquationsVector(25)/auxiliaryEquationsVector(15)) > 0 && ((auxiliaryEquationsVector(25)/auxiliaryEquationsVector(15))-1) < 1e-15){
+            auxiliaryEquationsVector(23) = 1;
+//            std::cout<<"Rounding to 1"<<std::endl;
+        }
         else {
         auxiliaryEquationsVector(23) = auxiliaryEquationsVector(25)/auxiliaryEquationsVector(15);              // x23
 };
 
 /// Debug ///
-//std::cout<<"Surely this works 8..."<<std::endl;
+std::cout<<"Surely this works 8..."<<std::endl;
 
-//std::cout<<"x23 = "<<auxiliaryEquationsVector(23)<<std::endl;
-//std::cout<<"The whole vector = "<<auxiliaryEquationsVector<<std::endl;
+std::cout<<"x23 = "<<auxiliaryEquationsVector(23)<<std::endl;
+std::cout<<"x15 = "<<auxiliaryEquationsVector(15)<<std::endl;
+std::cout<<"x25 = "<<auxiliaryEquationsVector(25)<<std::endl;
+std::cout<<"The whole vector = "<<auxiliaryEquationsVector<<std::endl;
 
 /// Debug ///
         auxiliaryEquationsVector(14) = asin(auxiliaryEquationsVector(23));              // x14
@@ -526,7 +568,7 @@ public:
         auxiliaryEquationsVector(29) = dragCoefficientPolyCoefficients(sectionCD,1)*auxiliaryEquationsVector(32)+dragCoefficientPolyCoefficients(sectionCD,0);              // x29
 //        std::cout<<"No?"<<std::endl;
 
-//std::cout<<"Surely this works 9..."<<std::endl;
+std::cout<<"Surely this works 9..."<<std::endl;
         /*
         // Similar to the flight path angle, if V_R (or x15) = 0 m/s then the azimuth angle is not defined. It is also not defined if the flight path angle is +-90 degrees (i.e. if x23 = +-1)
         // To avoid singularities x22 is set to be equal to 1, such that the azimuth angle is 0.
@@ -541,7 +583,7 @@ public:
 //}; */
 
 
-//std::cout<<"Surely this works 10..."<<std::endl;
+std::cout<<"Surely this works 10..."<<std::endl;
         auxiliaryEquationsVector(27) = 0.5*referenceArea*auxiliaryEquationsVector(28)*auxiliaryEquationsVector(15)*auxiliaryEquationsVector(15)*auxiliaryEquationsVector(29);              // x27
 
         /// Debug ///
@@ -550,7 +592,7 @@ public:
 //        std::cout<<"referenceArea = "<<referenceArea<<std::endl;
 
         /// Debug ///
-//std::cout<<"Surely this works 11..."<<std::endl;
+std::cout<<"Surely this works 11..."<<std::endl;
 //        auxiliaryEquationsVector(13) = acos(auxiliaryEquationsVector(22));              // x13
 
         auxiliaryEquationsVector(0) = thrustAccelerationsBframe(0)-(auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7));              // w4,2
@@ -562,7 +604,7 @@ public:
 // auxiliaryEquationsVector() = ;               // x
 
 
-//std::cout<<"Surely this works end..."<<std::endl;
+std::cout<<"Surely this works end..."<<std::endl;
 
 
        return auxiliaryEquationsVector;
@@ -816,9 +858,13 @@ public:
     std::cout<<"x9 = "<<auxiliaryEquationsVector(9)<<std::endl;
 */
 
-
+    // Avoid singularities
+    if (auxiliaryEquationsVector(36) ==0){
+        auxiliaryDerivativesVector(36) = 0;
+    }
+    else{
     auxiliaryDerivativesVector(36) = auxiliaryDerivativesVector(21)/(2*auxiliaryEquationsVector(36));                // u36
-
+}
 
 
 
@@ -868,9 +914,13 @@ public:
 
 
 
-
+    // Avoid singularities
+    if (auxiliaryEquationsVector(36)==0){
+        auxiliaryDerivativesVector(37) = 0;
+    }
+    else {
     auxiliaryDerivativesVector(37) = (auxiliaryEquationsVector(36)*auxiliaryDerivativesVector(25)-auxiliaryEquationsVector(25)*auxiliaryDerivativesVector(36))/(auxiliaryEquationsVector(36)*auxiliaryEquationsVector(36));                // u37
-
+}
     auxiliaryDerivativesVector(41) = auxiliaryEquationsVector(36)*auxiliaryDerivativesVector(35)+auxiliaryEquationsVector(35)*auxiliaryDerivativesVector(36);                // u41
 
     auxiliaryDerivativesVector(48) = auxiliaryDerivativesVector(46)*cos(auxiliaryEquationsVector(12))-auxiliaryEquationsVector(46)*auxiliaryDerivativesVector(12)*sin(auxiliaryEquationsVector(12));                // u47

@@ -175,7 +175,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //    const double adiabeticIndex = Mars.adiabeticIndex();
 //    const double specificGasConstant = Mars.specificGasConstant();
 //    const double standardGravitationalParameter = Mars.standardGravitationalParameter();
-    const double rotationalVelocity = Mars.rotationalVelocity();
+
+    const double rotationalVelocityMars = Mars.rotationalVelocity();
     const double primeMeridianAngle = Mars.primeMeridianAngle();
     const double inertialFrameTime = Mars.inertialFrameTime();
 
@@ -206,10 +207,14 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
   /// Initial conditions ///
 
+    const double setEndTime = 200;  // Integration end time
+
+
 
     /// TSI settings ///
-    const int maxOrder = 1; // Eventually want order 20 (testing is 8)
+    const int maxOrder = 20; // Eventually want order 20 (testing is 8)
     const double chosenLocalErrorTolerance = 1e-8;      // The chosen local error tolerance for TSI
+    const double chosenStepSize = 0.2; // The chosen initial step-size for TSI
     /// TSI settings ///
 
 
@@ -218,8 +223,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //    const double initialAltitude = -0.6e3;             // Starting altitude [m MOLA]
     const double initialAltitude = 20;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
-    const double initialLatitudeDeg = 21;               // Starting latitude [deg]
-    const double initialLongitudeDeg = 74.5;            // Starting longitude [deg]
+    const double initialLatitudeDeg = 90;               // Starting latitude [deg] initial condition is 21 deg
+    const double initialLongitudeDeg = 0;            // Starting longitude [deg] initial condition is 74.5 deg
 
 //    const double initialLatitude = initialLatitudeDeg*tudat::mathematical_constants::LONG_PI/180;       // Starting latitude [rad]
 //    const double initialLongitude = initialLongitudeDeg*tudat::mathematical_constants::LONG_PI/180;     // Starting longitude [rad]
@@ -239,14 +244,14 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
       initialCartesianPositionRotationalFrame(1) = initialRadius*cos(initialLatitude)*sin(initialLongitude); // y_R
       initialCartesianPositionRotationalFrame(2) = initialRadius*sin(initialLatitude); // z_R
 
-    const Eigen::Vector3d initialCartesianPositionInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(rotationalVelocity*inertialFrameTime-primeMeridianAngle)*initialCartesianPositionRotationalFrame;
+    const Eigen::Vector3d initialCartesianPositionInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(rotationalVelocityMars*inertialFrameTime-primeMeridianAngle)*initialCartesianPositionRotationalFrame;
 
 
     // Compute initial velocity in y-direction as seen from the launch site in the inertial frame
 
-    const Eigen::Vector3d initialVelocityLaunchSite = Eigen::Vector3d(0,(rotationalVelocity*initialRadius*cos(initialLatitude)),0);
+    const Eigen::Vector3d initialVelocityLaunchSite = Eigen::Vector3d(0,(rotationalVelocityMars*initialRadius*cos(initialLatitude)),0);
 
-    const Eigen::Vector3d initialVelocityInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(rotationalVelocity*inertialFrameTime-primeMeridianAngle+initialLongitude)*initialVelocityLaunchSite;
+    const Eigen::Vector3d initialVelocityInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(rotationalVelocityMars*inertialFrameTime-primeMeridianAngle+initialLongitude)*initialVelocityLaunchSite;
 
     /// Setting StateAndTime class using modified vector ///
 
@@ -262,12 +267,12 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //    /// Debug ///
 
-//        aState(0) = 852.252774466749;
-//        aState(1) = 3073.12422474535;
+        aState(0) = 0;
+        aState(1) = 0;
 //        aState(2) = 1224.18491564675;
-//        aState(3) = -0.21782304504995;
-//        aState(4) = 0.0604076766542031;
-//        aState(5) = 0;
+        aState(3) = 0;
+        aState(4) = 0;
+        aState(5) = 0;
 //        aState(6) = 227;  // Mass [kg] from literature study
 
 //    /// Debug //
@@ -591,6 +596,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         StepSize stepSize; // Initializing the stepSize class. THIS SHOULD BE DONE BEFORE THE START OF THE INTEGRATION!!!!!
 
         stepSize.setLocalErrorTolerance(chosenLocalErrorTolerance);  // Setting the local error tolerance to the lowest possible value in order to compare to RKF7(8) and the others
+        stepSize.setCurrentStepSize(chosenStepSize); // Setting the step-size to the chosen step-size
 
 //        /// Debug ///
 
@@ -612,7 +618,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         Eigen::MatrixXd dataStoringMatrix(1,8); // The size of this matrix will change in the do-loop
 
         // Set the end time
-        const double endTime = 0.200; // sec
+        const double endTime = setEndTime; // sec
 
 //        std::cout<<"It works till here 1"<<std::endl;
 
@@ -635,6 +641,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     std::cout<<"std::fabs(endTime-runningTime) = "<<std::fabs(endTime-runningTime)<<std::endl;
     std::cout<<"std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) = "<<std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) )<<std::endl;
          /// Debug ///
+
+//    stepSize.setCurrentStepSize(25); // Specifying a constant step-size for verification
 
 	if ( std::fabs( endTime - runningTime )
                              <= std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) )
@@ -924,14 +932,14 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                     const double initialTime = currentStateAndTime.getCurrentTime();                            // Time.
                 //    Eigen::VectorXd initialState = currentStateAndTime.getCurrentState(); // State: start with zero velocity at the origin.
 
-                    const double endTime = 0.2;     // Using the same initial step-size as defined for TSI
+                    const double endTime = setEndTime;     // Using the same initial step-size as defined for TSI
 
                     // Step-size settings.
                     // The minimum and maximum step-size are set such that the input data is fully accepted by the
                     // integrator, to determine the steps to be taken.
                     const double zeroMinimumStepSize = std::numeric_limits< double >::epsilon( );
                     const double infiniteMaximumStepSize = std::numeric_limits< double >::infinity( );
-                    double stepSize = 0.2;          // Using the same initial step-size as defined for TSI
+                    double stepSize = 0.01;          // Using the same initial step-size as defined for TSI
 
                     // Tolerances.
                     const double relativeTolerance = 1e-8;     // 1e-14 is used by TSI, original setting was 1e-15
@@ -940,6 +948,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                     // For RKF7(8) a step-size of 0.2 is only used if the tolerances are 1e-3.... and is accepted till 1e-8
                     // For RKF4(5) a step-size of 0.2 is only used if the tolerances are 1e-7.... and is accepted till 1e-10
                     // For DP8(7) a step-size of 0.2 is only used if the tolerances are 1e-7.... and is accepted till 1e-9
+
 
 //                    /// RungeKutta4 numerical integrator.
 //                    std::cout<<"You have chosen RK4 as your integration method"<<std::endl;
@@ -951,6 +960,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //                    std::cout<<"The RK4 end state is "<<RK4endState<<std::endl;
 //                    /// End of RungeKutta4 numerical integrator
+///*
 
                     /// Runge-Kutta-Fehlberg 7(8) integrator.
                     std::cout<<"You have chosen RKF7(8) as your integration method"<<std::endl;

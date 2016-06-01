@@ -54,7 +54,7 @@ double getMultiplicationRecurrenceRelation(
 for (int j=0; j < order+1; j++){                    // It goes till the order (till k), and stops as soon as j becomes k+1
 
 
-     Wmult_ += F(order)*G(order-j);          // Wmult += ... means Wmult = Wmult + ...
+     Wmult_ += F(j)*G(order-j);          // Wmult += ... means Wmult = Wmult + ...      // Corrected a problem where I had: F(order)*G(order-j) instead of F(j)*G(order-j)
 
 };
 

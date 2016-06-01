@@ -129,6 +129,14 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     celestialBody Mars;
 
+    // No Gravity
+
+//    Mars.setStandardGravitationalParameter(0);
+
+    if (Mars.standardGravitationalParameter() == 0){
+        std::cout<<"NO GRAVITY"<<std::endl;
+    }
+
 //    const double adiabeticIndex = Mars.adiabeticIndex();
 //    const double specificGasConstant = Mars.specificGasConstant();
 //    const double standardGravitationalParameter = Mars.standardGravitationalParameter();
@@ -146,16 +154,30 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     MarsAscentVehicle MAV;
 
+    // No Drag
 
+    MAV.setReferenceArea(0);
+
+    if (MAV.referenceArea() == 0){
+        std::cout<<"NO DRAG"<<std::endl;
+    }
+
+    // No Thrust
+
+    MAV.setThrust(0);
+
+    if (MAV.Thrust() == 0){
+        std::cout<<"NO THRUST"<<std::endl;
+    }
 
   /// Initial conditions ///
 
     // Launch site characteristics
 
 //    const double initialAltitude = -0.6e3;             // Starting altitude [m MOLA]
-    const double initialAltitude = -0.6;                 // Starting altitude [km MOLA]
-    const double initialLatitudeDeg = 21;               // Starting latitude [deg]
-    const double initialLongitudeDeg = 74.5;            // Starting longitude [deg]
+    const double initialAltitude = 20;                 // Starting altitude [km MOLA] is -0.6 km MOLA
+    const double initialLatitudeDeg = 90;               // Starting latitude [deg] is 21 deg
+    const double initialLongitudeDeg = 0;            // Starting longitude [deg] is 74.5 deg
 
 //    const double initialLatitude = initialLatitudeDeg*tudat::mathematical_constants::LONG_PI/180;       // Starting latitude [rad]
 //    const double initialLongitude = initialLongitudeDeg*tudat::mathematical_constants::LONG_PI/180;     // Starting longitude [rad]
@@ -188,15 +210,25 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     tudat::basic_mathematics::Vector7d aState;
 
-    aState(0) = initialCartesianPositionInertialFrame(0);       // x,y,z position in [km]
-    aState(1) = initialCartesianPositionInertialFrame(1);
-    aState(2) = initialCartesianPositionInertialFrame(2);
-    aState(3) = initialVelocityInertialFrame(0);                // x,y,z velocity in [km/s]
-    aState(4) = initialVelocityInertialFrame(1);
-    aState(5) = initialVelocityInertialFrame(2);
-    aState(6) = 227;  // Mass [kg] from literature study
+//    aState(0) = initialCartesianPositionInertialFrame(0);       // x,y,z position in [km]
+//    aState(1) = initialCartesianPositionInertialFrame(1);
+//    aState(2) = initialCartesianPositionInertialFrame(2);
+//    aState(3) = initialVelocityInertialFrame(0);                // x,y,z velocity in [km/s]
+//    aState(4) = initialVelocityInertialFrame(1);
+//    aState(5) = initialVelocityInertialFrame(2);
+//    aState(6) = 227;  // Mass [kg] from literature study
+
+        aState(0) = 0;       // x,y,z position in [km]
+        aState(1) = 0;
+        aState(2) = initialCartesianPositionInertialFrame(2);
+        aState(3) = 0;                // x,y,z velocity in [km/s]
+        aState(4) = 0;
+        aState(5) = 0;
+        aState(6) = 227;  // Mass [kg] from literature study
 
     StateAndTime stateAndTime(aState);        // Creating the current state class using the namespace and class directly
+
+    std::cout<<"currentState = "<<stateAndTime.getCurrentState()<<std::endl;
 
 
 
@@ -283,9 +315,17 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     const double LatitudeChange = LatitudeChange_;  // delta_dot [rad/s] (actual parameter)
 
-    const double localMarsRotationalVelocity = rotationalVelocityMars*Radius*cos(Latitude);  // V_M [km/s]
+    double localMarsRotationalVelocity = rotationalVelocityMars*Radius*cos(Latitude);  // V_M [km/s]
+    // Avoid rounding errors
+    if (abs(cos(Latitude))<6.2e-17){
+      localMarsRotationalVelocity = 0;
+    }
 
-    const double inertialFlightPathAngle = asin(RadiusChange/inertialVelocity);          // gamma_I [rad]
+    double inertialFlightPathAngle = asin(RadiusChange/inertialVelocity);          // gamma_I [rad]
+    // Avoid singularities
+    if (inertialVelocity == 0){
+        inertialFlightPathAngle = 0;
+    }
 
     const double inertialAzimuth = atan2((inertialLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_I [rad]
 
@@ -293,7 +333,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     double rotationalFlightPathAngle_; // gamma_R [rad]  (placeholder)
 
-    if (rotationalVelocity == 0){       // Setting the initial flight path angle in the rotational frame to 90 deg (or pi/s)
+    if (rotationalVelocity == 0){       // Setting the initial flight path angle in the rotational frame to 90 deg (or pi/2)
 
         rotationalFlightPathAngle_ = tudat::mathematical_constants::LONG_PI/2;
     }
@@ -307,7 +347,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     const double rotationalAzimuth = atan2((rotationalLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_R [rad]
 
-/*    // Check output
+    // Check output
     std::cout<<"Radius = "<<Radius<<std::endl;
     std::cout<<"inertialVelocity = "<<inertialVelocity<<std::endl;
     std::cout<<"inertialLongitude = "<<inertialLongitude<<std::endl;
