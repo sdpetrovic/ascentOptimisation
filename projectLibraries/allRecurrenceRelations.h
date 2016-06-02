@@ -60,7 +60,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
                       const double inertialFrameTime_, const double bodyReferenceRadius_, const Eigen::MatrixXd temperaturePolyCoefficients_, const Eigen::MatrixXd temperatureAltitudeRanges_,
                       const Eigen::VectorXd densityPolyCoefficients_, const double Thrust_, const double specificImpulse_,
                       const double referenceArea_, const Eigen::MatrixXd dragCoefficientPolyCoefficients_, const Eigen::MatrixXd dragCoefficientMachRanges_,
-        const Eigen::VectorXd thrustAccelerationsBframe_,
+        const Eigen::VectorXd thrustAccelerationsBframe_, const Eigen::MatrixXd thrustAzimuthMatrix_, const Eigen::MatrixXd thrustElevationMatrix_,
         const Eigen::VectorXd initialEquationsVector_,
         const Eigen::VectorXd initialDerivativesVector_,
         const Eigen::MatrixXd initialFunctionsMatrix_,

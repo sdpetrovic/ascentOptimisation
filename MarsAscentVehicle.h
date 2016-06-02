@@ -176,7 +176,7 @@ public:
         /// Both thrust angles and the corresponding times will be optimised using the optimiser but can be set for validation purposes. Default = zeros ///
 
     // Thrust Azimuth-Gimbal Angles
-        thrustAzimuth_ = Eigen::MatrixXd::Zero(6,3); // psiT   these are the thrust azimuth-gimbal angles as a function of time (including the time ranges)
+        thrustAzimuth_ = Eigen::MatrixXd::Zero(6,3); // psiT   these are the thrust azimuth-gimbal angles in radians! as a function of time (including the time ranges)
 
         // Section 1
         thrustAzimuth_(0,0) = 0.0;   // Lower bound time
@@ -216,7 +216,7 @@ public:
 
 
         // Thrust Elevation-Gimbal Angles
-            thrustElevation_ = Eigen::MatrixXd::Zero(6,3); // epsilonT   these are the thrust elevation-gimbal angles as a function of time (including the time ranges)
+            thrustElevation_ = Eigen::MatrixXd::Zero(6,3); // epsilonT   these are the thrust elevation-gimbal angles in radians! as a function of time (including the time ranges)
 
             // Section 1
             thrustElevation_(0,0) = 0.0;   // Lower bound time

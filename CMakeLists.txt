@@ -213,13 +213,13 @@ set(PROJECTLIBRARIES_HEADERS
 add_library(project_libraries STATIC ${PROJECTLIBRARIES_SOURCES} ${PROJECTLIBRARIES_HEADERS})
 
 # Add application.
-add_executable(simple_verification_testMainFileClasses "${SRCROOT}/testMainFileClasses.cpp")
-setup_executable_target(simple_verification_testMainFileClasses "${SRCROOT}")
-target_link_libraries(simple_verification_testMainFileClasses tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
+#add_executable(simple_verification_testMainFileClasses "${SRCROOT}/testMainFileClasses.cpp")
+#setup_executable_target(simple_verification_testMainFileClasses "${SRCROOT}")
+#target_link_libraries(simple_verification_testMainFileClasses tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
 
-add_executable(simple_verification_testMainFileClassesAndHeaderAndSource "${SRCROOT}/testMainFileClassesAndHeaderAndSource.cpp")
-setup_executable_target(simple_verification_testMainFileClassesAndHeaderAndSource "${SRCROOT}")
-target_link_libraries(simple_verification_testMainFileClassesAndHeaderAndSource project_libraries tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
+#add_executable(simple_verification_testMainFileClassesAndHeaderAndSource "${SRCROOT}/testMainFileClassesAndHeaderAndSource.cpp")
+#setup_executable_target(simple_verification_testMainFileClassesAndHeaderAndSource "${SRCROOT}")
+#target_link_libraries(simple_verification_testMainFileClassesAndHeaderAndSource project_libraries tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
 
 add_executable(simple_verification_testMainFileTaylorSeriesIntegration "${SRCROOT}/testMainFileTaylorSeriesIntegration.cpp")
 setup_executable_target(simple_verification_testMainFileTaylorSeriesIntegration "${SRCROOT}")

@@ -31,6 +31,7 @@
  *      160526    S.D. Petrovic     Added W4,0 to be able to properly evaluate the recurrence relation of W4,2
  *      160527    S.D. Petrovic     Corrected mistake in x42
  *      160531    S.D. Petrovic     Added more ways to deal with rounding errors
+ *      160602    S.D. Petrovic     Added the thrust auxiliary functions
  *
  *    References
  *
@@ -106,7 +107,7 @@ public:
 
     Auxiliary(const double adiabeticIndex_, const double specificGasConstant_, const double standardGravitationalParameter_, const double rotationalVelocity_, const double primeMeridianAngle_,
               const double inertialFrameTime_, const double bodyReferenceRadius_, const Eigen::MatrixXd temperaturePolyCoefficients_, const Eigen::MatrixXd temperatureAltitudeRanges_,
-              const Eigen::VectorXd densityPolyCoefficients_, const double Thrust_, const double specificImpulse_,
+              const Eigen::VectorXd densityPolyCoefficients_, const double Thrust_, const Eigen::MatrixXd thrustAzimuthMatrix_, const Eigen::MatrixXd thrustElevationMatrix_, const double specificImpulse_,
               const double referenceArea_, const Eigen::MatrixXd dragCoefficientPolyCoefficients_, const Eigen::MatrixXd dragCoefficientMachRanges_){
 
             // Set the diferent celestial body constant parameters and polynomial coefficient parameter matrices
@@ -126,6 +127,8 @@ public:
              // Set the differnt vehicle constant parameters and polynomial coefficients
 
          Thrust = Thrust_;                                                         // T   [N]  engine nominal thrust
+         thrustAzimuthMatrix = thrustAzimuthMatrix_;                                // psi_T [rad] thrust azimuth angles
+         thrustElevationMatrix = thrustElevationMatrix_;                            // epsilon_T [rad] thrust elevation angles
          specificImpulse = specificImpulse_;                                        // Isp [s]    engine nominal specific impulse
          referenceArea = referenceArea_;                                           // S [m^2]  vehicle reference area
          dragCoefficientPolyCoefficients = dragCoefficientPolyCoefficients_;           // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
@@ -1136,7 +1139,10 @@ public:
 Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d& aState, const double time, const Eigen::Vector3d& thrustAccelerationsBframe, const Eigen::VectorXd& auxiliaryEquationsVector,
                                          const Eigen::VectorXd& auxiliaryDerivativesVector){
 
-    auxiliaryFunctionsMatrix = Eigen::MatrixXd::Zero(49,25);       // Setting the complete matrix and filling it with zeros for now
+    auxiliaryFunctionsMatrix = Eigen::MatrixXd::Zero(49,37);       // Setting the complete matrix and filling it with zeros for now
+
+//    Eigen::MatrixXd thrustAzimuthMatrix = MAV.thrustAzimuth();      // Setting the thrust angle matrices
+//    Eigen::MatrixXd thrustElevationMatrix = MAV.thrustElevation();
 
     // The following expressions are described in the order in which the equations have to be computed corresponding to the respective vector entry
     // Which in this case means that the not all positions in the matrix will be used. The other values will simply be 0.
@@ -1152,7 +1158,7 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
               auxiliaryFunctionsMatrix(4,3) = 0;
             }
     auxiliaryFunctionsMatrix(4,4) = sin(auxiliaryEquationsVector(12));
-    std::cout<<"w4,4 (sin(x12)) = "<<auxiliaryFunctionsMatrix(4,4)<<std::endl;
+//    std::cout<<"w4,4 (sin(x12)) = "<<auxiliaryFunctionsMatrix(4,4)<<std::endl;
     auxiliaryFunctionsMatrix(4,5) = cos(auxiliaryEquationsVector(13));
     // Avoid cosine rounding errors
             if (abs(auxiliaryFunctionsMatrix(4,5))<6.2e-17){
@@ -1163,7 +1169,7 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
             if (abs(auxiliaryFunctionsMatrix(4,6))<6.2e-17){
               auxiliaryFunctionsMatrix(4,6) = 0;
             }
-    std::cout<<"w4,6 (cos(x12)) = "<<auxiliaryFunctionsMatrix(4,6)<<std::endl;
+//    std::cout<<"w4,6 (cos(x12)) = "<<auxiliaryFunctionsMatrix(4,6)<<std::endl;
     auxiliaryFunctionsMatrix(4,7) = sin(auxiliaryEquationsVector(14));
     auxiliaryFunctionsMatrix(4,8) = sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11));
     auxiliaryFunctionsMatrix(4,9) = sin(auxiliaryEquationsVector(13));
@@ -1183,6 +1189,29 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(4,23) = auxiliaryFunctionsMatrix(4,3)*(-auxiliaryFunctionsMatrix(4,20)-auxiliaryFunctionsMatrix(4,15));
     auxiliaryFunctionsMatrix(4,24) = auxiliaryFunctionsMatrix(4,2)*(auxiliaryFunctionsMatrix(4,22)-auxiliaryFunctionsMatrix(4,18));
 
+    auxiliaryFunctionsMatrix(4,25) = Thrust/auxiliaryEquationsVector(7);
+    auxiliaryFunctionsMatrix(4,26) = cos(thrustAzimuthMatrix(0,2));
+    // Avoid cosine rounding errors
+            if (abs(auxiliaryFunctionsMatrix(4,26))<6.2e-17){
+              auxiliaryFunctionsMatrix(4,26) = 0;
+            }
+
+    auxiliaryFunctionsMatrix(4,27) = cos(thrustElevationMatrix(0,2));
+    // Avoid cosine rounding errors
+            if (abs(auxiliaryFunctionsMatrix(4,27))<6.2e-17){
+              auxiliaryFunctionsMatrix(4,27) = 0;
+            }
+
+    auxiliaryFunctionsMatrix(4,28) = sin(thrustAzimuthMatrix(0,2));
+    auxiliaryFunctionsMatrix(4,29) = sin(thrustElevationMatrix(0,2));
+    auxiliaryFunctionsMatrix(4,30) = auxiliaryFunctionsMatrix(4,26)*auxiliaryFunctionsMatrix(4,27);
+    auxiliaryFunctionsMatrix(4,31) = auxiliaryFunctionsMatrix(4,28)*auxiliaryFunctionsMatrix(4,27);
+    auxiliaryFunctionsMatrix(4,32) = auxiliaryFunctionsMatrix(4,25)*auxiliaryFunctionsMatrix(4,30);
+    auxiliaryFunctionsMatrix(4,33) = auxiliaryFunctionsMatrix(4,25)*auxiliaryFunctionsMatrix(4,31);
+    auxiliaryFunctionsMatrix(4,34) = auxiliaryFunctionsMatrix(4,25)*auxiliaryFunctionsMatrix(4,29);
+    auxiliaryFunctionsMatrix(4,35) = auxiliaryFunctionsMatrix(4,33)*(auxiliaryFunctionsMatrix(4,19)-auxiliaryFunctionsMatrix(4,14));
+    auxiliaryFunctionsMatrix(4,36) = auxiliaryFunctionsMatrix(4,34)*(auxiliaryFunctionsMatrix(4,23)-auxiliaryFunctionsMatrix(4,21));
+
 
 
     // w5
@@ -1194,7 +1223,8 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(5,6) = auxiliaryFunctionsMatrix(4,8)*(-auxiliaryFunctionsMatrix(4,20)-auxiliaryFunctionsMatrix(4,11));
     auxiliaryFunctionsMatrix(5,7) = auxiliaryFunctionsMatrix(4,3)*auxiliaryFunctionsMatrix(4,16);
     auxiliaryFunctionsMatrix(5,8) = auxiliaryFunctionsMatrix(4,2)*(auxiliaryFunctionsMatrix(5,2)+auxiliaryFunctionsMatrix(5,3));
-
+    auxiliaryFunctionsMatrix(5,9) = auxiliaryFunctionsMatrix(4,33)*(auxiliaryFunctionsMatrix(5,4)+auxiliaryFunctionsMatrix(5,5));
+    auxiliaryFunctionsMatrix(5,10) = auxiliaryFunctionsMatrix(4,34)*(auxiliaryFunctionsMatrix(5,6)+auxiliaryFunctionsMatrix(5,7));
 
 
     // w6
@@ -1205,8 +1235,8 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(6,4) = auxiliaryFunctionsMatrix(4,5)*auxiliaryFunctionsMatrix(4,11);
     auxiliaryFunctionsMatrix(6,5) = auxiliaryFunctionsMatrix(4,4)*auxiliaryEquationsVector(16);
     auxiliaryFunctionsMatrix(6,6) = auxiliaryFunctionsMatrix(4,2)*(auxiliaryFunctionsMatrix(6,2)+auxiliaryFunctionsMatrix(6,0)); // Changed becuase of the mistake found in the complete transformation matrix
-
-
+    auxiliaryFunctionsMatrix(6,7) = auxiliaryFunctionsMatrix(4,33)*auxiliaryFunctionsMatrix(6,3);
+    auxiliaryFunctionsMatrix(6,8) = auxiliaryFunctionsMatrix(4,34)*(auxiliaryFunctionsMatrix(6,4)-auxiliaryFunctionsMatrix(6,5));
 
 
 
@@ -1780,6 +1810,8 @@ private:
      // The different vehicle constant parameters and polynomial coefficients
 
  double Thrust;                                                         // T   [N]  engine nominal thrust
+ Eigen::MatrixXd thrustAzimuthMatrix;                           // psi_T [rad] thrust azimuth angles
+ Eigen::MatrixXd thrustElevationMatrix;                         // epsilon_T [rad] thrust elevation angles
  double specificImpulse;                                        // Isp [s]    engine nominal specific impulse
  double referenceArea;                                           // S [m^2]  vehicle reference area
  Eigen::MatrixXd dragCoefficientPolyCoefficients;           // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve

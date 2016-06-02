@@ -28,6 +28,7 @@
  *      160518    S.D. Petrovic     Fixed the mistake I made with the transformation matrix T_IB which resulted in a mistake in u6
  *      160520    S.D. Petrovic     Fixed the mistake where I had written W40_1 and W40_2 instead of W41_1 and W41_2
  *      160526    S.D. Petrovic     Added W4,0 to be able to properly evaluate the recurrence relation of W4,2
+ *      160602    S.D. Petrovic     Added the thrust recurrence relations
  *
  *    References
  *
@@ -47,6 +48,8 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
                       const Eigen::VectorXd densityPolyCoefficients_, const double Thrust_, const double specificImpulse_,
                       const double referenceArea_, const Eigen::MatrixXd dragCoefficientPolyCoefficients_, const Eigen::MatrixXd dragCoefficientMachRanges_,
         const Eigen::VectorXd thrustAccelerationsBframe_,
+        const Eigen::MatrixXd thrustAzimuthMatrix_,
+        const Eigen::MatrixXd thrustElevationMatrix_,
         const Eigen::VectorXd initialEquationsVector_,
         const Eigen::VectorXd initialDerivativesVector_,
         const Eigen::MatrixXd initialFunctionsMatrix_,
@@ -71,6 +74,8 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     const Eigen::MatrixXd dragCoefficientPolyCoefficients = dragCoefficientPolyCoefficients_;
     const Eigen::MatrixXd dragCoefficientMachRanges = dragCoefficientMachRanges_;
     const Eigen::VectorXd thrustAccelerationsBframe = thrustAccelerationsBframe_;
+    const Eigen::MatrixXd thrustAzimuthMatrix = thrustAzimuthMatrix_;
+    const Eigen::MatrixXd thrustElevationMatrix = thrustElevationMatrix_;
     const Eigen::VectorXd initialEquationsVector = initialEquationsVector_;
     const Eigen::VectorXd initialDerivativesVector = initialDerivativesVector_;
     const Eigen::MatrixXd initialFunctionsMatrix = initialFunctionsMatrix_;
@@ -142,6 +147,19 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     Eigen::VectorXd WVector4_22 = Eigen::VectorXd::Zero(maxOrder);     // W4,22
     Eigen::VectorXd WVector4_23 = Eigen::VectorXd::Zero(maxOrder);     // W4,23
     Eigen::VectorXd WVector4_24 = Eigen::VectorXd::Zero(maxOrder);     // W4,24
+    Eigen::VectorXd WVector4_25 = Eigen::VectorXd::Zero(maxOrder);     // W4,25
+    Eigen::VectorXd WVector4_26 = Eigen::VectorXd::Zero(maxOrder);     // W4,26
+    Eigen::VectorXd WVector4_27 = Eigen::VectorXd::Zero(maxOrder);     // W4,27
+    Eigen::VectorXd WVector4_28 = Eigen::VectorXd::Zero(maxOrder);     // W4,28
+    Eigen::VectorXd WVector4_29 = Eigen::VectorXd::Zero(maxOrder);     // W4,29
+    Eigen::VectorXd WVector4_30 = Eigen::VectorXd::Zero(maxOrder);     // W4,30
+
+    Eigen::VectorXd WVector4_31 = Eigen::VectorXd::Zero(maxOrder);     // W4,31
+    Eigen::VectorXd WVector4_32 = Eigen::VectorXd::Zero(maxOrder);     // W4,32
+    Eigen::VectorXd WVector4_33 = Eigen::VectorXd::Zero(maxOrder);     // W4,33
+    Eigen::VectorXd WVector4_34 = Eigen::VectorXd::Zero(maxOrder);     // W4,34
+    Eigen::VectorXd WVector4_35 = Eigen::VectorXd::Zero(maxOrder);     // W4,35
+    Eigen::VectorXd WVector4_36 = Eigen::VectorXd::Zero(maxOrder);     // W4,36
 
 
     Eigen::VectorXd WVector5_1 = Eigen::VectorXd::Zero(maxOrder);     // W5,1
@@ -152,6 +170,8 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     Eigen::VectorXd WVector5_6 = Eigen::VectorXd::Zero(maxOrder);     // W5,6
     Eigen::VectorXd WVector5_7 = Eigen::VectorXd::Zero(maxOrder);     // W5,7
     Eigen::VectorXd WVector5_8 = Eigen::VectorXd::Zero(maxOrder);     // W5,8
+    Eigen::VectorXd WVector5_9 = Eigen::VectorXd::Zero(maxOrder);     // W5,9
+    Eigen::VectorXd WVector5_10 = Eigen::VectorXd::Zero(maxOrder);     // W5,10
 
 
     Eigen::VectorXd WVector6_0 = Eigen::VectorXd::Zero(maxOrder);     // W6,0  // Added because of the mistake found in the complete transformation matrix
@@ -161,6 +181,8 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     Eigen::VectorXd WVector6_4 = Eigen::VectorXd::Zero(maxOrder);     // W6,4
     Eigen::VectorXd WVector6_5 = Eigen::VectorXd::Zero(maxOrder);     // W6,5
     Eigen::VectorXd WVector6_6 = Eigen::VectorXd::Zero(maxOrder);     // W6,6
+    Eigen::VectorXd WVector6_7 = Eigen::VectorXd::Zero(maxOrder);     // W6,7
+    Eigen::VectorXd WVector6_8 = Eigen::VectorXd::Zero(maxOrder);     // W6,8
 
 
     Eigen::VectorXd WVector8_1 = Eigen::VectorXd::Zero(maxOrder);     // W8,1
@@ -370,6 +392,19 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     WVector4_22(0) = initialFunctionsMatrix(4,22);     // W4,22
     WVector4_23(0) = initialFunctionsMatrix(4,23);     // W4,23
     WVector4_24(0) = initialFunctionsMatrix(4,24);     // W4,24
+    WVector4_25(0) = initialFunctionsMatrix(4,25);     // W4,25
+    WVector4_26(0) = initialFunctionsMatrix(4,26);     // W4,26
+    WVector4_27(0) = initialFunctionsMatrix(4,27);     // W4,27
+    WVector4_28(0) = initialFunctionsMatrix(4,28);     // W4,28
+    WVector4_29(0) = initialFunctionsMatrix(4,29);     // W4,29
+    WVector4_30(0) = initialFunctionsMatrix(4,30);     // W4,30
+
+    WVector4_31(0) = initialFunctionsMatrix(4,31);     // W4,31
+    WVector4_32(0) = initialFunctionsMatrix(4,32);     // W4,32
+    WVector4_33(0) = initialFunctionsMatrix(4,33);     // W4,33
+    WVector4_34(0) = initialFunctionsMatrix(4,34);     // W4,34
+    WVector4_35(0) = initialFunctionsMatrix(4,35);     // W4,35
+    WVector4_36(0) = initialFunctionsMatrix(4,36);     // W4,36
 
 
     WVector5_1(0) = initialFunctionsMatrix(5,1);     // W5,1
@@ -380,6 +415,8 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     WVector5_6(0) = initialFunctionsMatrix(5,6);     // W5,6
     WVector5_7(0) = initialFunctionsMatrix(5,7);     // W5,7
     WVector5_8(0) = initialFunctionsMatrix(5,8);     // W5,8
+    WVector5_9(0) = initialFunctionsMatrix(5,9);     // W5,9
+    WVector5_10(0) = initialFunctionsMatrix(5,10);     // W5,10
 
 
     WVector6_0(0) = initialFunctionsMatrix(6,0);     // W6,0  // Added because of the mistake found in the complete transformation matrix
@@ -389,6 +426,8 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     WVector6_4(0) = initialFunctionsMatrix(6,4);     // W6,4
     WVector6_5(0) = initialFunctionsMatrix(6,5);     // W6,5
     WVector6_6(0) = initialFunctionsMatrix(6,6);     // W6,6
+    WVector6_7(0) = initialFunctionsMatrix(6,7);     // W6,7
+    WVector6_8(0) = initialFunctionsMatrix(6,8);     // W6,8
 
 
     WVector8_1(0) = initialFunctionsMatrix(8,1);     // W8,1
@@ -575,6 +614,9 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     Eigen::VectorXd W9IntermediateVector = Eigen::VectorXd::Zero(maxOrder);         // Intermediate vector created to be able to use the basic recurrence relations (should have done this from the start...)
     W9IntermediateVector(0) = XMatrix(9,0)*UMatrix(8,0);            // And setting the first value
 
+    Eigen::VectorXd W4_25IntermediateVector = Eigen::VectorXd::Zero(maxOrder);      // Intermediate vector created for the recurrence relation of thrust
+    W4_25IntermediateVector(0) = 1/XMatrix(7,0);
+
 
     Eigen::VectorXd onesVector = Eigen::VectorXd::Zero(maxOrder);       // Vector used to represent the int 1 in cases where the entire vector has to be substracted from 1(for instance)
 
@@ -582,8 +624,12 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     Eigen::VectorXd temperaturePolyCoefficient_1_2 = Eigen::VectorXd::Zero(maxOrder);
     Eigen::VectorXd temperaturePolyCoefficient_1_3 = Eigen::VectorXd::Zero(maxOrder);
     Eigen::VectorXd temperaturePolyCoefficient_1_4 = Eigen::VectorXd::Zero(maxOrder);
+    Eigen::VectorXd ThrustVector = Eigen::VectorXd::Zero(maxOrder);
+    Eigen::VectorXd thrustAzimuthVector = Eigen::VectorXd::Zero(maxOrder);
+    Eigen::VectorXd thrustElevationVector = Eigen::VectorXd::Zero(maxOrder);
 
     int sectionCD = 0;      // Drag coefficient function section and setting the default to zero
+
 
     /// Debug ///
 
@@ -614,6 +660,9 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
             temperaturePolyCoefficient_1_2(i) = temperaturePolyCoefficients(1,0);
             temperaturePolyCoefficient_1_3(i) = temperaturePolyCoefficients(2,0);
             temperaturePolyCoefficient_1_4(i) = temperaturePolyCoefficients(3,0);
+            ThrustVector(i) = Thrust_;
+            thrustAzimuthVector(i) = thrustAzimuthMatrix(0,2);
+            thrustElevationVector(i) = thrustElevationMatrix(0,2);
 
 
         }
@@ -635,7 +684,22 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         WVector4_0(k) = getDivisionRecurrenceRelation(XMatrix.row(27),XMatrix.row(7),WVector4_0,k); // Added because of the mistake found in the recurrence relation of W4,2
         WVector4_1(k) = getDivisionRecurrenceRelation(XMatrix.row(1),XMatrix.row(9),WVector4_1,k); //  XMatrix(1,k)/XMatrix(9,k);
 //        WVector4_2(k) = thrustAccelerationsBframe(0)-WVector4_0(k);                                     /// This is wrong! For the division only the previous division should be taken. So an extra WVector should be added!!  Update: done
-        WVector4_2(k) = -WVector4_0(k);             // Constant in second derivative should be zero
+
+        // Thrust additions
+        W4_25IntermediateVector(k) = getPowerRecurrenceRelation(XMatrix.row(7),W4_25IntermediateVector,-1,k);
+//        WVector4_25(k) = getDivisionRecurrenceRelation(ThrustVector,XMatrix.row(7),WVector4_25,k);
+        WVector4_25(k) = Thrust_*W4_25IntermediateVector(k);
+        WVector4_26(k) = getCosineRecurrenceRelation(thrustAzimuthVector,WVector4_28,k);
+        WVector4_27(k) = getCosineRecurrenceRelation(thrustElevationVector,WVector4_29,k);
+        WVector4_28(k) = getSineRecurrenceRelation(thrustAzimuthVector,WVector4_26,k);
+        WVector4_29(k) = getSineRecurrenceRelation(thrustElevationVector,WVector4_27,k);
+        WVector4_30(k) = getMultiplicationRecurrenceRelation(WVector4_26,WVector4_27,k);
+        WVector4_31(k) = getMultiplicationRecurrenceRelation(WVector4_28,WVector4_27,k);
+        WVector4_32(k) = getMultiplicationRecurrenceRelation(WVector4_25,WVector4_30,k);
+        WVector4_33(k) = getMultiplicationRecurrenceRelation(WVector4_25,WVector4_31,k);
+        WVector4_34(k) = getMultiplicationRecurrenceRelation(WVector4_25,WVector4_29,k);
+
+        WVector4_2(k) = WVector4_32(k)-WVector4_0(k);             // Constant in second derivative should be zero
         WVector4_3(k) = getCosineRecurrenceRelation((XMatrix.row(10)+XMatrix.row(11)),WVector4_8,k);
         WVector4_4(k) = getSineRecurrenceRelation(XMatrix.row(12),WVector4_6,k);
         WVector4_5(k) = getCosineRecurrenceRelation(XMatrix.row(13),WVector4_9,k);
@@ -659,7 +723,10 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         WVector4_23(k) = getMultiplicationRecurrenceRelation(WVector4_3,(-WVector4_20-WVector4_15),k);
         WVector4_24(k) = getMultiplicationRecurrenceRelation(WVector4_2,(WVector4_22-WVector4_18),k);
 
-        UMatrix(4,k) = -standardGravitationalParameter*WVector4_1(k)+WVector4_24(k)+thrustAccelerationsBframe(1)*(WVector4_19(k)-WVector4_14(k))+thrustAccelerationsBframe(2)*(WVector4_23(k)-WVector4_21(k));
+        WVector4_35(k) = getMultiplicationRecurrenceRelation(WVector4_33,(WVector4_19-WVector4_14),k);
+        WVector4_36(k) = getMultiplicationRecurrenceRelation(WVector4_34,(WVector4_23-WVector4_21),k);
+
+        UMatrix(4,k) = -standardGravitationalParameter*WVector4_1(k)+WVector4_24(k)+WVector4_35(k)-WVector4_36(k);
 
 
         /// Debug ///
@@ -757,9 +824,11 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         WVector5_6(k) = getMultiplicationRecurrenceRelation(WVector4_8,(-WVector4_20-WVector4_11),k);
         WVector5_7(k) = getMultiplicationRecurrenceRelation(WVector4_3,WVector4_16,k);
         WVector5_8(k) = getMultiplicationRecurrenceRelation(WVector4_2,(WVector5_2+WVector5_3),k);
+        WVector5_9(k) = getMultiplicationRecurrenceRelation(WVector4_33,(WVector5_4+WVector5_5),k);
+        WVector5_10(k) = getMultiplicationRecurrenceRelation(WVector4_34,(WVector5_6+WVector5_7),k);
 
 
-        UMatrix(5,k) = -standardGravitationalParameter*WVector5_1(k)+WVector5_8(k)+thrustAccelerationsBframe(1)*(WVector5_4(k)+WVector5_5(k))+thrustAccelerationsBframe(2)*(WVector5_6(k)+WVector5_7(k));
+        UMatrix(5,k) = -standardGravitationalParameter*WVector5_1(k)+WVector5_8(k)+WVector5_9(k)-WVector5_10(k);
 
         // 6
 
@@ -770,8 +839,10 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         WVector6_4(k) = getMultiplicationRecurrenceRelation(WVector4_5,WVector4_11,k);
         WVector6_5(k) = getMultiplicationRecurrenceRelation(WVector4_4,XMatrix.row(16),k);
         WVector6_6(k) = getMultiplicationRecurrenceRelation(WVector4_2,(WVector6_2+WVector6_0),k); // Changed because of the mistake found in the complete transformation matrix
+        WVector6_7(k) = getMultiplicationRecurrenceRelation(WVector4_33,WVector6_3,k);
+        WVector6_8(k) = getMultiplicationRecurrenceRelation(WVector4_34,(WVector6_4-WVector6_5),k);
 
-        UMatrix(6,k) = -standardGravitationalParameter*WVector6_1(k)+WVector6_6(k)-thrustAccelerationsBframe(1)*WVector6_3(k)+thrustAccelerationsBframe(2)*(WVector6_4(k)-WVector6_5(k));
+        UMatrix(6,k) = -standardGravitationalParameter*WVector6_1(k)+WVector6_6(k)-WVector6_7(k)-WVector6_8(k);
 
         // 7
 
@@ -1286,7 +1357,10 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     //    std::cout<<"WVector21_3 = "<<WVector21_3<<std::endl;
 
 
-    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
+//        std::cout<<"WVector4_25 = "<<WVector4_25<<std::endl;
+
+
+//    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
 //    std::cout<<"UMatrix = "<<UMatrix<<std::endl;
 
 

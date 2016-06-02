@@ -156,15 +156,21 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
 //////// Computations //////////
 
-    /// Thrust acceleration in B-frame ///   thrustAccelerationsBframe
+    /// Thrust acceleration in B-frame ///   thrustAccelerationsBframe // initial (for u)
 
     const Eigen::Vector3d thrustAccelerationsPframe = Eigen::Vector3d((Thrust/currentMass),0,0);            // THIS HAS TO BE CHANGED IN THE FUTURE TO INCLUDE A WIDE RANGE OF THRUST AZIMUTH AND ELEVATION ANGLES!!!
 
-    const double thrustAzimuthTestDeg = 0;             // thrust azimuth gimbal angle [Deg] 10 for testing
-    const double thrustElevationTestDeg = 0;            // thrust elevation gimbal angle [Deg] 5 for testing
+    Eigen::MatrixXd thrustAzimuthMatrix = MAV.thrustAzimuth();
+    Eigen::MatrixXd thrustElevationMatrix = MAV.thrustElevation();
 
-    const double thrustAzimuthTest = deg2rad(thrustAzimuthTestDeg);     // thrust azimuth gimbal angle [rad]
-    const double thrustElevationTest = deg2rad(thrustElevationTestDeg); // thrust elevation gimbal angle [rad]
+//    const double thrustAzimuthTestDeg = 0;             // thrust azimuth gimbal angle [Deg] 10 for testing
+//    const double thrustElevationTestDeg = 0;            // thrust elevation gimbal angle [Deg] 5 for testing
+
+//    const double thrustAzimuthTest = deg2rad(thrustAzimuthTestDeg);     // thrust azimuth gimbal angle [rad]
+//    const double thrustElevationTest = deg2rad(thrustElevationTestDeg); // thrust elevation gimbal angle [rad]
+
+      const double thrustAzimuthTest = thrustAzimuthMatrix(0,2);             // thrust azimuth gimbal angle [rad]
+      const double thrustElevationTest = thrustElevationMatrix(0,2);            // thrust elevation gimbal angle [rad]
 
 
     const Eigen::Vector3d thrustAccelerationsBframe = getPropulsionToBodyFrameTransformationMatrix(thrustAzimuthTest,thrustElevationTest)*thrustAccelerationsPframe;
@@ -175,7 +181,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
     Auxiliary Aux(adiabeticIndex, specificGasConstant,standardGravitationalParameter, rotationalVelocity, primeMeridianAngle,
               inertialFrameTime, bodyReferenceRadius, temperaturePolyCoefficients, temperatureAltitudeRanges,
-              densityPolyCoefficients, Thrust, specificImpulse,
+              densityPolyCoefficients, Thrust, thrustAzimuthMatrix, thrustElevationMatrix, specificImpulse,
               referenceArea, dragCoefficientPolyCoefficients, dragCoefficientMachRanges);
 
 //    std::cout<<"This works right 3?"<<std::endl;
@@ -206,6 +212,8 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
                           densityPolyCoefficients, Thrust, specificImpulse,
                           referenceArea, dragCoefficientPolyCoefficients, dragCoefficientMachRanges,
             thrustAccelerationsBframe,
+            thrustAzimuthMatrix,
+            thrustElevationMatrix,
             auxiliaryEquations,
             auxiliaryDerivatives,
             auxiliaryFunctions,
