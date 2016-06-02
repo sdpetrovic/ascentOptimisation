@@ -357,12 +357,12 @@ private:
                     std::complex<double> mycomplex(std::pow(std::complex<double> (localErrorTolerance/penultimateCoefficients_(i)),std::complex<double> (1/(maxOrder-1))));
 //                prevStepSize = (pow((localErrorTolerance/penultimateCoefficients_(i)),(1/(maxOrder-1)))); // Didn't work because it resulted in imaginary values sometimes
                     prevStepSize = mycomplex.real();
-                std::cout<<"prevStepSize (using Bergsma's thingy) = "<<prevStepSize<<std::endl;
+//                std::cout<<"prevStepSize (using Bergsma's thingy) = "<<prevStepSize<<std::endl;
 
                 /// Debug ///
-                std::cout<<"penultimateCoefficients_(i) = "<<penultimateCoefficients_(i)<<std::endl;
-                std::cout<<"(localErrorTolerance/penultimateCoefficients_(i)) = "<<(localErrorTolerance/penultimateCoefficients_(i))<<std::endl;
-                std::cout<<"(1/(maxOrder-1)) = "<<(1/(maxOrder-1))<<std::endl;
+//                std::cout<<"penultimateCoefficients_(i) = "<<penultimateCoefficients_(i)<<std::endl;
+//                std::cout<<"(localErrorTolerance/penultimateCoefficients_(i)) = "<<(localErrorTolerance/penultimateCoefficients_(i))<<std::endl;
+//                std::cout<<"(1/(maxOrder-1)) = "<<(1/(maxOrder-1))<<std::endl;
 
                 /// Debug ///
                 }
@@ -379,8 +379,8 @@ private:
                 while ((abs(differenceIntStepSize) > 1e-15) && (nNotChanged < 4)){                      // Accepting the step-size if the difference is 1e-15
 //                    std::cout<<"nNotchanged = "<<nNotChanged<<std::endl;
 //                    std::cout<<"i = "<<i<<std::endl;
-                    std::cout<<"prevStepSize = "<<prevStepSize<<std::endl;
-                    std::cout<<"newStepSize before = "<<newStepSize<<std::endl;
+//                    std::cout<<"prevStepSize = "<<prevStepSize<<std::endl;
+//                    std::cout<<"newStepSize before = "<<newStepSize<<std::endl;
 
                     if (maxOrder == 1){
                         newStepSize = exp(1*log(localErrorTolerance/(abs(penultimateCoefficients_(i))+maxOrder*prevStepSize*abs(lastCoefficients_(i))))); // Changed including maxOrder as by Bergsma (same in the one below)
@@ -388,19 +388,19 @@ private:
                     else{
                         newStepSize = exp((1/(maxOrder-1))*log(localErrorTolerance/(abs(penultimateCoefficients_(i))+maxOrder*prevStepSize*abs(lastCoefficients_(i)))));  // Eq. 47 of the reference paper (High Speed Solution of Spacecraft Trajectory Problems using Taylor Series Integration
 };
-//                        /// Debug start ///
+                        /// Debug start ///
 
-                        std::cout<<"newStepSize after = "<<newStepSize<<std::endl;
+//                        std::cout<<"newStepSize after = "<<newStepSize<<std::endl;
 //                        std::cout<<"1/(maxOrder-1) = "<<1/(maxOrder-1)<<std::endl;
 //                        std::cout<<"maxOrder = "<<maxOrder<<std::endl;
-                        std::cout<<"abs(penultimateCoefficients_(i)) = "<<abs(penultimateCoefficients_(i))<<std::endl;
+//                        std::cout<<"abs(penultimateCoefficients_(i)) = "<<abs(penultimateCoefficients_(i))<<std::endl;
 //                        std::cout<<"abs(lastCoefficients_(i)) = "<<abs(lastCoefficients_(i))<<std::endl;
 //                        std::cout<<"(abs(penultimateCoefficients_(i))+prevStepSize*abs(lastCoefficients_(i))) = "<<(abs(penultimateCoefficients_(i))+prevStepSize*abs(lastCoefficients_(i)))<<std::endl;
 //                        std::cout<<"(localErrorTolerance/(abs(penultimateCoefficients_(i))+prevStepSize*abs(lastCoefficients_(i)))) = "<<(localErrorTolerance/(abs(penultimateCoefficients_(i))+prevStepSize*abs(lastCoefficients_(i))))<<std::endl;
 //                        std::cout<<"log(localErrorTolerance/(abs(penultimateCoefficients_(i))+prevStepSize*abs(lastCoefficients_(i)))) = "<<log(localErrorTolerance/(abs(penultimateCoefficients_(i))+prevStepSize*abs(lastCoefficients_(i))))<<std::endl;
 
 
-//                        /// Debug end ///
+                        /// Debug end ///
 
 
                         differenceIntStepSize = prevStepSize-newStepSize;           // Determining the difference

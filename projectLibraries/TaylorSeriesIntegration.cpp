@@ -178,15 +178,15 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
               densityPolyCoefficients, Thrust, specificImpulse,
               referenceArea, dragCoefficientPolyCoefficients, dragCoefficientMachRanges);
 
-    std::cout<<"This works right 3?"<<std::endl;
+//    std::cout<<"This works right 3?"<<std::endl;
 
     // Compute the auxiliary equations
 
     Eigen::VectorXd auxiliaryEquations =  Aux.getAuxiliaryEquations(currentState,currentTime,thrustAccelerationsBframe);
 
-    std::cout<<"The auxiliaryEquations are "<<auxiliaryEquations<<std::endl;
+//    std::cout<<"The auxiliaryEquations are "<<auxiliaryEquations<<std::endl;
 
-std::cout<<"This works right 4?"<<std::endl;
+//std::cout<<"This works right 4?"<<std::endl;
 
     // Compute the auxiliary derivatives
 

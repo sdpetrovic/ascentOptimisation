@@ -164,13 +164,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     celestialBody Mars;
 
-    // No Gravity
 
-//    Mars.setStandardGravitationalParameter(0);
-
-    if (Mars.standardGravitationalParameter() == 0){
-        std::cout<<"NO GRAVITY"<<std::endl;
-    }
 
 //    const double adiabeticIndex = Mars.adiabeticIndex();
 //    const double specificGasConstant = Mars.specificGasConstant();
@@ -189,6 +183,16 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     MarsAscentVehicle MAV;
 
+    /// Selecting the different accelerations ///
+
+    // No Gravity
+
+    Mars.setStandardGravitationalParameter(0);
+
+    if (Mars.standardGravitationalParameter() == 0){
+        std::cout<<"NO GRAVITY"<<std::endl;
+    }
+
     // No Drag
 
     MAV.setReferenceArea(0);
@@ -199,7 +203,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // No Thrust
 
-    MAV.setThrust(0);
+//    MAV.setThrust(0);
 
     if (MAV.Thrust() == 0){
         std::cout<<"NO THRUST"<<std::endl;
@@ -207,21 +211,31 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
   /// Initial conditions ///
 
-    const double setEndTime = 200;  // Integration end time
+    const double setEndTime = 77;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
 
 
 
     /// TSI settings ///
     const int maxOrder = 20; // Eventually want order 20 (testing is 8)
+    /// TSI settings ///
+
+    /// Integration settings ///
     const double chosenLocalErrorTolerance = 1e-8;      // The chosen local error tolerance for TSI
     const double chosenStepSize = 0.2; // The chosen initial step-size for TSI
-    /// TSI settings ///
+
+    std::cout<<"The chosen local error tolerance = "<<chosenLocalErrorTolerance<<std::endl;
+    std::cout<<"The chosen initial step-size = "<<chosenStepSize<<std::endl;
+    std::cout<<"The chosen end time = "<<setEndTime<<std::endl;
+
+//    const std::string currentIntegrator = "TSI";
+
+    /// Integration settings ///
 
 
     // Launch site characteristics
 
 //    const double initialAltitude = -0.6e3;             // Starting altitude [m MOLA]
-    const double initialAltitude = 20;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
+    const double initialAltitude = -0.6;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
     const double initialLatitudeDeg = 90;               // Starting latitude [deg] initial condition is 21 deg
     const double initialLongitudeDeg = 0;            // Starting longitude [deg] initial condition is 74.5 deg
@@ -647,7 +661,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 	if ( std::fabs( endTime - runningTime )
                              <= std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) )
                         {
-        std::cout<<"It is indeed smaller than the step-size"<<std::endl;
+//        std::cout<<"It is indeed smaller than the step-size"<<std::endl;
                             stepSize.setCurrentStepSize(endTime - runningTime);
                         }
         std::cout<<"The new step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
@@ -939,16 +953,18 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                     // integrator, to determine the steps to be taken.
                     const double zeroMinimumStepSize = std::numeric_limits< double >::epsilon( );
                     const double infiniteMaximumStepSize = std::numeric_limits< double >::infinity( );
-                    double stepSize = 0.01;          // Using the same initial step-size as defined for TSI
+                    double stepSize = chosenStepSize;          // Using the same initial step-size as defined for TSI
 
                     // Tolerances.
-                    const double relativeTolerance = 1e-8;     // 1e-14 is used by TSI, original setting was 1e-15
-                    const double absoluteTolerance = 1e-8;     // 1e-14 is used by TSI, original setting was 1e-15
+                    const double relativeTolerance = chosenLocalErrorTolerance;     // 1e-14 is used by TSI, original setting was 1e-15
+                    const double absoluteTolerance = chosenLocalErrorTolerance;     // 1e-14 is used by TSI, original setting was 1e-15
 
                     // For RKF7(8) a step-size of 0.2 is only used if the tolerances are 1e-3.... and is accepted till 1e-8
                     // For RKF4(5) a step-size of 0.2 is only used if the tolerances are 1e-7.... and is accepted till 1e-10
                     // For DP8(7) a step-size of 0.2 is only used if the tolerances are 1e-7.... and is accepted till 1e-9
 
+////////////////////////// Choose your weapon! I mean integrator... ///////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////// Simply uncomment the integrator you want and make sure the others are commented away ///////////////////////////////////////////////////////////
 
 //                    /// RungeKutta4 numerical integrator.
 //                    std::cout<<"You have chosen RK4 as your integration method"<<std::endl;
@@ -960,7 +976,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //                    std::cout<<"The RK4 end state is "<<RK4endState<<std::endl;
 //                    /// End of RungeKutta4 numerical integrator
-///*
+///*                    // Is needed to comment the rest of the code since that is only used for the variable step-size methods
+
+
 
                     /// Runge-Kutta-Fehlberg 7(8) integrator.
                     std::cout<<"You have chosen RKF7(8) as your integration method"<<std::endl;
@@ -986,7 +1004,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //                                         stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
 //                                         infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                       // Set initial running time. This is updated after each step that the numerical integrator takes.
                     double runningTime = 0.0;
@@ -1021,6 +1039,10 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //                        std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
                         std::cout<<"The current running time is "<<runningTime<<std::endl;
+
+                        if (runningTime == 0.2){
+                            std::cout<<"State at time 0.2 = "<<currentState<<std::endl;
+                        }
 
                         /// Debug ///
 //    std::cout<<"///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////"<<std::endl;
