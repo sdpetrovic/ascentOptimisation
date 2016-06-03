@@ -198,7 +198,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
     Eigen::VectorXd auxiliaryDerivatives = Aux.getAuxiliaryDerivatives(currentState,currentTime,thrustAccelerationsBframe,auxiliaryEquations);
 
-//    std::cout<<"The auxiliaryDerivatives are "<<auxiliaryDerivatives<<std::endl;
+    std::cout<<"The auxiliaryDerivatives are "<<auxiliaryDerivatives<<std::endl;
 
     // Compute the auxiliary functions
 

@@ -664,6 +664,48 @@ public:
 
     auxiliaryDerivativesVector(3) = auxiliaryEquationsVector(6);                // u3
 
+
+    // Avoid cosine rounding errors
+            if (abs(cos(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11)))<6.2e-17){
+
+                auxiliaryDerivativesVector(4) = -standardGravitationalParameter*(auxiliaryEquationsVector(1)/auxiliaryEquationsVector(9))-auxiliaryEquationsVector(0)*sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*sin(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14))-
+                        thrustAccelerationsBframe(1)*sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*cos(auxiliaryEquationsVector(13))-thrustAccelerationsBframe(2)*sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*sin(auxiliaryEquationsVector(13))*sin(auxiliaryEquationsVector(14));
+
+                auxiliaryDerivativesVector(5) = -standardGravitationalParameter*(auxiliaryEquationsVector(2)/auxiliaryEquationsVector(9))+auxiliaryEquationsVector(0)*
+                        (sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*(-sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14))+cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(14))))+
+                        thrustAccelerationsBframe(1)*(sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*sin(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(13)))+
+                        thrustAccelerationsBframe(2)*(sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*(-sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*sin(auxiliaryEquationsVector(14))-
+                                                                                                                      cos(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(14))));
+
+            }
+            else if (abs(cos(auxiliaryEquationsVector(12)))<6.2e-17){
+
+                auxiliaryDerivativesVector(4) = -standardGravitationalParameter*(auxiliaryEquationsVector(1)/auxiliaryEquationsVector(9))+auxiliaryEquationsVector(0)*
+                        (cos(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*(-sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14)))-
+                             sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*sin(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14)))+
+                        thrustAccelerationsBframe(1)*(cos(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*sin(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(13))-sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*cos(auxiliaryEquationsVector(13)))+
+                        thrustAccelerationsBframe(2)*(cos(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*(-sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*sin(auxiliaryEquationsVector(14)))-
+                                                      sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*sin(auxiliaryEquationsVector(13))*sin(auxiliaryEquationsVector(14)));
+
+                auxiliaryDerivativesVector(5) = -standardGravitationalParameter*(auxiliaryEquationsVector(2)/auxiliaryEquationsVector(9))+auxiliaryEquationsVector(0)*
+                        (sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*(-sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14)))+
+                             cos(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*sin(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14)))+
+                        thrustAccelerationsBframe(1)*(sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*sin(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(13))+cos(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*cos(auxiliaryEquationsVector(13)))+
+                        thrustAccelerationsBframe(2)*(sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*(-sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*sin(auxiliaryEquationsVector(14)))+
+                                                      cos(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*sin(auxiliaryEquationsVector(13))*sin(auxiliaryEquationsVector(14)));
+
+                auxiliaryDerivativesVector(6) = -standardGravitationalParameter*(auxiliaryEquationsVector(3)/auxiliaryEquationsVector(9))+auxiliaryEquationsVector(0)*
+                        (sin(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(14)))+
+                        thrustAccelerationsBframe(2)*(-sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(14)));
+
+            }
+            else if (abs(cos(auxiliaryEquationsVector(13)))<6.2e-17){
+
+            }
+            else if (abs(cos(auxiliaryEquationsVector(14)))<6.2e-17){
+
+            }
+            else {
     auxiliaryDerivativesVector(4) = -standardGravitationalParameter*(auxiliaryEquationsVector(1)/auxiliaryEquationsVector(9))+auxiliaryEquationsVector(0)*
             (cos(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*(-sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14))+cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(14)))-
                  sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*sin(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14)))+
@@ -687,7 +729,7 @@ public:
             (cos(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14))+sin(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(14)))-
             thrustAccelerationsBframe(1)*cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(13))+
             thrustAccelerationsBframe(2)*(cos(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*sin(auxiliaryEquationsVector(14))-sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(14)));                // u6
-
+}
     // u6 changed becuase of the mistake found in the complete transformation matrix:
     // (cos(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14))-cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(14))) [wrong] =>
     // (cos(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14))+sin(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(14))) [correct]
@@ -713,7 +755,8 @@ public:
     std::cout<<"Third u5 = "<<cos(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11))*sin(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14))<<std::endl;
     std::cout<<"Second u6 = "<<cos(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14))<<std::endl;
     std::cout<<"Third u6 = "<<cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(14))<<std::endl;
-*/
+    std::cout<<"cos(x14) = "<<cos(auxiliaryEquationsVector(14))<<std::endl;
+//*/
 
 
 
@@ -1139,7 +1182,7 @@ public:
 Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d& aState, const double time, const Eigen::Vector3d& thrustAccelerationsBframe, const Eigen::VectorXd& auxiliaryEquationsVector,
                                          const Eigen::VectorXd& auxiliaryDerivativesVector){
 
-    auxiliaryFunctionsMatrix = Eigen::MatrixXd::Zero(49,37);       // Setting the complete matrix and filling it with zeros for now
+    auxiliaryFunctionsMatrix = Eigen::MatrixXd::Zero(49,38);       // Setting the complete matrix and filling it with zeros for now
 
 //    Eigen::MatrixXd thrustAzimuthMatrix = MAV.thrustAzimuth();      // Setting the thrust angle matrices
 //    Eigen::MatrixXd thrustElevationMatrix = MAV.thrustElevation();
@@ -1211,6 +1254,7 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(4,34) = auxiliaryFunctionsMatrix(4,25)*auxiliaryFunctionsMatrix(4,29);
     auxiliaryFunctionsMatrix(4,35) = auxiliaryFunctionsMatrix(4,33)*(auxiliaryFunctionsMatrix(4,19)-auxiliaryFunctionsMatrix(4,14));
     auxiliaryFunctionsMatrix(4,36) = auxiliaryFunctionsMatrix(4,34)*(auxiliaryFunctionsMatrix(4,23)-auxiliaryFunctionsMatrix(4,21));
+    auxiliaryFunctionsMatrix(4,37) = 1/auxiliaryEquationsVector(7);
 
 
 

@@ -148,6 +148,11 @@ int main()
 
 {
 
+    // Determine the CPU time
+
+    const double initialCPUTime = clock();
+    // Determine the CPU time
+
 std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     /// Setting the Celestial Body class ///
@@ -211,7 +216,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
   /// Initial conditions ///
 
-    const double setEndTime = 77;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
+    const double setEndTime = 0.2;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
 
 
 
@@ -237,7 +242,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //    const double initialAltitude = -0.6e3;             // Starting altitude [m MOLA]
     const double initialAltitude = -0.6;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
-    const double initialLatitudeDeg = 90;               // Starting latitude [deg] initial condition is 21 deg
+    const double initialLatitudeDeg = 0;               // Starting latitude [deg] initial condition is 21 deg
     const double initialLongitudeDeg = 0;            // Starting longitude [deg] initial condition is 74.5 deg
 
 //    const double initialLatitude = initialLatitudeDeg*tudat::mathematical_constants::LONG_PI/180;       // Starting latitude [rad]
@@ -281,12 +286,12 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //    /// Debug ///
 
-        aState(0) = 0;
-        aState(1) = 0;
+//        aState(0) = 0;
+//        aState(1) = 0;
 //        aState(2) = 1224.18491564675;
-        aState(3) = 0;
-        aState(4) = 0;
-        aState(5) = 0;
+//        aState(3) = 0;
+//        aState(4) = 0;
+//        aState(5) = 0;
 //        aState(6) = 227;  // Mass [kg] from literature study
 
 //    /// Debug //
@@ -1267,6 +1272,21 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                     std::cout<<"The end state is "<<endState<<std::endl;
 
                     //*/
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    // Determine the CPU time
+                    const double finalCPUTime = clock();
+                    // Determine the CPU time
+
+                    // Determine the elapsed CPU time
+
+                    const double elapsedCPUTime = finalCPUTime-initialCPUTime;
+
+                    std::cout<<"The elapsed CPU time = "<<elapsedCPUTime/CLOCKS_PER_SEC<<" sec"<<std::endl;
+//                    std::cout<<"The elapsed CPU time in clocks = "<<elapsedCPUTime<<std::endl;
+//                    std::cout<<"CLOCKS_PER_SEC = "<<CLOCKS_PER_SEC<<std::endl;
 
     return 0;
 }

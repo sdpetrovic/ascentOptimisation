@@ -160,6 +160,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     Eigen::VectorXd WVector4_34 = Eigen::VectorXd::Zero(maxOrder);     // W4,34
     Eigen::VectorXd WVector4_35 = Eigen::VectorXd::Zero(maxOrder);     // W4,35
     Eigen::VectorXd WVector4_36 = Eigen::VectorXd::Zero(maxOrder);     // W4,36
+    Eigen::VectorXd WVector4_37 = Eigen::VectorXd::Zero(maxOrder);     // W4,37
 
 
     Eigen::VectorXd WVector5_1 = Eigen::VectorXd::Zero(maxOrder);     // W5,1
@@ -405,6 +406,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     WVector4_34(0) = initialFunctionsMatrix(4,34);     // W4,34
     WVector4_35(0) = initialFunctionsMatrix(4,35);     // W4,35
     WVector4_36(0) = initialFunctionsMatrix(4,36);     // W4,36
+    WVector4_37(0) = initialFunctionsMatrix(4,37);     // W4,37
 
 
     WVector5_1(0) = initialFunctionsMatrix(5,1);     // W5,1
@@ -614,8 +616,10 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     Eigen::VectorXd W9IntermediateVector = Eigen::VectorXd::Zero(maxOrder);         // Intermediate vector created to be able to use the basic recurrence relations (should have done this from the start...)
     W9IntermediateVector(0) = XMatrix(9,0)*UMatrix(8,0);            // And setting the first value
 
-    Eigen::VectorXd W4_25IntermediateVector = Eigen::VectorXd::Zero(maxOrder);      // Intermediate vector created for the recurrence relation of thrust
-    W4_25IntermediateVector(0) = 1/XMatrix(7,0);
+//    Eigen::VectorXd W4_25IntermediateVector = Eigen::VectorXd::Zero(maxOrder);      // Intermediate vector created for the recurrence relation of thrust
+//    W4_25IntermediateVector(0) = 1/XMatrix(7,0);
+
+//    std::cout<<"W4_25IntermediateVector = "<<W4_25IntermediateVector<<std::endl;
 
 
     Eigen::VectorXd onesVector = Eigen::VectorXd::Zero(maxOrder);       // Vector used to represent the int 1 in cases where the entire vector has to be substracted from 1(for instance)
@@ -686,9 +690,9 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //        WVector4_2(k) = thrustAccelerationsBframe(0)-WVector4_0(k);                                     /// This is wrong! For the division only the previous division should be taken. So an extra WVector should be added!!  Update: done
 
         // Thrust additions
-        W4_25IntermediateVector(k) = getPowerRecurrenceRelation(XMatrix.row(7),W4_25IntermediateVector,-1,k);
+        WVector4_37(k) = getPowerRecurrenceRelation(XMatrix.row(7),WVector4_37,-1,k);
 //        WVector4_25(k) = getDivisionRecurrenceRelation(ThrustVector,XMatrix.row(7),WVector4_25,k);
-        WVector4_25(k) = Thrust_*W4_25IntermediateVector(k);
+        WVector4_25(k) = Thrust_*WVector4_37(k);
         WVector4_26(k) = getCosineRecurrenceRelation(thrustAzimuthVector,WVector4_28,k);
         WVector4_27(k) = getCosineRecurrenceRelation(thrustElevationVector,WVector4_29,k);
         WVector4_28(k) = getSineRecurrenceRelation(thrustAzimuthVector,WVector4_26,k);
