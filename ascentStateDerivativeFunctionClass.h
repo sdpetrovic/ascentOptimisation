@@ -390,7 +390,9 @@ public:
 
 
 
-//        std::cout<<"The velocities in the I-frame are "<<stateAndTime.getCurrentVelocity()<<std::endl;
+//        std::cout<<"The velocities in the I-frame are "<<currentState(3)<<"\n"<<
+//                currentState(4)<<"\n"<<
+//                currentState(5)<<std::endl;
 //        std::cout<<"The total accelerations in the I-frame are "<<totalAccelerationsIframe<<std::endl;
 //        std::cout<<"The mass flow rate = "<<massFlowRate<<std::endl;
 

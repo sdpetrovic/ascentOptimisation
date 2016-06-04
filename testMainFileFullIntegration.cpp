@@ -243,7 +243,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     const double initialAltitude = -0.6;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
     const double initialLatitudeDeg = 0;               // Starting latitude [deg] initial condition is 21 deg
-    const double initialLongitudeDeg = 0;            // Starting longitude [deg] initial condition is 74.5 deg
+    const double initialLongitudeDeg = 74.5;            // Starting longitude [deg] initial condition is 74.5 deg
 
 //    const double initialLatitude = initialLatitudeDeg*tudat::mathematical_constants::LONG_PI/180;       // Starting latitude [rad]
 //    const double initialLongitude = initialLongitudeDeg*tudat::mathematical_constants::LONG_PI/180;     // Starting longitude [rad]
@@ -778,7 +778,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-/*////////////////////// Testing the RKF and other higher order integrators //////////////////////
+/*///////////////////// Testing the RKF and other higher order integrators //////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
                     /// Setting the data collection file for RKF and inserting the first values ///
@@ -979,6 +979,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //                    // Integrate to the specified end time.
 //                    Eigen::VectorXd RK4endState = RK4integrator.integrateTo( endTime, stepSize );
 
+//                    std::cout<<"Count = "<<endTime/stepSize<<std::endl;
 //                    std::cout<<"The RK4 end state is "<<RK4endState<<std::endl;
 //                    /// End of RungeKutta4 numerical integrator
 ///*                    // Is needed to comment the rest of the code since that is only used for the variable step-size methods
@@ -1287,6 +1288,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                     std::cout<<"The elapsed CPU time = "<<elapsedCPUTime/CLOCKS_PER_SEC<<" sec"<<std::endl;
 //                    std::cout<<"The elapsed CPU time in clocks = "<<elapsedCPUTime<<std::endl;
 //                    std::cout<<"CLOCKS_PER_SEC = "<<CLOCKS_PER_SEC<<std::endl;
+
+//                    std::cout<<"sin(pi) = "<<sin(tudat::mathematical_constants::LONG_PI)<<std::endl;
+//                    std::cout<<"cos(pi/2) = "<<cos(tudat::mathematical_constants::LONG_PI/2)<<std::endl;
 
     return 0;
 }
