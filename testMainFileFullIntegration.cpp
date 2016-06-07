@@ -216,12 +216,12 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
   /// Initial conditions ///
 
-    const double setEndTime = 0.2;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
+    const double setEndTime = 0.4;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
 
 
 
     /// TSI settings ///
-    const int maxOrder = 20; // Eventually want order 20 (testing is 8)
+    const int maxOrder = 8; // Eventually want order 20 (testing is 8)
     /// TSI settings ///
 
     /// Integration settings ///
@@ -243,7 +243,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     const double initialAltitude = -0.6;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
     const double initialLatitudeDeg = 0;               // Starting latitude [deg] initial condition is 21 deg
-    const double initialLongitudeDeg = 74.5;            // Starting longitude [deg] initial condition is 74.5 deg
+    const double initialLongitudeDeg = 0;            // Starting longitude [deg] initial condition is 74.5 deg
 
 //    const double initialLatitude = initialLatitudeDeg*tudat::mathematical_constants::LONG_PI/180;       // Starting latitude [rad]
 //    const double initialLongitude = initialLongitudeDeg*tudat::mathematical_constants::LONG_PI/180;     // Starting longitude [rad]

@@ -161,6 +161,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     Eigen::VectorXd WVector4_35 = Eigen::VectorXd::Zero(maxOrder);     // W4,35
     Eigen::VectorXd WVector4_36 = Eigen::VectorXd::Zero(maxOrder);     // W4,36
     Eigen::VectorXd WVector4_37 = Eigen::VectorXd::Zero(maxOrder);     // W4,37
+    Eigen::VectorXd WVector4_38 = Eigen::VectorXd::Zero(maxOrder);     // W4,38
 
 
     Eigen::VectorXd WVector5_1 = Eigen::VectorXd::Zero(maxOrder);     // W5,1
@@ -407,6 +408,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     WVector4_35(0) = initialFunctionsMatrix(4,35);     // W4,35
     WVector4_36(0) = initialFunctionsMatrix(4,36);     // W4,36
     WVector4_37(0) = initialFunctionsMatrix(4,37);     // W4,37
+    WVector4_38(0) = initialFunctionsMatrix(4,38);     // W4,38
 
 
     WVector5_1(0) = initialFunctionsMatrix(5,1);     // W5,1
@@ -703,21 +705,28 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         WVector4_32(k) = getMultiplicationRecurrenceRelation(WVector4_25,WVector4_30,k);
 
         WVector4_2(k) = WVector4_32(k)-WVector4_0(k);
-        WVector4_3(k) = getCosineRecurrenceRelation((XMatrix.row(10)+XMatrix.row(11)),WVector4_8,k);
+//        WVector4_3(k) = getCosineRecurrenceRelation((XMatrix.row(10)+XMatrix.row(11)),WVector4_8,k);
+        WVector4_3(k) = getCosineRecurrenceRelation((XMatrix.row(49)),WVector4_8,k);
         WVector4_4(k) = getSineRecurrenceRelation(XMatrix.row(12),WVector4_6,k);
         WVector4_5(k) = getCosineRecurrenceRelation(XMatrix.row(13),WVector4_9,k);
         WVector4_6(k) = getCosineRecurrenceRelation(XMatrix.row(12),WVector4_4,k);
-        WVector4_7(k) = getSineRecurrenceRelation(XMatrix.row(14),XMatrix.row(16),k);
-        WVector4_8(k) = getSineRecurrenceRelation((XMatrix.row(10)+XMatrix.row(11)),WVector4_3,k);
+//        WVector4_7(k) = getSineRecurrenceRelation(XMatrix.row(14),XMatrix.row(16),k);
+        WVector4_7(k) = getSineRecurrenceRelation(XMatrix.row(14),WVector4_38,k);
+        WVector4_38(k) = getCosineRecurrenceRelation(XMatrix.row(14),WVector4_7,k);
+//        WVector4_8(k) = getSineRecurrenceRelation((XMatrix.row(10)+XMatrix.row(11)),WVector4_3,k);
+        WVector4_8(k) = getSineRecurrenceRelation((XMatrix.row(49)),WVector4_3,k);
         WVector4_9(k) = getSineRecurrenceRelation(XMatrix.row(13),WVector4_5,k);
         WVector4_10(k) = getMultiplicationRecurrenceRelation(WVector4_4,WVector4_5,k);
         WVector4_11(k) = getMultiplicationRecurrenceRelation(WVector4_6,WVector4_7,k);
-        WVector4_12(k) = getMultiplicationRecurrenceRelation(WVector4_9,XMatrix.row(16),k);
+//        WVector4_12(k) = getMultiplicationRecurrenceRelation(WVector4_9,XMatrix.row(16),k);
+        WVector4_12(k) = getMultiplicationRecurrenceRelation(WVector4_9,WVector4_38,k);
         WVector4_13(k) = getMultiplicationRecurrenceRelation(WVector4_4,WVector4_9,k);
         WVector4_14(k) = getMultiplicationRecurrenceRelation(WVector4_8,WVector4_5,k);
-        WVector4_15(k) = getMultiplicationRecurrenceRelation(WVector4_6,XMatrix.row(16),k);
+//        WVector4_15(k) = getMultiplicationRecurrenceRelation(WVector4_6,XMatrix.row(16),k);
+        WVector4_15(k) = getMultiplicationRecurrenceRelation(WVector4_6,WVector4_38,k);
         WVector4_16(k) = getMultiplicationRecurrenceRelation(WVector4_9,WVector4_7,k);
-        WVector4_17(k) = getMultiplicationRecurrenceRelation(WVector4_10,XMatrix.row(16),k);
+//        WVector4_17(k) = getMultiplicationRecurrenceRelation(WVector4_10,XMatrix.row(16),k);
+        WVector4_17(k) = getMultiplicationRecurrenceRelation(WVector4_10,WVector4_38,k);
         WVector4_18(k) = getMultiplicationRecurrenceRelation(WVector4_8,WVector4_12,k);
         WVector4_19(k) = getMultiplicationRecurrenceRelation(WVector4_3,WVector4_13,k);
         WVector4_20(k) = getMultiplicationRecurrenceRelation(WVector4_10,WVector4_7,k);
@@ -842,7 +851,8 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         WVector6_2(k) = getMultiplicationRecurrenceRelation(WVector4_5,WVector4_15,k);
         WVector6_3(k) = getMultiplicationRecurrenceRelation(WVector4_6,WVector4_9,k);
         WVector6_4(k) = getMultiplicationRecurrenceRelation(WVector4_5,WVector4_11,k);
-        WVector6_5(k) = getMultiplicationRecurrenceRelation(WVector4_4,XMatrix.row(16),k);
+//        WVector6_5(k) = getMultiplicationRecurrenceRelation(WVector4_4,XMatrix.row(16),k);
+        WVector6_5(k) = getMultiplicationRecurrenceRelation(WVector4_4,WVector4_38,k);
         WVector6_6(k) = getMultiplicationRecurrenceRelation(WVector4_2,(WVector6_2+WVector6_0),k); // Changed because of the mistake found in the complete transformation matrix
         WVector6_7(k) = getMultiplicationRecurrenceRelation(WVector4_33,WVector6_3,k);
         WVector6_8(k) = getMultiplicationRecurrenceRelation(WVector4_34,(WVector6_4-WVector6_5),k);
@@ -865,6 +875,9 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         // 10
 
         UMatrix(10,k) = 0;
+
+        // 49
+        UMatrix(49,k) = XMatrix(45,k);
 
         // 11
 
@@ -1254,8 +1267,13 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         // 14
 
         WVector14_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(23),XMatrix.row(23),k);
+//        WVector14_1(k) = getPowerRecurrenceRelation(XMatrix.row(23),WVector14_1,2,k);
         WVector14_2(k) = getPowerRecurrenceRelation((onesVector-WVector14_1),WVector14_2,0.5,k);                         // change to Eigen::VectorXd --- check
+//        WVector14_2(k) = getPowerRecurrenceRelation((onesVector-WVector14_1),WVector14_2,-0.5,k);
         WVector14_3(k) = getDivisionRecurrenceRelation(UMatrix.row(23),WVector14_2,WVector14_3,k);
+//        WVector14_3(k) = getMultiplicationRecurrenceRelation(UMatrix.row(23),WVector14_2,k);
+
+//        std::cout<<"onesVector = "<<onesVector<<std::endl;
 
 
         UMatrix(14,k) = WVector14_3(k);
@@ -1274,11 +1292,11 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         UMatrix(29,k) = dragCoefficientPolyCoefficients(sectionCD,1)*UMatrix(32,k);
 
 
-        // 16
+//        // 16
 
-        WVector16(k) = getMultiplicationRecurrenceRelation(WVector4_7,UMatrix.row(14),k);
+//        WVector16(k) = getMultiplicationRecurrenceRelation(WVector4_7,UMatrix.row(14),k);
 
-        UMatrix(16,k) = -WVector16(k);
+//        UMatrix(16,k) = -WVector16(k);
 
         // 27
 
@@ -1378,6 +1396,20 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //    std::cout<<"WVector4_3 = "<<WVector4_3<<std::endl;
 //    std::cout<<"WVector4_17 = "<<WVector4_17<<std::endl;
 //    std::cout<<"WVector4_8 = "<<WVector4_8<<std::endl;
+
+//        std::cout<<"WVector14_1 = "<<WVector14_1<<std::endl;
+//        std::cout<<"WVector14_2 = "<<WVector14_2<<std::endl;
+//        std::cout<<"WVector14_3 = "<<WVector14_3<<std::endl;
+
+//        std::cout<<"WVector23_1 = "<<WVector23_1<<std::endl;
+//        std::cout<<"WVector23_2 = "<<WVector23_2<<std::endl;
+//        std::cout<<"WVector23_3 = "<<WVector23_3<<std::endl;
+//        std::cout<<"WVector23_4 = "<<WVector23_4<<std::endl;
+
+//        std::cout<<"WVector37_1 = "<<WVector37_1<<std::endl;
+//        std::cout<<"WVector37_2 = "<<WVector37_2<<std::endl;
+//        std::cout<<"WVector37_3 = "<<WVector37_3<<std::endl;
+//        std::cout<<"WVector37_4 = "<<WVector37_4<<std::endl;
 
 
 //    std::cout<<"XMatrix = "<<XMatrix<<std::endl;

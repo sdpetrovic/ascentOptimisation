@@ -147,7 +147,7 @@ public:
 
         double rotationalLongitudeChange_ = inertialLongitudeChange-rotationalVelocityMars;     // tau_dot [rad/s] (placeholder)
 
-        if (rotationalLongitudeChange_<=1e-15){  // Setting the accuracy to 1e-15 to avoid problems in the beginning with rounding errors...
+        if (abs(rotationalLongitudeChange_)<=1e-11){  // Setting the accuracy to 1e-15 to avoid problems in the beginning with rounding errors...
 
             rotationalLongitudeChange_ = 0;
 
@@ -191,11 +191,11 @@ public:
             inertialFlightPathAngle = 0;
         }
         // And dealing with round-off errors
-        else if ((RadiusChange/inertialVelocity) < 0 && ((RadiusChange/inertialVelocity)+1) > -1e-15){
+        else if ((RadiusChange/inertialVelocity) < -1 && ((RadiusChange/inertialVelocity)+1) > -1e-15){
             inertialFlightPathAngle = asin(-1);
 //            std::cout<<"Rounding to -1"<<std::endl;
         }
-        else if ((RadiusChange/inertialVelocity) > 0 && ((RadiusChange/inertialVelocity)-1) < 1e-15){
+        else if ((RadiusChange/inertialVelocity) > 1 && ((RadiusChange/inertialVelocity)-1) < 1e-15){
             inertialFlightPathAngle = asin(1);
 //            std::cout<<"Rounding to 1"<<std::endl;
         }
@@ -210,10 +210,10 @@ public:
 
             rotationalFlightPathAngle_ = tudat::mathematical_constants::LONG_PI/2;
         }
-        else if ((RadiusChange/rotationalVelocity)<0 && ((RadiusChange/rotationalVelocity)+1)>-1e-15){
+        else if ((RadiusChange/rotationalVelocity)<-1 && ((RadiusChange/rotationalVelocity)+1)>-1e-15){
             rotationalFlightPathAngle_=asin(-1);
         }
-        else if ((RadiusChange/rotationalVelocity)>0 && ((RadiusChange/rotationalVelocity)-1)<1e-15){
+        else if ((RadiusChange/rotationalVelocity)>1 && ((RadiusChange/rotationalVelocity)-1)<1e-15){
             rotationalFlightPathAngle_ = asin(1);
         }
         else {
@@ -226,7 +226,8 @@ public:
 
         const double rotationalAzimuth = atan2((rotationalLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_R [rad]
 
-/*        // Check output
+        // Check output
+        std::cout<<"///////////////////////////////////////////////////////////////////////////////////////////////////"<<std::endl;
         std::cout<<"Radius = "<<Radius<<std::endl;
         std::cout<<"inertialVelocity = "<<inertialVelocity<<std::endl;
         std::cout<<"inertialLongitude = "<<inertialLongitude<<std::endl;
@@ -245,7 +246,7 @@ public:
         std::cout<<"rotationalVelocity = "<<rotationalVelocity<<std::endl;
         std::cout<<"rotationalFlightPathAngle = "<<rotationalFlightPathAngle<<std::endl;
         std::cout<<"rotationalAzimuth = "<<rotationalAzimuth<<std::endl;
-
+        std::cout<<"///////////////////////////////////////////////////////////////////////////////////////////////////"<<std::endl;
     //*/
 
 
