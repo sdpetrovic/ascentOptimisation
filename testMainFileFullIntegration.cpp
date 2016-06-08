@@ -176,6 +176,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //    const double standardGravitationalParameter = Mars.standardGravitationalParameter();
 
     const double rotationalVelocityMars = Mars.rotationalVelocity();
+    std::cout<<"rotationalVelocityMars = "<<rotationalVelocityMars<<std::endl;
     const double primeMeridianAngle = Mars.primeMeridianAngle();
     const double inertialFrameTime = Mars.inertialFrameTime();
 
@@ -216,12 +217,12 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
   /// Initial conditions ///
 
-    const double setEndTime = 0.4;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
+    const double setEndTime = 77;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
 
 
 
     /// TSI settings ///
-    const int maxOrder = 8; // Eventually want order 20 (testing is 8)
+    const int maxOrder = 20; // Eventually want order 20 (testing is 8)
     /// TSI settings ///
 
     /// Integration settings ///
@@ -986,13 +987,13 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 
 
-                    /// Runge-Kutta-Fehlberg 7(8) integrator.
-                    std::cout<<"You have chosen RKF7(8) as your integration method"<<std::endl;
-                       tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
-                                   tudat::numerical_integrators::RungeKuttaCoefficients::get(
-                                       tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg78),
-                                   stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
-                                   infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
+//                    /// Runge-Kutta-Fehlberg 7(8) integrator.
+//                    std::cout<<"You have chosen RKF7(8) as your integration method"<<std::endl;
+//                       tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
+//                                   tudat::numerical_integrators::RungeKuttaCoefficients::get(
+//                                       tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg78),
+//                                   stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
+//                                   infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
 //                       /// Runge-Kutta-Fehlberg 4(5) integrator.
 //                       std::cout<<"You have chosen RKF4(5) as your integration method"<<std::endl;
@@ -1002,13 +1003,13 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //                                      stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
 //                                      infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
-//                          /// Dormand-Prince 8(7) integrator.
-//                          std::cout<<"You have chosen DOPRIN8(7) as your integration method"<<std::endl;
-//                             tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
-//                                         tudat::numerical_integrators::RungeKuttaCoefficients::get(
-//                                             tudat::numerical_integrators::RungeKuttaCoefficients::rungeKutta87DormandPrince),
-//                                         stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
-//                                         infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
+                          /// Dormand-Prince 8(7) integrator.
+                          std::cout<<"You have chosen DOPRIN8(7) as your integration method"<<std::endl;
+                             tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
+                                         tudat::numerical_integrators::RungeKuttaCoefficients::get(
+                                             tudat::numerical_integrators::RungeKuttaCoefficients::rungeKutta87DormandPrince),
+                                         stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
+                                         infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

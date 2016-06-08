@@ -122,6 +122,16 @@ double getPowerRecurrenceRelation(
             };
 
             Wpow_ = interSum/(order*F(0));          // Compute the current value
+
+        // Same as Bergsma:
+
+//                    for (int j=1; j<order+1; j++){
+
+//                        interSum += ((j/order)*(power+1)-1)*F(j)*Wpow(order-j);    // Perform the summation
+//                    };
+
+//                    Wpow_ = interSum/(F(0));          // Compute the current value
+
     }
 
 

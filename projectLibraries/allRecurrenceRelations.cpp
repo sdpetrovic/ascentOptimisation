@@ -661,7 +661,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         for (int i = 0; i< k+1; i++){
 
-            onesVector(i) = 1;
+//            onesVector(i) = 1;
             densityPolyCoefficient_1(i) = densityPolyCoefficients(1);
             temperaturePolyCoefficient_1_2(i) = temperaturePolyCoefficients(1,0);
             temperaturePolyCoefficient_1_3(i) = temperaturePolyCoefficients(2,0);
@@ -670,6 +670,8 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
             if (i==0){
             thrustAzimuthVector(i) = thrustAzimuthMatrix(0,2);
             thrustElevationVector(i) = thrustElevationMatrix(0,2);
+
+//            onesVector(i) = 1;
 };
 
         }
@@ -1277,6 +1279,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
 
         UMatrix(14,k) = WVector14_3(k);
+//        UMatrix(14,k) = 0;
 
         // 29
 
@@ -1394,23 +1397,58 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //    std::cout<<"WVector4_32 = "<<WVector4_32<<std::endl;
 //    std::cout<<"WVector4_0 = "<<WVector4_0<<std::endl;
 //    std::cout<<"WVector4_3 = "<<WVector4_3<<std::endl;
+//    std::cout<<"WVector4_12 = "<<WVector4_3<<std::endl;
+//    std::cout<<"WVector4_9 = "<<WVector4_9<<std::endl;
+//    std::cout<<"WVector4_38 = "<<WVector4_38<<std::endl;
+//    std::cout<<"WVector4_7 = "<<WVector4_7<<std::endl;
 //    std::cout<<"WVector4_17 = "<<WVector4_17<<std::endl;
 //    std::cout<<"WVector4_8 = "<<WVector4_8<<std::endl;
+
+
+//    std::cout<<"WVector4_24 = "<<WVector4_24<<std::endl;
+//    std::cout<<"WVector5_2 = "<<WVector5_2<<std::endl;
+//    std::cout<<"WVector5_3 = "<<WVector5_3<<std::endl;
+
+//    std::cout<<"WVector5_8 = "<<WVector5_8<<std::endl;
+
+//    std::cout<<"WVector23_1 = "<<WVector23_1<<std::endl;
+//    std::cout<<"WVector23_2 = "<<WVector23_2<<std::endl;
+//    std::cout<<"WVector23_3 = "<<WVector23_3<<std::endl;
+//    std::cout<<"WVector23_4 = "<<WVector23_4<<std::endl;
 
 //        std::cout<<"WVector14_1 = "<<WVector14_1<<std::endl;
 //        std::cout<<"WVector14_2 = "<<WVector14_2<<std::endl;
 //        std::cout<<"WVector14_3 = "<<WVector14_3<<std::endl;
 
-//        std::cout<<"WVector23_1 = "<<WVector23_1<<std::endl;
-//        std::cout<<"WVector23_2 = "<<WVector23_2<<std::endl;
-//        std::cout<<"WVector23_3 = "<<WVector23_3<<std::endl;
-//        std::cout<<"WVector23_4 = "<<WVector23_4<<std::endl;
+
+//        std::cout<<"WVector12_3 = "<<WVector12_3<<std::endl;
+//        std::cout<<"WVector12_4 = "<<WVector12_4<<std::endl;
+//        std::cout<<"WVector12_5 = "<<WVector12_5<<std::endl;
+//          std::cout<<"WVector12_6 = "<<WVector12_6<<std::endl;
+//        std::cout<<"WVector12_7 = "<<WVector12_7<<std::endl;
+
+//         std::cout<<"WVector13_1-WVector13_2 = "<<WVector13_1-WVector13_2<<std::endl;
+//         std::cout<<"WVector13_3+WVector13_4 = "<<WVector13_3+WVector13_4<<std::endl;
+//         std::cout<<"WVector13_5 = "<<WVector13_5<<std::endl;
+
+//        std::cout<<"(2*WVector15_1+WVector15_0) = "<<(2*WVector15_1+WVector15_0)<<std::endl;
+//         std::cout<<"WVector15_2 = "<<WVector15_2<<std::endl;
 
 //        std::cout<<"WVector37_1 = "<<WVector37_1<<std::endl;
 //        std::cout<<"WVector37_2 = "<<WVector37_2<<std::endl;
 //        std::cout<<"WVector37_3 = "<<WVector37_3<<std::endl;
 //        std::cout<<"WVector37_4 = "<<WVector37_4<<std::endl;
 
+//                std::cout<<"WVector38_1 = "<<WVector38_1<<std::endl;
+//                std::cout<<"WVector38_2 = "<<WVector38_2<<std::endl;
+//                std::cout<<"WVector38_3 = "<<WVector38_3<<std::endl;
+
+
+
+//                std::cout<<"WVector13_3 = "<<WVector13_3<<std::endl;
+//                std::cout<<"WVector13_4 = "<<WVector13_4<<std::endl;
+
+//            std::cout<<"WVector25_2 = "<<WVector25_2<<std::endl;
 
 //    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
 //    std::cout<<"UMatrix = "<<UMatrix<<std::endl;

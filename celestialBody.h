@@ -103,7 +103,8 @@ public:
 
 
             // Rotational velocity
-               rotationalVelocity_ = 7.088e-5;  // [rad/s]
+//               rotationalVelocity_ = 7.088e-5;  // [rad/s]
+                rotationalVelocity_ = 0;// [rad/s] for verification non-rotating planet...
 
 
             // Prime Meridian angle
@@ -225,6 +226,13 @@ public:
 
 
                                                     } // End of constructor
+
+    // Destructor:
+
+    ~celestialBody(void){
+//        std::cout<<"The planet has been deleted!"<<std::endl;
+
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////// In order to add extra celestial bodies you simple add another elseif statement and provide the required information //////

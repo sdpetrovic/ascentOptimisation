@@ -226,7 +226,7 @@ public:
 
         const double rotationalAzimuth = atan2((rotationalLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_R [rad]
 
-        // Check output
+/*        // Check output
         std::cout<<"///////////////////////////////////////////////////////////////////////////////////////////////////"<<std::endl;
         std::cout<<"Radius = "<<Radius<<std::endl;
         std::cout<<"inertialVelocity = "<<inertialVelocity<<std::endl;

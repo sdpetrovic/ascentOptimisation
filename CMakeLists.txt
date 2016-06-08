@@ -187,7 +187,7 @@ set(PROJECTLIBRARIES_SOURCES
     "${SRCROOT}/projectLibraries/airDensity.cpp"
     "${SRCROOT}/projectLibraries/ascentDragForce.cpp"
     "${SRCROOT}/projectLibraries/dragCoefficient.cpp"
-    "${SRCROOT}/projectLibraries/ascentStateDerivativeFunction.cpp"
+#    "${SRCROOT}/projectLibraries/ascentStateDerivativeFunction.cpp"
 #    "${SRCROOT}/projectLibraries/referenceFrameTransformationsUpdated.cpp"  # Does not quite work yet, so leaving it out for now
 )
 
@@ -202,7 +202,7 @@ set(PROJECTLIBRARIES_HEADERS
     "${SRCROOT}/projectLibraries/airDensity.h"
     "${SRCROOT}/projectLibraries/ascentDragForce.h"
     "${SRCROOT}/projectLibraries/dragCoefficient.h"
-    "${SRCROOT}/projectLibraries/ascentStateDerivativeFunction.h"
+#    "${SRCROOT}/projectLibraries/ascentStateDerivativeFunction.h"
 #    "${SRCROOT}/projectLibraries/referenceFrameTransformationsUpdated.h"   # Does not quite work yet, so leaving it out for now
 )
 
