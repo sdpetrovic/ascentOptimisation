@@ -103,8 +103,8 @@ public:
 
 
             // Rotational velocity
-//               rotationalVelocity_ = 7.088e-5;  // [rad/s]
-                rotationalVelocity_ = 0;// [rad/s] for verification non-rotating planet...
+               rotationalVelocity_ = 7.088e-5;  // [rad/s]
+//                rotationalVelocity_ = 0;// [rad/s] for verification non-rotating planet...
 
 
             // Prime Meridian angle
@@ -244,6 +244,11 @@ public:
     void setStandardGravitationalParameter(const double updatedStandardGravitationalParameter)  // This function can be used to set the value of the Standard gravitational parameter of the planet. If set to 0, gravity is not taken into account in the equations
     {
         standardGravitationalParameter_ = updatedStandardGravitationalParameter;
+    }
+
+    void setRotationalVelocity(const double rotationalVelocity)         // This function can be used to set the value of the rotational Velocity of the celestial body. For instance for verification purposes.
+    {
+        rotationalVelocity_ = rotationalVelocity;
     }
 
 

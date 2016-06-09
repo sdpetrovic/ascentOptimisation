@@ -169,7 +169,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     celestialBody Mars;
 
-
+    Mars.setRotationalVelocity(0); // Set Mars as a non-rotating planet for verification
 
 //    const double adiabeticIndex = Mars.adiabeticIndex();
 //    const double specificGasConstant = Mars.specificGasConstant();
@@ -215,18 +215,21 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         std::cout<<"NO THRUST"<<std::endl;
     }
 
+    /// Comparison?
+    const bool comparison = true;
+
   /// Initial conditions ///
 
     const double setEndTime = 77;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
 
-
+//std::cout<<"pi = "<<(4*atan(1))<<std::endl;
 
     /// TSI settings ///
     const int maxOrder = 20; // Eventually want order 20 (testing is 8)
     /// TSI settings ///
 
     /// Integration settings ///
-    const double chosenLocalErrorTolerance = 1e-8;      // The chosen local error tolerance for TSI
+    const double chosenLocalErrorTolerance = 1e-15;      // The chosen local error tolerance for TSI
     const double chosenStepSize = 0.2; // The chosen initial step-size for TSI
 
     std::cout<<"The chosen local error tolerance = "<<chosenLocalErrorTolerance<<std::endl;
@@ -244,7 +247,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     const double initialAltitude = -0.6;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
     const double initialLatitudeDeg = 0;               // Starting latitude [deg] initial condition is 21 deg
-    const double initialLongitudeDeg = 0;            // Starting longitude [deg] initial condition is 74.5 deg
+    const double initialLongitudeDeg = 45;            // Starting longitude [deg] initial condition is 74.5 deg
 
 //    const double initialLatitude = initialLatitudeDeg*tudat::mathematical_constants::LONG_PI/180;       // Starting latitude [rad]
 //    const double initialLongitude = initialLongitudeDeg*tudat::mathematical_constants::LONG_PI/180;     // Starting longitude [rad]
@@ -462,50 +465,50 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 /// Setting the data collection file for TSI and inserting the first values ///
 
     // Set directory where output files will be stored. THIS REQUIRES THE COMPLETE PATH IN ORDER TO WORK!!
-    const std::string outputDirectory = "/home/stachap/Documents/Thesis/03. Tudat/tudatBundle/tudatApplications/thesisProject/01.integrationResults/TSI/";
+    const std::string outputDirectoryTSI = "/home/stachap/Documents/Thesis/03. Tudat/tudatBundle/tudatApplications/thesisProject/01.integrationResults/TSI/";
 
 
     // Set output format for matrix output.
     Eigen::IOFormat csvFormat( 15, 0, ", ", "\n" );
 
     // Set absolute path to file containing the Taylor Series Coefficients.
-    std::string dataAbsolutePath = outputDirectory + "test6FullIntegrationTSIstateAndTime.csv";
+    std::string dataAbsolutePathTSI = outputDirectoryTSI + "test6FullIntegrationTSIstateAndTime.csv";
 
     // Create a row vector for the storing of the data
-    Eigen::MatrixXd outputVector = Eigen::MatrixXd::Zero(1,8); // Create a row vector for the storing of the data
+    Eigen::MatrixXd outputVectorTSI = Eigen::MatrixXd::Zero(1,8); // Create a row vector for the storing of the data
 
     // Getting the initial conditions for storage
-    const tudat::basic_mathematics::Vector7d initialState = currentStateAndTime.getCurrentState();
+    const tudat::basic_mathematics::Vector7d initialStateTSI = currentStateAndTime.getCurrentState();
 
     // Filling the output vector
-    outputVector(0,0) = currentStateAndTime.getCurrentTime();   // Storing the initial time
-    outputVector(0,1) = initialState(0);   // Storing the initial x position
-    outputVector(0,2) = initialState(1);   // Storing the initial y position
-    outputVector(0,3) = initialState(2);   // Storing the initial z position
-    outputVector(0,4) = initialState(3);   // Storing the initial x velocity
-    outputVector(0,5) = initialState(4);   // Storing the initial y velocity
-    outputVector(0,6) = initialState(5);   // Storing the initial z velocity
-    outputVector(0,7) = initialState(6);   // Storing the initial MAV mass
+    outputVectorTSI(0,0) = currentStateAndTime.getCurrentTime();   // Storing the initial time
+    outputVectorTSI(0,1) = initialStateTSI(0);   // Storing the initial x position
+    outputVectorTSI(0,2) = initialStateTSI(1);   // Storing the initial y position
+    outputVectorTSI(0,3) = initialStateTSI(2);   // Storing the initial z position
+    outputVectorTSI(0,4) = initialStateTSI(3);   // Storing the initial x velocity
+    outputVectorTSI(0,5) = initialStateTSI(4);   // Storing the initial y velocity
+    outputVectorTSI(0,6) = initialStateTSI(5);   // Storing the initial z velocity
+    outputVectorTSI(0,7) = initialStateTSI(6);   // Storing the initial MAV mass
 
     // Storing the data
 
-    std::ifstream ifile(dataAbsolutePath.c_str()); // Check it as an input file
+    std::ifstream ifileTSI(dataAbsolutePathTSI.c_str()); // Check it as an input file
 
-    bool fexists = false;   // Set the default to "It does not exist"
+    bool fexistsTSI = false;   // Set the default to "It does not exist"
 
-    if (ifile){         // Attempt to open the file
+    if (ifileTSI){         // Attempt to open the file
 
 
-       fexists = true;      // If the file can be opened it must exist
+       fexistsTSI = true;      // If the file can be opened it must exist
 
-       ifile.close();   // Close the file
+       ifileTSI.close();   // Close the file
 
     }
 
 
     // If so: error and create temporary file, if not: create new file and put data in
 
-    if (fexists == true){
+    if (fexistsTSI == true){
 
 
         /// Get time ///
@@ -587,12 +590,12 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     std::cerr<<"The file name that you have chosen already exists, a new file with name "<<newFileName<<" will be created to store the data for now"<<std::endl;
 
     // Set new absolute path to file containing the data.
-    dataAbsolutePath = outputDirectory + newFileName;
+    dataAbsolutePathTSI = outputDirectoryTSI + newFileName;
 
     // Export the data.
-    std::ofstream exportFile1( dataAbsolutePath.c_str( ) ); // Make the new file
-    std::cout<<"New file called "<<dataAbsolutePath<<" has been created"<<std::endl;
-    exportFile1 << outputVector.format( csvFormat );          // Store the new values
+    std::ofstream exportFile1( dataAbsolutePathTSI.c_str( ) ); // Make the new file
+    std::cout<<"New file called "<<dataAbsolutePathTSI<<" has been created"<<std::endl;
+    exportFile1 << outputVectorTSI.format( csvFormat );          // Store the new values
     exportFile1.close( );   // Close the file
 
 
@@ -600,9 +603,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         else{
 
         // Export the data.
-        std::ofstream exportFile1( dataAbsolutePath.c_str( ) ); // Make the new file
-        std::cout<<"New file called "<<dataAbsolutePath<<" has been created"<<std::endl;
-        exportFile1 << outputVector.format( csvFormat );          // Store the new values
+        std::ofstream exportFile1( dataAbsolutePathTSI.c_str( ) ); // Make the new file
+        std::cout<<"New file called "<<dataAbsolutePathTSI<<" has been created"<<std::endl;
+        exportFile1 << outputVectorTSI.format( csvFormat );          // Store the new values
         exportFile1.close( );   // Close the file
     };
 
@@ -635,10 +638,11 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 /// Performing the actual TSI integration ///
 
         // Define storing matrix for the intermediate values
-        Eigen::MatrixXd dataStoringMatrix(1,8); // The size of this matrix will change in the do-loop
+        Eigen::MatrixXd dataStoringMatrixTSI(1,8); // The size of this matrix will change in the do-loop
+        tudat::basic_mathematics::Vector7d stateAtPoint2SecTSI; // Storing the 0.2 seconds value specifically for comparison
 
         // Set the end time
-        const double endTime = setEndTime; // sec
+        const double endTimeTSI = setEndTime; // sec
 
 //        std::cout<<"It works till here 1"<<std::endl;
 
@@ -646,8 +650,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 /// The integeration do-loop ///
 
         // Set initial running time. This is updated after each step that the numerical integrator takes.
-     double runningTime = 0.0;
-     int count = 0;
+     double runningTimeTSI = 0.0;
+     int countTSI = 0;
 
     do
     {
@@ -657,18 +661,18 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //     for (int i = 0; i<4; i++){
          /// Debug ///
     std::cout<<"The current step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
-    std::cout<<"The current runningTime = "<<runningTime<<std::endl;
-    std::cout<<"std::fabs(endTime-runningTime) = "<<std::fabs(endTime-runningTime)<<std::endl;
-    std::cout<<"std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) = "<<std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) )<<std::endl;
+    std::cout<<"The current runningTime = "<<runningTimeTSI<<std::endl;
+//    std::cout<<"std::fabs(endTime-runningTime) = "<<std::fabs(endTimeTSI-runningTimeTSI)<<std::endl;
+//    std::cout<<"std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) = "<<std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) )<<std::endl;
          /// Debug ///
 
 //    stepSize.setCurrentStepSize(25); // Specifying a constant step-size for verification
 
-	if ( std::fabs( endTime - runningTime )
+    if ( std::fabs( endTimeTSI - runningTimeTSI )
                              <= std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) )
                         {
 //        std::cout<<"It is indeed smaller than the step-size"<<std::endl;
-                            stepSize.setCurrentStepSize(endTime - runningTime);
+                            stepSize.setCurrentStepSize(endTimeTSI - runningTimeTSI);
                         }
         std::cout<<"The new step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
         Eigen::VectorXd updatedStateAndTimeVector = performTaylorSeriesIntegrationStep(Mars, MAV, currentStateAndTime, stepSize, maxOrder); /// The actual integration step
@@ -684,28 +688,28 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 /// Storing the values ///
 
-        outputVector = Eigen::MatrixXd::Zero(1,8); // Setting the output vector to zero again to be sure.
+        outputVectorTSI = Eigen::MatrixXd::Zero(1,8); // Setting the output vector to zero again to be sure.
 
         // Filling the output vector
-        outputVector(0,0) = updatedStateAndTimeVector(7);   // Storing the updated time
-        outputVector(0,1) = updatedStateAndTimeVector(0);   // Storing the updated x position
-        outputVector(0,2) = updatedStateAndTimeVector(1);   // Storing the updated y position
-        outputVector(0,3) = updatedStateAndTimeVector(2);   // Storing the updated z position
-        outputVector(0,4) = updatedStateAndTimeVector(3);   // Storing the updated x velocity
-        outputVector(0,5) = updatedStateAndTimeVector(4);   // Storing the updated y velocity
-        outputVector(0,6) = updatedStateAndTimeVector(5);   // Storing the updated z velocity
-        outputVector(0,7) = updatedStateAndTimeVector(6);   // Storing the updated MAV mass
+        outputVectorTSI(0,0) = updatedStateAndTimeVector(7);   // Storing the updated time
+        outputVectorTSI(0,1) = updatedStateAndTimeVector(0);   // Storing the updated x position
+        outputVectorTSI(0,2) = updatedStateAndTimeVector(1);   // Storing the updated y position
+        outputVectorTSI(0,3) = updatedStateAndTimeVector(2);   // Storing the updated z position
+        outputVectorTSI(0,4) = updatedStateAndTimeVector(3);   // Storing the updated x velocity
+        outputVectorTSI(0,5) = updatedStateAndTimeVector(4);   // Storing the updated y velocity
+        outputVectorTSI(0,6) = updatedStateAndTimeVector(5);   // Storing the updated z velocity
+        outputVectorTSI(0,7) = updatedStateAndTimeVector(6);   // Storing the updated MAV mass
 
         // Store the new values in the data storage matrix
 
-        if (count == 0){
+        if (countTSI == 0){
 
-          dataStoringMatrix.row(count) = outputVector.row(0); // Filling the matrix
+          dataStoringMatrixTSI.row(countTSI) = outputVectorTSI.row(0); // Filling the matrix
         }
         else{
-            dataStoringMatrix.conservativeResize(count+1,8); // Making the matrix bigger in order to store more values
+            dataStoringMatrixTSI.conservativeResize(countTSI+1,8); // Making the matrix bigger in order to store more values
 
-            dataStoringMatrix.row(count) = outputVector.row(0); // Filling the matrix
+            dataStoringMatrixTSI.row(countTSI) = outputVectorTSI.row(0); // Filling the matrix
         }
 
         // Updating the current state and time class!!!
@@ -720,53 +724,58 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         currentStateVector(5) = updatedStateAndTimeVector(5);  // Updated z velocity
         currentStateVector(6) = updatedStateAndTimeVector(6);  // Updated MAV mass
 
-        runningTime = updatedStateAndTimeVector(7);             // Updated time
-
-        currentStateAndTime.setCurrentStateAndTime(currentStateVector,runningTime); // Update the current state and time class!
+        runningTimeTSI = updatedStateAndTimeVector(7);             // Updated time
 
 
+        if (runningTimeTSI == 0.2){
+                stateAtPoint2SecTSI = currentStateVector;
+        }
 
-     count++;
+        currentStateAndTime.setCurrentStateAndTime(currentStateVector,runningTimeTSI); // Update the current state and time class!
 
-     std::cout<<"count = "<<count<<std::endl;
+
+
+     countTSI++;
+
+     std::cout<<"countTSI = "<<countTSI<<std::endl;
 //     }; // end of for-loop
 
-    }while( !( endTime - runningTime <= std::numeric_limits< double >::epsilon( ) ) );
+    }while( !( endTimeTSI - runningTimeTSI <= std::numeric_limits< double >::epsilon( ) ) );
 
         /// Adding the values to the file ///
 
         // Check if the file already exists.
 
 
-        std::ifstream ifile2(dataAbsolutePath.c_str()); // Check it as an input file
+        std::ifstream ifile2TSI(dataAbsolutePathTSI.c_str()); // Check it as an input file
 
-        fexists = false;   // Set the default to "It does not exist"
+        fexistsTSI = false;   // Set the default to "It does not exist"
 
-        if (ifile2){         // Attempt to open the file
+        if (ifile2TSI){         // Attempt to open the file
 
 
-           fexists = true;      // If the file can be opened it must exist
+           fexistsTSI = true;      // If the file can be opened it must exist
 
-           ifile2.close();   // Close the file
+           ifile2TSI.close();   // Close the file
 
         }
 
 
         // If so: append, if not: error
 
-        if (fexists == true){
+        if (fexistsTSI == true){
 
             // Export the Taylor Series Coefficients matrix.
             std::ofstream exportFile1;                          // Define the file as an output file
 
 
-            exportFile1.open(dataAbsolutePath.c_str(),std::ios_base::app);      // Open the file in append mode
+            exportFile1.open(dataAbsolutePathTSI.c_str(),std::ios_base::app);      // Open the file in append mode
 
             exportFile1 << "\n";                                            // Make sure the new matrix start on a new line
 
-            exportFile1 << dataStoringMatrix.format( csvFormat ); // Add the new values
+            exportFile1 << dataStoringMatrixTSI.format( csvFormat ); // Add the new values
 
-            std::cout<<"The file called "<<dataAbsolutePath<<" has been appended"<<std::endl;
+            std::cout<<"The file called "<<dataAbsolutePathTSI<<" has been appended"<<std::endl;
 
 
             exportFile1.close( );   // Close the file
@@ -775,11 +784,13 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
             std::cerr<<"Error: values could not be stored because storage file does not exist"<<std::endl;
         };
+
+        std::cout<<"////////////////////////////////////////////////////////////////// End of TSI //////////////////////////////////////////////////////////////////"<<std::endl;
 //*/
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-/*///////////////////// Testing the RKF and other higher order integrators //////////////////////
+///////////////////// Testing the RKF and other higher order integrators //////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
                     /// Setting the data collection file for RKF and inserting the first values ///
@@ -789,7 +800,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 
                         // Set output format for matrix output.
-                        Eigen::IOFormat csvFormat( 15, 0, ", ", "\n" );
+//                        Eigen::IOFormat csvFormat( 15, 0, ", ", "\n" );
 
                         // Set absolute path to file containing the data.
                         std::string dataAbsolutePath = outputDirectory + "test4FullIntegrationRKF7(8)stateAndTime.csv";
@@ -798,10 +809,12 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                         Eigen::MatrixXd outputVector = Eigen::MatrixXd::Zero(1,8); // Create a row vector for the storing of the data
 
                         // Getting the initial conditions for storage
-                        const tudat::basic_mathematics::Vector7d initialState = currentStateAndTime.getCurrentState();
+//                        const tudat::basic_mathematics::Vector7d initialState = currentStateAndTime.getCurrentState();
+                        const tudat::basic_mathematics::Vector7d initialState = aState;
 
                         // Filling the output vector
-                        outputVector(0,0) = currentStateAndTime.getCurrentTime();   // Storing the initial time
+//                        outputVector(0,0) = currentStateAndTime.getCurrentTime();   // Storing the initial time
+                        outputVector(0,0) = 0;                 // Setting the initial time
                         outputVector(0,1) = initialState(0);   // Storing the initial x position
                         outputVector(0,2) = initialState(1);   // Storing the initial y position
                         outputVector(0,3) = initialState(2);   // Storing the initial z position
@@ -949,7 +962,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                  ///// Testing the implementation in the integrator ///
 
                     // Initial conditions.
-                    const double initialTime = currentStateAndTime.getCurrentTime();                            // Time.
+//                    const double initialTime = currentStateAndTime.getCurrentTime();                            // Time.
+                    const double initialTime = 0;                            // Time. set for verification
                 //    Eigen::VectorXd initialState = currentStateAndTime.getCurrentState(); // State: start with zero velocity at the origin.
 
                     const double endTime = setEndTime;     // Using the same initial step-size as defined for TSI
@@ -959,7 +973,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                     // integrator, to determine the steps to be taken.
                     const double zeroMinimumStepSize = std::numeric_limits< double >::epsilon( );
                     const double infiniteMaximumStepSize = std::numeric_limits< double >::infinity( );
-                    double stepSize = chosenStepSize;          // Using the same initial step-size as defined for TSI
+                    double stepSizeRKF = chosenStepSize;          // Using the same initial step-size as defined for TSI
 
                     // Tolerances.
                     const double relativeTolerance = chosenLocalErrorTolerance;     // 1e-14 is used by TSI, original setting was 1e-15
@@ -968,6 +982,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                     // For RKF7(8) a step-size of 0.2 is only used if the tolerances are 1e-3.... and is accepted till 1e-8
                     // For RKF4(5) a step-size of 0.2 is only used if the tolerances are 1e-7.... and is accepted till 1e-10
                     // For DP8(7) a step-size of 0.2 is only used if the tolerances are 1e-7.... and is accepted till 1e-9
+
+                    // Set name for integrator
+                    string method;
 
 ////////////////////////// Choose your weapon! I mean integrator... ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////// Simply uncomment the integrator you want and make sure the others are commented away ///////////////////////////////////////////////////////////
@@ -978,38 +995,41 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //                        stateDerivativeFunction, initialTime, initialState );
 
 //                    // Integrate to the specified end time.
-//                    Eigen::VectorXd RK4endState = RK4integrator.integrateTo( endTime, stepSize );
+//                    Eigen::VectorXd RK4endState = RK4integrator.integrateTo( endTime, stepSizeRKF );
 
-//                    std::cout<<"Count = "<<endTime/stepSize<<std::endl;
+//                    std::cout<<"Count = "<<endTime/stepSizeRKF<<std::endl;
 //                    std::cout<<"The RK4 end state is "<<RK4endState<<std::endl;
 //                    /// End of RungeKutta4 numerical integrator
 ///*                    // Is needed to comment the rest of the code since that is only used for the variable step-size methods
 
 
 
-//                    /// Runge-Kutta-Fehlberg 7(8) integrator.
-//                    std::cout<<"You have chosen RKF7(8) as your integration method"<<std::endl;
-//                       tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
-//                                   tudat::numerical_integrators::RungeKuttaCoefficients::get(
-//                                       tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg78),
-//                                   stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
-//                                   infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
+                    /// Runge-Kutta-Fehlberg 7(8) integrator.
+                    std::cout<<"You have chosen RKF7(8) as your integration method"<<std::endl;
+                    method = "RKF7(8)";
+                       tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
+                                   tudat::numerical_integrators::RungeKuttaCoefficients::get(
+                                       tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg78),
+                                   stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
+                                   infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
 //                       /// Runge-Kutta-Fehlberg 4(5) integrator.
 //                       std::cout<<"You have chosen RKF4(5) as your integration method"<<std::endl;
+//                       method = "RKF4(5)";
 //                          tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
 //                                      tudat::numerical_integrators::RungeKuttaCoefficients::get(
 //                                          tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg45),
 //                                      stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
 //                                      infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
-                          /// Dormand-Prince 8(7) integrator.
-                          std::cout<<"You have chosen DOPRIN8(7) as your integration method"<<std::endl;
-                             tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
-                                         tudat::numerical_integrators::RungeKuttaCoefficients::get(
-                                             tudat::numerical_integrators::RungeKuttaCoefficients::rungeKutta87DormandPrince),
-                                         stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
-                                         infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
+//                          /// Dormand-Prince 8(7) integrator.
+//                          std::cout<<"You have chosen DOPRIN8(7) as your integration method"<<std::endl;
+//                          method = "DOPRIN8(7)";
+//                             tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
+//                                         tudat::numerical_integrators::RungeKuttaCoefficients::get(
+//                                             tudat::numerical_integrators::RungeKuttaCoefficients::rungeKutta87DormandPrince),
+//                                         stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
+//                                         infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1020,6 +1040,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
                     // Define storing matrix for the intermediate values
                     Eigen::MatrixXd dataStoringMatrix(1,8); // The size of this matrix will change in the do-loop
+                    tudat::basic_mathematics::Vector7d stateAtPoint2SecRKF; // Storing the 0.2 seconds value specifically for comparison
 
                     do
                     {
@@ -1028,18 +1049,18 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 
                         if ( std::fabs( endTime - runningTime )
-                             <= std::fabs( stepSize ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) )
+                             <= std::fabs( stepSizeRKF ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) )
                         {
-                            stepSize = endTime - integrator.getCurrentIndependentVariable( );
+                            stepSizeRKF = endTime - integrator.getCurrentIndependentVariable( );
                         }
 
-                        double prevStepSize = stepSize;
+                        double prevStepSize = stepSizeRKF;
 
                          std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
 
                         // Perform a single integration step. Then update the step-size and running time.
-                        integrator.performIntegrationStep( stepSize );
-                        stepSize = integrator.getNextStepSize( );
+                        integrator.performIntegrationStep( stepSizeRKF );
+                        stepSizeRKF = integrator.getNextStepSize( );
                         runningTime = integrator.getCurrentIndependentVariable( );
 
                         Eigen::VectorXd currentState = integrator.getCurrentState();
@@ -1047,11 +1068,15 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //                        std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
                         std::cout<<"The current running time is "<<runningTime<<std::endl;
 
+
+
                         if (runningTime == 0.2){
                             std::cout<<"State at time 0.2 = "<<currentState<<std::endl;
+                            stateAtPoint2SecRKF = currentState;
+
                         }
 
-                        /// Debug ///
+/*                        /// Debug ///
 //    std::cout<<"///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////"<<std::endl;
 
 //                        const double rotationalVelocityMars = Mars.rotationalVelocity();
@@ -1189,7 +1214,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //                                std::cout<<"currentDrag = "<<currentDrag<<std::endl;
 
 //                                std::cout<<"///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////"<<std::endl;
-                        /// Debug ///
+//*/                        /// Debug ///
 
                         /// Storing the values ///
 
@@ -1273,11 +1298,59 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                     std::cout<<"Final number of integration steps is "<<count<<std::endl;
                     std::cout<<"The end state is "<<endState<<std::endl;
 
+                    std::cout<<"////////////////////////////////////////////////////////////////// End of RKF //////////////////////////////////////////////////////////////////"<<std::endl;
+
                     //*/
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+                    /// Compute the differences between the methods ///
+
+                    if (comparison == true){
+                    // Difference t = 0.2 sec
+
+                    tudat::basic_mathematics::Vector7d differenceFractionPoint2Sec;
+                    tudat::basic_mathematics::Vector7d differencePoint2Sec;
+
+//                    std::cout<<"stateAtPoint2SecTSI = "<<stateAtPoint2SecTSI<<std::endl;
+//                    std::cout<<"stateAtPoint2SecRKF = "<<stateAtPoint2SecRKF<<std::endl;
+
+                    for (int i = 0;i<8;i++){
+                    differenceFractionPoint2Sec(i) = stateAtPoint2SecTSI(i)/stateAtPoint2SecRKF(i);
+                    differencePoint2Sec(i) = stateAtPoint2SecTSI(i)-stateAtPoint2SecRKF(i);
+}
+                    std::cout<<"The difference fraction between TSI and "<<method<<" for t = 0.2 sec = "<<"\n"<<
+                               differenceFractionPoint2Sec<<std::endl;
+                    std::cout<<"The difference between TSI and "<<method<<" for t = 0.2 sec = "<<"\n"<<
+                               differencePoint2Sec<<std::endl;
+
+                    // Difference end state
+
+                    tudat::basic_mathematics::Vector7d differenceFractionEnd;
+                    tudat::basic_mathematics::Vector7d differenceEnd;
+                    tudat::basic_mathematics::Vector7d endStateTSI = currentStateAndTime.getCurrentState();
+
+//                    std::cout<<"endStateTSI = "<<endStateTSI<<std::endl;
+//                    std::cout<<"endStateRKF = "<<endState<<std::endl;
+
+                    for (int i = 0;i<8;i++){
+                    differenceFractionEnd(i) = endStateTSI(i)/endState(i);
+                    differenceEnd(i) = endStateTSI(i)-endState(i);
+}
+                    std::cout<<"The difference fraction between TSI and "<<method<<" at the end time = "<<"\n"<<
+                               differenceFractionEnd<<std::endl;
+                    std::cout<<"The difference between TSI and "<<method<<" at the end time = "<<"\n"<<
+                               differenceEnd<<std::endl;
+                    } // end comparison
+
+                    /// Determine the CPU time taken ///
+
+
                     // Determine the CPU time
                     const double finalCPUTime = clock();
                     // Determine the CPU time

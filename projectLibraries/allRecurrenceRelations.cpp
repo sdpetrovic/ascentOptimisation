@@ -1193,11 +1193,12 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         /// Debug ///
 
-
+//        std::cout<<"WVector15_0 = "<<WVector15_0<<std::endl;
 
 //        std::cout<<"(2*WVector15_1+UMatrix.row(21)-2*UMatrix.row(43)) = "<<(2*WVector15_1+UMatrix.row(21)-2*UMatrix.row(43))<<std::endl;
 //        std::cout<<"(2*WVector15_1+WVector15_0) = "<<(2*WVector15_1+WVector15_0)<<std::endl;
 //        std::cout<<"WVector15_1 = "<<WVector15_1<<std::endl;
+//        std::cout<<"WVector15_2 = "<<WVector15_2<<std::endl;
 //        std::cout<<"UMatrix.row(21) = "<<UMatrix.row(21)<<std::endl;
 //        std::cout<<"UMatrix.row(43) = "<<UMatrix.row(43)<<std::endl;
 //        std::cout<<"XMatrix.row(15) = "<<XMatrix.row(15)<<std::endl;
@@ -1448,7 +1449,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //                std::cout<<"WVector13_3 = "<<WVector13_3<<std::endl;
 //                std::cout<<"WVector13_4 = "<<WVector13_4<<std::endl;
 
-//            std::cout<<"WVector25_2 = "<<WVector25_2<<std::endl;
+//            std::cout<<"WVector25_3 = "<<WVector25_3<<std::endl;
 
 //    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
 //    std::cout<<"UMatrix = "<<UMatrix<<std::endl;

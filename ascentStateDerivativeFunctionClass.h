@@ -209,6 +209,7 @@ public:
         if (rotationalVelocity == 0){       // Setting the initial flight path angle in the rotational frame to 90 deg (or pi/s)
 
             rotationalFlightPathAngle_ = tudat::mathematical_constants::LONG_PI/2;
+//            rotationalFlightPathAngle_ = pi/2;
         }
         else if ((RadiusChange/rotationalVelocity)<-1 && ((RadiusChange/rotationalVelocity)+1)>-1e-15){
             rotationalFlightPathAngle_=asin(-1);

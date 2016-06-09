@@ -451,8 +451,8 @@ public:
 //        /// Debug ///
 
 //        std::cout<<"cos(x38) = "<<cos(auxiliaryEquationsVector(38))<<std::endl;
-                std::cout<<"x40 = "<<auxiliaryEquationsVector(40)<<std::endl;
-        std::cout<<"sin(x40) = "<<sin(auxiliaryEquationsVector(40))<<std::endl;
+//                std::cout<<"x40 = "<<auxiliaryEquationsVector(40)<<std::endl;
+//        std::cout<<"sin(x40) = "<<sin(auxiliaryEquationsVector(40))<<std::endl;
 //        std::cout<<"cos(x38)*sin(x40) = "<<cos(auxiliaryEquationsVector(38))*sin(auxiliaryEquationsVector(40))<<std::endl;
 //        std::cout<<"x42 = "<<auxiliaryEquationsVector(42)<<std::endl;
 //        std::cout<<"x42-cos(x38)*sin(x40) = "<<auxiliaryEquationsVector(42)-cos(auxiliaryEquationsVector(38))*sin(auxiliaryEquationsVector(40))<<std::endl;
@@ -482,10 +482,10 @@ public:
 
         /// Debug ///
 
-        std::cout<<"r_dot_I-V_I*sin(gamma_I) = "<<auxiliaryEquationsVector(25)-auxiliaryEquationsVector(36)*sin(auxiliaryEquationsVector(38))<<std::endl;
-        std::cout<<"x15 = "<<auxiliaryEquationsVector(15)<<std::endl;
-        std::cout<<"x25/x15 = "<<auxiliaryEquationsVector(25)/auxiliaryEquationsVector(15)<<std::endl;
-        std::cout<<"r_dot_R/x15 = "<<(auxiliaryEquationsVector(25)-auxiliaryEquationsVector(36)*sin(auxiliaryEquationsVector(38)))/auxiliaryEquationsVector(15)<<std::endl;
+//        std::cout<<"r_dot_I-V_I*sin(gamma_I) = "<<auxiliaryEquationsVector(25)-auxiliaryEquationsVector(36)*sin(auxiliaryEquationsVector(38))<<std::endl;
+//        std::cout<<"x15 = "<<auxiliaryEquationsVector(15)<<std::endl;
+//        std::cout<<"x25/x15 = "<<auxiliaryEquationsVector(25)/auxiliaryEquationsVector(15)<<std::endl;
+//        std::cout<<"r_dot_R/x15 = "<<(auxiliaryEquationsVector(25)-auxiliaryEquationsVector(36)*sin(auxiliaryEquationsVector(38)))/auxiliaryEquationsVector(15)<<std::endl;
 
 
         //std::cout<<"Surely this works 7..."<<std::endl;
@@ -568,7 +568,7 @@ public:
 //std::cout<<"Surely this works 8..."<<std::endl;
 //        std::cout<<"(auxiliaryEquationsVector(25)/auxiliaryEquationsVector(15)) = "<<(auxiliaryEquationsVector(25)/auxiliaryEquationsVector(15))<<std::endl;
 
-std::cout<<"x23 = "<<auxiliaryEquationsVector(23)<<std::endl;
+//std::cout<<"x23 = "<<auxiliaryEquationsVector(23)<<std::endl;
 //std::cout<<"x23^2 = "<<auxiliaryEquationsVector(23)*auxiliaryEquationsVector(23)<<std::endl;
 //std::cout<<"x23^2-1 = "<<auxiliaryEquationsVector(23)*auxiliaryEquationsVector(23)-1<<std::endl;
 //std::cout<<"x23 - 0.999999999899838 = "<<auxiliaryEquationsVector(23)-0.999999999899838<<std::endl;
@@ -1468,7 +1468,7 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(14,2) = sqrt(1-auxiliaryFunctionsMatrix(14,1));
 //    auxiliaryFunctionsMatrix(14,2) = 1/sqrt(1-auxiliaryFunctionsMatrix(14,1));
 
-    std::cout<<"1-w14,1 = "<<1-auxiliaryFunctionsMatrix(14,1)<<std::endl;
+//    std::cout<<"1-w14,1 = "<<1-auxiliaryFunctionsMatrix(14,1)<<std::endl;
 
     // Avoiding singularities
     if (auxiliaryFunctionsMatrix(14,2) == 0){
