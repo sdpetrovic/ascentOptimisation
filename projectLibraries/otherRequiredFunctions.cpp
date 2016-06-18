@@ -37,7 +37,7 @@
 
 ///// Some required functions /////
 
-const long double pi = 4*atan(1);
+const long double pi = 4.0*atan(1);
 
 
 /// deg2rad and rad2deg ///
@@ -45,7 +45,7 @@ const long double pi = 4*atan(1);
 const double deg2rad(const double deg){
 
 //    const double rad = deg*tudat::mathematical_constants::LONG_PI/180;
-    const double rad = deg*pi/180;
+    const double rad = deg*pi/180.0;
 //    std::cout<<"pi = "<<pi<<std::endl;
 //    std::cout<<"PI = "<<tudat::mathematical_constants::LONG_PI<<std::endl;
 
@@ -56,7 +56,7 @@ const double rad2deg(const double rad){
 
 //    const double deg = rad*180/tudat::mathematical_constants::LONG_PI;
 
-    const double deg = rad*180/pi;
+    const double deg = rad*180.0/pi;
 
     return deg;
 }

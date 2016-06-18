@@ -81,7 +81,7 @@ public:
 
 
             // Thrust
-//            Thrust_ = 5300;             //[N]           Taken from Trinidad et al. 2012
+//            Thrust_ = 5300.0;             //[N]           Taken from Trinidad et al. 2012
             Thrust_ = 5.3;             //[kN]           Taken from Trinidad et al. 2012
 
             // Specific Impulse
@@ -158,9 +158,9 @@ public:
 
             // Setting all parameters to 0
 
-            Thrust_ = 0;                                                    // T     engine nominal thrust
-            specificImpulse_ = 0;                                           // Isp     engine nominal specific impulse
-            referenceArea_ = 0;                                             // S   vehicle reference area
+            Thrust_ = 0.0;                                                    // T     engine nominal thrust
+            specificImpulse_ = 0.0;                                           // Isp     engine nominal specific impulse
+            referenceArea_ = 0.0;                                             // S   vehicle reference area
             dragCoefficientPolyCoefficients_ = Eigen::MatrixXd::Zero(1,1);  // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
             dragCoefficientMachRanges_ = Eigen::MatrixXd::Zero(1,1);        // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
 //            thrustAzimuth_ = Eigen::MatrixXd::Zero(1,1);                    // psiT   these are the thrust azimuth-gimbal angles as a function of time (including the time ranges)

@@ -108,15 +108,15 @@ public:
 
 
             // Prime Meridian angle
-                primeMeridianAngle_ = 0;  // [rad]  (please note that this angle is defined negative in the positive direction when looking from the inertial frame to the rotating frame. I might change this later...)
+                primeMeridianAngle_ = 0.0;  // [rad]  (please note that this angle is defined negative in the positive direction when looking from the inertial frame to the rotating frame. I might change this later...)
 
 
             // Inertial Frame Time
-                inertialFrameTime_ = 0;  // [s]
+                inertialFrameTime_ = 0.0;  // [s]
 
             // MOLA radius of Mars
 //                bodyReferenceRadius_ = 3396e3; // [m]
-                bodyReferenceRadius_ = 3396; // [km]
+                bodyReferenceRadius_ = 3396.0; // [km]
 
 
             // Temperature Polynomial Coefficients
@@ -205,13 +205,13 @@ public:
 
             // Setting all paramters to 0
 
-            adiabeticIndex_= 0;                                         // gamma_a      adiabetic index
-            specificGasConstant_ = 0;                                   // Rstar        specific gas constant
-            standardGravitationalParameter_ = 0;                        // mu_M         standard gravitational parameter
-            rotationalVelocity_ = 0;                                    // rotational velocity of celestial body
-            primeMeridianAngle_ = 0;                                    // OmegaP       relative angle between the prime meridian and the x-axis
-            inertialFrameTime_ = 0;                                     // t0           time between the start time and the time that the inertial frame was set
-            bodyReferenceRadius_ = 0;                                        // Rm           MOLA radius of Mars
+            adiabeticIndex_= 0.0;                                         // gamma_a      adiabetic index
+            specificGasConstant_ = 0.0;                                   // Rstar        specific gas constant
+            standardGravitationalParameter_ = 0.0;                        // mu_M         standard gravitational parameter
+            rotationalVelocity_ = 0.0;                                    // rotational velocity of celestial body
+            primeMeridianAngle_ = 0.0;                                    // OmegaP       relative angle between the prime meridian and the x-axis
+            inertialFrameTime_ = 0.0;                                     // t0           time between the start time and the time that the inertial frame was set
+            bodyReferenceRadius_ = 0.0;                                        // Rm           MOLA radius of Mars
             temperaturePolyCoefficients_ = Eigen::MatrixXd::Zero(1,1);  // PTn    temperature polynomial coefficients
             temperatureAltitudeRanges_ = Eigen::MatrixXd::Zero(1,1);    // altitude range per section for the temperature-altitude curve
             densityPolyCoefficients_ = Eigen::VectorXd::Zero(1);        // Prho n density polynomial coefficients

@@ -220,7 +220,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
   /// Initial conditions ///
 
-    const double setEndTime = 77;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
+    const double setEndTime = 77.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
 
 //std::cout<<"pi = "<<(4*atan(1))<<std::endl;
 
@@ -246,7 +246,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //    const double initialAltitude = -0.6e3;             // Starting altitude [m MOLA]
     const double initialAltitude = -0.6;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
-    const double initialLatitudeDeg = 0;               // Starting latitude [deg] initial condition is 21 deg
+    const double initialLatitudeDeg = 45;               // Starting latitude [deg] initial condition is 21 deg
     const double initialLongitudeDeg = 45;            // Starting longitude [deg] initial condition is 74.5 deg
 
 //    const double initialLatitude = initialLatitudeDeg*tudat::mathematical_constants::LONG_PI/180;       // Starting latitude [rad]
@@ -469,7 +469,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 
     // Set output format for matrix output.
-    Eigen::IOFormat csvFormat( 15, 0, ", ", "\n" );
+    Eigen::IOFormat csvFormatTSI( 15, 0, ", ", "\n" );
 
     // Set absolute path to file containing the Taylor Series Coefficients.
     std::string dataAbsolutePathTSI = outputDirectoryTSI + "test6FullIntegrationTSIstateAndTime.csv";
@@ -595,7 +595,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     // Export the data.
     std::ofstream exportFile1( dataAbsolutePathTSI.c_str( ) ); // Make the new file
     std::cout<<"New file called "<<dataAbsolutePathTSI<<" has been created"<<std::endl;
-    exportFile1 << outputVectorTSI.format( csvFormat );          // Store the new values
+    exportFile1 << outputVectorTSI.format( csvFormatTSI );          // Store the new values
     exportFile1.close( );   // Close the file
 
 
@@ -605,7 +605,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         // Export the data.
         std::ofstream exportFile1( dataAbsolutePathTSI.c_str( ) ); // Make the new file
         std::cout<<"New file called "<<dataAbsolutePathTSI<<" has been created"<<std::endl;
-        exportFile1 << outputVectorTSI.format( csvFormat );          // Store the new values
+        exportFile1 << outputVectorTSI.format( csvFormatTSI );          // Store the new values
         exportFile1.close( );   // Close the file
     };
 
@@ -773,7 +773,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
             exportFile1 << "\n";                                            // Make sure the new matrix start on a new line
 
-            exportFile1 << dataStoringMatrixTSI.format( csvFormat ); // Add the new values
+            exportFile1 << dataStoringMatrixTSI.format( csvFormatTSI ); // Add the new values
 
             std::cout<<"The file called "<<dataAbsolutePathTSI<<" has been appended"<<std::endl;
 
@@ -800,7 +800,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 
                         // Set output format for matrix output.
-//                        Eigen::IOFormat csvFormat( 15, 0, ", ", "\n" );
+                        Eigen::IOFormat csvFormat( 15, 0, ", ", "\n" );
 
                         // Set absolute path to file containing the data.
                         std::string dataAbsolutePath = outputDirectory + "test4FullIntegrationRKF7(8)stateAndTime.csv";
@@ -1056,7 +1056,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
                         double prevStepSize = stepSizeRKF;
 
-                         std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
+//                         std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
 
                         // Perform a single integration step. Then update the step-size and running time.
                         integrator.performIntegrationStep( stepSizeRKF );
@@ -1066,7 +1066,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                         Eigen::VectorXd currentState = integrator.getCurrentState();
 
 //                        std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
-                        std::cout<<"The current running time is "<<runningTime<<std::endl;
+//                        std::cout<<"The current running time is "<<runningTime<<std::endl;
 
 
 
@@ -1076,145 +1076,6 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
                         }
 
-/*                        /// Debug ///
-//    std::cout<<"///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////"<<std::endl;
-
-//                        const double rotationalVelocityMars = Mars.rotationalVelocity();
-//                        const double primeMeridianAngle = Mars.primeMeridianAngle();
-//                        const double inertialFrameTime = Mars.inertialFrameTime();
-
-//                        const double xPosition = currentState(0);            // x position coordinate definition
-//                        const double yPosition = currentState(1);            // y position coordinate definition
-//                        const double zPosition = currentState(2);            // z position coordinate definition
-//                        const double xVelocity = currentState(3);            // x velocity coordinate definition
-//                        const double yVelocity = currentState(4);            // y velocity coordinate definition
-//                        const double zVelocity = currentState(5);            // z velocity coordinate definition
-//                        const double massMAV = currentState(6);              // MAV mass definition
-//                        const double currentTime = runningTime;   // current time definition
-//                        std::cout<<"currentState = "<<currentState<<std::endl;
-
-//                        std::cout<<"The current running time is "<<runningTime<<std::endl;
-
-//                        const double Radius = sqrt(xPosition*xPosition+yPosition*yPosition+zPosition*zPosition);         // r [km]
-
-//                        const double inertialVelocity = sqrt(xVelocity*xVelocity+yVelocity*yVelocity+zVelocity*zVelocity);       // V_I [km/s]
-
-//                        const double inertialLongitude = atan2(yPosition,xPosition);         // lambda [rad]
-
-//                        const double Latitude = asin(zPosition/Radius);              // delta [rad]
-
-//                        const double rotationalLongitude = inertialLongitude-rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle;  // tau [rad]
-
-//                        double inertialLongitudeChange_;       // lambda_dot [rad/s] (placeholder)
-
-//                        // Avoiding singularities
-//                        if ((xPosition*xPosition+yPosition*yPosition) == 0){
-
-//                            inertialLongitudeChange_ = 0;
-//                        }
-//                        else {
-//                            inertialLongitudeChange_ = (xPosition*yVelocity-yPosition*xVelocity)/(xPosition*xPosition+yPosition*yPosition);
-//                        };
-
-//                        const double inertialLongitudeChange = inertialLongitudeChange_;        // lambda_dot [rad/s] (actual parameter)
-
-//                        double rotationalLongitudeChange_ = inertialLongitudeChange-rotationalVelocityMars;     // tau_dot [rad/s] (placeholder)
-
-//                        if (rotationalLongitudeChange_<=1e-15){  // Setting the accuracy to 1e-15 to avoid problems in the beginning with rounding errors...
-
-//                            rotationalLongitudeChange_ = 0;
-
-//                        };
-
-//                        const double rotationalLongitudeChange = rotationalLongitudeChange_;    // tau_dot [rad/s] (actual parameter)
-
-
-//                        const double RadiusChange = (xPosition*xVelocity+yPosition*yVelocity+zPosition*zVelocity)/(Radius);      // radial velocity [km/s]
-
-//                        double LatitudeChange_; // delta_dot [rad/s] (placeholder)
-
-//                        if ((Radius*Radius*sqrt(1-(zPosition/Radius)*(zPosition/Radius))) == 0){
-//                            LatitudeChange_ = 0;
-//                        }
-//                        else{
-//                            LatitudeChange_ = (Radius*zVelocity-zPosition*RadiusChange)/(Radius*Radius*sqrt(1-(zPosition/Radius)*(zPosition/Radius)));
-//                        };
-
-//                        const double LatitudeChange = LatitudeChange_;  // delta_dot [rad/s] (actual parameter)
-
-//                        const double localMarsRotationalVelocity = rotationalVelocityMars*Radius*cos(Latitude);  // V_M [km/s]
-
-//                        const double inertialFlightPathAngle = asin(RadiusChange/inertialVelocity);          // gamma_I [rad]
-
-//                        const double inertialAzimuth = atan2((inertialLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_I [rad]
-
-//                        const double rotationalVelocity = sqrt(localMarsRotationalVelocity*localMarsRotationalVelocity+inertialVelocity*inertialVelocity-2*localMarsRotationalVelocity*inertialVelocity*cos(inertialFlightPathAngle)*sin(inertialAzimuth));  // V_R [km/s]
-
-//                        double rotationalFlightPathAngle_; // gamma_R [rad]  (placeholder)
-
-//                        if (rotationalVelocity == 0){       // Setting the initial flight path angle in the rotational frame to 90 deg (or pi/s)
-
-//                            rotationalFlightPathAngle_ = tudat::mathematical_constants::LONG_PI/2;
-//                        }
-//                        else {
-//                            rotationalFlightPathAngle_ = asin(RadiusChange/rotationalVelocity);
-//                        };
-
-//                        const double rotationalFlightPathAngle = rotationalFlightPathAngle_;    // gamma_R [rad] (actual parameter)
-
-
-//                        const double rotationalAzimuth = atan2((rotationalLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_R [rad]
-
-//                        // Check output
-//                            std::cout<<"Radius = "<<Radius<<std::endl;
-//                            std::cout<<"inertialVelocity = "<<inertialVelocity<<std::endl;
-//                            std::cout<<"inertialLongitude = "<<inertialLongitude<<std::endl;
-//                            std::cout<<"Latitude = "<<Latitude<<std::endl;
-//                            std::cout<<"rotationalLongitude = "<<rotationalLongitude<<std::endl;
-//                            std::cout<<"inertialLongitudeChange = "<<inertialLongitudeChange<<std::endl;
-//                            std::cout<<"rotationalLongitudeChange = "<<rotationalLongitudeChange<<std::endl;
-//                            std::cout<<"RadiusChange = "<<RadiusChange<<std::endl;
-//                            std::cout<<"LatitudeChange = "<<LatitudeChange<<std::endl;
-//                            std::cout<<"localMarsRotationalVelocity = "<<localMarsRotationalVelocity<<std::endl;
-//                            std::cout<<"inertialFlightPathAngle = "<<inertialFlightPathAngle<<std::endl;
-//                            std::cout<<"inertialAzimuth = "<<inertialAzimuth<<std::endl;
-//                            std::cout<<"rotationalVelocity = "<<rotationalVelocity<<std::endl;
-//                            std::cout<<"rotationalFlightPathAngle = "<<rotationalFlightPathAngle<<std::endl;
-//                            std::cout<<"rotationalAzimuth = "<<rotationalAzimuth<<std::endl;
-
-//                            /// Testing the local air temperature function ///
-
-//                                const double currentAltitude = Radius-Mars.bodyReferenceRadius();
-
-//                                const double currentTemperature = air_temperature::airTemperature(Mars.temperaturePolyCoefficients(), Mars.temperatureAltitudeRanges(),currentAltitude);
-
-//                               // Check output
-//                                std::cout<<"currentAltitude = "<<currentAltitude<<std::endl;
-//                                std::cout<<"currentTemperature = "<<currentTemperature<<std::endl;
-//                                std::cout<<"Radius = "<<Radius<<std::endl;
-//                    //            std::cout<<"R_MOLA = "<<Mars.bodyReferenceRadius()<<std::endl;
-//                    //            std::cout<<"Radius-3395.4 = "<<Radius-3395.4<<std::endl;
-//                    //            std::cout<<"R_MOLA-3396 = "<<Mars.bodyReferenceRadius()-3396<<std::endl;
-
-
-//                            /// Testing the local air density function ///
-
-//                                const double currentDensity= air_density::airDensity(Mars.densityPolyCoefficients(),  currentAltitude);
-
-//                                std::cout<<"The current air density = "<<currentDensity<<std::endl;
-
-//                            /// Testing the ascentDragForce function ///
-
-
-
-//                                const double currentDrag = Drag::ascentDragForce(rotationalVelocity,currentTemperature,Mars.adiabeticIndex(),Mars.specificGasConstant(),
-//                                                                                 MAV.dragCoefficientPolyCoefficients(),MAV.dragCoefficientMachRanges(),
-//                                                                                 MAV.referenceArea(), currentDensity);
-
-//                                std::cout<<"currentDrag = "<<currentDrag<<std::endl;
-
-//                                std::cout<<"///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////"<<std::endl;
-//*/                        /// Debug ///
 
                         /// Storing the values ///
 
@@ -1309,7 +1170,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 
 
-                    /// Compute the differences between the methods ///
+                  /// Compute the differences between the methods ///
 
                     if (comparison == true){
                     // Difference t = 0.2 sec
@@ -1365,6 +1226,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //                    std::cout<<"sin(pi) = "<<sin(tudat::mathematical_constants::LONG_PI)<<std::endl;
 //                    std::cout<<"cos(pi/2) = "<<cos(tudat::mathematical_constants::LONG_PI/2)<<std::endl;
+
+//*/
 
     return 0;
 }

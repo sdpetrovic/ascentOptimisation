@@ -42,7 +42,7 @@ namespace air_density
 
 const double airDensity(const Eigen::MatrixXd densityPolyCoefficients, const double altitude){
 
-double currentDensity_ = 0;  // Define the current log density and setting it to 0
+double currentDensity_ = 0.0;  // Define the current log density and setting it to 0.0
 
 for (int i = 0; i<11; i++){ // Compute the complete polynomial
 

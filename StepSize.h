@@ -383,10 +383,10 @@ private:
 //                    std::cout<<"newStepSize before = "<<newStepSize<<std::endl;
 
                     if (maxOrder == 1){
-                        newStepSize = exp(1*log(localErrorTolerance/(abs(penultimateCoefficients_(i))+maxOrder*prevStepSize*abs(lastCoefficients_(i))))); // Changed including maxOrder as by Bergsma (same in the one below)
+                        newStepSize = exp(1.0*log(localErrorTolerance/(abs(penultimateCoefficients_(i))+maxOrder*prevStepSize*abs(lastCoefficients_(i))))); // Changed including maxOrder as by Bergsma (same in the one below)
                     }
                     else{
-                        newStepSize = exp((1/(maxOrder-1))*log(localErrorTolerance/(abs(penultimateCoefficients_(i))+maxOrder*prevStepSize*abs(lastCoefficients_(i)))));  // Eq. 47 of the reference paper (High Speed Solution of Spacecraft Trajectory Problems using Taylor Series Integration
+                        newStepSize = exp((1.0/(maxOrder-1.0))*log(localErrorTolerance/(abs(penultimateCoefficients_(i))+maxOrder*prevStepSize*abs(lastCoefficients_(i)))));  // Eq. 47 of the reference paper (High Speed Solution of Spacecraft Trajectory Problems using Taylor Series Integration
 };
                         /// Debug start ///
 
