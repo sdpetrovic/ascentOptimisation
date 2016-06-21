@@ -144,6 +144,37 @@ public:
 
     }
 
+/// Set functions ///
+
+    void setRotationalFlightPathAngle(const double rotationalFlightPathAngle_){
+     rotationalFlightPathAngle = rotationalFlightPathAngle_;
+     rotationalFlightPathAngleSet = true;
+     if (rotationalFlightPathAngle_ ==tudat::mathematical_constants::LONG_PI/2){
+         verticalRotationalFlightPathAngleSet = true;
+     }
+
+    }         // Rotational flight path angle in rad
+
+    void setInertialFlightPathAngle(const double inertialFlightPathAngle_){
+        inertialFlightPathAngle = inertialFlightPathAngle_;
+        inertialFlightPathAngleSet = true;
+        if (inertialFlightPathAngle_ ==tudat::mathematical_constants::LONG_PI/2){
+            verticalInertialFlightPathAngleSet = true;
+        }
+    }           // Inertial flight path angle in rad
+
+    void setRotationalHeadingAngle(const double rotationalHeadingAngle_){
+        rotationalHeadingAngle = rotationalHeadingAngle_;
+        rotationalHeadingAngleSet = true;
+    }            // Rotational heading angle in rad
+
+    void setInertialHeadingAngle(const double inertialHeadingAngle_){
+        inertialHeadingAngle = inertialHeadingAngle_;
+        inertialHeadingAngleSet = true;
+    }              // Inertial heading angle in rad
+
+    /// Test functions to revert changes if tolerance is reached
+
 
 
 //////////////////////////////////////////////// Auxiliary Equations //////////////////////////////////////////////////////////////////////
@@ -243,15 +274,7 @@ public:
                 std::cout<<"x21-x36^2 = "<<auxiliaryEquationsVector(21)-auxiliaryEquationsVector(36)*auxiliaryEquationsVector(36)<<std::endl;
 */
 
-        // Avoid singularities
-        if (auxiliaryEquationsVector(19) == 0){
 
-            auxiliaryEquationsVector(45) = 0;
-        }
-        else {
-        auxiliaryEquationsVector(45) = (auxiliaryEquationsVector(1)*auxiliaryEquationsVector(5)-auxiliaryEquationsVector(2)*auxiliaryEquationsVector(4))/auxiliaryEquationsVector(19);               // x45
-//        auxiliaryEquationsVector(45) = ((auxiliaryEquationsVector(1)/1e6)*auxiliaryEquationsVector(5)-(auxiliaryEquationsVector(2)/1e6)*auxiliaryEquationsVector(4))/(auxiliaryEquationsVector(19)/1e6); // x45 in 1e6 km/1e6 km
-};
 
 
 /*        /// Debug ///
@@ -275,7 +298,18 @@ public:
         auxiliaryEquationsVector(12) = asin(auxiliaryEquationsVector(3)/auxiliaryEquationsVector(20)) ;              // x12
 
 //        auxiliaryEquationsVector(25) = (auxiliaryEquationsVector(26)*1e-6)/(2*auxiliaryEquationsVector(20)*1e-6);              // x25
+        // If the inertial flight path angle is set to 90 degrees, then x25 = x36
+        if (verticalInertialFlightPathAngleSet == true){
+            auxiliaryEquationsVector(25) = auxiliaryEquationsVector(36);
+        }
+        else{
         auxiliaryEquationsVector(25) = (auxiliaryEquationsVector(26))/(2.0*auxiliaryEquationsVector(20));              // x25
+        }
+
+        // Acount for when the angle was not predefined but is still 90 degrees
+        if (verticalInertialFlightPathAngleSet == false && auxiliaryEquationsVector(25) == auxiliaryEquationsVector(36)){
+            verticalInertialFlightPathAngleSet = true;
+        }
 
         // Please note that the altitude h (x31) is expressed in km MOLA (which is also the input for the density and temperature curves!)
 //        auxiliaryEquationsVector(31) = (auxiliaryEquationsVector(20)-bodyReferenceRadius)/1000;              // x31 [km]!!!
@@ -288,11 +322,21 @@ public:
         std::cout<<"Computed altitude in km is "<<auxiliaryEquationsVector(31)<<std::endl;
 */
 
+        // Avoid singularities and account for the case of vertical flight (no change in longitude)
+        if (auxiliaryEquationsVector(19) == 0 || verticalInertialFlightPathAngleSet == true){
+
+            auxiliaryEquationsVector(45) = 0;
+        }
+        else {
+        auxiliaryEquationsVector(45) = (auxiliaryEquationsVector(1)*auxiliaryEquationsVector(5)-auxiliaryEquationsVector(2)*auxiliaryEquationsVector(4))/auxiliaryEquationsVector(19);               // x45
+//        auxiliaryEquationsVector(45) = ((auxiliaryEquationsVector(1)/1e6)*auxiliaryEquationsVector(5)-(auxiliaryEquationsVector(2)/1e6)*auxiliaryEquationsVector(4))/(auxiliaryEquationsVector(19)/1e6); // x45 in 1e6 km/1e6 km
+};
 
 
         // If the spacecraft flies over a pole i.e. if +-z=r (or x3=x20) then the change in latitude is undefined and has to be set equal to zero here. This is done to avoid singularities.
+        // Also, if the MAV is in vertical flight, there is no change in latitude either
 
-        if (auxiliaryEquationsVector(3)==auxiliaryEquationsVector(20) || -auxiliaryEquationsVector(3)==auxiliaryEquationsVector(20)){
+        if (auxiliaryEquationsVector(3)==auxiliaryEquationsVector(20) || -auxiliaryEquationsVector(3)==auxiliaryEquationsVector(20) || verticalInertialFlightPathAngleSet == true){
 
             auxiliaryEquationsVector(24) = 0;
         }
@@ -363,8 +407,8 @@ public:
 //        std::cout<<"x34 interval "<<i<<" = "<<auxiliaryEquationsVector(34)<<std::endl;
 
 };
-        // Avoid cosine round-off errors
-        if (abs(cos(auxiliaryEquationsVector(12)))<6.2e-17){
+        // Avoid cosine round-off errors and acounting for non-rotating Mars
+        if (abs(cos(auxiliaryEquationsVector(12)))<6.2e-17 || rotationalVelocity == 0.0){
             auxiliaryEquationsVector(35) = 0;
         }
         else {
@@ -382,6 +426,10 @@ public:
         else if ((auxiliaryEquationsVector(25)/auxiliaryEquationsVector(36)) > 1.0 && ((auxiliaryEquationsVector(25)/auxiliaryEquationsVector(36))-1.0) < 1e-15){
             auxiliaryEquationsVector(37) = 1.0;
             std::cout<<"Rounding x37 to 1"<<std::endl;
+        }
+        // And dealing with vertical flight where x37 is 1
+        else if (verticalInertialFlightPathAngleSet == true){
+            auxiliaryEquationsVector(37) = 1.0;
         }
         else {
         auxiliaryEquationsVector(37) = auxiliaryEquationsVector(25)/auxiliaryEquationsVector(36);                // x37
@@ -416,7 +464,12 @@ public:
 
 //        /// Debug ///
 
+        if (rotationalVelocity == 0.0){ // For non-rotating Mars
+            auxiliaryEquationsVector(46) = auxiliaryEquationsVector(45);
+        }
+        else {
         auxiliaryEquationsVector(46) = auxiliaryEquationsVector(45)-rotationalVelocity;             // x46
+        }
 
 //        // Set tolerance for the velocity in case of rounding errors... It is set such that the the accuracy is 10 micro-metres/sec of surface movement
 //        if (abs(auxiliaryEquationsVector(46))<=1e-11){
@@ -424,8 +477,8 @@ public:
 //        }
 
 //std::cout<<"Surely this works 5..."<<std::endl;
-        // Avoid cosine rounding errors
-                if (abs(cos(auxiliaryEquationsVector(12)))<6.2e-17){
+        // Avoid cosine rounding errors and account for vertical flight where x45 is zero
+                if (abs(cos(auxiliaryEquationsVector(12)))<6.2e-17 || verticalInertialFlightPathAngleSet == true){
                   auxiliaryEquationsVector(47) = 0;
                 }
                 else {
@@ -442,12 +495,32 @@ public:
 
 //        std::cout<<"x33 (or speed of sound) = "<<auxiliaryEquationsVector(33)<<std::endl;
 
-
+        if (verticalInertialFlightPathAngleSet == true ){ // Set equal to 90 degrees if vertical launch
+            auxiliaryEquationsVector(38) = tudat::mathematical_constants::LONG_PI/2.0;
+        }
+        else if (inertialFlightPathAngleSet == true && time == 0.0){ // If the inertial flight path angle was set initially then x38 is that angle for t=0
+            auxiliaryEquationsVector(38) = inertialFlightPathAngle;
+        }
+        else {
         auxiliaryEquationsVector(38) = asin(auxiliaryEquationsVector(37));                // x38
+        }
 
+        if (verticalInertialFlightPathAngleSet == true){ // If vertical flight then set the heading angle to zero
+            auxiliaryEquationsVector(40) = 0.0;
+        }
+        else if (time == 0.0 && inertialHeadingAngleSet == true){ // if not vertical flight but heading is still defined, then set heading angle for t = 0.0
+            auxiliaryEquationsVector(40) = inertialHeadingAngle;
+        }
+        else {
         auxiliaryEquationsVector(40) = atan2(auxiliaryEquationsVector(47),auxiliaryEquationsVector(24));               // x40
+        }
 
+        if (rotationalVelocity == 0.0 || auxiliaryEquationsVector(35) == 0.0){
+            auxiliaryEquationsVector(41) = 0.0;
+        }
+        else {
         auxiliaryEquationsVector(41) = auxiliaryEquationsVector(35)*auxiliaryEquationsVector(36);                // x41
+        }
 
         // Avoid cosine rounding errors
                 if (abs(cos(auxiliaryEquationsVector(12)))<6.2e-17){
@@ -464,12 +537,15 @@ public:
 
 //        auxiliaryEquationsVector(40) = acos(auxiliaryEquationsVector(39));                // x40
 */
-        auxiliaryEquationsVector(13) =  atan2(auxiliaryEquationsVector(48),auxiliaryEquationsVector(24));                   // x13
+
 
         // Avoid cosine rounding errors
                 if (abs(cos(auxiliaryEquationsVector(38)))<6.2e-17){
                   auxiliaryEquationsVector(42) = 0;
                 }
+                else if (verticalInertialFlightPathAngleSet == true || auxiliaryEquationsVector(40) == 0){// Vertical ascent
+                    auxiliaryEquationsVector(42) = 0;
+                    }
                 else {
         auxiliaryEquationsVector(42) = cos(auxiliaryEquationsVector(38))*sin(auxiliaryEquationsVector(40));                // x42
 }
@@ -492,10 +568,36 @@ public:
                         if (abs(cos(auxiliaryEquationsVector(38)))<6.2e-17){
                           auxiliaryEquationsVector(43) = 0;
                         }
+                        else if (verticalInertialFlightPathAngleSet == true || auxiliaryEquationsVector(41) == 0.0 || auxiliaryEquationsVector(42) == 0.0){ // Vertical ascent
+                                auxiliaryEquationsVector(43) = 0.0;
+                        }
+                        else if (auxiliaryEquationsVector(41) == 0.0 || rotationalVelocity == 0.0){ // For non-rotating Mars
+                            auxiliaryEquationsVector(43) = 0.0;
+                        }
                         else {
         auxiliaryEquationsVector(43) = auxiliaryEquationsVector(41)*cos(auxiliaryEquationsVector(38))*sin(auxiliaryEquationsVector(40));                // x43
 }
+
+        // If vertical ascent
+                        if (verticalInertialFlightPathAngleSet == true || auxiliaryDerivativesVector(43) == 0.0){
+                            if (auxiliaryEquationsVector(35) == 0.0 || rotationalVelocity == 0.0){ // And non-rotating Mars
+                                auxiliaryEquationsVector(15) = auxiliaryEquationsVector(36);
+                            }
+                            else{
+                            auxiliaryEquationsVector(15) = sqrt(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21));
+                        }}
+                        else if (verticalRotationalFlightPathAngleSet == true){ // Vertical flight
+                                auxiliaryEquationsVector(15) = auxiliaryEquationsVector(25);
+
+                        }
+                        else{
         auxiliaryEquationsVector(15) = sqrt(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2.0*auxiliaryEquationsVector(43));              // x15
+                        }
+
+                        // Acount for when the angle was not predefined but is still 90 degrees
+                        if (verticalRotationalFlightPathAngleSet == false && auxiliaryEquationsVector(25) == auxiliaryEquationsVector(15)){
+                            verticalRotationalFlightPathAngleSet = true;
+                        }
 
 //        // Set tolerance for the velocity in case of rounding errors... It is set such that the the accuracy is 10 micro-metres/sec
 //        if (sqrt(abs(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2*auxiliaryEquationsVector(43)))<=1E-8){
@@ -584,6 +686,10 @@ public:
             auxiliaryEquationsVector(23) = 1.0;
             std::cout<<"Rounding x23 to 1"<<std::endl;
         }
+        // And dealing with vertical flight where x23 is 1
+        else if (verticalRotationalFlightPathAngleSet == true){
+            auxiliaryEquationsVector(23) = 1.0;
+        }
         else {
         auxiliaryEquationsVector(23) = auxiliaryEquationsVector(25)/auxiliaryEquationsVector(15);              // x23
 };
@@ -602,7 +708,32 @@ public:
 //std::cout<<"The whole vector = "<<auxiliaryEquationsVector<<std::endl;
 
 /// Debug ///
+
+        if (verticalRotationalFlightPathAngleSet == true){ // Set equal to 90 degrees if vertical launch
+            auxiliaryEquationsVector(14) = tudat::mathematical_constants::LONG_PI/2.0;
+        }
+        else if (rotationalFlightPathAngleSet == true && time == 0.0){ // If the rotational flight path angle was set initially then x14 is that angle for t=0
+            auxiliaryEquationsVector(14) = rotationalFlightPathAngle;
+        }
+        else if (rotationalVelocity == 0.0){ // For non-rotating Mars
+            auxiliaryEquationsVector(14) = auxiliaryEquationsVector(38);
+        }
+        else{
         auxiliaryEquationsVector(14) = asin(auxiliaryEquationsVector(23));              // x14
+        }
+
+        if (verticalRotationalFlightPathAngleSet == true){ // Heading angle defined 0 if vertical flight
+            auxiliaryEquationsVector(13) = 0.0;
+        }
+        else if (rotationalHeadingAngleSet == true && time == 0.0){ // if not vertical flight but heading angle is still defined then set equal to heading at t = 0
+            auxiliaryEquationsVector(13) = rotationalHeadingAngle;
+        }
+        else if (rotationalVelocity == 0.0){ // For non-rotating Mars
+            auxiliaryEquationsVector(13) = auxiliaryEquationsVector(40);
+        }
+        else{
+        auxiliaryEquationsVector(13) =  atan2(auxiliaryEquationsVector(48),auxiliaryEquationsVector(24));                   // x13
+        }
 
 //        // Dealing with the inaccuracy in pi
 //        if (auxiliaryEquationsVector(23) == 1 || auxiliaryEquationsVector(23) == -1){
@@ -674,7 +805,9 @@ public:
 
 
 
-
+// Set vertical ascent to false again
+        verticalInertialFlightPathAngleSet = false;
+        verticalRotationalFlightPathAngleSet = false;
 
 // auxiliaryEquationsVector() = ;               // x
 
@@ -700,6 +833,9 @@ public:
     // Avoid cosine rounding errors
             if (abs(cos(auxiliaryEquationsVector(12)))<6.2e-17){
               auxiliaryDerivativesVector(35) = rotationalVelocity*(-auxiliaryEquationsVector(20)*auxiliaryEquationsVector(24)*sin(auxiliaryEquationsVector(12)));
+            }
+            else if (rotationalVelocity == 0.0){ // For non-rotating Mars
+                auxiliaryDerivativesVector(35) = 0.0;
             }
             else {
     auxiliaryDerivativesVector(35) = rotationalVelocity*(cos(auxiliaryEquationsVector(12))*auxiliaryEquationsVector(25)-auxiliaryEquationsVector(20)*auxiliaryEquationsVector(24)*sin(auxiliaryEquationsVector(12)));                // u35
@@ -866,9 +1002,11 @@ public:
 
     auxiliaryDerivativesVector(49) = auxiliaryEquationsVector(45);                      // u49
 
-    auxiliaryDerivativesVector(11) = auxiliaryEquationsVector(45)-rotationalVelocity;                // u11
+//    auxiliaryDerivativesVector(11) = auxiliaryEquationsVector(45)-rotationalVelocity;                // u11
+    auxiliaryDerivativesVector(11) = auxiliaryEquationsVector(46);                // u11
 
-    auxiliaryDerivativesVector(20) = auxiliaryEquationsVector(26)/(2.0*auxiliaryEquationsVector(20));                // u20 = \dot(r)
+//    auxiliaryDerivativesVector(20) = auxiliaryEquationsVector(26)/(2.0*auxiliaryEquationsVector(20));                // u20 = \dot(r)
+    auxiliaryDerivativesVector(20) = auxiliaryEquationsVector(25);                // u20 = \dot(r)
 
 
     // If the spacecraft flies over a pole i.e. if +-z=r (or x3=x20) then the change in latitude is undefined and has to be set equal to zero here. This is done to avoid singularities.
@@ -878,8 +1016,9 @@ public:
         auxiliaryDerivativesVector(12) = 0;
     }
     else {
-    auxiliaryDerivativesVector(12) = (auxiliaryEquationsVector(20)*auxiliaryEquationsVector(6)-auxiliaryEquationsVector(3)*auxiliaryEquationsVector(25))/
-            (auxiliaryEquationsVector(8)*sqrt(1.0-(auxiliaryEquationsVector(3)/auxiliaryEquationsVector(20))*(auxiliaryEquationsVector(3)/auxiliaryEquationsVector(20))));                // u12
+//    auxiliaryDerivativesVector(12) = (auxiliaryEquationsVector(20)*auxiliaryEquationsVector(6)-auxiliaryEquationsVector(3)*auxiliaryEquationsVector(25))/
+//            (auxiliaryEquationsVector(8)*sqrt(1.0-(auxiliaryEquationsVector(3)/auxiliaryEquationsVector(20))*(auxiliaryEquationsVector(3)/auxiliaryEquationsVector(20))));                // u12
+        auxiliaryDerivativesVector(12) = auxiliaryEquationsVector(24);                // u12
     };
 
     auxiliaryDerivativesVector(31) = auxiliaryDerivativesVector(20);                // u31
@@ -898,6 +1037,9 @@ public:
 //        auxiliaryDerivativesVector(45) = 0;
 ////        std::cout<<"Yep"<<std::endl;
 //    }
+    else if (verticalInertialFlightPathAngleSet == true){ // For vertical flight there is not acceleration for longitude
+        auxiliaryDerivativesVector(45) = 0.0;
+    }
     else {
 //std::cout<<"The equation goes here 3"<<std::endl;
     auxiliaryDerivativesVector(45) = (auxiliaryEquationsVector(19)*(auxiliaryEquationsVector(1)*auxiliaryDerivativesVector(5)-auxiliaryEquationsVector(2)*auxiliaryDerivativesVector(4))
@@ -1014,9 +1156,15 @@ public:
 
     auxiliaryDerivativesVector(33) = ((adiabeticIndex*specificGasConstant)/(2.0*auxiliaryEquationsVector(33)))*auxiliaryDerivativesVector(34);                // u33
 
+    auxiliaryDerivativesVector(36) = sqrt(auxiliaryDerivativesVector(4)*auxiliaryDerivativesVector(4)+auxiliaryDerivativesVector(5)*auxiliaryDerivativesVector(5)+
+                                          auxiliaryDerivativesVector(6)*auxiliaryDerivativesVector(6));          // u36
 
-
+    if (verticalInertialFlightPathAngleSet == true){ // Vertical flight, then the radius changes with the same pase as the inertial velocity
+        auxiliaryDerivativesVector(25) = auxiliaryDerivativesVector(36);
+    }
+    else {
     auxiliaryDerivativesVector(25) = (2.0*auxiliaryEquationsVector(8)*auxiliaryDerivativesVector(26)-auxiliaryEquationsVector(26)*auxiliaryEquationsVector(26))/(4.0*auxiliaryEquationsVector(9));                // u25
+    }
 
     /// Debug ///
 /*
@@ -1025,13 +1173,15 @@ public:
     std::cout<<"x9 = "<<auxiliaryEquationsVector(9)<<std::endl;
 */
 
-    // Avoid singularities
-    if (auxiliaryEquationsVector(36) ==0){
-        auxiliaryDerivativesVector(36) = 0;
-    }
-    else{
-    auxiliaryDerivativesVector(36) = auxiliaryDerivativesVector(21)/(2.0*auxiliaryEquationsVector(36));                // u36
-}
+//    // Avoid singularities
+//    if (auxiliaryEquationsVector(36) ==0){
+//        auxiliaryDerivativesVector(36) = 0;
+//    }
+//    else{
+//    auxiliaryDerivativesVector(36) = auxiliaryDerivativesVector(21)/(2.0*auxiliaryEquationsVector(36));                // u36
+//}
+
+
 
 
 
@@ -1040,9 +1190,13 @@ public:
     auxiliaryDerivativesVector(46) = auxiliaryDerivativesVector(45);                // u46
 
     // Avoid cosine rounding errors
-            if (abs(cos(auxiliaryEquationsVector(12)))<6.2e-17){
+    if (auxiliaryDerivativesVector(45) == 0.0 || verticalInertialFlightPathAngleSet == true){ // In vertical flight, u47 is zero
+        auxiliaryDerivativesVector(47) = 0.0;
+    }
+    else if (abs(cos(auxiliaryEquationsVector(12)))<6.2e-17){
                auxiliaryDerivativesVector(47) = -auxiliaryEquationsVector(45)*auxiliaryDerivativesVector(12)*sin(auxiliaryEquationsVector(12));
             }
+
             else {
     auxiliaryDerivativesVector(47) = auxiliaryDerivativesVector(45)*cos(auxiliaryEquationsVector(12))-auxiliaryEquationsVector(45)*auxiliaryDerivativesVector(12)*sin(auxiliaryEquationsVector(12));                // u47
 }
@@ -1051,6 +1205,9 @@ public:
 
     if (auxiliaryEquationsVector(3)==auxiliaryEquationsVector(20) || -auxiliaryEquationsVector(3)==auxiliaryEquationsVector(20)){
 
+        auxiliaryDerivativesVector(24) = 0;
+    }
+    else if (verticalInertialFlightPathAngleSet == true){ // Vertical flight has no acceleration in the latitude
         auxiliaryDerivativesVector(24) = 0;
     }
     else {
@@ -1186,14 +1343,19 @@ public:
 
 
 
-    // Avoid singularities
-    if (auxiliaryEquationsVector(36)==0){
+    // Avoid singularities and account for vertical flight (there is not going to be a difference between r_dot and V_I in vertical flight)
+    if (auxiliaryEquationsVector(36)==0 || verticalInertialFlightPathAngleSet == true){
         auxiliaryDerivativesVector(37) = 0;
     }
     else {
     auxiliaryDerivativesVector(37) = (auxiliaryEquationsVector(36)*auxiliaryDerivativesVector(25)-auxiliaryEquationsVector(25)*auxiliaryDerivativesVector(36))/(auxiliaryEquationsVector(36)*auxiliaryEquationsVector(36));                // u37
 }
+    if (rotationalVelocity == 0.0){ // Non-rotating Mars
+        auxiliaryDerivativesVector(41) = 0.0;
+    }
+    else {
     auxiliaryDerivativesVector(41) = auxiliaryEquationsVector(36)*auxiliaryDerivativesVector(35)+auxiliaryEquationsVector(35)*auxiliaryDerivativesVector(36);                // u41
+    }
 
     // Avoid cosine rounding errors
                 if (abs(cos(auxiliaryEquationsVector(12)))<6.2e-17){
@@ -1205,8 +1367,8 @@ public:
 
 //    auxiliaryDerivativesVector(18) = auxiliaryEquationsVector(20)*auxiliaryDerivativesVector(24)+auxiliaryEquationsVector(24)*auxiliaryEquationsVector(25);                // u18
 
-    // Avoiding singularities
-    if ((auxiliaryEquationsVector(47)*auxiliaryEquationsVector(47)+auxiliaryEquationsVector(24)*auxiliaryEquationsVector(24))==0){
+    // Avoiding singularities and accounting for vertical flight
+    if ((auxiliaryEquationsVector(47)*auxiliaryEquationsVector(47)+auxiliaryEquationsVector(24)*auxiliaryEquationsVector(24))==0 || verticalInertialFlightPathAngleSet == true){
 
         auxiliaryDerivativesVector(40) = 0;
 
@@ -1227,25 +1389,19 @@ public:
 */
 
 
-    // Avoiding singularities
 
-    if ((auxiliaryEquationsVector(48)*auxiliaryEquationsVector(48)+auxiliaryEquationsVector(24)*auxiliaryEquationsVector(24))==0){
-
-        auxiliaryDerivativesVector(13) = 0;
-    }
-    else{
-    auxiliaryDerivativesVector(13) = (auxiliaryEquationsVector(24)*auxiliaryDerivativesVector(48)-auxiliaryEquationsVector(48)*auxiliaryDerivativesVector(24))/
-            (auxiliaryEquationsVector(48)*auxiliaryEquationsVector(48)+auxiliaryEquationsVector(24)*auxiliaryEquationsVector(24));                // u13
-
-    };
 
 
 
 
 
     // If x37 = +-1 then the derivative is undefined (should not happen)
-    if (auxiliaryEquationsVector(37)==1 || auxiliaryEquationsVector(37)==-1){
+    if (auxiliaryEquationsVector(37)==1){
 
+        auxiliaryDerivativesVector(38) = 0;
+        verticalInertialFlightPathAngleSet = true; // Declare vertical flight in inertial frame
+    }
+    else if (auxiliaryEquationsVector(37)==-1){
         auxiliaryDerivativesVector(38) = 0;
     }
     else {
@@ -1265,8 +1421,12 @@ public:
     auxiliaryDerivativesVector(40) = -auxiliaryDerivativesVector(39)/sqrt(1-auxiliaryEquationsVector(39)*auxiliaryEquationsVector(39));                // u40
 };
 */
+    // Account for vertical flight
+    if (verticalInertialFlightPathAngleSet == true){
+        auxiliaryDerivativesVector(42) = 0.0;
+    }
     // Avoid cosine rounding errors
-                if (abs(cos(auxiliaryEquationsVector(38)))<6.2e-17 || abs(cos(auxiliaryEquationsVector(40)))<6.2e-17){
+    else if (abs(cos(auxiliaryEquationsVector(38)))<6.2e-17 || abs(cos(auxiliaryEquationsVector(40)))<6.2e-17){
                      auxiliaryDerivativesVector(42) = -auxiliaryDerivativesVector(38)*sin(auxiliaryEquationsVector(38))*sin(auxiliaryEquationsVector(40));
                 }
                 else {
@@ -1285,13 +1445,21 @@ public:
 //    std::cout<<"x40 - 1.5707963267949 = "<<auxiliaryEquationsVector(40)-1.5707963267949<<std::endl;
 //    /// Debug ///
 
+    if (verticalInertialFlightPathAngleSet == true || rotationalVelocity == 0.0){ // For vertical flight x43 does not change (it also does not change when dealing with a non-rotating Mars)
+        auxiliaryDerivativesVector(43) = 0.0;
+    }
+    else {
     auxiliaryDerivativesVector(43) = auxiliaryEquationsVector(41)*auxiliaryDerivativesVector(42)+auxiliaryEquationsVector(42)*auxiliaryDerivativesVector(41);                // u43
+    }
 
 
     // If V_R = 0 m/s then the derivative is undefined
     if (auxiliaryEquationsVector(15)==0){
 
         auxiliaryDerivativesVector(15) = 0;
+    }
+    else if (auxiliaryEquationsVector(23) == 1.0){ // If vertical flight then r_dot and V_R dot change at the same rate (are equal)
+        auxiliaryDerivativesVector(15) = auxiliaryDerivativesVector(25);
     }
     else {
     auxiliaryDerivativesVector(15) = (2.0*auxiliaryEquationsVector(35)*auxiliaryDerivativesVector(35)+auxiliaryDerivativesVector(21)-2.0*auxiliaryDerivativesVector(43))/(2.0*auxiliaryEquationsVector(15));                // u15
@@ -1310,13 +1478,32 @@ public:
 
 
     // If x23 = +-1 then the derivative is undefined
-    if (auxiliaryEquationsVector(23)==1 || auxiliaryEquationsVector(23)==-1){
+    if (auxiliaryEquationsVector(23)==1){
 
+        auxiliaryDerivativesVector(14) = 0;
+        verticalRotationalFlightPathAngleSet = true;    // Declare vertical flight in rotating frame
+    }
+    else if (auxiliaryEquationsVector(23)==-1){
         auxiliaryDerivativesVector(14) = 0;
     }
     else {
     auxiliaryDerivativesVector(14) = auxiliaryDerivativesVector(23)/sqrt(1.0-auxiliaryEquationsVector(23)*auxiliaryEquationsVector(23));                // u14
 };
+
+    // Avoiding singularities
+
+    if ((auxiliaryEquationsVector(48)*auxiliaryEquationsVector(48)+auxiliaryEquationsVector(24)*auxiliaryEquationsVector(24))==0){
+
+        auxiliaryDerivativesVector(13) = 0;
+    }
+    else if (verticalRotationalFlightPathAngleSet == true){ // For vertical flight
+        auxiliaryDerivativesVector(13) = 0.0;
+    }
+    else{
+    auxiliaryDerivativesVector(13) = (auxiliaryEquationsVector(24)*auxiliaryDerivativesVector(48)-auxiliaryEquationsVector(48)*auxiliaryDerivativesVector(24))/
+            (auxiliaryEquationsVector(48)*auxiliaryEquationsVector(48)+auxiliaryEquationsVector(24)*auxiliaryEquationsVector(24));                // u13
+
+    };
 
     // Determine which section of the drag coefficient curve needs to be used
 
@@ -1361,6 +1548,9 @@ public:
 
 // auxiliaryDerivativesVector() = ;                // u
 
+    // Set vertical ascent to false again
+            verticalInertialFlightPathAngleSet = false;
+            verticalRotationalFlightPathAngleSet = false;
 
 
     return auxiliaryDerivativesVector;
@@ -2082,6 +2272,23 @@ private:
  double referenceArea;                                           // S [m^2]  vehicle reference area
  Eigen::MatrixXd dragCoefficientPolyCoefficients;           // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
  Eigen::MatrixXd dragCoefficientMachRanges;                       // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
+
+    // Set functions
+
+ double rotationalFlightPathAngle;         // Rotational flight path angle in rad
+ double inertialFlightPathAngle;           // Inertial flight path angle in rad
+ double rotationalHeadingAngle;            // Rotational heading angle in rad
+ double inertialHeadingAngle;              // Inertial heading angle in rad
+
+ bool rotationalFlightPathAngleSet;         // All of these are used to let the program know that a predefined angle was set and that that angle should be used (initially)
+ bool inertialFlightPathAngleSet;
+ bool rotationalHeadingAngleSet;
+ bool inertialHeadingAngleSet;
+
+ bool verticalRotationalFlightPathAngleSet;       // All of these are used for the vertical ascent case
+ bool verticalInertialFlightPathAngleSet;
+ bool verticalRotationalHeadingAngleSet;
+ bool verticalInertialHeadingAngleSet;
 
 
     // Additional in-class used variables

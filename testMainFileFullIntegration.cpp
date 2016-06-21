@@ -41,6 +41,8 @@
 #include <sstream>
 #include <stdio.h>
 
+#include <quadmath.h>   // Quad precision...
+
 #include <time.h>   // To determine the current computer time
 #include <sys/time.h> // To determine the current computer time
 
@@ -182,7 +184,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
    const double bodyReferenceRadius = Mars.bodyReferenceRadius();
 
+//const __float128 pi = 4.0*atan(1);
 
+//std::cout<<"pi = "<<pi<<std::endl;
 
 
     /// Setting the vehicle class ///
@@ -218,6 +222,12 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     /// Comparison?
     const bool comparison = true;
 
+    /// Set initial flight path angles and heading angles
+//    double rotationalFlightPathAngle = deg2rad(90);         // Rotational flight path angle in rad
+//    double inertialFlightPathAngle = deg2rad(90);           // Inertial flight path angle in rad
+//    double rotationalHeadingAngle = deg2rad(0);            // Rotational heading angle in rad
+//    double inertialHeadingAngle = deg2rad(0);              // Inertial heading angle in rad
+
   /// Initial conditions ///
 
     const double setEndTime = 77.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
@@ -229,7 +239,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     /// TSI settings ///
 
     /// Integration settings ///
-    const double chosenLocalErrorTolerance = 1e-15;      // The chosen local error tolerance for TSI
+    const double chosenLocalErrorTolerance = 1e-14;      // The chosen local error tolerance for TSI
     const double chosenStepSize = 0.2; // The chosen initial step-size for TSI
 
     std::cout<<"The chosen local error tolerance = "<<chosenLocalErrorTolerance<<std::endl;

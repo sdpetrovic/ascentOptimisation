@@ -898,7 +898,8 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         WVector12_7(k) = getDivisionRecurrenceRelation((WVector12_1-WVector12_2),WVector12_6,WVector12_7,k);
 
 
-        UMatrix(12,k) = WVector12_7(k);
+//        UMatrix(12,k) = WVector12_7(k);
+        UMatrix(12,k) = XMatrix(24,k);
 
         // 19
 
@@ -906,10 +907,11 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         // 20
 
-        WVector20(k) = getDivisionRecurrenceRelation(XMatrix.row(26),XMatrix.row(20),WVector20,k);
+//        WVector20(k) = getDivisionRecurrenceRelation(XMatrix.row(26),XMatrix.row(20),WVector20,k);
 
 
-        UMatrix(20,k) = 0.5*WVector20(k);
+//        UMatrix(20,k) = 0.5*WVector20(k);
+        UMatrix(20,k) = XMatrix(25,k);
 
         // 35
 
