@@ -648,6 +648,37 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
 
                         std::cout<<"x25 = "<<auxiliaryEquationsVector(25)<<std::endl;
                         std::cout<<"x15 = "<<auxiliaryEquationsVector(15)<<std::endl;
+                        std::cout<<"x15 new = "<<sqrt(auxiliaryEquationsVector(21)+rotationalVelocity*rotationalVelocity*(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+
+                                                                                                                          auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2))+
+                                                      2.0*rotationalVelocity*(auxiliaryEquationsVector(4)*auxiliaryEquationsVector(2)-auxiliaryEquationsVector(5)*auxiliaryEquationsVector(1)))<<std::endl;
+                        std::cout<<"x15 new ini sqr = "<<(auxiliaryEquationsVector(4)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(5)*auxiliaryEquationsVector(5)+
+                                                          auxiliaryEquationsVector(6)*auxiliaryEquationsVector(6))+rotationalVelocity*rotationalVelocity*(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+
+                                                                                                                         auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2))+
+                                                     2*rotationalVelocity*(auxiliaryEquationsVector(4)*auxiliaryEquationsVector(2)-auxiliaryEquationsVector(5)*auxiliaryEquationsVector(1))<<std::endl;
+                        std::cout<<"x15 new ini = "<<sqrt((auxiliaryEquationsVector(4)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(5)*auxiliaryEquationsVector(5)+
+                                                           auxiliaryEquationsVector(6)*auxiliaryEquationsVector(6))+rotationalVelocity*rotationalVelocity*(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+
+                                                                                                                          auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2))+
+                                                      2.0*rotationalVelocity*(auxiliaryEquationsVector(4)*auxiliaryEquationsVector(2)-auxiliaryEquationsVector(5)*auxiliaryEquationsVector(1)))<<std::endl;
+                        std::cout<<"x15 new ini (VI = VM) sqr = "<<(2.0*rotationalVelocity*rotationalVelocity*(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+
+                                                                                                                          auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2))+
+                                                      2.0*rotationalVelocity*(auxiliaryEquationsVector(4)*auxiliaryEquationsVector(2)-auxiliaryEquationsVector(5)*auxiliaryEquationsVector(1)))<<std::endl;
+                        std::cout<<"x25 ini = "<<(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)+
+                                                  auxiliaryEquationsVector(3)*auxiliaryEquationsVector(6))/(sqrt(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2)+
+                                                                                                                 auxiliaryEquationsVector(3)*auxiliaryEquationsVector(3)))<<std::endl;
+                        std::cout<<"x25 ini / x15 new ini = "<<(((auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)+
+                                                 auxiliaryEquationsVector(3)*auxiliaryEquationsVector(6))/(sqrt(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2)+
+                                                                                                                auxiliaryEquationsVector(3)*auxiliaryEquationsVector(3))))/
+                                   (sqrt((auxiliaryEquationsVector(4)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(5)*auxiliaryEquationsVector(5)+
+                                                                                                                                                                                  auxiliaryEquationsVector(6)*auxiliaryEquationsVector(6))+rotationalVelocity*rotationalVelocity*(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+
+                                                                                                                                                                                                                                                 auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2))+
+                                                                                                                                                                             2.0*rotationalVelocity*(auxiliaryEquationsVector(4)*auxiliaryEquationsVector(2)-auxiliaryEquationsVector(5)*auxiliaryEquationsVector(1)))))<<std::endl;
+                        std::cout<<"FPA_R = "<<asin(((auxiliaryEquationsVector(1)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(5)+
+                                                 auxiliaryEquationsVector(3)*auxiliaryEquationsVector(6))/(sqrt(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2)+
+                                                                                                                auxiliaryEquationsVector(3)*auxiliaryEquationsVector(3))))/
+                                   (sqrt((auxiliaryEquationsVector(4)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(5)*auxiliaryEquationsVector(5)+
+                                                                                                                                                                                  auxiliaryEquationsVector(6)*auxiliaryEquationsVector(6))+rotationalVelocity*rotationalVelocity*(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+
+                                                                                                                                                                                                                                                 auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2))+
+                                                                                                                                                                             2.0*rotationalVelocity*(auxiliaryEquationsVector(4)*auxiliaryEquationsVector(2)-auxiliaryEquationsVector(5)*auxiliaryEquationsVector(1)))))<<std::endl;
                         std::cout<<"x25-x15 = "<<auxiliaryEquationsVector(25)-auxiliaryEquationsVector(15)<<std::endl;
 
                         // Acount for when the angle was not predefined but is still 90 degrees
