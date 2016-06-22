@@ -152,7 +152,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
     const double currentStepSize = stepSize.getCurrentStepSize();                      // The current step-size
 
 
-//    std::cout<<"This works right 1?"<<std::endl;
+    //std::cout<<"This works right 1?"<<std::endl;
 
 //////// Computations //////////
 
@@ -184,7 +184,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
               densityPolyCoefficients, Thrust, thrustAzimuthMatrix, thrustElevationMatrix, specificImpulse,
               referenceArea, dragCoefficientPolyCoefficients, dragCoefficientMachRanges);
 
-//    std::cout<<"This works right 3?"<<std::endl;
+    //std::cout<<"This works right 3?"<<std::endl;
 
     // Compute the auxiliary equations
 
@@ -228,7 +228,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
     /// Storing the Taylor Coefficients to a file ///
 
-//    std::cout<<"Does this even work1?"<<std::endl;
+    //std::cout<<"Does this even work1?"<<std::endl;
 
         Eigen::MatrixXd TaylorCoefficientsOutputMatrix = Eigen::MatrixXd::Zero(7,maxOrder+1);       // Create an output matrix for the file without the first empty row
 
@@ -243,7 +243,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
         /// Start debug ///
 
-//        std::cout<<"Does this even work2? :S"<<std::endl;
+        //std::cout<<"Does this even work2? :S"<<std::endl;
 
 /*        std::cout<<"x-position coefficients are: "<<TaylorCoefficientsOutputMatrix.row(0)<<std::endl;
         std::cout<<"y-position coefficients are: "<<TaylorCoefficientsOutputMatrix.row(1)<<std::endl;
@@ -361,7 +361,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
         // Please note that instead of updateStepSizeUsingInteration, you can also use updateStepSizeUsingPreviousStepSize, however, this method does not work if the maximum truncation error estimate is larger
         // than the local error tolerance and requires the previous step-size
 
-//        std::cout<<"Does this even work5?"<<std::endl;
+        //std::cout<<"Does this even work5?"<<std::endl;
 
         /// Setting the ouput vector ///
 

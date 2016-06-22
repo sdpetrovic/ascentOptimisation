@@ -171,7 +171,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     celestialBody Mars;
 
-    Mars.setRotationalVelocity(0); // Set Mars as a non-rotating planet for verification
+//    Mars.setRotationalVelocity(0); // Set Mars as a non-rotating planet for verification
 
 //    const double adiabeticIndex = Mars.adiabeticIndex();
 //    const double specificGasConstant = Mars.specificGasConstant();
@@ -228,9 +228,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //    double rotationalHeadingAngle = deg2rad(0);            // Rotational heading angle in rad
 //    double inertialHeadingAngle = deg2rad(0);              // Inertial heading angle in rad
 
-  /// Initial conditions ///
+  /// Initial conditions /// a.k.a. control centre
 
-    const double setEndTime = 77.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
+    const double setEndTime = 30.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
 
 //std::cout<<"pi = "<<(4*atan(1))<<std::endl;
 
@@ -239,7 +239,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     /// TSI settings ///
 
     /// Integration settings ///
-    const double chosenLocalErrorTolerance = 1e-14;      // The chosen local error tolerance for TSI
+    const double chosenLocalErrorTolerance = 1e-8;      // The chosen local error tolerance for TSI
     const double chosenStepSize = 0.2; // The chosen initial step-size for TSI
 
     std::cout<<"The chosen local error tolerance = "<<chosenLocalErrorTolerance<<std::endl;
@@ -256,8 +256,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //    const double initialAltitude = -0.6e3;             // Starting altitude [m MOLA]
     const double initialAltitude = -0.6;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
-    const double initialLatitudeDeg = 45;               // Starting latitude [deg] initial condition is 21 deg
-    const double initialLongitudeDeg = 45;            // Starting longitude [deg] initial condition is 74.5 deg
+    const double initialLatitudeDeg = 0;               // Starting latitude [deg] initial condition is 21 deg
+    const double initialLongitudeDeg = 0;            // Starting longitude [deg] initial condition is 74.5 deg
 
 //    const double initialLatitude = initialLatitudeDeg*tudat::mathematical_constants::LONG_PI/180;       // Starting latitude [rad]
 //    const double initialLongitude = initialLongitudeDeg*tudat::mathematical_constants::LONG_PI/180;     // Starting longitude [rad]

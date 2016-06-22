@@ -1484,8 +1484,8 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //        std::cout<<"W40_3 + W13_4 = "<<(WVector40_3+WVector13_4)<<std::endl;
 //        std::cout<<"W40_4 = "<<WVector40_4<<std::endl;
 
-    std::cout<<"UMatrix.row(24) = "<<UMatrix.row(24)<<std::endl;
-    std::cout<<"UMatrix.row(46) = "<<UMatrix.row(46)<<std::endl;
+//    std::cout<<"UMatrix.row(24) = "<<UMatrix.row(24)<<std::endl;
+//    std::cout<<"UMatrix.row(46) = "<<UMatrix.row(46)<<std::endl;
 
 
 
