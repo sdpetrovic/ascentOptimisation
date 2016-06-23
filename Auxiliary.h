@@ -34,6 +34,7 @@
  *      160602    S.D. Petrovic     Added the thrust auxiliary functions
  *      160603    S.D. Petrovic     Updated u10 to be OmegaM instead of 0!
  *      160618    S.D. Petrovic     Found mistake in u24 and updated it and the corresponding auxiliary functions
+ *      160622    S.D. Petrovic     Found a huge mistake in u15 (extra acc were not taken into account, so it was giving zero values != possible), implemented new equations...
  *
  *    References
  *
@@ -216,7 +217,7 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
         std::cout<<"verticalInertialFlightPathAngleSet eq 1 = "<<verticalInertialFlightPathAngleSet<<std::endl;
         std::cout<<"verticalRotationalFlightPathAngleSet eq 1 = "<<verticalRotationalFlightPathAngleSet<<std::endl;
 
-        auxiliaryEquationsVector = Eigen::VectorXd::Zero(50);       // Setting the complete vector and filling it with zeros for now
+        auxiliaryEquationsVector = Eigen::VectorXd::Zero(56);       // Setting the complete vector and filling it with zeros for now
 
         // The following expressions are described in the order in which the equations have to be computed corresponding to the respective vector entry
 
@@ -278,6 +279,8 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
 //        auxiliaryEquationsVector(11) = atan2(auxiliaryEquationsVector(2),auxiliaryEquationsVector(1))-auxiliaryEquationsVector(10);              // x11
         auxiliaryEquationsVector(11) = auxiliaryEquationsVector(49)-auxiliaryEquationsVector(10);
 
+
+
 //        auxiliaryEquationsVector(20) = pow(auxiliaryEquationsVector(8), 0.5);              // x20
 
         auxiliaryEquationsVector(20) = sqrt(auxiliaryEquationsVector(8));               // x20
@@ -285,6 +288,20 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
 //        auxiliaryEquationsVector(36) = pow(auxiliaryEquationsVector(21), 0.5) ;                // x36
 
         auxiliaryEquationsVector(36) = sqrt(auxiliaryEquationsVector(21));              // x36
+
+        auxiliaryEquationsVector(52) = (auxiliaryEquationsVector(4)+rotationalVelocity*auxiliaryEquationsVector(2))*cos(auxiliaryEquationsVector(10))+
+                sin(auxiliaryEquationsVector(10))*(auxiliaryEquationsVector(5)-rotationalVelocity*auxiliaryEquationsVector(1));     // x52
+
+        auxiliaryEquationsVector(53) = -(auxiliaryEquationsVector(4)+rotationalVelocity*auxiliaryEquationsVector(2))*sin(auxiliaryEquationsVector(10))+
+                cos(auxiliaryEquationsVector(10))*(auxiliaryEquationsVector(5)-rotationalVelocity*auxiliaryEquationsVector(1));     // x53
+
+        auxiliaryEquationsVector(54) = auxiliaryEquationsVector(4)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(5)*auxiliaryEquationsVector(5)+
+                rotationalVelocity*rotationalVelocity*auxiliaryEquationsVector(19)+2.0*rotationalVelocity*(auxiliaryEquationsVector(4)*auxiliaryEquationsVector(2)
+                                                                                                         -auxiliaryEquationsVector(5)*auxiliaryEquationsVector(1));     // x54
+
+        auxiliaryEquationsVector(55) = auxiliaryEquationsVector(53)*auxiliaryEquationsVector(50)-auxiliaryEquationsVector(52)*auxiliaryEquationsVector(51);     // x55
+
+
 
 /*
         std::cout<<"x21-x21 = "<<auxiliaryEquationsVector(21)-auxiliaryEquationsVector(21)<<std::endl;
@@ -319,6 +336,15 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
 //*/
 
         auxiliaryEquationsVector(12) = asin(auxiliaryEquationsVector(3)/auxiliaryEquationsVector(20)) ;              // x12
+
+
+        auxiliaryEquationsVector(50) = auxiliaryEquationsVector(20)*cos(auxiliaryEquationsVector(12)*cos(auxiliaryEquationsVector(11)));  // x50
+
+        auxiliaryEquationsVector(51) = auxiliaryEquationsVector(20)*cos(auxiliaryEquationsVector(12)*sin(auxiliaryEquationsVector(11)));  // x51
+
+
+
+
 
 //        auxiliaryEquationsVector(25) = (auxiliaryEquationsVector(26)*1e-6)/(2*auxiliaryEquationsVector(20)*1e-6);              // x25
         // If the inertial flight path angle is set to 90 degrees, then x25 = x36
@@ -619,32 +645,37 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
                         std::cout<<"verticalRotationalFlightPathAngleSet eq 2 = "<<verticalRotationalFlightPathAngleSet<<std::endl;
                         std::cout<<"x35 = "<<auxiliaryEquationsVector(35)<<std::endl;
 
-        // If vertical ascent
-                        if (verticalInertialFlightPathAngleSet == true || auxiliaryEquationsVector(43) == 0.0){ //std::cout<<"It goes here ..."<<std::endl;
-                            if (auxiliaryEquationsVector(35) == 0.0 || rotationalVelocity == 0.0){ // And non-rotating Mars
-//                                std::cout<<"It goes here 1"<<std::endl;
-                                auxiliaryEquationsVector(15) = auxiliaryEquationsVector(36);
+                        auxiliaryEquationsVector(15) = sqrt(auxiliaryEquationsVector(21)+rotationalVelocity*rotationalVelocity*auxiliaryEquationsVector(19)+
+                                                            2*rotationalVelocity*(auxiliaryEquationsVector(4)*auxiliaryEquationsVector(2)-auxiliaryEquationsVector(5)*auxiliaryEquationsVector(1)));        // x15
 
-                            }
-                            else{
-//                                std::cout<<"It goes here 2"<<std::endl;
-                            auxiliaryEquationsVector(15) = sqrt(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21));
+//        // If vertical ascent
+//                        if (verticalInertialFlightPathAngleSet == true || auxiliaryEquationsVector(43) == 0.0){ //std::cout<<"It goes here ..."<<std::endl;
+//                            if (auxiliaryEquationsVector(35) == 0.0 || rotationalVelocity == 0.0){ // And non-rotating Mars
+////                                std::cout<<"It goes here 1"<<std::endl;
+//                                auxiliaryEquationsVector(15) = auxiliaryEquationsVector(36);
 
-                        }}
-                        else if (verticalRotationalFlightPathAngleSet == true){ // Vertical flight
-//                            std::cout<<"It goes here 3"<<std::endl;
-                                auxiliaryEquationsVector(15) = auxiliaryEquationsVector(25);
+//                            }
+//                            else{
+////                                std::cout<<"It goes here 2"<<std::endl;
+//                            auxiliaryEquationsVector(15) = sqrt(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21));
+
+//                        }}
+//                        else if (verticalRotationalFlightPathAngleSet == true){ // Vertical flight
+////                            std::cout<<"It goes here 3"<<std::endl;
+//                                auxiliaryEquationsVector(15) = auxiliaryEquationsVector(25);
 
 
-                        }
+//                        }
 
-                        else{
-//                            std::cout<<"It goes here 4"<<std::endl;
-        auxiliaryEquationsVector(15) = sqrt(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2.0*auxiliaryEquationsVector(43));              // x15
+//                        else{
+////                            std::cout<<"It goes here 4"<<std::endl;
+//        auxiliaryEquationsVector(15) = sqrt(auxiliaryEquationsVector(35)*auxiliaryEquationsVector(35)+auxiliaryEquationsVector(21)-2.0*auxiliaryEquationsVector(43));              // x15
 
-                        }
+//                        }
 
                         //std::cout<<"Surely this works 6.3..."<<std::endl;
+
+         /*               /// Debug ///
 
                         std::cout<<"x25 = "<<auxiliaryEquationsVector(25)<<std::endl;
                         std::cout<<"x15 = "<<auxiliaryEquationsVector(15)<<std::endl;
@@ -680,6 +711,9 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
                                                                                                                                                                                                                                                  auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2))+
                                                                                                                                                                              2.0*rotationalVelocity*(auxiliaryEquationsVector(4)*auxiliaryEquationsVector(2)-auxiliaryEquationsVector(5)*auxiliaryEquationsVector(1)))))<<std::endl;
                         std::cout<<"x25-x15 = "<<auxiliaryEquationsVector(25)-auxiliaryEquationsVector(15)<<std::endl;
+
+          //*/              /// Debug ///
+
 
                         // Acount for when the angle was not predefined but is still 90 degrees
                         if (verticalRotationalFlightPathAngleSet == false && auxiliaryEquationsVector(25) == auxiliaryEquationsVector(15)){
@@ -919,7 +953,7 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
         std::cout<<"verticalInertialFlightPathAngleSet der 1 = "<<verticalInertialFlightPathAngleSet<<std::endl;
         std::cout<<"verticalRotationalFlightPathAngleSet der 1 = "<<verticalRotationalFlightPathAngleSet<<std::endl;
 
-    auxiliaryDerivativesVector = Eigen::VectorXd::Zero(50);       // Setting the complete vector and filling it with zeros for now
+    auxiliaryDerivativesVector = Eigen::VectorXd::Zero(56);       // Setting the complete vector and filling it with zeros for now
 
     // The following expressions are described in the order in which the equations have to be computed corresponding to the respective vector entry
     // Which in this case means that the first entry of the vector is 0 and is not used.
@@ -1073,7 +1107,27 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
 
 //*/
 
+    auxiliaryDerivativesVector(50) = auxiliaryEquationsVector(52);      // u50
 
+    auxiliaryDerivativesVector(51) = auxiliaryEquationsVector(53);      // u51
+
+    auxiliaryDerivativesVector(52) = cos(auxiliaryEquationsVector(10))*(auxiliaryDerivativesVector(4)+rotationalVelocity*auxiliaryEquationsVector(5))-
+            auxiliaryDerivativesVector(10)*sin(auxiliaryEquationsVector(10))*(auxiliaryEquationsVector(4)+rotationalVelocity*auxiliaryEquationsVector(2))+
+            sin(auxiliaryEquationsVector(10))*(auxiliaryDerivativesVector(5)-rotationalVelocity*auxiliaryEquationsVector(4))+
+            auxiliaryDerivativesVector(10)*cos(auxiliaryEquationsVector(10))*(auxiliaryEquationsVector(5)-rotationalVelocity*auxiliaryEquationsVector(1));  // u52
+
+    auxiliaryDerivativesVector(53) = -sin(auxiliaryEquationsVector(10))*(auxiliaryDerivativesVector(4)+rotationalVelocity*auxiliaryEquationsVector(5))-
+            auxiliaryDerivativesVector(10)*cos(auxiliaryEquationsVector(10))*(auxiliaryEquationsVector(4)+rotationalVelocity*auxiliaryEquationsVector(2))+
+            cos(auxiliaryEquationsVector(10))*(auxiliaryDerivativesVector(5)-rotationalVelocity*auxiliaryEquationsVector(4))+
+            auxiliaryDerivativesVector(10)*sin(auxiliaryEquationsVector(10))*(auxiliaryEquationsVector(5)-rotationalVelocity*auxiliaryEquationsVector(1));  // u53
+
+    auxiliaryDerivativesVector(54) = 2.0*auxiliaryEquationsVector(4)*auxiliaryDerivativesVector(4)+2*auxiliaryEquationsVector(5)*auxiliaryDerivativesVector(5)+
+            rotationalVelocity*rotationalVelocity*auxiliaryDerivativesVector(19)+2.0*rotationalVelocity*(auxiliaryEquationsVector(4)*auxiliaryEquationsVector(5)+
+                                                                                                         auxiliaryDerivativesVector(4)*auxiliaryEquationsVector(2)-
+                                                                                                         auxiliaryEquationsVector(5)*auxiliaryEquationsVector(4)-
+                                                                                                         auxiliaryDerivativesVector(5)*auxiliaryEquationsVector(1));       // u54
+
+    auxiliaryDerivativesVector(55) = auxiliaryDerivativesVector(53)*auxiliaryEquationsVector(50)-auxiliaryDerivativesVector(52)*auxiliaryEquationsVector(51);       // u55
 
 
     auxiliaryDerivativesVector(7) = -(Thrust/(tudat::physical_constants::STANDARD_EARTH_GRAVITATIONAL_ACCELERATION*specificImpulse));                // u7
@@ -1551,17 +1605,27 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
     }
 
 
-    // If V_R = 0 m/s then the derivative is undefined
-    if (auxiliaryEquationsVector(15)==0){
+//    // If V_R = 0 m/s then the derivative is undefined
+//    if (auxiliaryEquationsVector(15)==0){
 
-        auxiliaryDerivativesVector(15) = 0;
-    }
-    else if (auxiliaryEquationsVector(23) == 1.0){ // If vertical flight then r_dot and V_R dot change at the same rate (are equal)
-        auxiliaryDerivativesVector(15) = auxiliaryDerivativesVector(25);
-    }
-    else {
-    auxiliaryDerivativesVector(15) = (2.0*auxiliaryEquationsVector(35)*auxiliaryDerivativesVector(35)+auxiliaryDerivativesVector(21)-2.0*auxiliaryDerivativesVector(43))/(2.0*auxiliaryEquationsVector(15));                // u15
-};
+//        auxiliaryDerivativesVector(15) = 0;
+//    }
+//    else if (auxiliaryEquationsVector(23) == 1.0){ // If vertical flight then r_dot and V_R dot change at the same rate (are equal)
+//        auxiliaryDerivativesVector(15) = auxiliaryDerivativesVector(25);
+//    }
+//    else {
+//    auxiliaryDerivativesVector(15) = (2.0*auxiliaryEquationsVector(35)*auxiliaryDerivativesVector(35)+auxiliaryDerivativesVector(21)-2.0*auxiliaryDerivativesVector(43))/(2.0*auxiliaryEquationsVector(15));                // u15
+//};
+
+
+    auxiliaryDerivativesVector(15) = rotationalVelocity*sqrt(rotationalVelocity*rotationalVelocity*auxiliaryEquationsVector(19)+4.0*auxiliaryEquationsVector(54)+
+                                                             4.0*rotationalVelocity*auxiliaryEquationsVector(55))-(standardGravitationalParameter/auxiliaryEquationsVector(8))+
+            (Thrust/auxiliaryEquationsVector(7))+(auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7));   // u15
+
+
+
+
+
 
     // If V_R = 0 m/s then the derivative is undefined
     if (auxiliaryEquationsVector(15)==0){
