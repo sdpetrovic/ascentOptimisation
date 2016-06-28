@@ -29,6 +29,7 @@
  *      160520    S.D. Petrovic     Fixed the mistake where I had written W40_1 and W40_2 instead of W41_1 and W41_2
  *      160526    S.D. Petrovic     Added W4,0 to be able to properly evaluate the recurrence relation of W4,2
  *      160602    S.D. Petrovic     Added the thrust recurrence relations
+ *      160623    S.D. Petrovic     Corrected U15 and added corresponding auxiliary functions and recurrence relations
  *
  *    References
  *
@@ -215,7 +216,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     Eigen::VectorXd WVector14_2 = Eigen::VectorXd::Zero(maxOrder);     // W14,2
     Eigen::VectorXd WVector14_3 = Eigen::VectorXd::Zero(maxOrder);     // W14,3
 
-    Eigen::VectorXd WVector15_0 = Eigen::VectorXd::Zero(maxOrder);     // W15,0     // Replacement vector to hold intermediate values to create the sum vector of 2*w15,1+u21-2*u43 because of the way the UMatrix.row and WVector are created. (WVector is maxOrder by 1 and UMatrix.row is 1 by maxOrder)
+//    Eigen::VectorXd WVector15_0 = Eigen::VectorXd::Zero(maxOrder);     // W15,0     // Replacement vector to hold intermediate values to create the sum vector of 2*w15,1+u21-2*u43 because of the way the UMatrix.row and WVector are created. (WVector is maxOrder by 1 and UMatrix.row is 1 by maxOrder)
     Eigen::VectorXd WVector15_1 = Eigen::VectorXd::Zero(maxOrder);     // W15,1
     Eigen::VectorXd WVector15_2 = Eigen::VectorXd::Zero(maxOrder);     // W15,2
 
@@ -365,6 +366,23 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     Eigen::VectorXd WVector48_1 = Eigen::VectorXd::Zero(maxOrder);     // W48,1
     Eigen::VectorXd WVector48_2 = Eigen::VectorXd::Zero(maxOrder);     // W48,2
 
+    Eigen::VectorXd WVector52_1 = Eigen::VectorXd::Zero(maxOrder);     // W52,1
+    Eigen::VectorXd WVector52_2 = Eigen::VectorXd::Zero(maxOrder);     // W52,2
+    Eigen::VectorXd WVector52_3 = Eigen::VectorXd::Zero(maxOrder);     // W52,3
+    Eigen::VectorXd WVector52_4 = Eigen::VectorXd::Zero(maxOrder);     // W52,4
+    Eigen::VectorXd WVector52_5 = Eigen::VectorXd::Zero(maxOrder);     // W52,5
+    Eigen::VectorXd WVector52_6 = Eigen::VectorXd::Zero(maxOrder);     // W52,6
+    Eigen::VectorXd WVector52_7 = Eigen::VectorXd::Zero(maxOrder);     // W52,7
+    Eigen::VectorXd WVector52_8 = Eigen::VectorXd::Zero(maxOrder);     // W52,8
+
+    Eigen::VectorXd WVector53_1 = Eigen::VectorXd::Zero(maxOrder);     // W53,1
+    Eigen::VectorXd WVector53_2 = Eigen::VectorXd::Zero(maxOrder);     // W53,2
+    Eigen::VectorXd WVector53_3 = Eigen::VectorXd::Zero(maxOrder);     // W53,3
+    Eigen::VectorXd WVector53_4 = Eigen::VectorXd::Zero(maxOrder);     // W53,4
+
+    Eigen::VectorXd WVector55_1 = Eigen::VectorXd::Zero(maxOrder);     // W55,1
+    Eigen::VectorXd WVector55_2 = Eigen::VectorXd::Zero(maxOrder);     // W55,2
+
     // And fill them
 
     WVector4_0(0) = initialFunctionsMatrix(4,0);     // W4,0   // Added because of the mistake found in the recurrence relation of W4,2
@@ -462,7 +480,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     WVector14_2(0) = initialFunctionsMatrix(14,2);     // W14,2
     WVector14_3(0) = initialFunctionsMatrix(14,3);     // W14,3
 
-    WVector15_0(0) = UMatrix(21,0)-2*UMatrix(43,0);    // W15,0         // Replacement vector required to properly calculate U15
+//    WVector15_0(0) = UMatrix(21,0)-2*UMatrix(43,0);    // W15,0         // Replacement vector required to properly calculate U15
     WVector15_1(0) = initialFunctionsMatrix(15,1);     // W15,1
     WVector15_2(0) = initialFunctionsMatrix(15,2);     // W15,2
 
@@ -611,6 +629,23 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
     WVector48_1(0) = initialFunctionsMatrix(48,1);     // W48,1
     WVector48_2(0) = initialFunctionsMatrix(48,2);     // W48,2
+
+    WVector52_1(0) = initialFunctionsMatrix(52,1);     // W52,1
+    WVector52_2(0) = initialFunctionsMatrix(52,2);     // W52,2
+    WVector52_3(0) = initialFunctionsMatrix(52,3);     // W52,3
+    WVector52_4(0) = initialFunctionsMatrix(52,4);     // W52,4
+    WVector52_5(0) = initialFunctionsMatrix(52,5);     // W52,5
+    WVector52_6(0) = initialFunctionsMatrix(52,6);     // W52,6
+    WVector52_7(0) = initialFunctionsMatrix(52,7);     // W52,7
+    WVector52_8(0) = initialFunctionsMatrix(52,8);     // W52,8
+
+    WVector53_1(0) = initialFunctionsMatrix(53,1);     // W53,1
+    WVector53_2(0) = initialFunctionsMatrix(53,2);     // W53,2
+    WVector53_3(0) = initialFunctionsMatrix(53,3);     // W53,3
+    WVector53_4(0) = initialFunctionsMatrix(53,4);     // W53,4
+
+    WVector55_1(0) = initialFunctionsMatrix(54,1);     // W55,1
+    WVector55_2(0) = initialFunctionsMatrix(54,2);     // W55,2
 
     ////// Declaring other Vectors and variables ///////
 
@@ -964,6 +999,40 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         UMatrix(45,k) = WVector45_8(k);
 
+        // 50
+        UMatrix(50,k) = XMatrix(52,k);
+
+        // 51
+        UMatrix(51,k) = XMatrix(53,k);
+
+        // 52
+        WVector52_1(k) = getCosineRecurrenceRelation(XMatrix.row(10),WVector52_2,k);
+        WVector52_2(k) = getSineRecurrenceRelation(XMatrix.row(10),WVector52_1,k);
+        WVector52_3(k) = getMultiplicationRecurrenceRelation(UMatrix.row(10),WVector52_2,k);
+        WVector52_4(k) = getMultiplicationRecurrenceRelation(UMatrix.row(10),WVector52_1,k);
+        WVector52_5(k) = getMultiplicationRecurrenceRelation(WVector52_1,(UMatrix.row(4)+rotationalVelocity*XMatrix.row(5)),k);
+        WVector52_6(k) = getMultiplicationRecurrenceRelation(WVector52_3,(XMatrix.row(4)+rotationalVelocity*XMatrix.row(2)),k);
+        WVector52_7(k) = getMultiplicationRecurrenceRelation(WVector52_2,(UMatrix.row(5)-rotationalVelocity*XMatrix.row(4)),k);
+        WVector52_8(k) = getMultiplicationRecurrenceRelation(WVector52_4,(XMatrix.row(5)-rotationalVelocity*XMatrix.row(1)),k);
+
+        UMatrix(52,k) = WVector52_5(k)-WVector52_6(k)+WVector52_7(k)+WVector52_8(k);
+
+        // 53
+        WVector53_1(k) = getMultiplicationRecurrenceRelation(WVector52_2,(UMatrix.row(4)+rotationalVelocity*XMatrix.row(5)),k);
+        WVector53_2(k) = getMultiplicationRecurrenceRelation(WVector52_4,(XMatrix.row(4)+rotationalVelocity*XMatrix.row(2)),k);
+        WVector53_3(k) = getMultiplicationRecurrenceRelation(WVector52_1,(UMatrix.row(5)-rotationalVelocity*XMatrix.row(4)),k);
+        WVector53_4(k) = getMultiplicationRecurrenceRelation(WVector52_3,(XMatrix.row(5)-rotationalVelocity*XMatrix.row(1)),k);
+
+        UMatrix(53,k) = -WVector53_1(k)-WVector53_2(k)+WVector53_3(k)+WVector53_4(k);
+
+        // 54
+        UMatrix(54,k) = 2.0*WVector21_1(k)+2.0*WVector21_2(k)+rotationalVelocity*rotationalVelocity*UMatrix(19,k)+2.0*rotationalVelocity*(WVector45_2(k)-WVector45_1(k));
+
+        // 55
+        WVector55_1(k) = getMultiplicationRecurrenceRelation(UMatrix.row(53),XMatrix.row(50),k);
+        WVector55_2(k) = getMultiplicationRecurrenceRelation(UMatrix.row(52),XMatrix.row(51),k);
+
+        UMatrix(55,k) = WVector55_1(k)-WVector55_2(k);
 
 
         // 25
@@ -1191,11 +1260,15 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         // 15
 
-        WVector15_0(k) = UMatrix(21,k)-2.0*UMatrix(43,k);   // Replacement vector
-        WVector15_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(35),UMatrix.row(35),k);
-        WVector15_2(k) = getDivisionRecurrenceRelation((2*WVector15_1+WVector15_0),XMatrix.row(15),WVector15_2,k);
+//        WVector15_0(k) = UMatrix(21,k)-2.0*UMatrix(43,k);   // Replacement vector
+//        WVector15_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(35),UMatrix.row(35),k);
+//        WVector15_2(k) = getDivisionRecurrenceRelation((2*WVector15_1+WVector15_0),XMatrix.row(15),WVector15_2,k);
 
-        UMatrix(15,k) = 0.5*WVector15_2(k);
+        WVector15_1(k) = getPowerRecurrenceRelation((rotationalVelocity*rotationalVelocity*XMatrix.row(19)+4.0*XMatrix.row(54)+4.0*rotationalVelocity*XMatrix.row(55)),WVector15_1,0.5,k);
+        WVector15_2(k) = getPowerRecurrenceRelation(XMatrix.row(8),WVector15_2,-1.0,k);
+
+//        UMatrix(15,k) = 0.5*WVector15_2(k);
+        UMatrix(15,k) = rotationalVelocity*WVector15_1(k)-standardGravitationalParameter*WVector15_2(k)+Thrust_*WVector4_25(k)-WVector4_0(k);
 
         /// Debug ///
 
