@@ -30,6 +30,7 @@
  *      160526    S.D. Petrovic     Added W4,0 to be able to properly evaluate the recurrence relation of W4,2
  *      160602    S.D. Petrovic     Added the thrust recurrence relations
  *      160623    S.D. Petrovic     Corrected U15 and added corresponding auxiliary functions and recurrence relations
+ *      160628    S.D. Petrovic     Rewrote all transformation angle equations!!
  *
  *    References
  *
@@ -196,76 +197,40 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     Eigen::VectorXd WVector9 = Eigen::VectorXd::Zero(maxOrder);     // W9
 
 
+    Eigen::VectorXd WVector11_1 = Eigen::VectorXd::Zero(maxOrder);     // W11,1
+    Eigen::VectorXd WVector11_2 = Eigen::VectorXd::Zero(maxOrder);     // W11,2
+    Eigen::VectorXd WVector11_3 = Eigen::VectorXd::Zero(maxOrder);     // W11,3
+
     Eigen::VectorXd WVector12_1 = Eigen::VectorXd::Zero(maxOrder);     // W12,1
     Eigen::VectorXd WVector12_2 = Eigen::VectorXd::Zero(maxOrder);     // W12,2
-    Eigen::VectorXd WVector12_3 = Eigen::VectorXd::Zero(maxOrder);     // W12,3
-    Eigen::VectorXd WVector12_4 = Eigen::VectorXd::Zero(maxOrder);     // W12,4
-    Eigen::VectorXd WVector12_5 = Eigen::VectorXd::Zero(maxOrder);     // W12,5
-    Eigen::VectorXd WVector12_6 = Eigen::VectorXd::Zero(maxOrder);     // W12,6
-    Eigen::VectorXd WVector12_7 = Eigen::VectorXd::Zero(maxOrder);     // W12,7
 
-
+    Eigen::VectorXd WVector13_0 = Eigen::VectorXd::Zero(maxOrder);     // W13,0
     Eigen::VectorXd WVector13_1 = Eigen::VectorXd::Zero(maxOrder);     // W13,1
     Eigen::VectorXd WVector13_2 = Eigen::VectorXd::Zero(maxOrder);     // W13,2
     Eigen::VectorXd WVector13_3 = Eigen::VectorXd::Zero(maxOrder);     // W13,3
     Eigen::VectorXd WVector13_4 = Eigen::VectorXd::Zero(maxOrder);     // W13,4
     Eigen::VectorXd WVector13_5 = Eigen::VectorXd::Zero(maxOrder);     // W13,5
-
+    Eigen::VectorXd WVector13_6 = Eigen::VectorXd::Zero(maxOrder);     // W13,6
+    Eigen::VectorXd WVector13_7 = Eigen::VectorXd::Zero(maxOrder);     // W13,7
+    Eigen::VectorXd WVector13_8 = Eigen::VectorXd::Zero(maxOrder);     // W13,8
+    Eigen::VectorXd WVector13_9 = Eigen::VectorXd::Zero(maxOrder);     // W13,9
+    Eigen::VectorXd WVector13_10 = Eigen::VectorXd::Zero(maxOrder);     // W13,10
 
     Eigen::VectorXd WVector14_1 = Eigen::VectorXd::Zero(maxOrder);     // W14,1
     Eigen::VectorXd WVector14_2 = Eigen::VectorXd::Zero(maxOrder);     // W14,2
     Eigen::VectorXd WVector14_3 = Eigen::VectorXd::Zero(maxOrder);     // W14,3
+    Eigen::VectorXd WVector14_4 = Eigen::VectorXd::Zero(maxOrder);     // W14,4
+    Eigen::VectorXd WVector14_5 = Eigen::VectorXd::Zero(maxOrder);     // W14,5
+    Eigen::VectorXd WVector14_6 = Eigen::VectorXd::Zero(maxOrder);     // W14,6
+    Eigen::VectorXd WVector14_7 = Eigen::VectorXd::Zero(maxOrder);     // W14,7
+    Eigen::VectorXd WVector14_9 = Eigen::VectorXd::Zero(maxOrder);     // W14,9
 
-//    Eigen::VectorXd WVector15_0 = Eigen::VectorXd::Zero(maxOrder);     // W15,0     // Replacement vector to hold intermediate values to create the sum vector of 2*w15,1+u21-2*u43 because of the way the UMatrix.row and WVector are created. (WVector is maxOrder by 1 and UMatrix.row is 1 by maxOrder)
     Eigen::VectorXd WVector15_1 = Eigen::VectorXd::Zero(maxOrder);     // W15,1
     Eigen::VectorXd WVector15_2 = Eigen::VectorXd::Zero(maxOrder);     // W15,2
-
+    Eigen::VectorXd WVector15_3 = Eigen::VectorXd::Zero(maxOrder);     // W15,3
+    Eigen::VectorXd WVector15_4 = Eigen::VectorXd::Zero(maxOrder);     // W15,4
 
     Eigen::VectorXd WVector16 = Eigen::VectorXd::Zero(maxOrder);     // W16
-
-
-    Eigen::VectorXd WVector20 = Eigen::VectorXd::Zero(maxOrder);     // W20
-
-
-    Eigen::VectorXd WVector21_1 = Eigen::VectorXd::Zero(maxOrder);     // W21,1
-    Eigen::VectorXd WVector21_2 = Eigen::VectorXd::Zero(maxOrder);     // W21,2
-    Eigen::VectorXd WVector21_3 = Eigen::VectorXd::Zero(maxOrder);     // W21,3
-
-
-    Eigen::VectorXd WVector23_1 = Eigen::VectorXd::Zero(maxOrder);     // W23,1
-    Eigen::VectorXd WVector23_2 = Eigen::VectorXd::Zero(maxOrder);     // W23,2
-    Eigen::VectorXd WVector23_3 = Eigen::VectorXd::Zero(maxOrder);     // W23,3
-    Eigen::VectorXd WVector23_4 = Eigen::VectorXd::Zero(maxOrder);     // W23,4
-
-
-//    Eigen::VectorXd WVector24_1 = Eigen::VectorXd::Zero(maxOrder);     // W24,1   // Not needed anymore
-    Eigen::VectorXd WVector24_2 = Eigen::VectorXd::Zero(maxOrder);     // W24,2
-//    Eigen::VectorXd WVector24_3 = Eigen::VectorXd::Zero(maxOrder);     // W24,3   // Not needed anymore
-    Eigen::VectorXd WVector24_4 = Eigen::VectorXd::Zero(maxOrder);     // W24,4
-    Eigen::VectorXd WVector24_5 = Eigen::VectorXd::Zero(maxOrder);     // W24,5
-    Eigen::VectorXd WVector24_6 = Eigen::VectorXd::Zero(maxOrder);     // W24,6
-    Eigen::VectorXd WVector24_7 = Eigen::VectorXd::Zero(maxOrder);     // W24,7
-    Eigen::VectorXd WVector24_8 = Eigen::VectorXd::Zero(maxOrder);     // W24,8
-    Eigen::VectorXd WVector24_9 = Eigen::VectorXd::Zero(maxOrder);     // W24,9
-    Eigen::VectorXd WVector24_10 = Eigen::VectorXd::Zero(maxOrder);     // W24,10
-
-    Eigen::VectorXd WVector24_11 = Eigen::VectorXd::Zero(maxOrder);     // W24,11
-    Eigen::VectorXd WVector24_12 = Eigen::VectorXd::Zero(maxOrder);     // W24,12
-    Eigen::VectorXd WVector24_13 = Eigen::VectorXd::Zero(maxOrder);     // W24,13
-    Eigen::VectorXd WVector24_14 = Eigen::VectorXd::Zero(maxOrder);     // W24,14
-    Eigen::VectorXd WVector24_15 = Eigen::VectorXd::Zero(maxOrder);     // W24,15
-    Eigen::VectorXd WVector24_16 = Eigen::VectorXd::Zero(maxOrder);     // W24,16
-    Eigen::VectorXd WVector24_17 = Eigen::VectorXd::Zero(maxOrder);     // W24,17
-
-
-    Eigen::VectorXd WVector25_1 = Eigen::VectorXd::Zero(maxOrder);     // W25,1
-    Eigen::VectorXd WVector25_2 = Eigen::VectorXd::Zero(maxOrder);     // W25,2
-    Eigen::VectorXd WVector25_3 = Eigen::VectorXd::Zero(maxOrder);     // W25,3
-
-
-    Eigen::VectorXd WVector26_1 = Eigen::VectorXd::Zero(maxOrder);     // W26,1
-    Eigen::VectorXd WVector26_2 = Eigen::VectorXd::Zero(maxOrder);     // W26,2
-    Eigen::VectorXd WVector26_3 = Eigen::VectorXd::Zero(maxOrder);     // W26,3
 
 
     Eigen::VectorXd WVector27_1 = Eigen::VectorXd::Zero(maxOrder);     // W27,1
@@ -304,84 +269,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     Eigen::VectorXd WVector34_4 = Eigen::VectorXd::Zero(maxOrder);     // W34,4
 
 
-    Eigen::VectorXd WVector35_1 = Eigen::VectorXd::Zero(maxOrder);     // W35,1
-    Eigen::VectorXd WVector35_2 = Eigen::VectorXd::Zero(maxOrder);     // W35,2
-    Eigen::VectorXd WVector35_3 = Eigen::VectorXd::Zero(maxOrder);     // W35,3
 
-
-    Eigen::VectorXd WVector36 = Eigen::VectorXd::Zero(maxOrder);     // W36
-
-
-    Eigen::VectorXd WVector37_1 = Eigen::VectorXd::Zero(maxOrder);     // W37,1
-    Eigen::VectorXd WVector37_2 = Eigen::VectorXd::Zero(maxOrder);     // W37,2
-    Eigen::VectorXd WVector37_3 = Eigen::VectorXd::Zero(maxOrder);     // W37,3
-    Eigen::VectorXd WVector37_4 = Eigen::VectorXd::Zero(maxOrder);     // W37,4
-
-
-    Eigen::VectorXd WVector38_1 = Eigen::VectorXd::Zero(maxOrder);     // W38,1
-    Eigen::VectorXd WVector38_2 = Eigen::VectorXd::Zero(maxOrder);     // W38,2
-    Eigen::VectorXd WVector38_3 = Eigen::VectorXd::Zero(maxOrder);     // W38,3
-
-
-    Eigen::VectorXd WVector40_1 = Eigen::VectorXd::Zero(maxOrder);     // W40,1
-    Eigen::VectorXd WVector40_2 = Eigen::VectorXd::Zero(maxOrder);     // W40,2
-    Eigen::VectorXd WVector40_3 = Eigen::VectorXd::Zero(maxOrder);     // W40,3
-    Eigen::VectorXd WVector40_4 = Eigen::VectorXd::Zero(maxOrder);     // W40,4
-
-
-    Eigen::VectorXd WVector41_1 = Eigen::VectorXd::Zero(maxOrder);     // W41,1
-    Eigen::VectorXd WVector41_2 = Eigen::VectorXd::Zero(maxOrder);     // W41,2
-
-
-    Eigen::VectorXd WVector42_1 = Eigen::VectorXd::Zero(maxOrder);     // W42,1
-    Eigen::VectorXd WVector42_2 = Eigen::VectorXd::Zero(maxOrder);     // W42,2
-    Eigen::VectorXd WVector42_3 = Eigen::VectorXd::Zero(maxOrder);     // W42,3
-    Eigen::VectorXd WVector42_4 = Eigen::VectorXd::Zero(maxOrder);     // W42,4
-    Eigen::VectorXd WVector42_5 = Eigen::VectorXd::Zero(maxOrder);     // W42,5
-    Eigen::VectorXd WVector42_6 = Eigen::VectorXd::Zero(maxOrder);     // W42,6
-    Eigen::VectorXd WVector42_7 = Eigen::VectorXd::Zero(maxOrder);     // W42,7
-    Eigen::VectorXd WVector42_8 = Eigen::VectorXd::Zero(maxOrder);     // W42,8
-
-
-
-    Eigen::VectorXd WVector43_1 = Eigen::VectorXd::Zero(maxOrder);     // W43,1
-    Eigen::VectorXd WVector43_2 = Eigen::VectorXd::Zero(maxOrder);     // W43,2
-
-
-    Eigen::VectorXd WVector45_1 = Eigen::VectorXd::Zero(maxOrder);     // W45,1
-    Eigen::VectorXd WVector45_2 = Eigen::VectorXd::Zero(maxOrder);     // W45,2
-    Eigen::VectorXd WVector45_3 = Eigen::VectorXd::Zero(maxOrder);     // W45,3
-    Eigen::VectorXd WVector45_4 = Eigen::VectorXd::Zero(maxOrder);     // W45,4
-    Eigen::VectorXd WVector45_5 = Eigen::VectorXd::Zero(maxOrder);     // W45,5
-    Eigen::VectorXd WVector45_6 = Eigen::VectorXd::Zero(maxOrder);     // W45,6
-    Eigen::VectorXd WVector45_7 = Eigen::VectorXd::Zero(maxOrder);     // W45,7
-    Eigen::VectorXd WVector45_8 = Eigen::VectorXd::Zero(maxOrder);     // W45,8
-
-
-    Eigen::VectorXd WVector47_1 = Eigen::VectorXd::Zero(maxOrder);     // W47,1
-    Eigen::VectorXd WVector47_2 = Eigen::VectorXd::Zero(maxOrder);     // W47,2
-    Eigen::VectorXd WVector47_3 = Eigen::VectorXd::Zero(maxOrder);     // W47,3
-
-
-    Eigen::VectorXd WVector48_1 = Eigen::VectorXd::Zero(maxOrder);     // W48,1
-    Eigen::VectorXd WVector48_2 = Eigen::VectorXd::Zero(maxOrder);     // W48,2
-
-    Eigen::VectorXd WVector52_1 = Eigen::VectorXd::Zero(maxOrder);     // W52,1
-    Eigen::VectorXd WVector52_2 = Eigen::VectorXd::Zero(maxOrder);     // W52,2
-    Eigen::VectorXd WVector52_3 = Eigen::VectorXd::Zero(maxOrder);     // W52,3
-    Eigen::VectorXd WVector52_4 = Eigen::VectorXd::Zero(maxOrder);     // W52,4
-    Eigen::VectorXd WVector52_5 = Eigen::VectorXd::Zero(maxOrder);     // W52,5
-    Eigen::VectorXd WVector52_6 = Eigen::VectorXd::Zero(maxOrder);     // W52,6
-    Eigen::VectorXd WVector52_7 = Eigen::VectorXd::Zero(maxOrder);     // W52,7
-    Eigen::VectorXd WVector52_8 = Eigen::VectorXd::Zero(maxOrder);     // W52,8
-
-    Eigen::VectorXd WVector53_1 = Eigen::VectorXd::Zero(maxOrder);     // W53,1
-    Eigen::VectorXd WVector53_2 = Eigen::VectorXd::Zero(maxOrder);     // W53,2
-    Eigen::VectorXd WVector53_3 = Eigen::VectorXd::Zero(maxOrder);     // W53,3
-    Eigen::VectorXd WVector53_4 = Eigen::VectorXd::Zero(maxOrder);     // W53,4
-
-    Eigen::VectorXd WVector55_1 = Eigen::VectorXd::Zero(maxOrder);     // W55,1
-    Eigen::VectorXd WVector55_2 = Eigen::VectorXd::Zero(maxOrder);     // W55,2
 
     // And fill them
 
@@ -460,76 +348,41 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     WVector9(0) = initialFunctionsMatrix(9,1);     // W9
 
 
+
+    WVector11_1(0) = initialFunctionsMatrix(11,1);     // W11,1
+    WVector11_2(0) = initialFunctionsMatrix(11,2);     // W11,2
+    WVector11_3(0) = initialFunctionsMatrix(11,3);     // W11,3
+
     WVector12_1(0) = initialFunctionsMatrix(12,1);     // W12,1
     WVector12_2(0) = initialFunctionsMatrix(12,2);     // W12,2
-    WVector12_3(0) = initialFunctionsMatrix(12,3);     // W12,3
-    WVector12_4(0) = initialFunctionsMatrix(12,4);     // W12,4
-    WVector12_5(0) = initialFunctionsMatrix(12,5);     // W12,5
-    WVector12_6(0) = initialFunctionsMatrix(12,6);     // W12,6
-    WVector12_7(0) = initialFunctionsMatrix(12,7);     // W12,7
 
-
+    WVector13_0(0) = initialFunctionsMatrix(13,0);     // W13,0
     WVector13_1(0) = initialFunctionsMatrix(13,1);     // W13,1
     WVector13_2(0) = initialFunctionsMatrix(13,2);     // W13,2
     WVector13_3(0) = initialFunctionsMatrix(13,3);     // W13,3
     WVector13_4(0) = initialFunctionsMatrix(13,4);     // W13,4
     WVector13_5(0) = initialFunctionsMatrix(13,5);     // W13,5
-
+    WVector13_6(0) = initialFunctionsMatrix(13,6);     // W13,6
+    WVector13_7(0) = initialFunctionsMatrix(13,7);     // W13,7
+    WVector13_8(0) = initialFunctionsMatrix(13,8);     // W13,8
+    WVector13_9(0) = initialFunctionsMatrix(13,9);     // W13,9
+    WVector13_10(0) = initialFunctionsMatrix(13,10);     // W13,10
 
     WVector14_1(0) = initialFunctionsMatrix(14,1);     // W14,1
     WVector14_2(0) = initialFunctionsMatrix(14,2);     // W14,2
     WVector14_3(0) = initialFunctionsMatrix(14,3);     // W14,3
+    WVector14_4(0) = initialFunctionsMatrix(14,4);     // W14,4
+    WVector14_5(0) = initialFunctionsMatrix(14,5);     // W14,5
+    WVector14_6(0) = initialFunctionsMatrix(14,6);     // W14,6
+    WVector14_7(0) = initialFunctionsMatrix(14,7);     // W14,7
+    WVector14_9(0) = initialFunctionsMatrix(14,9);     // W14,9
 
-//    WVector15_0(0) = UMatrix(21,0)-2*UMatrix(43,0);    // W15,0         // Replacement vector required to properly calculate U15
     WVector15_1(0) = initialFunctionsMatrix(15,1);     // W15,1
     WVector15_2(0) = initialFunctionsMatrix(15,2);     // W15,2
-
+    WVector15_3(0) = initialFunctionsMatrix(15,3);     // W15,3
+    WVector15_4(0) = initialFunctionsMatrix(15,4);     // W15,4
 
     WVector16(0) = initialFunctionsMatrix(16,1);     // W16
-
-
-    WVector20(0) = initialFunctionsMatrix(20,1);     // W20
-
-
-    WVector21_1(0) = initialFunctionsMatrix(21,1);     // W21,1
-    WVector21_2(0) = initialFunctionsMatrix(21,2);     // W21,2
-    WVector21_3(0) = initialFunctionsMatrix(21,3);     // W21,3
-
-
-    WVector23_1(0) = initialFunctionsMatrix(23,1);     // W23,1
-    WVector23_2(0) = initialFunctionsMatrix(23,2);     // W23,2
-    WVector23_3(0) = initialFunctionsMatrix(23,3);     // W23,3
-    WVector23_4(0) = initialFunctionsMatrix(23,4);     // W23,4
-
-
-//    WVector24_1(0) = initialFunctionsMatrix(24,1);     // W24,1   // Not needed anymore
-    WVector24_2(0) = initialFunctionsMatrix(24,2);     // W24,2
-//    WVector24_3(0) = initialFunctionsMatrix(24,3);     // W24,3   // Not needed anymore
-    WVector24_4(0) = initialFunctionsMatrix(24,4);     // W24,4
-    WVector24_5(0) = initialFunctionsMatrix(24,5);     // W24,5
-    WVector24_6(0) = initialFunctionsMatrix(24,6);     // W24,6
-    WVector24_7(0) = initialFunctionsMatrix(24,7);     // W24,7
-    WVector24_8(0) = initialFunctionsMatrix(24,8);     // W24,8
-    WVector24_9(0) = initialFunctionsMatrix(24,9);     // W24,9
-    WVector24_10(0) = initialFunctionsMatrix(24,10);     // W24,10
-
-    WVector24_11(0) = initialFunctionsMatrix(24,11);     // W24,11
-    WVector24_12(0) = initialFunctionsMatrix(24,12);     // W24,12
-    WVector24_13(0) = initialFunctionsMatrix(24,13);     // W24,13
-    WVector24_14(0) = initialFunctionsMatrix(24,14);     // W24,14
-    WVector24_15(0) = initialFunctionsMatrix(24,15);     // W24,15
-    WVector24_16(0) = initialFunctionsMatrix(24,16);     // W24,16
-    WVector24_17(0) = initialFunctionsMatrix(24,17);     // W24,17
-
-
-    WVector25_1(0) = initialFunctionsMatrix(25,1);     // W25,1
-    WVector25_2(0) = initialFunctionsMatrix(25,2);     // W25,2
-    WVector25_3(0) = initialFunctionsMatrix(25,3);     // W25,3
-
-
-    WVector26_1(0) = initialFunctionsMatrix(26,1);     // W26,1
-    WVector26_2(0) = initialFunctionsMatrix(26,2);     // W26,2
-    WVector26_3(0) = initialFunctionsMatrix(26,3);     // W26,3
 
 
     WVector27_1(0) = initialFunctionsMatrix(27,1);     // W27,1
@@ -568,84 +421,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     WVector34_4(0) = initialFunctionsMatrix(34,3);     // W34,4
 
 
-    WVector35_1(0) = initialFunctionsMatrix(35,1);     // W35,1
-    WVector35_2(0) = initialFunctionsMatrix(35,2);     // W35,2
-    WVector35_3(0) = initialFunctionsMatrix(35,3);     // W35,3
 
-
-    WVector36(0) = initialFunctionsMatrix(36,1);     // W36
-
-
-    WVector37_1(0) = initialFunctionsMatrix(37,1);     // W37,1
-    WVector37_2(0) = initialFunctionsMatrix(37,2);     // W37,2
-    WVector37_3(0) = initialFunctionsMatrix(37,3);     // W37,3
-    WVector37_4(0) = initialFunctionsMatrix(37,4);     // W37,4
-
-
-    WVector38_1(0) = initialFunctionsMatrix(38,1);     // W38,1
-    WVector38_2(0) = initialFunctionsMatrix(38,2);     // W38,2
-    WVector38_3(0) = initialFunctionsMatrix(38,3);     // W38,3
-
-
-    WVector40_1(0) = initialFunctionsMatrix(40,1);     // W40,1
-    WVector40_2(0) = initialFunctionsMatrix(40,2);     // W40,2
-    WVector40_3(0) = initialFunctionsMatrix(40,3);     // W40,3
-    WVector40_4(0) = initialFunctionsMatrix(40,4);     // W40,4
-
-
-    WVector41_1(0) = initialFunctionsMatrix(41,1);     // W41,1
-    WVector41_2(0) = initialFunctionsMatrix(41,2);     // W41,2
-
-
-    WVector42_1(0) = initialFunctionsMatrix(42,1);     // W42,1
-    WVector42_2(0) = initialFunctionsMatrix(42,2);     // W42,2
-    WVector42_3(0) = initialFunctionsMatrix(42,3);     // W42,3
-    WVector42_4(0) = initialFunctionsMatrix(42,4);     // W42,4
-    WVector42_5(0) = initialFunctionsMatrix(42,5);     // W42,5
-    WVector42_6(0) = initialFunctionsMatrix(42,6);     // W42,6
-    WVector42_7(0) = initialFunctionsMatrix(42,7);     // W42,7
-    WVector42_8(0) = initialFunctionsMatrix(42,8);     // W42,8
-
-
-
-    WVector43_1(0) = initialFunctionsMatrix(43,1);     // W43,1
-    WVector43_2(0) = initialFunctionsMatrix(43,2);     // W43,2
-
-
-    WVector45_1(0) = initialFunctionsMatrix(45,1);     // W45,1
-    WVector45_2(0) = initialFunctionsMatrix(45,2);     // W45,2
-    WVector45_3(0) = initialFunctionsMatrix(45,3);     // W45,3
-    WVector45_4(0) = initialFunctionsMatrix(45,4);     // W45,4
-    WVector45_5(0) = initialFunctionsMatrix(45,5);     // W45,5
-    WVector45_6(0) = initialFunctionsMatrix(45,6);     // W45,6
-    WVector45_7(0) = initialFunctionsMatrix(45,7);     // W45,7
-    WVector45_8(0) = initialFunctionsMatrix(45,8);     // W45,8
-
-
-    WVector47_1(0) = initialFunctionsMatrix(47,1);     // W47,1
-    WVector47_2(0) = initialFunctionsMatrix(47,2);     // W47,2
-    WVector47_3(0) = initialFunctionsMatrix(47,3);     // W47,3
-
-
-    WVector48_1(0) = initialFunctionsMatrix(48,1);     // W48,1
-    WVector48_2(0) = initialFunctionsMatrix(48,2);     // W48,2
-
-    WVector52_1(0) = initialFunctionsMatrix(52,1);     // W52,1
-    WVector52_2(0) = initialFunctionsMatrix(52,2);     // W52,2
-    WVector52_3(0) = initialFunctionsMatrix(52,3);     // W52,3
-    WVector52_4(0) = initialFunctionsMatrix(52,4);     // W52,4
-    WVector52_5(0) = initialFunctionsMatrix(52,5);     // W52,5
-    WVector52_6(0) = initialFunctionsMatrix(52,6);     // W52,6
-    WVector52_7(0) = initialFunctionsMatrix(52,7);     // W52,7
-    WVector52_8(0) = initialFunctionsMatrix(52,8);     // W52,8
-
-    WVector53_1(0) = initialFunctionsMatrix(53,1);     // W53,1
-    WVector53_2(0) = initialFunctionsMatrix(53,2);     // W53,2
-    WVector53_3(0) = initialFunctionsMatrix(53,3);     // W53,3
-    WVector53_4(0) = initialFunctionsMatrix(53,4);     // W53,4
-
-    WVector55_1(0) = initialFunctionsMatrix(54,1);     // W55,1
-    WVector55_2(0) = initialFunctionsMatrix(54,2);     // W55,2
 
     ////// Declaring other Vectors and variables ///////
 
@@ -780,90 +556,6 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         UMatrix(4,k) = -standardGravitationalParameter*WVector4_1(k)+WVector4_24(k)+WVector4_35(k)-WVector4_36(k);
 
 
-        /// Debug ///
-
-//        /// Multiplication ///
-
-//               const Eigen::VectorXd F = WVector4_9;
-//               const Eigen::VectorXd G = XMatrix.row(16);
-//                const int order = k;
-
-//            double Wmult_ = 0;                   // Setting the output to zero initially (just in case)
-
-//        //const int order = F.size()-1;           // Determining the order of the computation, which is the length of the F vector minus one (because the first entry corresponds to the 0th order, etc.)
-
-
-//        // Computing the recurrence value
-//        for (int j=0; j < order+1; j++){                    // It goes till the order (till k), and stops as soon as j becomes k+1
-
-
-//             Wmult_ += F(order)*G(order-j);          // Wmult += ... means Wmult = Wmult + ...
-
-//             std::cout<<"Wmult_ = "<<Wmult_<<std::endl;
-
-
-//        };
-
-//        std::cout<<"F(0) = "<<F(0)<<std::endl;
-//        std::cout<<"F(1) = "<<F(1)<<std::endl;
-//        std::cout<<"F(2) = "<<F(2)<<std::endl;
-//        std::cout<<"F(3) = "<<F(3)<<std::endl;
-//        std::cout<<"F(4) = "<<F(4)<<std::endl;
-//        std::cout<<"F(5) = "<<F(5)<<std::endl;
-//        std::cout<<"F(6) = "<<F(6)<<std::endl;
-//        std::cout<<"F(7) = "<<F(7)<<std::endl;
-//        std::cout<<"F(8) = "<<F(8)<<std::endl;
-//        std::cout<<"F = "<<F<<std::endl;
-
-//        std::cout<<"G(0) = "<<G(0)<<std::endl;
-//        std::cout<<"G(1) = "<<G(1)<<std::endl;
-//        std::cout<<"G(2) = "<<G(2)<<std::endl;
-//        std::cout<<"G(3) = "<<G(3)<<std::endl;
-//        std::cout<<"G(4) = "<<G(4)<<std::endl;
-//        std::cout<<"G(5) = "<<G(5)<<std::endl;
-//        std::cout<<"G(6) = "<<G(6)<<std::endl;
-//        std::cout<<"G(7) = "<<G(7)<<std::endl;
-//        std::cout<<"G(8) = "<<G(8)<<std::endl;
-//        std::cout<<"G = "<<G<<std::endl;
-
-
-
-
-
-
-//        double Wdiv_ = 0;               // Setting the outcome to zero to avoid previous answers that might be stored somewhere for some reason
-//        double interSum = 0;           // Defining an intermediate outcome for the summation
-
-//        // Avoid singularities
-//        const Eigen::VectorXd G = WVector4_9;
-//        const Eigen::VectorXd F = XMatrix.row(16);
-//        const Eigen::VectorXd Wdiv = WVector4_0;
-//        const int order = k;
-
-//        if (G(0) != 0){
-
-//            //    const int order = F.size()-1;               // Determine the current order
-
-//                for (int j=1; j<order+1; j++){
-
-//                interSum +=G(j)*Wdiv(order-j);              // Perform the summation
-//                std::cout<<"interSum = "<<interSum<<std::endl;
-
-//                };
-
-//                Wdiv_ = (1/G(0))*(F(order)-interSum);       // Compute the current value
-
-//                std::cout<<"F(order) = "<<F(order)<<std::endl;
-//                std::cout<<"order = "<<order<<std::endl;
-//                std::cout<<"G(0) = "<<G(0)<<std::endl;
-//                std::cout<<"(1/G(0)) = "<<(1/G(0))<<std::endl;
-//                std::cout<<"Wdiv_ = "<<Wdiv_<<std::endl;
-
-//        }
-
-////        std::cout<<"standardGravitationalParameter = "<<standardGravitationalParameter<<std::endl;
-
-        /// Debug ///
 
         // 5
 
@@ -913,135 +605,68 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         UMatrix(10,k) = 0;
 
-        // 49
-        UMatrix(49,k) = XMatrix(45,k);
 
         // 11
+        WVector11_1(k) = getDivisionRecurrenceRelation(XMatrix.row(15),XMatrix.row(16),WVector11_1,k);
+        WVector11_2(k) = getDivisionRecurrenceRelation(WVector4_12,WVector4_6,WVector11_2,k);
+        WVector11_3(k) = getMultiplicationRecurrenceRelation(WVector11_1,WVector11_2,k);
 
-//        UMatrix(11,k) = XMatrix(45,k)-rotationalVelocity;
-        UMatrix(11,k) = XMatrix(45,k);
-
+        UMatrix(11,k) = WVector11_3(k);
 
         // 12
+        WVector12_1(k) = getMultiplicationRecurrenceRelation(WVector4_5,WVector4_38,k);
+        WVector12_2(k) = getMultiplicationRecurrenceRelation(WVector11_1,WVector12_1,k);
 
-        WVector12_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(20),XMatrix.row(6),k);
-        WVector12_2(k) = getMultiplicationRecurrenceRelation(XMatrix.row(3),XMatrix.row(25),k);
-        WVector12_3(k) = getDivisionRecurrenceRelation(XMatrix.row(3),XMatrix.row(20),WVector12_3,k);
-        WVector12_4(k) = getMultiplicationRecurrenceRelation(WVector12_3,WVector12_3,k);
-        WVector12_5(k) = getPowerRecurrenceRelation((onesVector-WVector12_4),WVector12_5,0.5,k);                                 // change to Eigen::VectorXd -- check
-        WVector12_6(k) = getMultiplicationRecurrenceRelation(XMatrix.row(8),WVector12_5,k);
-        WVector12_7(k) = getDivisionRecurrenceRelation((WVector12_1-WVector12_2),WVector12_6,WVector12_7,k);
+        UMatrix(12,k) = WVector12_2(k);
 
+        // 13
+        WVector13_0(k) = getDivisionRecurrenceRelation(XMatrix.row(16),XMatrix.row(15),WVector13_0,k);
+        WVector13_1(k) = getMultiplicationRecurrenceRelation(WVector4_5,WVector4_11,k);
+        WVector13_2(k) = getDivisionRecurrenceRelation(WVector4_7,WVector4_38,WVector13_2,k);
+        WVector13_3(k) = getDivisionRecurrenceRelation(WVector4_4,WVector4_38,WVector13_3,k);
+        WVector13_4(k) = getMultiplicationRecurrenceRelation(XMatrix.row(15),WVector4_38,k);
+        WVector13_5(k) = getMultiplicationRecurrenceRelation(WVector13_0,WVector4_12,k);
+        WVector13_6(k) = getMultiplicationRecurrenceRelation(WVector11_1,WVector13_3,k);
+        WVector13_7(k) = getDivisionRecurrenceRelation((WVector6_5-WVector13_1),WVector4_38,WVector13_7,k);
+        WVector13_8(k) = getMultiplicationRecurrenceRelation(WVector13_5,WVector13_2,k);
+        WVector13_9(k) = getMultiplicationRecurrenceRelation(WVector13_6,WVector6_3,k);
+        WVector13_10(k) = getDivisionRecurrenceRelation(WVector4_33,WVector13_4,WVector13_10,k);
 
-//        UMatrix(12,k) = WVector12_7(k);
-        UMatrix(12,k) = XMatrix(24,k);
+        UMatrix(13,k) = 2.0*rotationalVelocity*WVector13_7(k)+WVector13_8(k)+rotationalVelocity*rotationalVelocity*WVector13_9(k)+WVector13_10(k);
 
-        // 19
+        // 14
+        WVector14_1(k) = getPowerRecurrenceRelation(XMatrix.row(16),WVector14_1,2.0,k);
+        WVector14_2(k) = getMultiplicationRecurrenceRelation(WVector11_1,WVector4_38,k);
+        WVector14_3(k) = getMultiplicationRecurrenceRelation(WVector13_0,WVector4_6,k);
+        WVector14_4(k) = getMultiplicationRecurrenceRelation(WVector6_0,WVector4_5,k);
+        WVector14_5(k) = getDivisionRecurrenceRelation(WVector4_34,XMatrix.row(15),WVector14_5,k);
+        WVector14_6(k) = getDivisionRecurrenceRelation(WVector4_38,XMatrix.row(15),WVector14_6,k);
+        WVector14_7(k) = getMultiplicationRecurrenceRelation(WVector14_3,(WVector4_15+WVector14_4),k);
+        WVector14_9(k) = getDivisionRecurrenceRelation(WVector14_6,WVector14_1,WVector14_9,k);
 
-        UMatrix(19,k) = 2.0*(WVector8_1(k)+WVector8_2(k));
+        UMatrix(14,k) = 2.0*rotationalVelocity*WVector6_3(k)+WVector14_2(k)+rotationalVelocity*rotationalVelocity*WVector14_7(k)+WVector14_5(k)-standardGravitationalParameter*WVector14_9(k);
 
-        // 20
+        // 15
+        WVector15_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(16),WVector4_6,k);
+        WVector15_2(k) = getMultiplicationRecurrenceRelation(WVector4_38,WVector4_10,k);
+        WVector15_3(k) = getDivisionRecurrenceRelation(WVector4_7,WVector14_1,WVector15_3,k);
+        WVector15_4(k) = getMultiplicationRecurrenceRelation(WVector15_1,(WVector4_11-WVector15_2),k);
 
-//        WVector20(k) = getDivisionRecurrenceRelation(XMatrix.row(26),XMatrix.row(20),WVector20,k);
+        UMatrix(15,k) = rotationalVelocity*rotationalVelocity*WVector15_4(k)+WVector4_2(k)-standardGravitationalParameter*WVector15_3(k);
 
+        // 16
+        WVector16(k) = getMultiplicationRecurrenceRelation(XMatrix.row(15),WVector4_7,k);
 
-//        UMatrix(20,k) = 0.5*WVector20(k);
-        UMatrix(20,k) = XMatrix(25,k);
-
-        // 35
-
-        WVector35_1(k) = getMultiplicationRecurrenceRelation(WVector4_6,XMatrix.row(25),k);
-        WVector35_2(k) = getMultiplicationRecurrenceRelation(WVector4_4,XMatrix.row(24),k);
-        WVector35_3(k) = getMultiplicationRecurrenceRelation(WVector35_2,XMatrix.row(12),k);
-
-        UMatrix(35,k) = rotationalVelocity*(WVector35_1(k)-WVector35_3(k));
-
-        // 9
-
-        W9IntermediateVector(k) = getMultiplicationRecurrenceRelation(XMatrix.row(9),UMatrix.row(8),k);
-
-        WVector9(k) = getDivisionRecurrenceRelation(W9IntermediateVector,XMatrix.row(8),WVector9,k);
-
-        UMatrix(9,k) = 1.5*WVector9(k);
-
-        // 21
-
-        WVector21_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(4),UMatrix.row(4),k);
-        WVector21_2(k) = getMultiplicationRecurrenceRelation(XMatrix.row(5),UMatrix.row(5),k);
-        WVector21_3(k) = getMultiplicationRecurrenceRelation(XMatrix.row(6),UMatrix.row(6),k);
+        UMatrix(16,k) = WVector16(k);
 
 
-        UMatrix(21,k) = 2*(WVector21_1(k)+WVector21_2(k)+WVector21_3(k));
 
-        // 26
-
-        WVector26_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(1),UMatrix.row(4),k);
-        WVector26_2(k) = getMultiplicationRecurrenceRelation(XMatrix.row(2),UMatrix.row(5),k);
-        WVector26_3(k) = getMultiplicationRecurrenceRelation(XMatrix.row(3),UMatrix.row(6),k);
-
-        UMatrix(26,k) = 2.0*XMatrix(21,k)+2*(WVector26_1(k)+WVector26_2(k)+WVector26_3(k));
 
         // 31
 
-        UMatrix(31,k) = UMatrix(20,k);
-
-        // 45
-
-        WVector45_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(1),UMatrix.row(5),k);
-        WVector45_2(k) = getMultiplicationRecurrenceRelation(XMatrix.row(2),UMatrix.row(4),k);
-        WVector45_3(k) = getMultiplicationRecurrenceRelation(XMatrix.row(1),XMatrix.row(5),k);
-        WVector45_4(k) = getMultiplicationRecurrenceRelation(XMatrix.row(2),XMatrix.row(4),k);
-        WVector45_5(k) = getMultiplicationRecurrenceRelation(XMatrix.row(19),XMatrix.row(19),k);
-        WVector45_6(k) = getMultiplicationRecurrenceRelation(XMatrix.row(19),(WVector45_1-WVector45_2),k);
-        WVector45_7(k) = getMultiplicationRecurrenceRelation(UMatrix.row(19),(WVector45_3-WVector45_4),k);
-        WVector45_8(k) = getDivisionRecurrenceRelation((WVector45_6-WVector45_7),WVector45_5,WVector45_8,k);
+        UMatrix(31,k) = UMatrix(16,k);
 
 
-        UMatrix(45,k) = WVector45_8(k);
-
-        // 50
-        UMatrix(50,k) = XMatrix(52,k);
-
-        // 51
-        UMatrix(51,k) = XMatrix(53,k);
-
-        // 52
-        WVector52_1(k) = getCosineRecurrenceRelation(XMatrix.row(10),WVector52_2,k);
-        WVector52_2(k) = getSineRecurrenceRelation(XMatrix.row(10),WVector52_1,k);
-        WVector52_3(k) = getMultiplicationRecurrenceRelation(UMatrix.row(10),WVector52_2,k);
-        WVector52_4(k) = getMultiplicationRecurrenceRelation(UMatrix.row(10),WVector52_1,k);
-        WVector52_5(k) = getMultiplicationRecurrenceRelation(WVector52_1,(UMatrix.row(4)+rotationalVelocity*XMatrix.row(5)),k);
-        WVector52_6(k) = getMultiplicationRecurrenceRelation(WVector52_3,(XMatrix.row(4)+rotationalVelocity*XMatrix.row(2)),k);
-        WVector52_7(k) = getMultiplicationRecurrenceRelation(WVector52_2,(UMatrix.row(5)-rotationalVelocity*XMatrix.row(4)),k);
-        WVector52_8(k) = getMultiplicationRecurrenceRelation(WVector52_4,(XMatrix.row(5)-rotationalVelocity*XMatrix.row(1)),k);
-
-        UMatrix(52,k) = WVector52_5(k)-WVector52_6(k)+WVector52_7(k)+WVector52_8(k);
-
-        // 53
-        WVector53_1(k) = getMultiplicationRecurrenceRelation(WVector52_2,(UMatrix.row(4)+rotationalVelocity*XMatrix.row(5)),k);
-        WVector53_2(k) = getMultiplicationRecurrenceRelation(WVector52_4,(XMatrix.row(4)+rotationalVelocity*XMatrix.row(2)),k);
-        WVector53_3(k) = getMultiplicationRecurrenceRelation(WVector52_1,(UMatrix.row(5)-rotationalVelocity*XMatrix.row(4)),k);
-        WVector53_4(k) = getMultiplicationRecurrenceRelation(WVector52_3,(XMatrix.row(5)-rotationalVelocity*XMatrix.row(1)),k);
-
-        UMatrix(53,k) = -WVector53_1(k)-WVector53_2(k)+WVector53_3(k)+WVector53_4(k);
-
-        // 54
-        UMatrix(54,k) = 2.0*WVector21_1(k)+2.0*WVector21_2(k)+rotationalVelocity*rotationalVelocity*UMatrix(19,k)+2.0*rotationalVelocity*(WVector45_2(k)-WVector45_1(k));
-
-        // 55
-        WVector55_1(k) = getMultiplicationRecurrenceRelation(UMatrix.row(53),XMatrix.row(50),k);
-        WVector55_2(k) = getMultiplicationRecurrenceRelation(UMatrix.row(52),XMatrix.row(51),k);
-
-        UMatrix(55,k) = WVector55_1(k)-WVector55_2(k);
-
-
-        // 25
-
-        WVector25_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(8),UMatrix.row(26),k);
-        WVector25_2(k) = getMultiplicationRecurrenceRelation(XMatrix.row(26),XMatrix.row(26),k);
-        WVector25_3(k) = getDivisionRecurrenceRelation((2.0*WVector25_1-WVector25_2),XMatrix.row(9),WVector25_3,k);
-
-        UMatrix(25,k) = 0.25*WVector25_3(k);
 
         // 30
 
@@ -1066,16 +691,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         UMatrix(30,k) = WVector30_9(k);
 
-//        /// Debug ///
 
-//        std::cout<<"XMatrix.row(31) = "<<XMatrix.row(31)<<std::endl;
-//        std::cout<<"3*densityPolyCoefficients(3)*WVector30_8+2*densityPolyCoefficients(2)*XMatrix.row(31)+densityPolyCoefficient_1 = "<<3*densityPolyCoefficients(3)*WVector30_8+2*densityPolyCoefficients(2)*XMatrix.row(31)+densityPolyCoefficient_1<<std::endl;
-//        std::cout<<"densityPolyCoefficient_1 = "<<densityPolyCoefficient_1<<std::endl;
-//        std::cout<<"densityPolyCoefficients(2) = "<<densityPolyCoefficients(2)<<std::endl;
-//        std::cout<<"UMatrix.row(30) = "<<UMatrix.row(30)<<std::endl;
-//        std::cout<<"x31 transpose = "<<x31Transpose<<std::endl;
-
-//        /// Debug ///
 
         // 34
         // First it has to be determined which equation has to be used and which values have to be computed
@@ -1123,51 +739,6 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
 
 
-
-        // 36
-
-        WVector36(k) = getDivisionRecurrenceRelation(UMatrix.row(21),XMatrix.row(36),WVector36,k);
-
-        UMatrix(36,k) = 0.5*WVector36(k);
-
-        // 46
-
-        UMatrix(46,k) = UMatrix(45,k);
-
-        // 47
-
-        WVector47_1(k) =  getMultiplicationRecurrenceRelation(UMatrix.row(45),WVector4_6,k);
-        WVector47_2(k) =  getMultiplicationRecurrenceRelation(UMatrix.row(12),WVector4_4,k);
-        WVector47_3(k) =  getMultiplicationRecurrenceRelation(XMatrix.row(45),WVector47_2,k);
-
-        UMatrix(47,k) = WVector47_1(k)-WVector47_3(k);
-
-        // 24
-
-//        WVector24_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(6),UMatrix.row(20),k); // Not needed anymore
-        WVector24_2(k) = getMultiplicationRecurrenceRelation(XMatrix.row(20),UMatrix.row(6),k);
-//        WVector24_3(k) = getMultiplicationRecurrenceRelation(XMatrix.row(25),XMatrix.row(6),k);   // Not needed anymore
-        WVector24_4(k) = getMultiplicationRecurrenceRelation(XMatrix.row(3),UMatrix.row(25),k);
-//        WVector24_5(k) = getDivisionRecurrenceRelation((WVector24_1+WVector24_2-WVector24_3-WVector24_4),WVector12_6,WVector24_5,k); // Wrong
-        WVector24_5(k) = getDivisionRecurrenceRelation((WVector24_2-WVector24_4),WVector12_6,WVector24_5,k);
-//        WVector24_6(k) = getMultiplicationRecurrenceRelation(XMatrix.row(3),WVector24_4,k); // Wrong
-        WVector24_6(k) = getMultiplicationRecurrenceRelation(XMatrix.row(3),WVector12_2,k);
-        WVector24_7(k) = getPowerRecurrenceRelation(XMatrix.row(20),WVector24_7,3,k);
-        WVector24_8(k) = getDivisionRecurrenceRelation(WVector8_3,XMatrix.row(8),WVector24_8,k);
-        WVector24_9(k) = getDivisionRecurrenceRelation(WVector24_6,WVector24_7,WVector24_9,k);
-        WVector24_10(k) = getMultiplicationRecurrenceRelation((2*WVector24_9-2*WVector24_8),(WVector12_1-WVector12_2),k);
-
-        WVector24_11(k) = getMultiplicationRecurrenceRelation(UMatrix.row(8),(WVector12_1-WVector12_2),k);
-        WVector24_12(k) = getPowerRecurrenceRelation((onesVector-WVector12_4),WVector24_12,1.5,k);                                    // change to Eigen::VectorXd --- check
-        WVector24_13(k) = getMultiplicationRecurrenceRelation(XMatrix.row(8),XMatrix.row(8),k);
-        WVector24_14(k) = getMultiplicationRecurrenceRelation(XMatrix.row(8),WVector24_12,k);
-        WVector24_15(k) = getMultiplicationRecurrenceRelation(WVector24_13,WVector12_5,k);
-        WVector24_16(k) = getDivisionRecurrenceRelation(WVector24_10,WVector24_14,WVector24_16,k);
-        WVector24_17(k) = getDivisionRecurrenceRelation(WVector24_11,WVector24_15,WVector24_17,k);
-
-        UMatrix(24,k) = WVector24_5(k)-0.5*WVector24_16(k)-WVector24_17(k);
-
-
         // 28
 
         WVector28(k) = getMultiplicationRecurrenceRelation(UMatrix.row(30),XMatrix.row(28),k);
@@ -1180,162 +751,6 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         UMatrix(33,k) = WVector33(k)*((adiabeticIndex*specificGasConstant)/2.0);
 
-        // 37
-
-        WVector37_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(36),UMatrix.row(25),k);
-        WVector37_2(k) = getMultiplicationRecurrenceRelation(XMatrix.row(25),UMatrix.row(36),k);
-        WVector37_3(k) = getMultiplicationRecurrenceRelation(XMatrix.row(36),XMatrix.row(36),k);
-        WVector37_4(k) = getDivisionRecurrenceRelation((WVector37_1-WVector37_2),WVector37_3,WVector37_4,k);
-
-        UMatrix(37,k) = WVector37_4(k);
-
-        // 41
-
-        WVector41_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(36),UMatrix.row(35),k);
-        WVector41_2(k) = getMultiplicationRecurrenceRelation(XMatrix.row(35),UMatrix.row(36),k);
-
-        UMatrix(41,k) = WVector41_1(k)+WVector41_2(k);
-
-        // 48
-
-        WVector48_1(k) =  getMultiplicationRecurrenceRelation(UMatrix.row(46),WVector4_6,k);
-        WVector48_2(k) =  getMultiplicationRecurrenceRelation(XMatrix.row(46),WVector47_2,k);
-
-        UMatrix(48,k) = WVector48_1(k)-WVector48_2(k);
-
-        // 13
-
-        WVector13_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(24),UMatrix.row(48),k);
-        WVector13_2(k) = getMultiplicationRecurrenceRelation(XMatrix.row(48),UMatrix.row(24),k);
-        WVector13_3(k) = getMultiplicationRecurrenceRelation(XMatrix.row(48),XMatrix.row(48),k);
-        WVector13_4(k) = getMultiplicationRecurrenceRelation(XMatrix.row(24),XMatrix.row(24),k);
-        WVector13_5(k) = getDivisionRecurrenceRelation((WVector13_1-WVector13_2),(WVector13_3+WVector13_4),WVector13_5,k);
-
-//        std::cout<<"(WVector13_1-WVector13_2) = "<<(WVector13_1-WVector13_2)<<std::endl;
-//        std::cout<<"(WVector13_3+WVector13_4) = "<<(WVector13_3+WVector13_4)<<std::endl;
-//        std::cout<<"WVector13_5 = "<<WVector13_5<<std::endl;
-
-
-        UMatrix(13,k) = WVector13_5(k);
-
-        // 38
-
-        WVector38_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(37),XMatrix.row(37),k);
-        WVector38_2(k) = getPowerRecurrenceRelation((onesVector-WVector38_1),WVector38_2,0.5,k);                         // change to Eigen::VectorXd --- check
-        WVector38_3(k) = getDivisionRecurrenceRelation(UMatrix.row(37),WVector38_2,WVector38_3,k);
-
-
-        UMatrix(38,k) = WVector38_3(k);
-
-        // 40
-
-        WVector40_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(24),UMatrix.row(47),k);
-        WVector40_2(k) = getMultiplicationRecurrenceRelation(XMatrix.row(47),UMatrix.row(24),k);
-        WVector40_3(k) = getMultiplicationRecurrenceRelation(XMatrix.row(47),XMatrix.row(47),k);
-        WVector40_4(k) = getDivisionRecurrenceRelation((WVector40_1-WVector40_2),(WVector40_3+WVector13_4),WVector40_4,k);
-
-
-
-        UMatrix(40,k) = WVector40_4(k);
-
-        // 42
-
-        WVector42_1(k) = getCosineRecurrenceRelation(XMatrix.row(38),WVector42_3,k);
-        WVector42_2(k) = getCosineRecurrenceRelation(XMatrix.row(40),WVector42_4,k);
-        WVector42_3(k) = getSineRecurrenceRelation(XMatrix.row(38),WVector42_1,k);
-        WVector42_4(k) = getSineRecurrenceRelation(XMatrix.row(40),WVector42_2,k);
-        WVector42_5(k) = getMultiplicationRecurrenceRelation(WVector42_2,UMatrix.row(40),k);
-        WVector42_6(k) = getMultiplicationRecurrenceRelation(WVector42_3,UMatrix.row(38),k);
-        WVector42_7(k) = getMultiplicationRecurrenceRelation(WVector42_1,WVector42_5,k);
-        WVector42_8(k) = getMultiplicationRecurrenceRelation(WVector42_6,WVector42_4,k);
-
-        UMatrix(42,k) = WVector42_7(k) - WVector42_8(k);
-
-        // 43
-
-        WVector43_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(41),UMatrix.row(42),k);
-        WVector43_2(k) = getMultiplicationRecurrenceRelation(XMatrix.row(42),UMatrix.row(41),k);
-
-        UMatrix(43,k) = WVector43_1(k) + WVector43_2(k);
-
-        // 15
-
-//        WVector15_0(k) = UMatrix(21,k)-2.0*UMatrix(43,k);   // Replacement vector
-//        WVector15_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(35),UMatrix.row(35),k);
-//        WVector15_2(k) = getDivisionRecurrenceRelation((2*WVector15_1+WVector15_0),XMatrix.row(15),WVector15_2,k);
-
-        WVector15_1(k) = getPowerRecurrenceRelation((rotationalVelocity*rotationalVelocity*XMatrix.row(19)+4.0*XMatrix.row(54)+4.0*rotationalVelocity*XMatrix.row(55)),WVector15_1,0.5,k);
-        WVector15_2(k) = getPowerRecurrenceRelation(XMatrix.row(8),WVector15_2,-1.0,k);
-
-//        UMatrix(15,k) = 0.5*WVector15_2(k);
-        UMatrix(15,k) = rotationalVelocity*WVector15_1(k)-standardGravitationalParameter*WVector15_2(k)+Thrust_*WVector4_25(k)-WVector4_0(k);
-
-        /// Debug ///
-
-//        std::cout<<"WVector15_0 = "<<WVector15_0<<std::endl;
-
-//        std::cout<<"(2*WVector15_1+UMatrix.row(21)-2*UMatrix.row(43)) = "<<(2*WVector15_1+UMatrix.row(21)-2*UMatrix.row(43))<<std::endl;
-//        std::cout<<"(2*WVector15_1+WVector15_0) = "<<(2*WVector15_1+WVector15_0)<<std::endl;
-//        std::cout<<"WVector15_1 = "<<WVector15_1<<std::endl;
-//        std::cout<<"WVector15_2 = "<<WVector15_2<<std::endl;
-//        std::cout<<"UMatrix.row(21) = "<<UMatrix.row(21)<<std::endl;
-//        std::cout<<"UMatrix.row(43) = "<<UMatrix.row(43)<<std::endl;
-//        std::cout<<"XMatrix.row(15) = "<<XMatrix.row(15)<<std::endl;
-
-
-//                double Wdiv_ = 0;               // Setting the outcome to zero to avoid previous answers that might be stored somewhere for some reason
-//                double interSum = 0;           // Defining an intermediate outcome for the summation
-
-//                // Avoid singularities
-//                const Eigen::VectorXd F = WVector15_0;
-//                std::cout<<"F(0) = "<<F(0)<<std::endl;
-//                std::cout<<"F(1) = "<<F(1)<<std::endl;
-//                std::cout<<"F(2) = "<<F(2)<<std::endl;
-//                std::cout<<"F(3) = "<<F(3)<<std::endl;
-//                std::cout<<"F(4) = "<<F(4)<<std::endl;
-//                std::cout<<"F(5) = "<<F(5)<<std::endl;
-//                std::cout<<"F(6) = "<<F(6)<<std::endl;
-//                std::cout<<"F(7) = "<<F(7)<<std::endl;
-//                std::cout<<"F(8) = "<<F(8)<<std::endl;
-//                std::cout<<"F(9) = "<<F(9)<<std::endl;
-//                const Eigen::VectorXd G = XMatrix.row(15);
-//                const Eigen::VectorXd Wdiv = WVector15_2;
-//                const int order = k;
-
-//                if (G(0) != 0){
-
-//                    //    const int order = F.size()-1;               // Determine the current order
-
-//                        for (int j=1; j<order+1; j++){
-
-//                        interSum +=G(j)*Wdiv(order-j);              // Perform the summation
-//                        std::cout<<"interSum = "<<interSum<<std::endl;
-
-//                        };
-
-//                        Wdiv_ = (1/G(0))*(F(order)-interSum);       // Compute the current value
-
-//                        std::cout<<"F(order) = "<<F(order)<<std::endl;
-//                        std::cout<<"order = "<<order<<std::endl;
-//                        std::cout<<"G(0) = "<<G(0)<<std::endl;
-//                        std::cout<<"(1/G(0)) = "<<(1/G(0))<<std::endl;
-//                        std::cout<<"Wdiv_ = "<<Wdiv_<<std::endl;
-
-//                }
-
-
-
-        /// Debug ///
-
-        // 23
-
-        WVector23_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(15),UMatrix.row(25),k);
-        WVector23_2(k) = getMultiplicationRecurrenceRelation(XMatrix.row(25),UMatrix.row(15),k);
-        WVector23_3(k) = getMultiplicationRecurrenceRelation(XMatrix.row(15),XMatrix.row(15),k);
-        WVector23_4(k) = getDivisionRecurrenceRelation((WVector23_1-WVector23_2),WVector23_3,WVector23_4,k);
-
-
-        UMatrix(23,k) = WVector23_4(k);
 
         // 32
 
@@ -1346,40 +761,6 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         UMatrix(32,k) = WVector32_4(k);
 
-        // 14
-
-        WVector14_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(23),XMatrix.row(23),k);
-//        WVector14_1(k) = getPowerRecurrenceRelation(XMatrix.row(23),WVector14_1,2,k);
-        WVector14_2(k) = getPowerRecurrenceRelation((onesVector-WVector14_1),WVector14_2,0.5,k);                         // change to Eigen::VectorXd --- check
-//        WVector14_2(k) = getPowerRecurrenceRelation((onesVector-WVector14_1),WVector14_2,-0.5,k);
-        WVector14_3(k) = getDivisionRecurrenceRelation(UMatrix.row(23),WVector14_2,WVector14_3,k);
-//        WVector14_3(k) = getMultiplicationRecurrenceRelation(UMatrix.row(23),WVector14_2,k);
-
-//        std::cout<<"onesVector = "<<onesVector<<std::endl;
-
-
-        UMatrix(14,k) = WVector14_3(k);
-//        UMatrix(14,k) = 0;
-
-        // 29
-
-        for (int i=0; i < 5+1; i++){
-
-            if (dragCoefficientMachRanges(i,0) <= XMatrix(32,0) && XMatrix(32,0) < dragCoefficientMachRanges(i,1)){
-
-               sectionCD = i;
-            }
-
-        };
-
-        UMatrix(29,k) = dragCoefficientPolyCoefficients(sectionCD,1)*UMatrix(32,k);
-
-
-//        // 16
-
-//        WVector16(k) = getMultiplicationRecurrenceRelation(WVector4_7,UMatrix.row(14),k);
-
-//        UMatrix(16,k) = -WVector16(k);
 
         // 27
 
@@ -1432,137 +813,9 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
     /// Debug ///
 
-//    std::cout<<"So far so good 7"<<std::endl;
+std::cout<<"XMatrix.row(13) = "<<XMatrix.row(13)<<std::endl;
+std::cout<<"XMatrix.row(14) = "<<XMatrix.row(14)<<std::endl;
 
-//    std::cout<<"stateTaylorCoefficients = "<<stateTaylorCoefficients<<std::endl;
-
-//    Eigen::VectorXd debugVecStateTaylorCoefficients = stateTaylorCoefficients.row(1);
-
-//    std::cout<<"Length of stateTaylorCoefficients.row(1) = "<<stateTaylorCoefficients.row(1).size()<<std::endl;
-//    std::cout<<"Length of XMatrix.row(1) = "<<XMatrix.row(1).size()<<std::endl;
-
-//    std::cout<<"WVector4_1 = "<<WVector4_1<<std::endl;
-
-//      std::cout<<"WVector4_7 = "<<WVector4_7<<std::endl;
-//      std::cout<<"WVector4_4 = "<<WVector4_4<<std::endl;
-//      std::cout<<"WVector14_3 = "<<WVector14_3<<std::endl;
-//      std::cout<<"WVector38_3 = "<<WVector38_3<<std::endl;
-//      std::cout<<"WVector23_1 = "<<WVector23_1<<std::endl;
-//      std::cout<<"WVector23_2 = "<<WVector23_2<<std::endl;
-//      std::cout<<"WVector23_1-WVector23_2 = "<<(WVector23_1-WVector23_2)<<std::endl;
-//      std::cout<<"WVector23_3 = "<<WVector23_3<<std::endl;
-//      std::cout<<"WVector23_4 = "<<WVector23_4<<std::endl;
-
-    //    std::cout<<"XMatrix.row(15) = "<<XMatrix.row(15)<<std::endl;
-    //    std::cout<<"XMatrix.row(21) = "<<XMatrix.row(21)<<std::endl;
-    //    std::cout<<"XMatrix.row(35) = "<<XMatrix.row(35)<<std::endl;
-    //    std::cout<<"XMatrix.row(43) = "<<XMatrix.row(43)<<std::endl;
-
-    //    std::cout<<"WVector21_1 = "<<WVector21_1<<std::endl;
-    //    std::cout<<"WVector21_2 = "<<WVector21_2<<std::endl;
-    //    std::cout<<"WVector21_3 = "<<WVector21_3<<std::endl;
-
-
-//        std::cout<<"WVector4_25 = "<<WVector4_25<<std::endl;
-//    std::cout<<"WVector4_24 = "<<WVector4_24<<std::endl;
-//    std::cout<<"WVector4_2 = "<<WVector4_2<<std::endl;
-//    std::cout<<"WVector4_22 = "<<WVector4_22<<std::endl;
-//    std::cout<<"WVector4_11-WVector4_17 = "<<WVector4_11-WVector4_17<<std::endl;
-//    std::cout<<"WVector4_18 = "<<WVector4_18<<std::endl;
-
-//    std::cout<<"WVector4_32 = "<<WVector4_32<<std::endl;
-//    std::cout<<"WVector4_33 = "<<WVector4_33<<std::endl;
-//    std::cout<<"WVector4_34 = "<<WVector4_34<<std::endl;
-
-//    std::cout<<"WVector4_32 = "<<WVector4_32<<std::endl;
-//    std::cout<<"WVector4_0 = "<<WVector4_0<<std::endl;
-//    std::cout<<"WVector4_3 = "<<WVector4_3<<std::endl;
-//    std::cout<<"WVector4_12 = "<<WVector4_3<<std::endl;
-//    std::cout<<"WVector4_9 = "<<WVector4_9<<std::endl;
-//    std::cout<<"WVector4_38 = "<<WVector4_38<<std::endl;
-//    std::cout<<"WVector4_7 = "<<WVector4_7<<std::endl;
-//    std::cout<<"WVector4_17 = "<<WVector4_17<<std::endl;
-//    std::cout<<"WVector4_8 = "<<WVector4_8<<std::endl;
-
-
-//    std::cout<<"WVector4_24 = "<<WVector4_24<<std::endl;
-//    std::cout<<"WVector5_2 = "<<WVector5_2<<std::endl;
-//    std::cout<<"WVector5_3 = "<<WVector5_3<<std::endl;
-
-//    std::cout<<"WVector5_8 = "<<WVector5_8<<std::endl;
-
-//    std::cout<<"WVector23_1 = "<<WVector23_1<<std::endl;
-//    std::cout<<"WVector23_2 = "<<WVector23_2<<std::endl;
-//    std::cout<<"WVector23_3 = "<<WVector23_3<<std::endl;
-//    std::cout<<"WVector23_4 = "<<WVector23_4<<std::endl;
-
-//        std::cout<<"WVector14_1 = "<<WVector14_1<<std::endl;
-//        std::cout<<"WVector14_2 = "<<WVector14_2<<std::endl;
-//        std::cout<<"WVector14_3 = "<<WVector14_3<<std::endl;
-
-
-//        std::cout<<"WVector12_3 = "<<WVector12_3<<std::endl;
-//        std::cout<<"WVector12_4 = "<<WVector12_4<<std::endl;
-//        std::cout<<"WVector12_5 = "<<WVector12_5<<std::endl;
-//          std::cout<<"WVector12_6 = "<<WVector12_6<<std::endl;
-//        std::cout<<"WVector12_7 = "<<WVector12_7<<std::endl;
-
-//         std::cout<<"WVector13_1-WVector13_2 = "<<WVector13_1-WVector13_2<<std::endl;
-//         std::cout<<"WVector13_3+WVector13_4 = "<<WVector13_3+WVector13_4<<std::endl;
-//         std::cout<<"WVector13_5 = "<<WVector13_5<<std::endl;
-
-//        std::cout<<"(2*WVector15_1+WVector15_0) = "<<(2*WVector15_1+WVector15_0)<<std::endl;
-//         std::cout<<"WVector15_2 = "<<WVector15_2<<std::endl;
-
-//        std::cout<<"WVector37_1 = "<<WVector37_1<<std::endl;
-//        std::cout<<"WVector37_2 = "<<WVector37_2<<std::endl;
-//        std::cout<<"WVector37_3 = "<<WVector37_3<<std::endl;
-//        std::cout<<"WVector37_4 = "<<WVector37_4<<std::endl;
-
-//                std::cout<<"WVector38_1 = "<<WVector38_1<<std::endl;
-//                std::cout<<"WVector38_2 = "<<WVector38_2<<std::endl;
-//                std::cout<<"WVector38_3 = "<<WVector38_3<<std::endl;
-
-
-
-//                std::cout<<"WVector13_3 = "<<WVector13_3<<std::endl;
-//                std::cout<<"WVector13_4 = "<<WVector13_4<<std::endl;
-
-//            std::cout<<"WVector25_3 = "<<WVector25_3<<std::endl;
-
-
-//    std::cout<<"W45_1 = "<<WVector45_1<<std::endl;
-//    std::cout<<"W45_2 = "<<WVector45_2<<std::endl;
-//    std::cout<<"W45_1 - W45_2 = "<<(WVector45_1-WVector45_2)<<std::endl;
-//    std::cout<<"W45_3 = "<<WVector45_3<<std::endl;
-//    std::cout<<"W45_4 = "<<WVector45_4<<std::endl;
-//    std::cout<<"W45_5 = "<<WVector45_5<<std::endl;
-//    std::cout<<"W45_6 = "<<WVector45_6<<std::endl;
-//    std::cout<<"W45_7 = "<<WVector45_7<<std::endl;
-//    std::cout<<"W45_8 = "<<WVector45_8<<std::endl;
-
-
-//    std::cout<<"W13_1 = "<<WVector13_1<<std::endl;
-//    std::cout<<"W13_2 = "<<WVector13_2<<std::endl;
-//    std::cout<<"W13_3 = "<<WVector13_3<<std::endl;
-//    std::cout<<"W13_4 = "<<WVector13_4<<std::endl;
-//    std::cout<<"W13_1 - W13_2 = "<<(WVector13_1-WVector13_2)<<std::endl;
-//    std::cout<<"W13_3 + W13_4 = "<<(WVector13_3+WVector13_4)<<std::endl;
-//    std::cout<<"W13_5 = "<<WVector13_5<<std::endl;
-
-//        std::cout<<"W40_1 = "<<WVector40_1<<std::endl;
-//        std::cout<<"W40_2 = "<<WVector40_2<<std::endl;
-//        std::cout<<"W40_3 = "<<WVector40_3<<std::endl;
-//        std::cout<<"W40_1 - W40_2 = "<<(WVector40_1-WVector40_2)<<std::endl;
-//        std::cout<<"W40_3 + W13_4 = "<<(WVector40_3+WVector13_4)<<std::endl;
-//        std::cout<<"W40_4 = "<<WVector40_4<<std::endl;
-
-//    std::cout<<"UMatrix.row(24) = "<<UMatrix.row(24)<<std::endl;
-//    std::cout<<"UMatrix.row(46) = "<<UMatrix.row(46)<<std::endl;
-
-    std::cout<<"UMatrix.row(20) = "<<UMatrix.row(20)<<std::endl;
-        std::cout<<"UMatrix.row(25) = "<<UMatrix.row(25)<<std::endl;
-        std::cout<<"UMatrix.row(15) = "<<UMatrix.row(15)<<std::endl;
 
 
 
