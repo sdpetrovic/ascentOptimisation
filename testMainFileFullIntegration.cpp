@@ -173,6 +173,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     Mars.setRotationalVelocity(0); // Set Mars as a non-rotating planet for verification
 
+
 //    const double adiabeticIndex = Mars.adiabeticIndex();
 //    const double specificGasConstant = Mars.specificGasConstant();
 //    const double standardGravitationalParameter = Mars.standardGravitationalParameter();
@@ -198,6 +199,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     // No Gravity
 
 //    Mars.setStandardGravitationalParameter(0);
+    std::cout<<"mu_M = "<<Mars.standardGravitationalParameter()<<std::endl;
 
     if (Mars.standardGravitationalParameter() == 0){
         std::cout<<"NO GRAVITY"<<std::endl;
@@ -1064,7 +1066,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                             stepSizeRKF = endTime - integrator.getCurrentIndependentVariable( );
                         }
 
-                        double prevStepSize = stepSizeRKF;
+//                        double prevStepSize = stepSizeRKF;
 
 //                         std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
 

@@ -241,9 +241,29 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
 
         const double inertialVelocity = sqrt(auxiliaryEquationsVector(4)*auxiliaryEquationsVector(4)+auxiliaryEquationsVector(5)*auxiliaryEquationsVector(5)+auxiliaryEquationsVector(6)*auxiliaryEquationsVector(6)); //
 
+        // Account for rounding errors
+        if (abs(inertialVelocity*inertialVelocity+rotationalVelocity*rotationalVelocity*
+                (auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2))+
+                2.0*rotationalVelocity*(auxiliaryEquationsVector(4)*auxiliaryEquationsVector(2)-auxiliaryEquationsVector(5)*auxiliaryEquationsVector(1))) <= 1e-16){
+            auxiliaryEquationsVector(15) = 0.0;
+        }
+        else{
         auxiliaryEquationsVector(15) = sqrt(inertialVelocity*inertialVelocity+rotationalVelocity*rotationalVelocity*
                                             (auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2))+
                                             2.0*rotationalVelocity*(auxiliaryEquationsVector(4)*auxiliaryEquationsVector(2)-auxiliaryEquationsVector(5)*auxiliaryEquationsVector(1)));               // x15
+}
+//        /// Debug ///
+//        std::cout<<"VI^2+Omega_M^2(x1^2+x2^2)+2*Omega_M*(x4*x2-x5*x1) = "<<inertialVelocity*inertialVelocity+rotationalVelocity*rotationalVelocity*
+//                   (auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2))+
+//                   2.0*rotationalVelocity*(auxiliaryEquationsVector(4)*auxiliaryEquationsVector(2)-auxiliaryEquationsVector(5)*auxiliaryEquationsVector(1))<<std::endl;
+
+//        std::cout<<"x4*x2-x5*x1 = "<<auxiliaryEquationsVector(4)*auxiliaryEquationsVector(2)-auxiliaryEquationsVector(5)*auxiliaryEquationsVector(1)<<std::endl;
+//        std::cout<<"x1^2+x2^2 = "<<auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2)<<std::endl;
+//        std::cout<<"VI^2+Omega_M^2(x1^2+x2^2) = "<<inertialVelocity*inertialVelocity+rotationalVelocity*rotationalVelocity*
+//                   (auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2))<<std::endl;
+//        std::cout<<"2*Omega_M*(x4*x2-x5*x1) = "<<2.0*rotationalVelocity*(auxiliaryEquationsVector(4)*auxiliaryEquationsVector(2)-auxiliaryEquationsVector(5)*auxiliaryEquationsVector(1))<<std::endl;
+//        /// Debug ///
+
 
         auxiliaryEquationsVector(16) = sqrt(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2)+auxiliaryEquationsVector(3)*auxiliaryEquationsVector(3));               // x16
 
@@ -550,8 +570,10 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
     // Account for singularities at zero velocity
     if (auxiliaryEquationsVector(15) == 0){
         auxiliaryDerivativesVector(14) = 2.0*rotationalVelocity*cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(13));
+        std::cout<<"u14 goes here 1"<<std::endl;
     }
     else {
+        std::cout<<"u14 goes here 2"<<std::endl;
     auxiliaryDerivativesVector(14) = 2.0*rotationalVelocity*cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(13))+(auxiliaryEquationsVector(15)/auxiliaryEquationsVector(16))*cos(auxiliaryEquationsVector(14))+
             (rotationalVelocity*rotationalVelocity/auxiliaryEquationsVector(15))*auxiliaryEquationsVector(16)*cos(auxiliaryEquationsVector(12))*(cos(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(14))+
                                                                                                                                                  sin(auxiliaryEquationsVector(14))*sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13)))+
@@ -687,8 +709,8 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(4,0) = auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7);   // Added because of the mistake found in the recurrence relation of W4,2
     auxiliaryFunctionsMatrix(4,1) = auxiliaryEquationsVector(1)/auxiliaryEquationsVector(9);
     auxiliaryFunctionsMatrix(4,2) = auxiliaryEquationsVector(0);
-//    auxiliaryFunctionsMatrix(4,3) = cos(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11));
-    auxiliaryFunctionsMatrix(4,3) = cos(auxiliaryEquationsVector(49));
+    auxiliaryFunctionsMatrix(4,3) = cos(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11));
+//    auxiliaryFunctionsMatrix(4,3) = cos(auxiliaryEquationsVector(49));
     // Avoid cosine rounding errors
             if (abs(auxiliaryFunctionsMatrix(4,3))<6.2e-17){
               auxiliaryFunctionsMatrix(4,3) = 0;
@@ -713,8 +735,8 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
             if (abs(auxiliaryFunctionsMatrix(4,38))<6.2e-17){
               auxiliaryFunctionsMatrix(4,38) = 0;
             }
-//    auxiliaryFunctionsMatrix(4,8) = sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11));
-    auxiliaryFunctionsMatrix(4,8) = sin(auxiliaryEquationsVector(49));
+    auxiliaryFunctionsMatrix(4,8) = sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11));
+//    auxiliaryFunctionsMatrix(4,8) = sin(auxiliaryEquationsVector(49));
     // Avoid sine rounding errors
     if (abs(auxiliaryFunctionsMatrix(4,8))<1.22e-16){
         auxiliaryFunctionsMatrix(4,8) = 0;
@@ -836,14 +858,16 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(13,2) = tan(auxiliaryEquationsVector(12));
 
     // Avoid singularities
-    if (auxiliaryEquationsVector(14) == tudat::mathematical_constants::LONG_PI/2.0 || auxiliaryEquationsVector(14) == -tudat::mathematical_constants::LONG_PI/2.0){
+    if (auxiliaryFunctionsMatrix(4,38) == 0.0){
         auxiliaryFunctionsMatrix(13,3) = 0.0;
+//        std::cout<<"Now it goes here :)"<<std::endl;
     }
     else {
     auxiliaryFunctionsMatrix(13,3) = auxiliaryFunctionsMatrix(4,4)/auxiliaryFunctionsMatrix(4,38);
-    std::cout<<"It goes here actually.."<<std::endl;
-    std::cout<<"x14 = "<<auxiliaryEquationsVector(14)<<std::endl;
-    std::cout<<"x14 - pi/2 = "<<auxiliaryEquationsVector(14)-tudat::mathematical_constants::LONG_PI/2.0<<std::endl;
+//    std::cout<<"It goes here actually.."<<std::endl;
+//    std::cout<<"x14 = "<<auxiliaryEquationsVector(14)<<std::endl;
+//    std::cout<<"x14 - pi/2 = "<<auxiliaryEquationsVector(14)-tudat::mathematical_constants::LONG_PI/2.0<<std::endl;
+//    std::cout<<"w4,38 = "<<auxiliaryFunctionsMatrix(4,38)<<std::endl;
 
     }
     auxiliaryFunctionsMatrix(13,4) = auxiliaryEquationsVector(15)*auxiliaryFunctionsMatrix(4,38);
@@ -856,7 +880,7 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(13,5) = auxiliaryFunctionsMatrix(13,0)*auxiliaryFunctionsMatrix(4,12);
     auxiliaryFunctionsMatrix(13,6) = auxiliaryFunctionsMatrix(11,1)*auxiliaryFunctionsMatrix(13,3);
     // Avoid singularities
-    if (auxiliaryEquationsVector(14) == tudat::mathematical_constants::LONG_PI/2.0 || auxiliaryEquationsVector(14) == -tudat::mathematical_constants::LONG_PI/2.0){
+    if (auxiliaryFunctionsMatrix(4,38) == 0.0){
         auxiliaryFunctionsMatrix(13,7) = 0.0;
     }
     else {
@@ -865,7 +889,7 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(13,8) = auxiliaryFunctionsMatrix(13,5)*auxiliaryFunctionsMatrix(13,2);
     auxiliaryFunctionsMatrix(13,9) = auxiliaryFunctionsMatrix(13,6)*auxiliaryFunctionsMatrix(6,3);
     // Avoid singularities
-    if (auxiliaryEquationsVector(14) == tudat::mathematical_constants::LONG_PI/2.0 || auxiliaryEquationsVector(14) == -tudat::mathematical_constants::LONG_PI/2.0 || auxiliaryEquationsVector(15) == 0.0){
+    if (auxiliaryFunctionsMatrix(4,38) == 0.0 || auxiliaryEquationsVector(15) == 0.0){
         auxiliaryFunctionsMatrix(13,10) = 0.0;
     }
     else {

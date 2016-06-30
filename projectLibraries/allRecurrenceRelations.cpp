@@ -834,9 +834,17 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //    std::cout<<"WVector14_7 = "<<WVector14_7<<std::endl;
 //    std::cout<<"WVector14_9 = "<<WVector14_9<<std::endl;
 
+//    std::cout<<"WVector4_1 = "<<WVector4_1<<std::endl;
+//    std::cout<<"-mu_M*WVector4_1 = "<<-standardGravitationalParameter*WVector4_1<<std::endl;
+//    std::cout<<"UMatrix.row(4) = "<<UMatrix.row(4)<<std::endl;
+//    std::cout<<"U4 rest = "<<WVector4_24+WVector4_35-WVector4_36<<std::endl;
+//    std::cout<<"mu_M (ARR) = "<<standardGravitationalParameter<<std::endl;
 
-std::cout<<"XMatrix.row(13) = "<<XMatrix.row(13)<<std::endl;
-std::cout<<"XMatrix.row(14) = "<<XMatrix.row(14)<<std::endl;
+//std::cout<<"XMatrix.row(13) = "<<XMatrix.row(13)<<std::endl;
+//std::cout<<"XMatrix.row(14) = "<<XMatrix.row(14)<<std::endl;
+
+  std::cout<<"XMatrix.row(8) = "<<XMatrix.row(8)<<std::endl;
+  std::cout<<"XMatrix.row(9) = "<<XMatrix.row(9)<<std::endl;
 
 
 

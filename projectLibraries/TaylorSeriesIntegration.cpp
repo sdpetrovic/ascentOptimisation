@@ -190,7 +190,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
     Eigen::VectorXd auxiliaryEquations =  Aux.getAuxiliaryEquations(currentState,currentTime,thrustAccelerationsBframe);
 
-//    std::cout<<"The auxiliaryEquations are "<<auxiliaryEquations<<std::endl;
+    std::cout<<"The auxiliaryEquations are "<<auxiliaryEquations<<std::endl;
 
     /// Debug ///
 //    if (currentTime == 0.2){
@@ -210,7 +210,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
     Eigen::MatrixXd auxiliaryFunctions = Aux.getAuxiliaryFunctions(currentState,currentTime,thrustAccelerationsBframe,auxiliaryEquations,auxiliaryDerivatives);
 
-    std::cout<<"The auxiliaryFunctions are "<<auxiliaryFunctions<<std::endl;
+//    std::cout<<"The auxiliaryFunctions are "<<auxiliaryFunctions<<std::endl;
 
     /// Computing the Taylor Coefficients ///
 

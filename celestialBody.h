@@ -25,6 +25,7 @@
  *    Changelog
  *      YYMMDD    Author            Comment
  *      160411    S.D. Petrovic     File created
+ *      160630    S.D. Petrovic     Found mistake in molar mass of Martian atmosphere (typo) and corrected it
  *
  *    References
  *
@@ -52,7 +53,7 @@ class celestialBody
          * These constants are:
          *
          * - gamma_a = 1.35                                         adiabetic index for Mars
-         * - Rstar = Ra/Ma =~ 1918.42635            [m^2/(s^2*K)]   specific gas constant for Mars (Ra = 8.3144598 m^2*kg/(s^2*K*mol) and Ma = 0.004334 kg/mol)
+         * - Rstar = Ra/Ma =~ 191.842635            [m^2/(s^2*K)]   specific gas constant for Mars (Ra = 8.3144598 m^2*kg/(s^2*K*mol) and Ma = 0.04334 kg/mol)
          * - PTn                                    [-]             these are the polynomial coefficients for the fit for the temperature curves
          * - Prho n                                 [-]             these are the polynomial coefficients for the fit for the density curves
          * - mu_M = 4.283*10^13                     [m^3/s^2]       standard gravitational parameter for Mars
@@ -89,7 +90,7 @@ public:
 
 
             // Specific Gas Constant
-                const double massOfMars = 0.004334;         // [kg/mol]
+                const double massOfMars = 0.04334;         // [kg/mol]
 //                const double gasConstant = 8.3144598;       // [m^2*kg/(s^2*K*mol)]
                 const double gasConstant = 8.3144598e-6;    // [km^2*kg/(s^2*K*mol)]
 
