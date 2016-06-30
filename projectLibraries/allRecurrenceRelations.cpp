@@ -813,6 +813,28 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
     /// Debug ///
 
+//    std::cout<<"WVector13_0 = "<<WVector13_0<<std::endl;
+//    std::cout<<"WVector13_1 = "<<WVector13_1<<std::endl;
+//    std::cout<<"WVector13_2 = "<<WVector13_2<<std::endl;
+//    std::cout<<"WVector13_3 = "<<WVector13_3<<std::endl;
+//    std::cout<<"WVector13_4 = "<<WVector13_4<<std::endl;
+//    std::cout<<"WVector13_5 = "<<WVector13_5<<std::endl;
+//    std::cout<<"WVector13_6 = "<<WVector13_6<<std::endl;
+//    std::cout<<"WVector13_7 = "<<WVector13_7<<std::endl;
+//    std::cout<<"WVector13_8 = "<<WVector13_8<<std::endl;
+//    std::cout<<"WVector13_9 = "<<WVector13_9<<std::endl;
+//    std::cout<<"WVector13_10 = "<<WVector13_10<<std::endl;
+
+//    std::cout<<"WVector14_1 = "<<WVector14_1<<std::endl;
+//    std::cout<<"WVector14_2 = "<<WVector14_2<<std::endl;
+//    std::cout<<"WVector14_3 = "<<WVector14_3<<std::endl;
+//    std::cout<<"WVector14_4 = "<<WVector14_4<<std::endl;
+//    std::cout<<"WVector14_5 = "<<WVector14_5<<std::endl;
+//    std::cout<<"WVector14_6 = "<<WVector14_6<<std::endl;
+//    std::cout<<"WVector14_7 = "<<WVector14_7<<std::endl;
+//    std::cout<<"WVector14_9 = "<<WVector14_9<<std::endl;
+
+
 std::cout<<"XMatrix.row(13) = "<<XMatrix.row(13)<<std::endl;
 std::cout<<"XMatrix.row(14) = "<<XMatrix.row(14)<<std::endl;
 

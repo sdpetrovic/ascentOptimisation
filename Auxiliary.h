@@ -807,7 +807,14 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
 
     // w11
     auxiliaryFunctionsMatrix(11,1) = auxiliaryEquationsVector(15)/auxiliaryEquationsVector(16);
+
+    // Avoid singularities
+    if (auxiliaryFunctionsMatrix(4,6) == 0.0){
+        auxiliaryFunctionsMatrix(11,2) = 0.0;
+    }
+    else {
     auxiliaryFunctionsMatrix(11,2) = auxiliaryFunctionsMatrix(4,12)/auxiliaryFunctionsMatrix(4,6);
+    }
     auxiliaryFunctionsMatrix(11,3) = auxiliaryFunctionsMatrix(11,1)*auxiliaryFunctionsMatrix(11,2);
 
 
@@ -816,17 +823,54 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(12,2) = auxiliaryFunctionsMatrix(11,1)*auxiliaryFunctionsMatrix(12,1);
 
     // w13
+
+    // Avoid singularities
+    if (auxiliaryEquationsVector(15) == 0.0){
+        auxiliaryFunctionsMatrix(13,0) = 0.0;
+    }
+    else {
     auxiliaryFunctionsMatrix(13,0) = auxiliaryEquationsVector(16)/auxiliaryEquationsVector(15);
+    }
     auxiliaryFunctionsMatrix(13,1) = auxiliaryFunctionsMatrix(4,5)*auxiliaryFunctionsMatrix(4,11);
-    auxiliaryFunctionsMatrix(13,2) = auxiliaryFunctionsMatrix(4,7)/auxiliaryFunctionsMatrix(4,38);
+//    auxiliaryFunctionsMatrix(13,2) = auxiliaryFunctionsMatrix(4,4)/auxiliaryFunctionsMatrix(4,6);
+    auxiliaryFunctionsMatrix(13,2) = tan(auxiliaryEquationsVector(12));
+
+    // Avoid singularities
+    if (auxiliaryEquationsVector(14) == tudat::mathematical_constants::LONG_PI/2.0 || auxiliaryEquationsVector(14) == -tudat::mathematical_constants::LONG_PI/2.0){
+        auxiliaryFunctionsMatrix(13,3) = 0.0;
+    }
+    else {
     auxiliaryFunctionsMatrix(13,3) = auxiliaryFunctionsMatrix(4,4)/auxiliaryFunctionsMatrix(4,38);
+    std::cout<<"It goes here actually.."<<std::endl;
+    std::cout<<"x14 = "<<auxiliaryEquationsVector(14)<<std::endl;
+    std::cout<<"x14 - pi/2 = "<<auxiliaryEquationsVector(14)-tudat::mathematical_constants::LONG_PI/2.0<<std::endl;
+
+    }
     auxiliaryFunctionsMatrix(13,4) = auxiliaryEquationsVector(15)*auxiliaryFunctionsMatrix(4,38);
+
+    /// Debug ///
+
+
+    /// Debug ///
+
     auxiliaryFunctionsMatrix(13,5) = auxiliaryFunctionsMatrix(13,0)*auxiliaryFunctionsMatrix(4,12);
     auxiliaryFunctionsMatrix(13,6) = auxiliaryFunctionsMatrix(11,1)*auxiliaryFunctionsMatrix(13,3);
+    // Avoid singularities
+    if (auxiliaryEquationsVector(14) == tudat::mathematical_constants::LONG_PI/2.0 || auxiliaryEquationsVector(14) == -tudat::mathematical_constants::LONG_PI/2.0){
+        auxiliaryFunctionsMatrix(13,7) = 0.0;
+    }
+    else {
     auxiliaryFunctionsMatrix(13,7) = (auxiliaryFunctionsMatrix(6,5)-auxiliaryFunctionsMatrix(13,1))/auxiliaryFunctionsMatrix(4,38);
+    }
     auxiliaryFunctionsMatrix(13,8) = auxiliaryFunctionsMatrix(13,5)*auxiliaryFunctionsMatrix(13,2);
     auxiliaryFunctionsMatrix(13,9) = auxiliaryFunctionsMatrix(13,6)*auxiliaryFunctionsMatrix(6,3);
+    // Avoid singularities
+    if (auxiliaryEquationsVector(14) == tudat::mathematical_constants::LONG_PI/2.0 || auxiliaryEquationsVector(14) == -tudat::mathematical_constants::LONG_PI/2.0 || auxiliaryEquationsVector(15) == 0.0){
+        auxiliaryFunctionsMatrix(13,10) = 0.0;
+    }
+    else {
     auxiliaryFunctionsMatrix(13,10) = auxiliaryFunctionsMatrix(4,33)/auxiliaryFunctionsMatrix(13,4);
+    }
 
 
     // w14
@@ -834,8 +878,15 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(14,2) = auxiliaryFunctionsMatrix(11,1)*auxiliaryFunctionsMatrix(4,38);
     auxiliaryFunctionsMatrix(14,3) = auxiliaryFunctionsMatrix(13,0)*auxiliaryFunctionsMatrix(4,6);
     auxiliaryFunctionsMatrix(14,4) = auxiliaryFunctionsMatrix(6,0)*auxiliaryFunctionsMatrix(4,5);
+    // Avoid singularities
+    if (auxiliaryEquationsVector(15) == 0.0){
+        auxiliaryFunctionsMatrix(14,5) = 0.0;
+        auxiliaryFunctionsMatrix(14,6) = 0.0;
+    }
+    else {
     auxiliaryFunctionsMatrix(14,5) = auxiliaryFunctionsMatrix(4,34)/auxiliaryEquationsVector(15);
     auxiliaryFunctionsMatrix(14,6) = auxiliaryFunctionsMatrix(4,38)/auxiliaryEquationsVector(15);
+    }
     auxiliaryFunctionsMatrix(14,7) = auxiliaryFunctionsMatrix(14,3)*(auxiliaryFunctionsMatrix(4,15)+auxiliaryFunctionsMatrix(14,4));
     auxiliaryFunctionsMatrix(14,9) = auxiliaryFunctionsMatrix(14,6)/auxiliaryFunctionsMatrix(14,1);
 
