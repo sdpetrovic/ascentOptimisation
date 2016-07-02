@@ -854,6 +854,17 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //  std::cout<<"XMatrix.row(8) = "<<XMatrix.row(8)<<std::endl;
 //  std::cout<<"XMatrix.row(9) = "<<XMatrix.row(9)<<std::endl;
 
+//    std::cout<<"WVector6_0 = "<<WVector6_0<<std::endl;
+//    std::cout<<"WVector6_1 = "<<WVector6_1<<std::endl;
+//    std::cout<<"WVector6_2 = "<<WVector6_2<<std::endl;
+//    std::cout<<"WVector6_3 = "<<WVector6_3<<std::endl;
+//    std::cout<<"WVector6_4 = "<<WVector6_4<<std::endl;
+//    std::cout<<"WVector6_5 = "<<WVector6_5<<std::endl;
+//    std::cout<<"WVector6_6 = "<<WVector6_6<<std::endl;
+//    std::cout<<"WVector6_7 = "<<WVector6_7<<std::endl;
+//    std::cout<<"WVector6_8 = "<<WVector6_8<<std::endl;
+
+
 
 
 

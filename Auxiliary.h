@@ -139,8 +139,8 @@ public:
          dragCoefficientMachRanges = dragCoefficientMachRanges_;                       // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
 
 
-std::cout<<"verticalInertialFlightPathAngleSet original = "<<verticalInertialFlightPathAngleSet<<std::endl;
-std::cout<<"verticalRotationalFlightPathAngleSet original = "<<verticalRotationalFlightPathAngleSet<<std::endl;
+//std::cout<<"verticalInertialFlightPathAngleSet original = "<<verticalInertialFlightPathAngleSet<<std::endl;
+//std::cout<<"verticalRotationalFlightPathAngleSet original = "<<verticalRotationalFlightPathAngleSet<<std::endl;
 
 
 
@@ -160,7 +160,7 @@ std::cout<<"verticalRotationalFlightPathAngleSet original = "<<verticalRotationa
 
 
 
-std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialFlightPathAngleSet<<std::endl;
+//std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialFlightPathAngleSet<<std::endl;
 
 
 
@@ -215,8 +215,8 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
      */
 
     Eigen::VectorXd getAuxiliaryEquations( const tudat::basic_mathematics::Vector7d& aState, const double time, const Eigen::Vector3d& thrustAccelerationsBframe){
-        std::cout<<"verticalInertialFlightPathAngleSet eq 1 = "<<verticalInertialFlightPathAngleSet<<std::endl;
-        std::cout<<"verticalRotationalFlightPathAngleSet eq 1 = "<<verticalRotationalFlightPathAngleSet<<std::endl;
+//        std::cout<<"verticalInertialFlightPathAngleSet eq 1 = "<<verticalInertialFlightPathAngleSet<<std::endl;
+//        std::cout<<"verticalRotationalFlightPathAngleSet eq 1 = "<<verticalRotationalFlightPathAngleSet<<std::endl;
 
         auxiliaryEquationsVector = Eigen::VectorXd::Zero(35);       // Setting the complete vector and filling it with zeros for now
 
@@ -313,9 +313,6 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
         if (auxiliaryEquationsVector(15) == 0){
             auxiliaryEquationsVector(14) = tudat::mathematical_constants::LONG_PI/2.0;
         }
-        else if (abs(verticalZvelocity/auxiliaryEquationsVector(15))-1 >= 0.0){
-            auxiliaryEquationsVector(14) = -asin(1.0);
-        }
         else if (verticalZvelocity/auxiliaryEquationsVector(15) >= 1.0){        // Compensate for rounding errors
             auxiliaryEquationsVector(14) = -asin(1.0);
         }
@@ -324,6 +321,7 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
         }
         else {
         auxiliaryEquationsVector(14) = -asin(verticalZvelocity/auxiliaryEquationsVector(15));               // x14
+
 
 //        std::cout<<"verticalZvelocity/auxiliaryEquationsVector(15) -1 = "<<verticalZvelocity/auxiliaryEquationsVector(15) -1 <<std::endl;
 }
@@ -429,6 +427,11 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
 
         auxiliaryEquationsVector(0) = thrustAccelerationsBframe(0)-(auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7));              // w4,2
 
+//        /// Debug ///
+//        std::cout<<"thrustAccelerationsBframe(0) = "<<thrustAccelerationsBframe(0)<<std::endl;
+//        std::cout<<"(auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7)) = "<<(auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7))<<std::endl;
+//        /// Debug ///
+
 
 
 // Set vertical ascent to false again
@@ -453,8 +456,8 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
 
     Eigen::VectorXd getAuxiliaryDerivatives( const tudat::basic_mathematics::Vector7d& aState, const double time, const Eigen::Vector3d& thrustAccelerationsBframe, const Eigen::VectorXd& auxiliaryEquationsVector){
 
-        std::cout<<"verticalInertialFlightPathAngleSet der 1 = "<<verticalInertialFlightPathAngleSet<<std::endl;
-        std::cout<<"verticalRotationalFlightPathAngleSet der 1 = "<<verticalRotationalFlightPathAngleSet<<std::endl;
+//        std::cout<<"verticalInertialFlightPathAngleSet der 1 = "<<verticalInertialFlightPathAngleSet<<std::endl;
+//        std::cout<<"verticalRotationalFlightPathAngleSet der 1 = "<<verticalRotationalFlightPathAngleSet<<std::endl;
 
     auxiliaryDerivativesVector = Eigen::VectorXd::Zero(35);       // Setting the complete vector and filling it with zeros for now
 
@@ -616,10 +619,10 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
     // Account for singularities at zero velocity
     if (auxiliaryEquationsVector(15) == 0){
         auxiliaryDerivativesVector(14) = 2.0*rotationalVelocity*cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(13));
-        std::cout<<"u14 goes here 1"<<std::endl;
+//        std::cout<<"u14 goes here 1"<<std::endl;
     }
     else {
-        std::cout<<"u14 goes here 2"<<std::endl;
+//        std::cout<<"u14 goes here 2"<<std::endl;
     auxiliaryDerivativesVector(14) = 2.0*rotationalVelocity*cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(13))+(auxiliaryEquationsVector(15)/auxiliaryEquationsVector(16))*cos(auxiliaryEquationsVector(14))+
             (rotationalVelocity*rotationalVelocity/auxiliaryEquationsVector(15))*auxiliaryEquationsVector(16)*cos(auxiliaryEquationsVector(12))*(cos(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(14))+
                                                                                                                                                  sin(auxiliaryEquationsVector(14))*sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13)))+
@@ -630,8 +633,15 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
             auxiliaryEquationsVector(0)-standardGravitationalParameter*sin(auxiliaryEquationsVector(14))/(auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16));                // u15
 
     /// Debug ///
-
-
+    std::cout<<"u12 = "<<(auxiliaryEquationsVector(15)*cos(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14)))/auxiliaryEquationsVector(16)<<std::endl;
+    std::cout<<"x16 = "<<auxiliaryEquationsVector(16)<<std::endl;
+    std::cout<<"x15*cos(x13)*cos(x14) = "<<auxiliaryEquationsVector(15)*cos(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14))<<std::endl;
+    std::cout<<"x14 = "<<auxiliaryEquationsVector(14)<<std::endl;
+    std::cout<<"x14 - pi/2 = "<<auxiliaryEquationsVector(14)-tudat::mathematical_constants::LONG_PI/2.0<<std::endl;
+    std::cout<<"u14 = "<<2.0*rotationalVelocity*cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(13))+(auxiliaryEquationsVector(15)/auxiliaryEquationsVector(16))*cos(auxiliaryEquationsVector(14))+
+               (rotationalVelocity*rotationalVelocity/auxiliaryEquationsVector(15))*auxiliaryEquationsVector(16)*cos(auxiliaryEquationsVector(12))*(cos(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(14))+
+                                                                                                                                                    sin(auxiliaryEquationsVector(14))*sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(13)))+
+               -thrustAccelerationsBframe(2)/auxiliaryEquationsVector(15)-standardGravitationalParameter*cos(auxiliaryEquationsVector(14))/(auxiliaryEquationsVector(15)*auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16))<<std::endl;
 
     /// Debug ///
 
@@ -728,10 +738,10 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
     // Set vertical ascent to false again
     //        verticalInertialFlightPathAngleSet = false;
             verticalInertialFlightPathAngleSet = NULL;
-            std::cout<<"verticalInertialFlightPathAngleSet der 3 = "<<verticalInertialFlightPathAngleSet<<std::endl;
+//            std::cout<<"verticalInertialFlightPathAngleSet der 3 = "<<verticalInertialFlightPathAngleSet<<std::endl;
     //        verticalRotationalFlightPathAngleSet = false;
             verticalRotationalFlightPathAngleSet = NULL;
-            std::cout<<"verticalRotationalFlightPathAngleSet der 3 = "<<verticalRotationalFlightPathAngleSet<<std::endl;
+//            std::cout<<"verticalRotationalFlightPathAngleSet der 3 = "<<verticalRotationalFlightPathAngleSet<<std::endl;
 
 
     return auxiliaryDerivativesVector;
