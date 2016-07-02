@@ -171,7 +171,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     celestialBody Mars;
 
-    Mars.setRotationalVelocity(0); // Set Mars as a non-rotating planet for verification
+//    Mars.setRotationalVelocity(0); // Set Mars as a non-rotating planet for verification
 
 
 //    const double adiabeticIndex = Mars.adiabeticIndex();
@@ -199,7 +199,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     // No Gravity
 
 //    Mars.setStandardGravitationalParameter(0);
-    std::cout<<"mu_M = "<<Mars.standardGravitationalParameter()<<std::endl;
+//    std::cout<<"mu_M = "<<Mars.standardGravitationalParameter()<<std::endl;
 
     if (Mars.standardGravitationalParameter() == 0){
         std::cout<<"NO GRAVITY"<<std::endl;
@@ -232,16 +232,16 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
   /// Initial conditions /// a.k.a. control centre
 
-    const double setEndTime = 0.2;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
+    const double setEndTime = 200.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
 
 //std::cout<<"pi = "<<(4*atan(1))<<std::endl;
 
     /// TSI settings ///
-    const int maxOrder = 8; // Eventually want order 20 (testing is 8)
+    const int maxOrder = 20; // Eventually want order 20 (testing is 8)
     /// TSI settings ///
 
     /// Integration settings ///
-    const double chosenLocalErrorTolerance = 1e-8;      // The chosen local error tolerance for TSI
+    const double chosenLocalErrorTolerance = 1e-15;      // The chosen local error tolerance for TSI
     const double chosenStepSize = 0.2; // The chosen initial step-size for TSI
 
     std::cout<<"The chosen local error tolerance = "<<chosenLocalErrorTolerance<<std::endl;
@@ -258,8 +258,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //    const double initialAltitude = -0.6e3;             // Starting altitude [m MOLA]
     const double initialAltitude = 20.0;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
-    const double initialLatitudeDeg = 0;               // Starting latitude [deg] initial condition is 21 deg
-    const double initialLongitudeDeg = 0;            // Starting longitude [deg] initial condition is 74.5 deg
+    const double initialLatitudeDeg = 21;               // Starting latitude [deg] initial condition is 21 deg
+    const double initialLongitudeDeg = 74.5;            // Starting longitude [deg] initial condition is 74.5 deg
 
 //    const double initialLatitude = initialLatitudeDeg*tudat::mathematical_constants::LONG_PI/180;       // Starting latitude [rad]
 //    const double initialLongitude = initialLongitudeDeg*tudat::mathematical_constants::LONG_PI/180;     // Starting longitude [rad]
@@ -1066,9 +1066,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                             stepSizeRKF = endTime - integrator.getCurrentIndependentVariable( );
                         }
 
-//                        double prevStepSize = stepSizeRKF;
+                        double prevStepSize = stepSizeRKF;
 
-//                         std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
+                         std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
 
                         // Perform a single integration step. Then update the step-size and running time.
                         integrator.performIntegrationStep( stepSizeRKF );

@@ -267,6 +267,10 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
 
         auxiliaryEquationsVector(16) = sqrt(auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2)+auxiliaryEquationsVector(3)*auxiliaryEquationsVector(3));               // x16
 
+        /// Debug ///
+//        std::cout<<"x16 = "<<auxiliaryEquationsVector(16)<<std::endl;
+        /// Debug ///
+
         const double rotationalXposition = cos(auxiliaryEquationsVector(10))*auxiliaryEquationsVector(1)+sin(auxiliaryEquationsVector(10))*auxiliaryEquationsVector(2); // x_R
         const double rotationalYposition = -sin(auxiliaryEquationsVector(10))*auxiliaryEquationsVector(1)+cos(auxiliaryEquationsVector(10))*auxiliaryEquationsVector(2); // y_R
 
@@ -289,17 +293,39 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
                                                                                                                        cos(auxiliaryEquationsVector(10))*cos(auxiliaryEquationsVector(11))*cos(auxiliaryEquationsVector(12)))+
                 (auxiliaryEquationsVector(5)-rotationalVelocity*auxiliaryEquationsVector(1))*(-cos(auxiliaryEquationsVector(11))*cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(10))-
                                                                                               cos(auxiliaryEquationsVector(10))*cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(11)))-
-                auxiliaryEquationsVector(6)*cos(auxiliaryEquationsVector(12)); // Vz_V
+                auxiliaryEquationsVector(6)*sin(auxiliaryEquationsVector(12)); // Vz_V
+
+//        /// Debug ///
+//        std::cout<<"verticalXvelocity = "<<verticalXvelocity<<std::endl;
+//        std::cout<<"verticalYvelocity = "<<verticalYvelocity<<std::endl;
+//        std::cout<<"verticalZvelocity = "<<verticalZvelocity<<std::endl;
+//        /// Debug ///
 
 
         auxiliaryEquationsVector(13) = atan2(verticalYvelocity,verticalXvelocity);               // x13
+
+//        /// Debug ///
+//        std::cout<<"x13 first = "<<auxiliaryEquationsVector(13)<<std::endl;
+//        std::cout<<"atan2(-1,0) = "<<atan2(-1,0)<<std::endl;
+//        /// Debug ///
 
         // Take care of the 0 m/s velocity singularity
         if (auxiliaryEquationsVector(15) == 0){
             auxiliaryEquationsVector(14) = tudat::mathematical_constants::LONG_PI/2.0;
         }
+        else if (abs(verticalZvelocity/auxiliaryEquationsVector(15))-1 >= 0.0){
+            auxiliaryEquationsVector(14) = -asin(1.0);
+        }
+        else if (verticalZvelocity/auxiliaryEquationsVector(15) >= 1.0){        // Compensate for rounding errors
+            auxiliaryEquationsVector(14) = -asin(1.0);
+        }
+        else if (verticalZvelocity/auxiliaryEquationsVector(15) <= -1.0){       // Compensate for rounding errors
+            auxiliaryEquationsVector(14) = -asin(-1.0);
+        }
         else {
         auxiliaryEquationsVector(14) = -asin(verticalZvelocity/auxiliaryEquationsVector(15));               // x14
+
+//        std::cout<<"verticalZvelocity/auxiliaryEquationsVector(15) -1 = "<<verticalZvelocity/auxiliaryEquationsVector(15) -1 <<std::endl;
 }
 
 
@@ -550,14 +576,34 @@ std::cout<<"verticalInertialFlightPathAngleSet original 2 = "<<verticalInertialF
     auxiliaryDerivativesVector(12) = (auxiliaryEquationsVector(15)*cos(auxiliaryEquationsVector(13))*cos(auxiliaryEquationsVector(14)))/auxiliaryEquationsVector(16);                // u12
 
 
+//    /// Debug ///
+//    std::cout<<"x13 = "<<auxiliaryEquationsVector(13)<<std::endl;
+//    std::cout<<"x14 = "<<auxiliaryEquationsVector(14)<<std::endl;
+//    std::cout<<"x14 - pi/2 = "<<auxiliaryEquationsVector(14)-tudat::mathematical_constants::LONG_PI/2.0<<std::endl;
+//    std::cout<<"x12 = "<<auxiliaryEquationsVector(12)<<std::endl;
+//    std::cout<<"x12 - pi/2 = "<<auxiliaryEquationsVector(12)-tudat::mathematical_constants::LONG_PI/2.0<<std::endl;
+//    /// Debug ///
+
+
     // Account for singularities at vertical ascent and zero velocity
     if (auxiliaryEquationsVector(14) == tudat::mathematical_constants::LONG_PI/2.0 || auxiliaryEquationsVector(14) == -tudat::mathematical_constants::LONG_PI/2.0){ // Flight-path angle
+        if (abs(auxiliaryEquationsVector(12)-tudat::mathematical_constants::LONG_PI/2.0) <= 1e-16 || abs(auxiliaryEquationsVector(12)+tudat::mathematical_constants::LONG_PI/2.0) <= 1e-16 ){
+            auxiliaryDerivativesVector(13) = 0.0;
+        }
+        else {
         auxiliaryDerivativesVector(13) = (auxiliaryEquationsVector(15)/auxiliaryEquationsVector(16))*cos(auxiliaryEquationsVector(14))*tan(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(13));
+        }
 
     }
     else if (auxiliaryEquationsVector(15) == 0){ // Velocity
         auxiliaryDerivativesVector(13) = 2.0*(rotationalVelocity/cos(auxiliaryEquationsVector(14)))*(sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(14))-
                                                                                                      cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(14))*cos(auxiliaryEquationsVector(13)));
+    }
+    else if (abs(auxiliaryEquationsVector(12)-tudat::mathematical_constants::LONG_PI/2.0) <= 1e-16 || abs(auxiliaryEquationsVector(12)+tudat::mathematical_constants::LONG_PI/2.0) <= 1e-16 ){
+       auxiliaryDerivativesVector(13) = 2.0*(rotationalVelocity/cos(auxiliaryEquationsVector(14)))*(sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(14))-
+                                                                                                         cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(14))*cos(auxiliaryEquationsVector(13)))+
+                    (rotationalVelocity*rotationalVelocity/(auxiliaryEquationsVector(15)*cos(auxiliaryEquationsVector(14))))*auxiliaryEquationsVector(16)*cos(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(12))*sin(auxiliaryEquationsVector(13))+
+                    (thrustAccelerationsBframe(1)/(auxiliaryEquationsVector(15)*cos(auxiliaryEquationsVector(14))));
     }
     else {
     auxiliaryDerivativesVector(13) = 2.0*(rotationalVelocity/cos(auxiliaryEquationsVector(14)))*(sin(auxiliaryEquationsVector(12))*cos(auxiliaryEquationsVector(14))-
@@ -855,7 +901,13 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     }
     auxiliaryFunctionsMatrix(13,1) = auxiliaryFunctionsMatrix(4,5)*auxiliaryFunctionsMatrix(4,11);
 //    auxiliaryFunctionsMatrix(13,2) = auxiliaryFunctionsMatrix(4,4)/auxiliaryFunctionsMatrix(4,6);
+    // Avoid singularities
+    if (abs(auxiliaryEquationsVector(12)-tudat::mathematical_constants::LONG_PI/2.0) <= 1e-16 || abs(auxiliaryEquationsVector(12)+tudat::mathematical_constants::LONG_PI/2.0) <= 1e-16){
+        auxiliaryFunctionsMatrix(13,2) = 0.0;
+    }
+    else {
     auxiliaryFunctionsMatrix(13,2) = tan(auxiliaryEquationsVector(12));
+    }
 
     // Avoid singularities
     if (auxiliaryFunctionsMatrix(4,38) == 0.0){

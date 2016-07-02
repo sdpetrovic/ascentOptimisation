@@ -601,6 +601,14 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         UMatrix(8,k) = 2.0*(WVector8_1(k)+WVector8_2(k)+WVector8_3(k));
 
+        // 9
+
+        W9IntermediateVector(k) = getMultiplicationRecurrenceRelation(XMatrix.row(9),UMatrix.row(8),k);
+
+        WVector9(k) = getDivisionRecurrenceRelation(W9IntermediateVector,XMatrix.row(8),WVector9,k);
+
+        UMatrix(9,k) = 1.5*WVector9(k);
+
         // 10
 
         UMatrix(10,k) = 0;
@@ -843,8 +851,8 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //std::cout<<"XMatrix.row(13) = "<<XMatrix.row(13)<<std::endl;
 //std::cout<<"XMatrix.row(14) = "<<XMatrix.row(14)<<std::endl;
 
-  std::cout<<"XMatrix.row(8) = "<<XMatrix.row(8)<<std::endl;
-  std::cout<<"XMatrix.row(9) = "<<XMatrix.row(9)<<std::endl;
+//  std::cout<<"XMatrix.row(8) = "<<XMatrix.row(8)<<std::endl;
+//  std::cout<<"XMatrix.row(9) = "<<XMatrix.row(9)<<std::endl;
 
 
 

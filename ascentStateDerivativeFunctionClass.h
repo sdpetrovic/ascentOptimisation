@@ -146,8 +146,21 @@ public:
         /// Debug ///
         //std::cout<<"Here 2"<<std::endl;
         /// Debug ///
-        const double rotationalVelocity = sqrt(inertialVelocity*inertialVelocity+rotationalVelocityMars*rotationalVelocityMars*(xPosition*xPosition+yPosition*yPosition)+2.0*rotationalVelocityMars*(xVelocity*yPosition-yVelocity*xPosition)); // V_G [km/s]
-        /// Debug ///
+
+
+        double rotationalVelocity_;   // V_G [km/s] (placeholder)
+        // Deal with rounding errors
+        if (inertialVelocity*inertialVelocity+rotationalVelocityMars*rotationalVelocityMars*(xPosition*xPosition+yPosition*yPosition)+2.0*rotationalVelocityMars*(xVelocity*yPosition-yVelocity*xPosition) <= 0.0){
+            rotationalVelocity_ = 0.0;
+        }
+        else {
+         rotationalVelocity_ = sqrt(inertialVelocity*inertialVelocity+rotationalVelocityMars*rotationalVelocityMars*(xPosition*xPosition+yPosition*yPosition)+2.0*rotationalVelocityMars*(xVelocity*yPosition-yVelocity*xPosition)); // V_G [km/s]
+        }
+
+        const double rotationalVelocity = rotationalVelocity_;      // V_G [km/s] (actual parameter)
+
+         /// Debug ///
+//        std::cout<<"V_I^2*+Omega_M^2*(x1^2+x2^2)+2.0*Omega_M*(x4*x2-x5*x1) = "<<inertialVelocity*inertialVelocity+rotationalVelocityMars*rotationalVelocityMars*(xPosition*xPosition+yPosition*yPosition)+2.0*rotationalVelocityMars*(xVelocity*yPosition-yVelocity*xPosition)<<std::endl;
         //std::cout<<"Here 3"<<std::endl;
         /// Debug ///
         const double verticalXvelocity = (xVelocity+rotationalVelocityMars*yPosition)*(sin(Latitude)*sin(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle)*sin(rotationalLongitude)-
@@ -177,8 +190,16 @@ public:
         if (rotationalVelocity == 0.0){
             rotationalFlightPathAngle_ = tudat::mathematical_constants::LONG_PI/2.0;
         }
+        else if (verticalZvelocity/rotationalVelocity >= 1.0){  // Compensate for rounding errors
+//            std::cout<<"sin(FPA) has been rounded down to 1 with difference: "<<abs(verticalZvelocity/rotationalVelocity)-1<<std::endl;
+            rotationalFlightPathAngle_ = -asin(1.0);
+        }
+        else if (verticalZvelocity/rotationalVelocity <= -1.0){ // Compensate for rounding errors
+            rotationalFlightPathAngle_ = -asin(-1.0);
+        }
         else {
         rotationalFlightPathAngle_ = -asin(verticalZvelocity/rotationalVelocity);   // gamma_G [rad]
+
         }
 
         const double rotationalFlightPathAngle = rotationalFlightPathAngle_; // gamma_G [rad] (actual parameter)
@@ -283,6 +304,7 @@ public:
 
 
 //        const double rotationalAzimuth = atan2((rotationalLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_R [rad]
+
 
        // Check output
         std::cout<<"///////////////////////////////////////////////////////////////////////////////////////////////////"<<std::endl;
