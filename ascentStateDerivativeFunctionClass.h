@@ -25,6 +25,7 @@
  *    Changelog
  *      YYMMDD    Author            Comment
  *      160518    S.D. Petrovic     File created
+ *      160705    S.D. Petrovic     Added rounding error corrections
  *
  *    References
  *
@@ -138,9 +139,33 @@ public:
 
 //        const double rotationalLongitude = inertialLongitude-rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle;  // tau [rad]
 
-        const double rotationalXposition = cos(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle)*xPosition+sin(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle)*yPosition;       // x_R [km]
+        // Avoid cosine rounding errors
+        double cx10;
 
-        const double rotationalYposition = -sin(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle)*xPosition+cos(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle)*yPosition;      // y_R [km]
+        if (abs(cos(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle))<6.2e-17){
+            cx10 = 0;
+        }
+        else {
+            cx10 = cos(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle);
+        }
+
+
+
+        // Same for sine
+        double sx10;
+
+        if (abs(sin(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle))<6.2e-17){
+            sx10 = 0;
+        }
+        else {
+            sx10 = sin(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle);
+        }
+
+
+
+        const double rotationalXposition = cx10*xPosition+sx10*yPosition;       // x_R [km]
+
+        const double rotationalYposition = -sx10*xPosition+cx10*yPosition;      // y_R [km]
 
         const double rotationalLongitude = atan2(rotationalYposition,rotationalXposition); // tau [rad]
         /// Debug ///
@@ -163,20 +188,61 @@ public:
 //        std::cout<<"V_I^2*+Omega_M^2*(x1^2+x2^2)+2.0*Omega_M*(x4*x2-x5*x1) = "<<inertialVelocity*inertialVelocity+rotationalVelocityMars*rotationalVelocityMars*(xPosition*xPosition+yPosition*yPosition)+2.0*rotationalVelocityMars*(xVelocity*yPosition-yVelocity*xPosition)<<std::endl;
         //std::cout<<"Here 3"<<std::endl;
         /// Debug ///
-        const double verticalXvelocity = (xVelocity+rotationalVelocityMars*yPosition)*(sin(Latitude)*sin(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle)*sin(rotationalLongitude)-
-                                                                                       cos(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle)*cos(rotationalLongitude)*sin(Latitude))+
-                (yVelocity-rotationalVelocityMars*xPosition)*(-cos(rotationalLongitude)*sin(Latitude)*sin(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle)-
-                                                              cos(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle)*sin(Latitude)*sin(rotationalLongitude))+zVelocity*cos(Latitude);   // Vx_V [km/s]
 
-        const double verticalYvelocity = (xVelocity+rotationalVelocityMars*yPosition)*(-cos(rotationalLongitude)*sin(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle)-
-                                                                                       cos(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle)*sin(rotationalLongitude))+
-                (yVelocity-rotationalVelocityMars*xPosition)*(cos(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle)*cos(rotationalLongitude)-
-                                                              sin(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle)*sin(rotationalLongitude));     // Vy_V [km/s]
+        // Avoid cosine rounding errors
+        double cx11;
 
-        const double verticalZvelocity = (xVelocity+rotationalVelocityMars*yPosition)*(cos(Latitude)*sin(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle)*sin(rotationalLongitude)-
-                                                                                       cos(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle)*cos(rotationalLongitude)*cos(Latitude))+
-                (yVelocity-rotationalVelocityMars*xPosition)*(-cos(rotationalLongitude)*cos(Latitude)*sin(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle)-
-                                                              cos(rotationalVelocityMars*(inertialFrameTime+currentTime)+primeMeridianAngle)*cos(Latitude)*sin(rotationalLongitude))-zVelocity*sin(Latitude);   // Vz_V [km/s]
+        if (abs(cos(rotationalLongitude))<6.2e-17){
+            cx11 = 0;
+        }
+        else {
+            cx11 = cos(rotationalLongitude);
+        }
+
+
+        double cx12;
+
+        if (abs(cos(Latitude))<6.2e-17){
+            cx12 = 0;
+        }
+        else {
+            cx12 = cos(Latitude);
+        }
+
+        // Same for sine
+        double sx11;
+
+        if (abs(sin(rotationalLongitude))<6.2e-17){
+            sx11 = 0;
+        }
+        else {
+            sx11 = sin(rotationalLongitude);
+        }
+
+
+        double sx12;
+
+        if (abs(sin(Latitude))<6.2e-17){
+            sx12 = 0;
+        }
+        else {
+            sx12 = sin(Latitude);
+        }
+
+        const double verticalXvelocity = (xVelocity+rotationalVelocityMars*yPosition)*(sx12*sx10*sx11-
+                                                                                       cx10*cx11*sx12)+
+                (yVelocity-rotationalVelocityMars*xPosition)*(-cx11*sx12*sx10-
+                                                              cx10*sx12*sx11)+zVelocity*cx12;   // Vx_V [km/s]
+
+        const double verticalYvelocity = (xVelocity+rotationalVelocityMars*yPosition)*(-cx11*sx10-
+                                                                                       cx10*sx11)+
+                (yVelocity-rotationalVelocityMars*xPosition)*(cx10*cx11-
+                                                              sx10*sx11);     // Vy_V [km/s]
+
+        const double verticalZvelocity = (xVelocity+rotationalVelocityMars*yPosition)*(cx12*sx10*sx11-
+                                                                                       cx10*cx11*cx12)+
+                (yVelocity-rotationalVelocityMars*xPosition)*(-cx11*cx12*sx10-
+                                                              cx10*cx12*sx11)-zVelocity*sx12;   // Vz_V [km/s]
         /// Debug ///
         //std::cout<<"Here 4"<<std::endl;
         /// Debug ///
@@ -190,11 +256,11 @@ public:
         if (rotationalVelocity == 0.0){
             rotationalFlightPathAngle_ = tudat::mathematical_constants::LONG_PI/2.0;
         }
-        else if (verticalZvelocity/rotationalVelocity >= 1.0){  // Compensate for rounding errors
+        else if (verticalZvelocity/rotationalVelocity >= 1.0 || verticalZvelocity/rotationalVelocity-1 >= -1E-15){  // Compensate for rounding errors
 //            std::cout<<"sin(FPA) has been rounded down to 1 with difference: "<<abs(verticalZvelocity/rotationalVelocity)-1<<std::endl;
             rotationalFlightPathAngle_ = -asin(1.0);
         }
-        else if (verticalZvelocity/rotationalVelocity <= -1.0){ // Compensate for rounding errors
+        else if (verticalZvelocity/rotationalVelocity <= -1.0 || verticalZvelocity/rotationalVelocity+1 <= 1E-15){ // Compensate for rounding errors
             rotationalFlightPathAngle_ = -asin(-1.0);
         }
         else {
@@ -257,9 +323,9 @@ public:
 
 //        const double LatitudeChange = LatitudeChange_;  // delta_dot [rad/s] (actual parameter)
 
-//        double localMarsRotationalVelocity = rotationalVelocityMars*Radius*cos(Latitude);  // V_M [km/s]
+//        double localMarsRotationalVelocity = rotationalVelocityMars*Radius*cx12;  // V_M [km/s]
 //        // Avoid cosine rounding errors
-//        if (abs(cos(Latitude))<6.2e-17){
+//        if (abs(cx12)<6.2e-17){
 //          localMarsRotationalVelocity = 0.0;
 //        }
 
@@ -278,7 +344,7 @@ public:
 ////            std::cout<<"Rounding to 1"<<std::endl;
 //        }
 
-//        const double inertialAzimuth = atan2((inertialLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_I [rad]
+//        const double inertialAzimuth = atan2((inertialLongitudeChange*cx12),LatitudeChange);    // chi_I [rad]
 
 //        const double rotationalVelocity = sqrt(localMarsRotationalVelocity*localMarsRotationalVelocity+inertialVelocity*inertialVelocity-2.0*localMarsRotationalVelocity*inertialVelocity*cos(inertialFlightPathAngle)*sin(inertialAzimuth));  // V_R [km/s]
 
@@ -303,7 +369,7 @@ public:
 
 
 
-//        const double rotationalAzimuth = atan2((rotationalLongitudeChange*cos(Latitude)),LatitudeChange);    // chi_R [rad]
+//        const double rotationalAzimuth = atan2((rotationalLongitudeChange*cx12),LatitudeChange);    // chi_R [rad]
 
 
        // Check output
