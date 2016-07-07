@@ -88,7 +88,9 @@
 /// \param maxOrder
 /// \return updatedStateAndTime This is a vector output with 8 elements: the updated three position values, the updated three velocity values, the updated mass value and the updated time.
 ///
-Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody &planet_, const MarsAscentVehicle &MAV_, const StateAndTime &currentStateAndTime_, StepSize &stepSize, const double maxOrder_);
+Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody &planet_, const MarsAscentVehicle &MAV_, const StateAndTime &currentStateAndTime_, StepSize &stepSize, const double maxOrder_ = 20,
+                                                   const double FlightPathAngle_ = 1000,
+                                                   const double HeadingAngle_ = 1000);
 
 // Ouput is the updated state and time
 

@@ -106,7 +106,9 @@ Eigen::Quaterniond getPropulsionToBodyFrameTransformationQuaternion(
 /// Taylor series integration step ///
 
 
-Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_, const MarsAscentVehicle& MAV_, const StateAndTime& currentStateAndTime_, StepSize& stepSize, const double maxOrder_ = 20){
+Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_, const MarsAscentVehicle& MAV_, const StateAndTime& currentStateAndTime_, StepSize& stepSize, const double maxOrder_ ,
+                                                   const double FlightPathAngle_,
+                                                   const double HeadingAngle_){
 
     // The stepSize class is the only class that will be updated directly from this function!
 
@@ -151,6 +153,14 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
     const double currentStepSize = stepSize.getCurrentStepSize();                      // The current step-size
 
+    // Specified initial conditions
+
+    const double FlightPathAngle = FlightPathAngle_;            // Set flight-path angle
+    const double HeadingAngle = HeadingAngle_;                  // Set heading angle
+
+    std::cout<<"Flight-path angle in integration.cpp = "<<FlightPathAngle<<std::endl;
+    std::cout<<"Heading angle in integration.cpp = "<<HeadingAngle<<std::endl;
+
 
     //std::cout<<"This works right 1?"<<std::endl;
 
@@ -187,6 +197,9 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
               referenceArea, dragCoefficientPolyCoefficients, dragCoefficientMachRanges);
 
     //std::cout<<"This works right 3?"<<std::endl;
+
+    // Set the initial launch angles
+    Aux.setFlightPathAngleAndHeadingAngle(FlightPathAngle,HeadingAngle);    // Used to specify a certain flight-path angle other than 90 degrees and heading angle other than 0 degrees at t = 0 sec
 
     // Compute the auxiliary equations
 

@@ -115,7 +115,7 @@ public:
               const Eigen::VectorXd densityPolyCoefficients_, const double Thrust_, const Eigen::MatrixXd thrustAzimuthMatrix_, const Eigen::MatrixXd thrustElevationMatrix_, const double specificImpulse_,
               const double referenceArea_, const Eigen::MatrixXd dragCoefficientPolyCoefficients_, const Eigen::MatrixXd dragCoefficientMachRanges_){
 
-            // Set the diferent celestial body constant parameters and polynomial coefficient parameter matrices
+            // Set the different celestial body constant parameters and polynomial coefficient parameter matrices
 
          adiabeticIndex = adiabeticIndex_;                                   // gamma_a      adiabetic index
          specificGasConstant = specificGasConstant_;                        // Rstar    [m^2/(s^2*K)]    specific gas constant
@@ -129,7 +129,7 @@ public:
          temperatureAltitudeRanges = temperatureAltitudeRanges_;    // altitude range per section for the temperature-altitude curve [km MOLA]
          densityPolyCoefficients = densityPolyCoefficients_;         // Prho n density polynomial coefficients
 
-             // Set the differnt vehicle constant parameters and polynomial coefficients
+             // Set the different vehicle constant parameters and polynomial coefficients
 
          Thrust = Thrust_;                                                         // T   [N]  engine nominal thrust
          thrustAzimuthMatrix = thrustAzimuthMatrix_;                                // psi_T [rad] thrust azimuth angles
@@ -140,22 +140,26 @@ public:
          dragCoefficientMachRanges = dragCoefficientMachRanges_;                       // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
 
 
+         // Set the flight-path angle and the heading angle to the default values
+         FlightPathAngle = 1000;
+         HeadingAngle = 1000;           // This is simply done to detect whether or not the value has been set. If the angle does not equal 1000 then the value has been set and has to be used as initial condition
+
 //std::cout<<"verticalInertialFlightPathAngleSet original = "<<verticalInertialFlightPathAngleSet<<std::endl;
 //std::cout<<"verticalRotationalFlightPathAngleSet original = "<<verticalRotationalFlightPathAngleSet<<std::endl;
 
 
 
         // Set the booleans to false in case of faulty memory assignment and mistakes in the deletion of the previous class
-       rotationalFlightPathAngleSet = false;         // All of these are used to let the program know that a predefined angle was set and that that angle should be used (initially)
-       inertialFlightPathAngleSet = false;
-       rotationalHeadingAngleSet = false;
-       inertialHeadingAngleSet = false;
+//       rotationalFlightPathAngleSet = false;         // All of these are used to let the program know that a predefined angle was set and that that angle should be used (initially)
+//       inertialFlightPathAngleSet = false;
+//       rotationalHeadingAngleSet = false;
+//       inertialHeadingAngleSet = false;
 
 
-       verticalRotationalFlightPathAngleSet = false;       // All of these are used for the vertical ascent case
-       verticalInertialFlightPathAngleSet = false;
-       verticalRotationalHeadingAngleSet = false;
-       verticalInertialHeadingAngleSet = false;
+//       verticalRotationalFlightPathAngleSet = false;       // All of these are used for the vertical ascent case
+//       verticalInertialFlightPathAngleSet = false;
+//       verticalRotationalHeadingAngleSet = false;
+//       verticalInertialHeadingAngleSet = false;
 
 
 
@@ -170,32 +174,58 @@ public:
 
 /// Set functions ///
 
-    void setRotationalFlightPathAngle(const double rotationalFlightPathAngle_){
-     rotationalFlightPathAngle = rotationalFlightPathAngle_;
-     rotationalFlightPathAngleSet = true;
-     if (rotationalFlightPathAngle_ ==tudat::mathematical_constants::LONG_PI/2){
-         verticalRotationalFlightPathAngleSet = true;
-     }
+        void setFlightPathAngleAndHeadingAngle(const double FlightPathAngle_ = 1000, const double HeadingAngle_ = 1000){
+            if (FlightPathAngle_ >= -tudat::mathematical_constants::LONG_PI/2.0 && FlightPathAngle_ <= tudat::mathematical_constants::LONG_PI/2.0){
+                if (HeadingAngle_ >= 0.0 && HeadingAngle_ <= 2.0*tudat::mathematical_constants::LONG_PI){
+                    FlightPathAngle = FlightPathAngle_; // Flight path angle in rad
+                    HeadingAngle = HeadingAngle_;  // Heading angle in rad
 
-    }         // Rotational flight path angle in rad
+                    std::cout<<"Flight-path angle and heading angle have been set"<<std::endl;
+                }
+                else{
+                    std::cout<<"Heading angle has to be specified between 0.0 and 2*pi"<<std::endl;
+                }
 
-    void setInertialFlightPathAngle(const double inertialFlightPathAngle_){
-        inertialFlightPathAngle = inertialFlightPathAngle_;
-        inertialFlightPathAngleSet = true;
-        if (inertialFlightPathAngle_ ==tudat::mathematical_constants::LONG_PI/2){
-            verticalInertialFlightPathAngleSet = true;
+            }
+            else if (HeadingAngle_ >= 0.0 && HeadingAngle_ <= 2.0*tudat::mathematical_constants::LONG_PI) {
+                std::cout<<"Flight-path angle has to be specified between -pi/2 and pi/2"<<std::endl;
+            }
+            else {
+                std::cout<<"Heading angle has to be specified between 0.0 and 2*pi and Flight-path angle has to be specified between -pi/2 and pi/2"<<std::endl;
+            }
+
         }
-    }           // Inertial flight path angle in rad
 
-    void setRotationalHeadingAngle(const double rotationalHeadingAngle_){
-        rotationalHeadingAngle = rotationalHeadingAngle_;
-        rotationalHeadingAngleSet = true;
-    }            // Rotational heading angle in rad
 
-    void setInertialHeadingAngle(const double inertialHeadingAngle_){
-        inertialHeadingAngle = inertialHeadingAngle_;
-        inertialHeadingAngleSet = true;
-    }              // Inertial heading angle in rad
+
+
+
+//    void setRotationalFlightPathAngle(const double rotationalFlightPathAngle_){
+//     rotationalFlightPathAngle = rotationalFlightPathAngle_;
+//     rotationalFlightPathAngleSet = true;
+//     if (rotationalFlightPathAngle_ ==tudat::mathematical_constants::LONG_PI/2){
+//         verticalRotationalFlightPathAngleSet = true;
+//     }
+
+//    }         // Rotational flight path angle in rad
+
+//    void setInertialFlightPathAngle(const double inertialFlightPathAngle_){
+//        inertialFlightPathAngle = inertialFlightPathAngle_;
+//        inertialFlightPathAngleSet = true;
+//        if (inertialFlightPathAngle_ ==tudat::mathematical_constants::LONG_PI/2){
+//            verticalInertialFlightPathAngleSet = true;
+//        }
+//    }           // Inertial flight path angle in rad
+
+//    void setRotationalHeadingAngle(const double rotationalHeadingAngle_){
+//        rotationalHeadingAngle = rotationalHeadingAngle_;
+//        rotationalHeadingAngleSet = true;
+//    }            // Rotational heading angle in rad
+
+//    void setInertialHeadingAngle(const double inertialHeadingAngle_){
+//        inertialHeadingAngle = inertialHeadingAngle_;
+//        inertialHeadingAngleSet = true;
+//    }              // Inertial heading angle in rad
 
     /// Test functions to revert changes if tolerance is reached
 
@@ -368,20 +398,30 @@ public:
                 auxiliaryEquationsVector(6)*sx12; // Vz_V
 
         /// Debug ///
-//        std::cout<<"verticalXvelocity = "<<verticalXvelocity<<std::endl;
-//        std::cout<<"verticalYvelocity = "<<verticalYvelocity<<std::endl;
-//        std::cout<<"verticalZvelocity = "<<verticalZvelocity<<std::endl;
+        std::cout<<"y_R = "<<rotationalYposition<<std::endl;
+        std::cout<<"x_R = "<<rotationalXposition<<std::endl;
+        std::cout<<"verticalXvelocity = "<<verticalXvelocity<<std::endl;
+        std::cout<<"verticalYvelocity = "<<verticalYvelocity<<std::endl;
+        std::cout<<"verticalZvelocity = "<<verticalZvelocity<<std::endl;
 //        std::cout<<"V_G = "<<auxiliaryEquationsVector(15)<<std::endl;
 //        std::cout<<"V_G - verticalZvelocity = "<<auxiliaryEquationsVector(15)+verticalZvelocity<<std::endl;
 //        std::cout<<"verticalZvelocity/V_G = "<<verticalZvelocity/auxiliaryEquationsVector(15)<<std::endl;
 //        std::cout<<"verticalZvelocity/V_G+1 = "<<verticalZvelocity/auxiliaryEquationsVector(15)+1<<std::endl;
+        std::cout<<"FlightPathAngle = "<<FlightPathAngle<<std::endl;
+        std::cout<<"HeadingAngle = "<<HeadingAngle<<std::endl;
         /// Debug ///
 
+        // Check if the angles have been set and then use them as initial condition
+        if (FlightPathAngle != 1000 && HeadingAngle != 1000 && time == 0.0){
+            auxiliaryEquationsVector(13) = HeadingAngle;
+            auxiliaryEquationsVector(14) = FlightPathAngle;
+        }
+        else {
 
         auxiliaryEquationsVector(13) = atan2(verticalYvelocity,verticalXvelocity);               // x13
 
 //        /// Debug ///
-//        std::cout<<"x13 first = "<<auxiliaryEquationsVector(13)<<std::endl;
+        std::cout<<"x13 first = "<<auxiliaryEquationsVector(13)<<std::endl;
 //        std::cout<<"atan2(-1,0) = "<<atan2(-1,0)<<std::endl;
 //        /// Debug ///
 
@@ -397,6 +437,12 @@ public:
         }
         else {
         auxiliaryEquationsVector(14) = -asin(verticalZvelocity/auxiliaryEquationsVector(15));               // x14
+} // End of check for set angles
+        /// Debug ///
+
+        std::cout<<"x14 = "<<auxiliaryEquationsVector(14)<<std::endl;
+
+        /// Debug ///
 
 
 //        std::cout<<"verticalZvelocity/auxiliaryEquationsVector(15) -1 = "<<verticalZvelocity/auxiliaryEquationsVector(15) -1 <<std::endl;
@@ -512,10 +558,10 @@ public:
 
 // Set vertical ascent to false again
 //        verticalInertialFlightPathAngleSet = false;
-        verticalInertialFlightPathAngleSet = NULL;
+//        verticalInertialFlightPathAngleSet = NULL;
 
 //        verticalRotationalFlightPathAngleSet = false;
-        verticalRotationalFlightPathAngleSet = NULL;
+//        verticalRotationalFlightPathAngleSet = NULL;
 
 
 
@@ -725,7 +771,22 @@ public:
                                                                                                                                                  sx14*sx12*cx13)+
             -thrustAccelerationsBframe(2)/auxiliaryEquationsVector(15)-standardGravitationalParameter*cx14/(auxiliaryEquationsVector(15)*auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16));                // u14
 }
+    /// Debug ///
+    std::cout<<"x10 = "<<auxiliaryEquationsVector(10)<<std::endl;
+    std::cout<<"x11 = "<<auxiliaryEquationsVector(11)<<std::endl;
+    std::cout<<"tau (using lambda) = "<<atan2(auxiliaryEquationsVector(2),auxiliaryEquationsVector(1))-auxiliaryEquationsVector(10)<<std::endl;
+    std::cout<<"x12 = "<<auxiliaryEquationsVector(12)<<std::endl;
+    std::cout<<"u14 = "<<2.0*rotationalVelocity*cx12*sx13+(auxiliaryEquationsVector(15)/auxiliaryEquationsVector(16))*cx14+
+               (rotationalVelocity*rotationalVelocity/auxiliaryEquationsVector(15))*auxiliaryEquationsVector(16)*cx12*(cx12*cx14+
+                                                                                                                                                    sx14*sx12*cx13)+
+               -thrustAccelerationsBframe(2)/auxiliaryEquationsVector(15)-standardGravitationalParameter*cx14/(auxiliaryEquationsVector(15)*auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16))<<std::endl;
+    std::cout<<"u14 part 1 = "<<2.0*rotationalVelocity*cx12*sx13<<std::endl;
+    std::cout<<"u14 part 2 = "<<(auxiliaryEquationsVector(15)/auxiliaryEquationsVector(16))*cx14<<std::endl;
+    std::cout<<"u14 part 3 = "<<(rotationalVelocity*rotationalVelocity/auxiliaryEquationsVector(15))*auxiliaryEquationsVector(16)*cx12*(cx12*cx14+sx14*sx12*cx13)<<std::endl;
+    std::cout<<"u14 part 4 = "<<thrustAccelerationsBframe(2)/auxiliaryEquationsVector(15)<<std::endl;
+    std::cout<<"u14 part 5 = "<<standardGravitationalParameter*cx14/(auxiliaryEquationsVector(15)*auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16))<<std::endl;
 
+    /// Debug ///
 
     auxiliaryDerivativesVector(15) = rotationalVelocity*rotationalVelocity*auxiliaryEquationsVector(16)*cx12*
             (sx14*cx12-cx14*sx12*cx13)+
@@ -845,10 +906,10 @@ public:
 
     // Set vertical ascent to false again
     //        verticalInertialFlightPathAngleSet = false;
-            verticalInertialFlightPathAngleSet = NULL;
+//            verticalInertialFlightPathAngleSet = NULL;
 //            std::cout<<"verticalInertialFlightPathAngleSet der 3 = "<<verticalInertialFlightPathAngleSet<<std::endl;
     //        verticalRotationalFlightPathAngleSet = false;
-            verticalRotationalFlightPathAngleSet = NULL;
+//            verticalRotationalFlightPathAngleSet = NULL;
 //            std::cout<<"verticalRotationalFlightPathAngleSet der 3 = "<<verticalRotationalFlightPathAngleSet<<std::endl;
 
 
@@ -1327,21 +1388,24 @@ private:
 
     // Set functions
 
- double rotationalFlightPathAngle;         // Rotational flight path angle in rad
- double inertialFlightPathAngle;           // Inertial flight path angle in rad
- double rotationalHeadingAngle;            // Rotational heading angle in rad
- double inertialHeadingAngle;              // Inertial heading angle in rad
+  double FlightPathAngle;         // Flight path angle in rad
+ double HeadingAngle;            // Heading angle in rad
 
- bool rotationalFlightPathAngleSet;         // All of these are used to let the program know that a predefined angle was set and that that angle should be used (initially)
- bool inertialFlightPathAngleSet;
- bool rotationalHeadingAngleSet;
- bool inertialHeadingAngleSet;
+// double rotationalFlightPathAngle;         // Rotational flight path angle in rad
+// double inertialFlightPathAngle;           // Inertial flight path angle in rad
+// double rotationalHeadingAngle;            // Rotational heading angle in rad
+// double inertialHeadingAngle;              // Inertial heading angle in rad
+
+// bool rotationalFlightPathAngleSet;         // All of these are used to let the program know that a predefined angle was set and that that angle should be used (initially)
+// bool inertialFlightPathAngleSet;
+// bool rotationalHeadingAngleSet;
+// bool inertialHeadingAngleSet;
 
 
- bool verticalRotationalFlightPathAngleSet;       // All of these are used for the vertical ascent case
- bool verticalInertialFlightPathAngleSet;
- bool verticalRotationalHeadingAngleSet;
- bool verticalInertialHeadingAngleSet;
+// bool verticalRotationalFlightPathAngleSet;       // All of these are used for the vertical ascent case
+// bool verticalInertialFlightPathAngleSet;
+// bool verticalRotationalHeadingAngleSet;
+// bool verticalInertialHeadingAngleSet;
 
 
 
