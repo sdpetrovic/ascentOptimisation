@@ -91,6 +91,9 @@ public:
             primeMeridianAngle = Mars.primeMeridianAngle();
             inertialFrameTime = Mars.inertialFrameTime();
 
+            FlightPathAngle = 1000;
+            HeadingAngle = 1000;
+
     }         // NOTE TO SELF: WHEN INITIALIZING A NEW CLASS WITHOUT ANY PRESETS, MAKE SURE TO INCLUDE {} BEHIND (). IN THIS CASE THAT WOULD LOOK LIKE THIS: ascentStateDerivativeFunctionClass(){}
 
     /// Debug ///
@@ -103,6 +106,32 @@ public:
     }
 
     /// Debug ///
+
+    /// Set functions ///
+
+            void setFlightPathAngleAndHeadingAngle(const double FlightPathAngle_ = 1000, const double HeadingAngle_ = 1000){
+                if (FlightPathAngle_ >= -tudat::mathematical_constants::LONG_PI/2.0 && FlightPathAngle_ <= tudat::mathematical_constants::LONG_PI/2.0){
+                    if (HeadingAngle_ >= 0.0 && HeadingAngle_ <= 2.0*tudat::mathematical_constants::LONG_PI){
+                        FlightPathAngle = FlightPathAngle_; // Flight path angle in rad
+                        HeadingAngle = HeadingAngle_;  // Heading angle in rad
+
+                        std::cout<<"Flight-path angle and heading angle have been set"<<std::endl;
+                    }
+                    else{
+                        std::cout<<"Heading angle has to be specified between 0.0 and 2*pi"<<std::endl;
+                    }
+
+                }
+                else if (HeadingAngle_ >= 0.0 && HeadingAngle_ <= 2.0*tudat::mathematical_constants::LONG_PI) {
+                    std::cout<<"Flight-path angle has to be specified between -pi/2 and pi/2"<<std::endl;
+                }
+                else {
+                    std::cout<<"Heading angle has to be specified between 0.0 and 2*pi and Flight-path angle has to be specified between -pi/2 and pi/2"<<std::endl;
+                }
+
+            }
+
+
 
     tudat::basic_mathematics::Vector7d ascentStateDerivativeFunction(const double currentTime_, const tudat::basic_mathematics::Vector7d& currentState){
 
@@ -247,31 +276,58 @@ public:
         //std::cout<<"Here 4"<<std::endl;
         /// Debug ///
 
-
-
-        const double rotationalAzimuth = atan2(verticalYvelocity,verticalXvelocity);    // chi_G [rad]
-
+        double rotationalAzimuth_;
         double rotationalFlightPathAngle_;          // gamma_G [rad] (placeholder)
-        // Avoid singularities
-        if (rotationalVelocity == 0.0){
-            rotationalFlightPathAngle_ = tudat::mathematical_constants::LONG_PI/2.0;
-        }
-        else if (verticalZvelocity/rotationalVelocity >= 1.0 || verticalZvelocity/rotationalVelocity-1 >= -1E-15){  // Compensate for rounding errors
-//            std::cout<<"sin(FPA) has been rounded down to 1 with difference: "<<abs(verticalZvelocity/rotationalVelocity)-1<<std::endl;
-            rotationalFlightPathAngle_ = -asin(1.0);
-        }
-        else if (verticalZvelocity/rotationalVelocity <= -1.0 || verticalZvelocity/rotationalVelocity+1 <= 1E-15){ // Compensate for rounding errors
-            rotationalFlightPathAngle_ = -asin(-1.0);
+
+        if (FlightPathAngle != 1000 && HeadingAngle != 1000 && currentTime == 0.0){
+            rotationalAzimuth_ = HeadingAngle;
+            rotationalFlightPathAngle_ = FlightPathAngle;
+
         }
         else {
-        rotationalFlightPathAngle_ = -asin(verticalZvelocity/rotationalVelocity);   // gamma_G [rad]
 
+            rotationalAzimuth_ = atan2(verticalYvelocity,verticalXvelocity);    // chi_G [rad]
+
+            // Avoid singularities
+            if (rotationalVelocity == 0.0){
+                rotationalFlightPathAngle_ = tudat::mathematical_constants::LONG_PI/2.0;
+            }
+            else if (verticalZvelocity/rotationalVelocity >= 1.0 || verticalZvelocity/rotationalVelocity-1 >= -1E-15){  // Compensate for rounding errors
+    //            std::cout<<"sin(FPA) has been rounded down to 1 with difference: "<<abs(verticalZvelocity/rotationalVelocity)-1<<std::endl;
+                rotationalFlightPathAngle_ = -asin(1.0);
+            }
+            else if (verticalZvelocity/rotationalVelocity <= -1.0 || verticalZvelocity/rotationalVelocity+1 <= 1E-15){ // Compensate for rounding errors
+                rotationalFlightPathAngle_ = -asin(-1.0);
+            }
+            else {
+            rotationalFlightPathAngle_ = -asin(verticalZvelocity/rotationalVelocity);   // gamma_G [rad]
+
+            }
         }
+
+//        const double rotationalAzimuth = atan2(verticalYvelocity,verticalXvelocity);    // chi_G [rad]
+
+        const double rotationalAzimuth = rotationalAzimuth_;        // chi_G [rad]
+
 
         const double rotationalFlightPathAngle = rotationalFlightPathAngle_; // gamma_G [rad] (actual parameter)
 
+
+
         /// Debug ///
         //std::cout<<"Here 5"<<std::endl;
+        std::cout<<"Latitude = "<<Latitude<<std::endl;
+        std::cout<<"rotationalLongitude = "<<rotationalLongitude<<std::endl;
+        std::cout<<"FlightPathAngle = "<<rotationalFlightPathAngle<<std::endl;
+        std::cout<<"HeadingAngle = "<<rotationalAzimuth<<std::endl;
+        std::cout<<"RotationalVelocity = "<<rotationalVelocity<<std::endl;
+        std::cout<<"verticalXvelocity = "<<verticalXvelocity<<std::endl;
+        std::cout<<"verticalYvelocity = "<<verticalYvelocity<<std::endl;
+        std::cout<<"verticalZvelocity = "<<verticalZvelocity<<std::endl;
+        std::cout<<"rotationalVelocity = "<<rotationalVelocity<<std::endl;
+        std::cout<<"Radius = "<<Radius<<std::endl;
+
+
         /// Debug ///
 
         /* // Old functions
@@ -572,6 +628,11 @@ private:
         double rotationalVelocityMars;                  // The rotational velocity of Mars [rad/s]
         double primeMeridianAngle;                      // The angle of the prime Meridian of Mars at time of inertial frame set [rad]
         double inertialFrameTime;                       // The time at inertial frame set [s]
+
+        // Set functions
+
+      double FlightPathAngle;         // Flight path angle in rad
+     double HeadingAngle;            // Heading angle in rad
 
 
 }; // end of class

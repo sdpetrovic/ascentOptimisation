@@ -398,15 +398,23 @@ public:
                 auxiliaryEquationsVector(6)*sx12; // Vz_V
 
         /// Debug ///
+        std::cout<<"x10 = "<<auxiliaryEquationsVector(10)<<std::endl;
+        std::cout<<"x11 = "<<auxiliaryEquationsVector(11)<<std::endl;
+        std::cout<<"cx10 = "<<cx10<<std::endl;
+        std::cout<<"sx10 = "<<sx10<<std::endl;
+        std::cout<<"cx11 = "<<cx11<<std::endl;
+        std::cout<<"sx11 = "<<sx11<<std::endl;
+        std::cout<<"x4+Omega_M*x2 = "<<(auxiliaryEquationsVector(4)+rotationalVelocity*auxiliaryEquationsVector(2))<<std::endl;
+        std::cout<<"x5 - Omega_M*x1 = "<<(auxiliaryEquationsVector(5)-rotationalVelocity*auxiliaryEquationsVector(1))<<std::endl;
         std::cout<<"y_R = "<<rotationalYposition<<std::endl;
         std::cout<<"x_R = "<<rotationalXposition<<std::endl;
         std::cout<<"verticalXvelocity = "<<verticalXvelocity<<std::endl;
         std::cout<<"verticalYvelocity = "<<verticalYvelocity<<std::endl;
         std::cout<<"verticalZvelocity = "<<verticalZvelocity<<std::endl;
-//        std::cout<<"V_G = "<<auxiliaryEquationsVector(15)<<std::endl;
-//        std::cout<<"V_G - verticalZvelocity = "<<auxiliaryEquationsVector(15)+verticalZvelocity<<std::endl;
-//        std::cout<<"verticalZvelocity/V_G = "<<verticalZvelocity/auxiliaryEquationsVector(15)<<std::endl;
-//        std::cout<<"verticalZvelocity/V_G+1 = "<<verticalZvelocity/auxiliaryEquationsVector(15)+1<<std::endl;
+        std::cout<<"V_G = "<<auxiliaryEquationsVector(15)<<std::endl;
+        std::cout<<"V_G - verticalZvelocity = "<<auxiliaryEquationsVector(15)+verticalZvelocity<<std::endl;
+        std::cout<<"verticalZvelocity/V_G = "<<verticalZvelocity/auxiliaryEquationsVector(15)<<std::endl;
+        std::cout<<"verticalZvelocity/V_G+1 = "<<verticalZvelocity/auxiliaryEquationsVector(15)+1<<std::endl;
         std::cout<<"FlightPathAngle = "<<FlightPathAngle<<std::endl;
         std::cout<<"HeadingAngle = "<<HeadingAngle<<std::endl;
         /// Debug ///
