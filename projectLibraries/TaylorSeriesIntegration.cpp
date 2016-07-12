@@ -158,8 +158,8 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
     const double FlightPathAngle = FlightPathAngle_;            // Set flight-path angle
     const double HeadingAngle = HeadingAngle_;                  // Set heading angle
 
-    std::cout<<"Flight-path angle in integration.cpp = "<<FlightPathAngle<<std::endl;
-    std::cout<<"Heading angle in integration.cpp = "<<HeadingAngle<<std::endl;
+//    std::cout<<"Flight-path angle in integration.cpp = "<<FlightPathAngle<<std::endl;
+//    std::cout<<"Heading angle in integration.cpp = "<<HeadingAngle<<std::endl;
 
 
     //std::cout<<"This works right 1?"<<std::endl;
