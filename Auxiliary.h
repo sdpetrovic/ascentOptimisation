@@ -720,7 +720,7 @@ public:
 
 
     // Account for singularities at the poles
-    if (auxiliaryEquationsVector(12) == tudat::mathematical_constants::LONG_PI/2.0 || auxiliaryEquationsVector(12) == -tudat::mathematical_constants::LONG_PI/2.0){
+    if (auxiliaryEquationsVector(12) == tudat::mathematical_constants::LONG_PI/2.0 || auxiliaryEquationsVector(12) == -tudat::mathematical_constants::LONG_PI/2.0 || cx12 == 0.0){
         auxiliaryDerivativesVector(11) = 0;
     }
     else {
@@ -828,8 +828,10 @@ public:
 
     /// Debug ///
 
+    std::cout<<"x14 = "<<auxiliaryEquationsVector(14)<<std::endl;
     std::cout<<"x15 = "<<auxiliaryEquationsVector(15)<<std::endl;
     std::cout<<"x16 = "<<auxiliaryEquationsVector(16)<<std::endl;
+    std::cout<<"u14 = "<<auxiliaryDerivativesVector(14)<<std::endl;
     std::cout<<"u15 = "<<auxiliaryDerivativesVector(15)<<std::endl;
     std::cout<<"u16 = "<<auxiliaryDerivativesVector(16)<<std::endl;
 
@@ -1062,6 +1064,12 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     if (abs(auxiliaryFunctionsMatrix(4,8))<1.22e-16){
         auxiliaryFunctionsMatrix(4,8) = 0;
     }
+    /// Debug ///
+
+//    std::cout<<"sin(x13) = "<<sin(auxiliaryEquationsVector(13))<<std::endl;
+//    std::cout<<"sx13 = "<<sx13<<std::endl;
+
+    /// Debug ///
     auxiliaryFunctionsMatrix(4,9) = sx13;
     auxiliaryFunctionsMatrix(4,10) = auxiliaryFunctionsMatrix(4,4)*auxiliaryFunctionsMatrix(4,5);
     auxiliaryFunctionsMatrix(4,11) = auxiliaryFunctionsMatrix(4,6)*auxiliaryFunctionsMatrix(4,7);
@@ -1311,21 +1319,38 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
 //    auxiliaryFunctionsMatrix(14,7) = auxiliaryFunctionsMatrix(14,3)*(auxiliaryFunctionsMatrix(4,15)+auxiliaryFunctionsMatrix(14,4));
 //    auxiliaryFunctionsMatrix(14,9) = auxiliaryFunctionsMatrix(14,6)/auxiliaryFunctionsMatrix(14,1);
 
-    auxiliaryFunctionsMatrix(14,1) = auxiliaryEquationsVector(16)*auxiliaryFunctionsMatrix(4,6);
+/*    auxiliaryFunctionsMatrix(14,1) = auxiliaryEquationsVector(16)*auxiliaryFunctionsMatrix(4,6);
     auxiliaryFunctionsMatrix(14,2) = auxiliaryEquationsVector(15)*auxiliaryFunctionsMatrix(4,38);
     auxiliaryFunctionsMatrix(14,3) = -standardGravitationalParameter*auxiliaryFunctionsMatrix(4,38)/auxiliaryEquationsVector(16);
     auxiliaryFunctionsMatrix(14,4) = auxiliaryFunctionsMatrix(14,3)/auxiliaryEquationsVector(16);
     auxiliaryFunctionsMatrix(14,5) = auxiliaryFunctionsMatrix(14,2)/auxiliaryEquationsVector(16);
     auxiliaryFunctionsMatrix(14,8) = auxiliaryFunctionsMatrix(6,0)*auxiliaryFunctionsMatrix(4,5);
-    auxiliaryFunctionsMatrix(14,6) = auxiliaryFunctionsMatrix(14,1)*(auxiliaryFunctionsMatrix(4,15)+auxiliaryFunctionsMatrix(14,8));
+    auxiliaryFunctionsMatrix(14,6) = rotationalVelocity*rotationalVelocity*auxiliaryFunctionsMatrix(14,1)*(auxiliaryFunctionsMatrix(4,15)+auxiliaryFunctionsMatrix(14,8));
     // Avoid singularities
     if (auxiliaryEquationsVector(15) == 0.0){
         auxiliaryFunctionsMatrix(4,7) = 0.0;
     }
     else {
-    auxiliaryFunctionsMatrix(14,7) = (rotationalVelocity*rotationalVelocity*auxiliaryFunctionsMatrix(14,6)+auxiliaryFunctionsMatrix(4,34)+auxiliaryFunctionsMatrix(14,4))/auxiliaryEquationsVector(15);
+    auxiliaryFunctionsMatrix(14,7) = (auxiliaryFunctionsMatrix(14,6)+auxiliaryFunctionsMatrix(4,34)+auxiliaryFunctionsMatrix(14,4))/auxiliaryEquationsVector(15);
     }
+*/
+    auxiliaryFunctionsMatrix(14,0) = auxiliaryEquationsVector(15)*auxiliaryFunctionsMatrix(4,38);
+    auxiliaryFunctionsMatrix(14,7) = auxiliaryFunctionsMatrix(14,0)/auxiliaryEquationsVector(16);
+    auxiliaryFunctionsMatrix(14,8) = auxiliaryFunctionsMatrix(4,7)*auxiliaryFunctionsMatrix(4,5);
+    auxiliaryFunctionsMatrix(14,9) = rotationalVelocity*rotationalVelocity*auxiliaryEquationsVector(16)*auxiliaryFunctionsMatrix(4,6);
+    auxiliaryFunctionsMatrix(14,1) = (auxiliaryFunctionsMatrix(4,6)*auxiliaryFunctionsMatrix(4,38)+auxiliaryFunctionsMatrix(14,8)*auxiliaryFunctionsMatrix(4,4));
+    auxiliaryFunctionsMatrix(14,2) = auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16);
+    auxiliaryFunctionsMatrix(14,3) = -standardGravitationalParameter*auxiliaryFunctionsMatrix(4,38);
+    auxiliaryFunctionsMatrix(14,4) = auxiliaryFunctionsMatrix(14,3)/auxiliaryFunctionsMatrix(14,2);
+    auxiliaryFunctionsMatrix(14,5) = auxiliaryFunctionsMatrix(14,4)+auxiliaryFunctionsMatrix(14,9)*auxiliaryFunctionsMatrix(14,1)+auxiliaryFunctionsMatrix(4,34);
+    // Avoid singularities
+    if (auxiliaryEquationsVector(15) == 0.0){
+        auxiliaryFunctionsMatrix(14,6) = 0.0;
+    }
+    else {
+    auxiliaryFunctionsMatrix(14,6) = auxiliaryFunctionsMatrix(14,5)/auxiliaryEquationsVector(15);
 
+    }
 
     // w15
     auxiliaryFunctionsMatrix(15,1) = auxiliaryEquationsVector(16)*auxiliaryFunctionsMatrix(4,6);

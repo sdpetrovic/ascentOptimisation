@@ -219,7 +219,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //    Eigen::VectorXd WVector13_11 = Eigen::VectorXd::Zero(maxOrder);     // W13,11
 //    Eigen::VectorXd WVector13_12 = Eigen::VectorXd::Zero(maxOrder);     // W13,12
 
-
+    Eigen::VectorXd WVector14_0 = Eigen::VectorXd::Zero(maxOrder);     // W14,0
     Eigen::VectorXd WVector14_1 = Eigen::VectorXd::Zero(maxOrder);     // W14,1
     Eigen::VectorXd WVector14_2 = Eigen::VectorXd::Zero(maxOrder);     // W14,2
     Eigen::VectorXd WVector14_3 = Eigen::VectorXd::Zero(maxOrder);     // W14,3
@@ -227,8 +227,9 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     Eigen::VectorXd WVector14_5 = Eigen::VectorXd::Zero(maxOrder);     // W14,5
     Eigen::VectorXd WVector14_6 = Eigen::VectorXd::Zero(maxOrder);     // W14,6
     Eigen::VectorXd WVector14_7 = Eigen::VectorXd::Zero(maxOrder);     // W14,7
-//    Eigen::VectorXd WVector14_9 = Eigen::VectorXd::Zero(maxOrder);     // W14,9
     Eigen::VectorXd WVector14_8 = Eigen::VectorXd::Zero(maxOrder);     // W14,8
+    Eigen::VectorXd WVector14_9 = Eigen::VectorXd::Zero(maxOrder);     // W14,9
+
 
     Eigen::VectorXd WVector15_1 = Eigen::VectorXd::Zero(maxOrder);     // W15,1
     Eigen::VectorXd WVector15_2 = Eigen::VectorXd::Zero(maxOrder);     // W15,2
@@ -376,6 +377,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //    WVector13_11(0) = initialFunctionsMatrix(13,11);     // W13,11
 //    WVector13_12(0) = initialFunctionsMatrix(13,12);     // W13,12
 
+    WVector14_0(0) = initialFunctionsMatrix(14,0);     // W14,1
     WVector14_1(0) = initialFunctionsMatrix(14,1);     // W14,1
     WVector14_2(0) = initialFunctionsMatrix(14,2);     // W14,2
     WVector14_3(0) = initialFunctionsMatrix(14,3);     // W14,3
@@ -383,8 +385,8 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     WVector14_5(0) = initialFunctionsMatrix(14,5);     // W14,5
     WVector14_6(0) = initialFunctionsMatrix(14,6);     // W14,6
     WVector14_7(0) = initialFunctionsMatrix(14,7);     // W14,7
-//    WVector14_9(0) = initialFunctionsMatrix(14,9);     // W14,9
     WVector14_8(0) = initialFunctionsMatrix(14,8);     // W14,8
+    WVector14_9(0) = initialFunctionsMatrix(14,9);     // W14,9
 
     WVector15_1(0) = initialFunctionsMatrix(15,1);     // W15,1
     WVector15_2(0) = initialFunctionsMatrix(15,2);     // W15,2
@@ -693,16 +695,34 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
 //        UMatrix(14,k) = 2.0*rotationalVelocity*WVector6_3(k)+WVector14_2(k)+rotationalVelocity*rotationalVelocity*WVector14_7(k)+WVector14_5(k)-standardGravitationalParameter*WVector14_9(k);
 
-        WVector14_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(16),WVector4_6,k);
+/*        WVector14_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(16),WVector4_6,k);
         WVector14_2(k) = getMultiplicationRecurrenceRelation(XMatrix.row(15),WVector4_38,k);
         WVector14_3(k) = getDivisionRecurrenceRelation((-standardGravitationalParameter*WVector4_7),XMatrix.row(16),WVector14_3,k);
         WVector14_4(k) = getDivisionRecurrenceRelation(WVector14_3,XMatrix.row(16),WVector14_4,k);
         WVector14_5(k) = getDivisionRecurrenceRelation(WVector14_2,XMatrix.row(16),WVector14_5,k);
         WVector14_8(k) = getMultiplicationRecurrenceRelation(WVector6_0,WVector4_5,k);
-        WVector14_6(k) = getMultiplicationRecurrenceRelation(WVector14_1,(WVector4_15+WVector14_8),k);
-        WVector14_7(k) = getDivisionRecurrenceRelation((rotationalVelocity*rotationalVelocity*WVector4_0+WVector4_34+WVector14_4),XMatrix.row(15),WVector14_7,k);
+        WVector14_6(k) = rotationalVelocity*rotationalVelocity*getMultiplicationRecurrenceRelation(WVector14_1,(WVector4_15+WVector14_8),k);
+        WVector14_7(k) = getDivisionRecurrenceRelation((WVector4_0+WVector4_34+WVector14_4),XMatrix.row(15),WVector14_7,k);
 
         UMatrix(14,k) = 2.0*rotationalVelocity*getMultiplicationRecurrenceRelation(WVector4_6,WVector4_9,k)+WVector14_7(k);
+*/
+
+        WVector14_0(k) = getMultiplicationRecurrenceRelation(XMatrix.row(15),WVector4_38,k);
+        WVector14_7(k) = getDivisionRecurrenceRelation(WVector14_0,XMatrix.row(16),WVector14_7,k);
+        WVector14_8(k) = getMultiplicationRecurrenceRelation(WVector4_7,WVector4_5,k);
+        WVector14_9(k) = rotationalVelocity*rotationalVelocity*getMultiplicationRecurrenceRelation(XMatrix.row(16),WVector4_6,k);
+        WVector14_1(k) = getMultiplicationRecurrenceRelation(WVector4_6,WVector4_38,k)+getMultiplicationRecurrenceRelation(WVector14_8,WVector4_4,k);
+        WVector14_2(k) = getMultiplicationRecurrenceRelation(XMatrix.row(16),XMatrix.row(16),k);
+        WVector14_3(k) = -standardGravitationalParameter*WVector4_38(k);
+        WVector14_4(k) = getDivisionRecurrenceRelation(WVector14_3,WVector14_2,WVector4_4,k);
+        WVector14_5(k) = WVector14_4(k)+getMultiplicationRecurrenceRelation(WVector14_9,WVector14_1,k)+WVector4_34(k);
+        WVector14_6(k) = getDivisionRecurrenceRelation(WVector14_5,XMatrix.row(15),WVector14_6,k);
+
+        UMatrix(14,k) = 2.0*rotationalVelocity*getMultiplicationRecurrenceRelation(WVector4_6,WVector4_9,k)+WVector14_7(k)+WVector14_6(k);
+
+
+
+
 
         // 15
         WVector15_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(16),WVector4_6,k);
@@ -875,11 +895,15 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
     /// Debug ///
 
+    std::cout<<"WVector4_7 = "<<WVector4_7<<std::endl;
+    std::cout<<"XMatrix.row(15) = "<<XMatrix.row(15)<<std::endl;
+    std::cout<<"XMatrix.row(16) = "<<XMatrix.row(16)<<std::endl;
+
 //    std::cout<<"WVector11_1 = "<<WVector11_1<<std::endl;
 //    std::cout<<"WVector4_12 = "<<WVector4_12<<std::endl;
 
-//    std::cout<<"WVector13_0 = "<<WVector13_0<<std::endl;
-//    std::cout<<"WVector13_1 = "<<WVector13_1<<std::endl;
+    std::cout<<"WVector13_0 = "<<WVector13_0<<std::endl;
+    std::cout<<"WVector13_1 = "<<WVector13_1<<std::endl;
 //    std::cout<<"WVector13_2 = "<<WVector13_2<<std::endl;
 //    std::cout<<"WVector13_3 = "<<WVector13_3<<std::endl;
 //    std::cout<<"WVector13_4 = "<<WVector13_4<<std::endl;
@@ -891,13 +915,14 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //    std::cout<<"WVector13_10 = "<<WVector13_10<<std::endl;
 //    std::cout<<"WVector13_11 = "<<WVector13_11<<std::endl;
 
-//    std::cout<<"WVector14_1 = "<<WVector14_1<<std::endl;
-//    std::cout<<"WVector14_2 = "<<WVector14_2<<std::endl;
-//    std::cout<<"WVector14_3 = "<<WVector14_3<<std::endl;
-//    std::cout<<"WVector14_4 = "<<WVector14_4<<std::endl;
-//    std::cout<<"WVector14_5 = "<<WVector14_5<<std::endl;
-//    std::cout<<"WVector14_6 = "<<WVector14_6<<std::endl;
+    std::cout<<"WVector14_1 = "<<WVector14_1<<std::endl;
+    std::cout<<"WVector14_2 = "<<WVector14_2<<std::endl;
+    std::cout<<"WVector14_3 = "<<WVector14_3<<std::endl;
+    std::cout<<"WVector14_4 = "<<WVector14_4<<std::endl;
+    std::cout<<"WVector14_5 = "<<WVector14_5<<std::endl;
+    std::cout<<"WVector14_6 = "<<WVector14_6<<std::endl;
 //    std::cout<<"WVector14_7 = "<<WVector14_7<<std::endl;
+//    std::cout<<"WVector14_8 = "<<WVector14_8<<std::endl;
 //    std::cout<<"WVector14_9 = "<<WVector14_9<<std::endl;
 
 //    std::cout<<"WVector4_1 = "<<WVector4_1<<std::endl;
@@ -906,8 +931,13 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //    std::cout<<"U4 rest = "<<WVector4_24+WVector4_35-WVector4_36<<std::endl;
 //    std::cout<<"mu_M (ARR) = "<<standardGravitationalParameter<<std::endl;
 
-//std::cout<<"XMatrix.row(13) = "<<XMatrix.row(13)<<std::endl;
-//std::cout<<"XMatrix.row(14) = "<<XMatrix.row(14)<<std::endl;
+    std::cout<<"WVector4_6 = "<<WVector4_6<<std::endl;
+    std::cout<<"WVector4_9 = "<<WVector4_9<<std::endl;
+    std::cout<<"WVector4_38 = "<<WVector4_38<<std::endl;
+
+std::cout<<"XMatrix.row(12) = "<<XMatrix.row(12)<<std::endl;
+std::cout<<"XMatrix.row(13) = "<<XMatrix.row(13)<<std::endl;
+std::cout<<"XMatrix.row(14) = "<<XMatrix.row(14)<<std::endl;
 
 //  std::cout<<"XMatrix.row(8) = "<<XMatrix.row(8)<<std::endl;
 //  std::cout<<"XMatrix.row(9) = "<<XMatrix.row(9)<<std::endl;
@@ -927,7 +957,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
 
 
-//    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
+    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
 //    std::cout<<"UMatrix = "<<UMatrix<<std::endl;
 
 
