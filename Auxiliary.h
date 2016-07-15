@@ -1387,8 +1387,10 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     if (auxiliaryEquationsVector(15) == 0.0){
         auxiliaryFunctionsMatrix(13,6) = 0.0;
     }
+    else {
     auxiliaryFunctionsMatrix(13,6) = auxiliaryFunctionsMatrix(13,5)/auxiliaryEquationsVector(15);
-    auxiliaryFunctionsMatrix(13,7) = -2*rotationalVelocity*auxiliaryFunctionsMatrix(4,6)*auxiliaryFunctionsMatrix(13,1)+auxiliaryFunctionsMatrix(13,6);
+    }
+    auxiliaryFunctionsMatrix(13,7) = -2.0*rotationalVelocity*auxiliaryFunctionsMatrix(4,6)*auxiliaryFunctionsMatrix(13,1)+auxiliaryFunctionsMatrix(13,6);
     // Avoid singularities
     if (auxiliaryFunctionsMatrix(4,38) == 0.0){
         auxiliaryFunctionsMatrix(13,8) = 0.0;

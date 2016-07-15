@@ -240,7 +240,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //std::cout<<"pi = "<<(4*atan(1))<<std::endl;
 
     /// TSI settings ///
-    const int maxOrder = 9; // Eventually want order 20 (testing is 8)
+    const int maxOrder = 8; // Eventually want order 20 (testing is 8)
     /// TSI settings ///
 
     /// Integration settings ///
