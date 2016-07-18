@@ -1402,7 +1402,7 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
 
     // w14
     auxiliaryFunctionsMatrix(14,0) = Thrust*auxiliaryFunctionsMatrix(4,29)*auxiliaryFunctionsMatrix(4,37);
-    auxiliaryFunctionsMatrix(14,1) = auxiliaryFunctionsMatrix(4,6)*auxiliaryFunctionsMatrix(4,38);
+    auxiliaryFunctionsMatrix(14,1) = auxiliaryFunctionsMatrix(4,6)*auxiliaryFunctionsMatrix(4,38)+auxiliaryFunctionsMatrix(13,1)*auxiliaryFunctionsMatrix(4,4);
     auxiliaryFunctionsMatrix(14,2) = -standardGravitationalParameter*auxiliaryFunctionsMatrix(4,38);
     auxiliaryFunctionsMatrix(14,3) = auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16);
     auxiliaryFunctionsMatrix(14,4) = auxiliaryFunctionsMatrix(14,2)/auxiliaryFunctionsMatrix(14,3);
@@ -1426,6 +1426,10 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(15,4) = auxiliaryFunctionsMatrix(4,38)*auxiliaryFunctionsMatrix(4,5);
     auxiliaryFunctionsMatrix(15,5) = auxiliaryFunctionsMatrix(4,7)*auxiliaryFunctionsMatrix(4,6)-auxiliaryFunctionsMatrix(15,4)*auxiliaryFunctionsMatrix(4,4);
     auxiliaryFunctionsMatrix(15,6) = auxiliaryFunctionsMatrix(13,2)*auxiliaryFunctionsMatrix(15,5)+auxiliaryFunctionsMatrix(15,1)+auxiliaryFunctionsMatrix(15,3);
+
+    /// Debug ///
+    std::cout<<"u15 = "<<auxiliaryFunctionsMatrix(15,6)<<std::endl;
+    /// Debug ///
 
     // w16
     auxiliaryFunctionsMatrix(16,1) = auxiliaryEquationsVector(15)*auxiliaryFunctionsMatrix(4,7);

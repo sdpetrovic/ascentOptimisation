@@ -171,7 +171,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     celestialBody Mars;
 
-//    Mars.setRotationalVelocity(0); // Set Mars as a non-rotating planet for verification
+    Mars.setRotationalVelocity(0); // Set Mars as a non-rotating planet for verification
 
 
 //    const double adiabeticIndex = Mars.adiabeticIndex();
@@ -226,7 +226,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     const bool comparison = true;
 
     /// Set initial flight path angles and heading angles
-    const double FlightPathAngle = deg2rad(89.0);     // Set flight-path angle in rad --> Default = 90.0 deg
+    const double FlightPathAngle = deg2rad(45.0);     // Set flight-path angle in rad --> Default = 90.0 deg
     const double HeadingAngle = deg2rad(90.0);           // Set heading angle in rad --> Default = 0.0 deg
 //    double rotationalFlightPathAngle = deg2rad(90);         // Rotational flight-path angle in rad
 //    double inertialFlightPathAngle = deg2rad(90);           // Inertial flight-path angle in rad
@@ -235,12 +235,12 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
   /// Initial conditions /// a.k.a. control centre
 
-    const double setEndTime = 77.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
+    const double setEndTime = 10.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
 
 //std::cout<<"pi = "<<(4*atan(1))<<std::endl;
 
     /// TSI settings ///
-    const int maxOrder = 8; // Eventually want order 20 (testing is 8)
+    const int maxOrder = 20; // Eventually want order 20 (testing is 8)
     /// TSI settings ///
 
     /// Integration settings ///
@@ -1022,14 +1022,14 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 
 
-                    /// Runge-Kutta-Fehlberg 7(8) integrator.
-                    std::cout<<"You have chosen RKF7(8) as your integration method"<<std::endl;
-                    method = "RKF7(8)";
-                       tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
-                                   tudat::numerical_integrators::RungeKuttaCoefficients::get(
-                                       tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg78),
-                                   stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
-                                   infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
+//                    /// Runge-Kutta-Fehlberg 7(8) integrator.
+//                    std::cout<<"You have chosen RKF7(8) as your integration method"<<std::endl;
+//                    method = "RKF7(8)";
+//                       tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
+//                                   tudat::numerical_integrators::RungeKuttaCoefficients::get(
+//                                       tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg78),
+//                                   stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
+//                                   infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
 //                       /// Runge-Kutta-Fehlberg 4(5) integrator.
 //                       std::cout<<"You have chosen RKF4(5) as your integration method"<<std::endl;
@@ -1040,14 +1040,14 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //                                      stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
 //                                      infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
-//                          /// Dormand-Prince 8(7) integrator.
-//                          std::cout<<"You have chosen DOPRIN8(7) as your integration method"<<std::endl;
-//                          method = "DOPRIN8(7)";
-//                             tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
-//                                         tudat::numerical_integrators::RungeKuttaCoefficients::get(
-//                                             tudat::numerical_integrators::RungeKuttaCoefficients::rungeKutta87DormandPrince),
-//                                         stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
-//                                         infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
+                          /// Dormand-Prince 8(7) integrator.
+                          std::cout<<"You have chosen DOPRIN8(7) as your integration method"<<std::endl;
+                          method = "DOPRIN8(7)";
+                             tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
+                                         tudat::numerical_integrators::RungeKuttaCoefficients::get(
+                                             tudat::numerical_integrators::RungeKuttaCoefficients::rungeKutta87DormandPrince),
+                                         stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
+                                         infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1091,6 +1091,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                         if (runningTime == 0.2){
                             std::cout<<"State at time 0.2 = "<<currentState<<std::endl;
                             stateAtPoint2SecRKF = currentState;
+                            std::cout<<"Latitude = "<<atan2(currentState(1),currentState(0))<<std::endl;
+                            std::cout<<"FlightPathAngle = "<<-asin((currentState(3)*(-cos(atan2(currentState(1),currentState(0))))+currentState(4)*(-sin(atan2(currentState(1),currentState(0)))))/
+                                                                   (sqrt(currentState(3)*currentState(3)+currentState(4)*currentState(4)+currentState(5)*currentState(5))))<<std::endl;
 
                         }
 
