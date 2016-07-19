@@ -248,12 +248,12 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
         Eigen::MatrixXd TaylorCoefficientsOutputMatrix = Eigen::MatrixXd::Zero(7,maxOrder+1);       // Create an output matrix for the file without the first empty row
 
-        TaylorCoefficientsOutputMatrix.row(0) = TaylorCoefficients.row(1);                  // The first line entries are the maxOrder+1 Taylor Series Coefficients for     the position in the x-direction
-        TaylorCoefficientsOutputMatrix.row(1) = TaylorCoefficients.row(2);                  // The second line entries are the maxOrder+1 Taylor Series Coefficients for    the position in the y-direction
-        TaylorCoefficientsOutputMatrix.row(2) = TaylorCoefficients.row(3);                  // The third line entries are the maxOrder+1 Taylor Series Coefficients for     the position in the z-direction
-        TaylorCoefficientsOutputMatrix.row(3) = TaylorCoefficients.row(4);                  // The fourth line entries are the maxOrder+1 Taylor Series Coefficients for    the velocity in the x-direction
-        TaylorCoefficientsOutputMatrix.row(4) = TaylorCoefficients.row(5);                  // The fifth line entries are the maxOrder+1 Taylor Series Coefficients for     the velocity in the y-direction
-        TaylorCoefficientsOutputMatrix.row(5) = TaylorCoefficients.row(6);                  // The sixth line entries are the maxOrder+1 Taylor Series Coefficients for     the velocity in the z-direction
+        TaylorCoefficientsOutputMatrix.row(0) = TaylorCoefficients.row(1);                  // The first line entries are the maxOrder+1 Taylor Series Coefficients for     the position (r)
+        TaylorCoefficientsOutputMatrix.row(1) = TaylorCoefficients.row(2);                  // The second line entries are the maxOrder+1 Taylor Series Coefficients for    the position (delta)
+        TaylorCoefficientsOutputMatrix.row(2) = TaylorCoefficients.row(3);                  // The third line entries are the maxOrder+1 Taylor Series Coefficients for     the position (tau)
+        TaylorCoefficientsOutputMatrix.row(3) = TaylorCoefficients.row(4);                  // The fourth line entries are the maxOrder+1 Taylor Series Coefficients for    the velocity (V_G)
+        TaylorCoefficientsOutputMatrix.row(4) = TaylorCoefficients.row(5);                  // The fifth line entries are the maxOrder+1 Taylor Series Coefficients for     the velocity (gamma_G)
+        TaylorCoefficientsOutputMatrix.row(5) = TaylorCoefficients.row(6);                  // The sixth line entries are the maxOrder+1 Taylor Series Coefficients for     the velocity (chi_G)
         TaylorCoefficientsOutputMatrix.row(6) = TaylorCoefficients.row(7);                  // The seventh line entries are the maxOrder+1 Taylor Series Coefficients for   the mass
 
 
@@ -383,12 +383,12 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
         Eigen::VectorXd updatedStateAndTime(8);
 
-        updatedStateAndTime(0) = updatedState(0);   // Updated position in the x-direction
-        updatedStateAndTime(1) = updatedState(1);   // Updated position in the y-direction
-        updatedStateAndTime(2) = updatedState(2);   // Updated position in the z-direction
-        updatedStateAndTime(3) = updatedState(3);   // Updated velocity in the x-direction
-        updatedStateAndTime(4) = updatedState(4);   // Updated velocity in the y-direction
-        updatedStateAndTime(5) = updatedState(5);   // Updated velocity in the z-direction
+        updatedStateAndTime(0) = updatedState(0);   // Updated position (r)
+        updatedStateAndTime(1) = updatedState(1);   // Updated position (delta)
+        updatedStateAndTime(2) = updatedState(2);   // Updated position (tau)
+        updatedStateAndTime(3) = updatedState(3);   // Updated velocity (V_G)
+        updatedStateAndTime(4) = updatedState(4);   // Updated velocity (gamma_G)
+        updatedStateAndTime(5) = updatedState(5);   // Updated velocity (chi_G)
         updatedStateAndTime(6) = updatedState(6);   // Updated mass
         updatedStateAndTime(7) = updatedTime;   // Updated time
 

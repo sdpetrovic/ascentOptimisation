@@ -24,7 +24,7 @@
  *
  *    Changelog
  *      YYMMDD    Author            Comment
- *      160519    S.D. Petrovic     File created
+ *      160719    S.D. Petrovic     File created
  *
  *    References
  *
@@ -225,13 +225,10 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     /// Comparison?
     const bool comparison = true;
 
-    /// Set initial flight path angles and heading angles
+    /// Set initial flight path angle and heading angle
     const double FlightPathAngle = deg2rad(45.0);     // Set flight-path angle in rad --> Default = 90.0 deg
     const double HeadingAngle = deg2rad(90.0);           // Set heading angle in rad --> Default = 0.0 deg
-//    double rotationalFlightPathAngle = deg2rad(90);         // Rotational flight-path angle in rad
-//    double inertialFlightPathAngle = deg2rad(90);           // Inertial flight-path angle in rad
-//    double rotationalHeadingAngle = deg2rad(0);            // Rotational heading angle in rad
-//    double inertialHeadingAngle = deg2rad(0);              // Inertial heading angle in rad
+
 
   /// Initial conditions /// a.k.a. control centre
 
@@ -258,20 +255,18 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // Launch site characteristics
 
-//    const double initialAltitude = -0.6e3;             // Starting altitude [m MOLA]
+
     const double initialAltitude = -0.6;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
     const double initialLatitudeDeg = 0.0;               // Starting latitude [deg] initial condition is 21 deg
     const double initialLongitudeDeg = 0.0;            // Starting longitude [deg] initial condition is 74.5 deg
 
-//    const double initialLatitude = initialLatitudeDeg*tudat::mathematical_constants::LONG_PI/180;       // Starting latitude [rad]
-//    const double initialLongitude = initialLongitudeDeg*tudat::mathematical_constants::LONG_PI/180;     // Starting longitude [rad]
+
 
     const double initialLatitude = deg2rad(initialLatitudeDeg);       // Starting latitude [rad]
     const double initialLongitude = deg2rad(initialLongitudeDeg);     // Starting longitude [rad]
 
     const double initialRadius = bodyReferenceRadius+initialAltitude;               // Starting radius in km
-//        const double initialRadius = bodyReferenceRadius+initialAltitude;               // Starting radius in m
 
         // Converting the initial spherical position to cartesian position using the standard convertSphericalToCartesian function of Tudat
         // Please note that this function requires the zenith angle as input which is pi/2-latitude!
@@ -291,7 +286,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     const Eigen::Vector3d initialVelocityInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(rotationalVelocityMars*inertialFrameTime-primeMeridianAngle+initialLongitude)*initialVelocityLaunchSite;
 
-    /// Setting StateAndTime class using modified vector ///
+    /// Setting StateAndTime class using modified vector (Cartesian) ///
 
     tudat::basic_mathematics::Vector7d aState;
 
@@ -302,6 +297,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     aState(4) = initialVelocityInertialFrame(1);
     aState(5) = initialVelocityInertialFrame(2);
     aState(6) = 227;  // Mass [kg] from literature study
+
+
 
 //    /// Debug ///
 
@@ -315,18 +312,31 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //    /// Debug //
 
-    StateAndTime currentStateAndTime(aState);        // Creating the current state class using the namespace and class directly
+
+
+
+    /// Cartesian state ( in inertial frame) ///
+
+    StateAndTime currentStateAndTime(aState);        // Creating the current state class using the namespace and class directly (Cartesian)
 
     std::cout<<"aState = "<<aState<<std::endl;
-//    std::cout<<"x1-852.252774466749 = "<<aState(0)-852.252774466749<<std::endl;
-//    std::cout<<"x1-850 = "<<aState(0)-850<<std::endl;
-//    std::cout<<"x2-3073.12422474535 = "<<aState(1)-3073.12422474535<<std::endl;
-//    std::cout<<"x3-1224.18491564675 = "<<aState(2)-1224.18491564675<<std::endl;
-//    std::cout<<"x4+0.21782304504995 = "<<aState(3)+0.21782304504995<<std::endl;
-//    std::cout<<"x5-0.0604076766542031 = "<<aState(4)-0.0604076766542031<<std::endl;
-//    std::cout<<"x6-0 = "<<aState(5)-0<<std::endl;
-//    std::cout<<"x7-227 = "<<aState(6)-227<<std::endl;
 
+
+    /// Spherical state (in rotating frame) ///
+
+    tudat::basic_mathematics::Vector7d sphericalState;
+
+    sphericalState(0) = initialRadius;   // Radius (r)  [km]
+    sphericalState(1) = initialLatitude;   // Latitude (delta)  [rad]
+    sphericalState(2) = initialLongitude;   // Longitude (tau)  [rad]
+    sphericalState(3) = 0.0;   // Ground velocity (V_G) (initially 0.0 [km/s])
+    sphericalState(4) = FlightPathAngle;   // Flight-path angle (gamma_G)  [rad]
+    sphericalState(5) = HeadingAngle;   // Azimuth angle (chi_G)    [rad]
+    sphericalState(6) = 227;    // Mass [kg] from literature study
+
+    StateAndTime currentSphericalStateAndTime(sphericalState);  // Creating the current state class using the namespace and class directly (Spherical)
+
+    std::cout<<"sphericalState = "<<sphericalState<<std::endl;
 
 /////////////////////////////////////////////////////////////////////
 ////////////////////// Testing the integrators //////////////////////
@@ -493,10 +503,10 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     Eigen::MatrixXd outputVectorTSI = Eigen::MatrixXd::Zero(1,8); // Create a row vector for the storing of the data
 
     // Getting the initial conditions for storage
-    const tudat::basic_mathematics::Vector7d initialStateTSI = currentStateAndTime.getCurrentState();
+    const tudat::basic_mathematics::Vector7d initialStateTSI = currentSphericalStateAndTime.getCurrentState();
 
     // Filling the output vector
-    outputVectorTSI(0,0) = currentStateAndTime.getCurrentTime();   // Storing the initial time
+    outputVectorTSI(0,0) = currentSphericalStateAndTime.getCurrentTime();   // Storing the initial time
     outputVectorTSI(0,1) = initialStateTSI(0);   // Storing the initial x position
     outputVectorTSI(0,2) = initialStateTSI(1);   // Storing the initial y position
     outputVectorTSI(0,3) = initialStateTSI(2);   // Storing the initial z position
@@ -690,7 +700,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                             stepSize.setCurrentStepSize(endTimeTSI - runningTimeTSI);
                         }
         std::cout<<"The new step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
-        Eigen::VectorXd updatedStateAndTimeVector = performTaylorSeriesIntegrationStep(Mars, MAV, currentStateAndTime, stepSize, maxOrder, FlightPathAngle, HeadingAngle); /// The actual integration step
+        Eigen::VectorXd updatedStateAndTimeVector = performTaylorSeriesIntegrationStep(Mars, MAV, currentSphericalStateAndTime, stepSize, maxOrder, FlightPathAngle, HeadingAngle); /// The actual integration step
         // This function has the output: updated position, updated velocity, updated mass and updated time
 
         std::cout<<"updatedStateAndTimeVector = "<<updatedStateAndTimeVector<<std::endl;
@@ -707,12 +717,12 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
         // Filling the output vector
         outputVectorTSI(0,0) = updatedStateAndTimeVector(7);   // Storing the updated time
-        outputVectorTSI(0,1) = updatedStateAndTimeVector(0);   // Storing the updated x position
-        outputVectorTSI(0,2) = updatedStateAndTimeVector(1);   // Storing the updated y position
-        outputVectorTSI(0,3) = updatedStateAndTimeVector(2);   // Storing the updated z position
-        outputVectorTSI(0,4) = updatedStateAndTimeVector(3);   // Storing the updated x velocity
-        outputVectorTSI(0,5) = updatedStateAndTimeVector(4);   // Storing the updated y velocity
-        outputVectorTSI(0,6) = updatedStateAndTimeVector(5);   // Storing the updated z velocity
+        outputVectorTSI(0,1) = updatedStateAndTimeVector(0);   // Storing the updated radius
+        outputVectorTSI(0,2) = updatedStateAndTimeVector(1);   // Storing the updated latitude
+        outputVectorTSI(0,3) = updatedStateAndTimeVector(2);   // Storing the updated longitude
+        outputVectorTSI(0,4) = updatedStateAndTimeVector(3);   // Storing the updated ground velocity
+        outputVectorTSI(0,5) = updatedStateAndTimeVector(4);   // Storing the updated flight-path angle
+        outputVectorTSI(0,6) = updatedStateAndTimeVector(5);   // Storing the updated azimuth angle
         outputVectorTSI(0,7) = updatedStateAndTimeVector(6);   // Storing the updated MAV mass
 
         // Store the new values in the data storage matrix
@@ -728,27 +738,66 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         }
 
         // Updating the current state and time class!!!
-        tudat::basic_mathematics::Vector7d currentStateVector; // Create the current state and time vector
+        tudat::basic_mathematics::Vector7d currentSphericalStateVector; // Create the current state and time vector
 
         // Fill the curent state and time vector
-        currentStateVector(0) = updatedStateAndTimeVector(0);  // Updated x position
-        currentStateVector(1) = updatedStateAndTimeVector(1);  // Updated y position
-        currentStateVector(2) = updatedStateAndTimeVector(2);  // Updated z position
-        currentStateVector(3) = updatedStateAndTimeVector(3);  // Updated x velocity
-        currentStateVector(4) = updatedStateAndTimeVector(4);  // Updated y velocity
-        currentStateVector(5) = updatedStateAndTimeVector(5);  // Updated z velocity
-        currentStateVector(6) = updatedStateAndTimeVector(6);  // Updated MAV mass
+        currentSphericalStateVector(0) = updatedStateAndTimeVector(0);  // Updated radius
+        currentSphericalStateVector(1) = updatedStateAndTimeVector(1);  // Updated latitude
+        currentSphericalStateVector(2) = updatedStateAndTimeVector(2);  // Updated longitude
+        currentSphericalStateVector(3) = updatedStateAndTimeVector(3);  // Updated ground velocity
+        currentSphericalStateVector(4) = updatedStateAndTimeVector(4);  // Updated flight-path angle
+        currentSphericalStateVector(5) = updatedStateAndTimeVector(5);  // Updated azimuth angle
+        currentSphericalStateVector(6) = updatedStateAndTimeVector(6);  // Updated MAV mass
 
         runningTimeTSI = updatedStateAndTimeVector(7);             // Updated time
 
 
         if (runningTimeTSI == 0.2){
-                stateAtPoint2SecTSI = currentStateVector;
+                stateAtPoint2SecTSI = currentSphericalStateVector;
         }
 
-        currentStateAndTime.setCurrentStateAndTime(currentStateVector,runningTimeTSI); // Update the current state and time class!
+        currentSphericalStateAndTime.setCurrentStateAndTime(currentSphericalStateVector,runningTimeTSI); // Update the current state and time class!
+
+        /// Compute the inertial cartesian state ///
+
+        Eigen::Vector3d positionRotatingFrame;
+
+        positionRotatingFrame(0) = currentSphericalStateVector(0)*cos(currentSphericalStateVector(1))*cos(currentSphericalStateVector(2));    // x-position
+        positionRotatingFrame(1) = currentSphericalStateVector(0)*cos(currentSphericalStateVector(1))*sin(currentSphericalStateVector(2));    // y-position
+        positionRotatingFrame(2) = currentSphericalStateVector(0)*sin(currentSphericalStateVector(1));    // z-position
+
+        Eigen::Vector3d velocityVerticalFrame;
+
+        velocityVerticalFrame(0) = currentSphericalStateVector(3)*cos(currentSphericalStateVector(4))*cos(currentSphericalStateVector(5));    // x-velocity
+        velocityVerticalFrame(1) = currentSphericalStateVector(3)*cos(currentSphericalStateVector(4))*sin(currentSphericalStateVector(5));    // y-velocity
+        velocityVerticalFrame(2) = -currentSphericalStateVector(3)*sin(currentSphericalStateVector(4));    // z-velocity
+
+        // Perform the reference frame transformations
+
+        const double angleItoR = rotationalVelocityMars*(inertialFrameTime+runningTimeTSI)-primeMeridianAngle;
+
+        // Position from R-frame to I-frame
+        const Eigen::Vector3d positionInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(angleItoR)*positionRotatingFrame;
 
 
+        // Velocity from V-frame to R-frame
+        const Eigen::Vector3d velocityRotationalFrame = tudat::reference_frames::getLocalVerticalToRotatingPlanetocentricFrameTransformationMatrix(currentSphericalStateVector(2),currentSphericalStateVector(1))*velocityVerticalFrame;
+
+        // Velocity from R-frame to I-frame
+        const Eigen::Vector3d velocityInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(angleItoR)*velocityRotationalFrame;
+
+
+        tudat::basic_mathematics::Vector7d currentCartesianState;
+
+        currentCartesianState(0) = positionInertialFrame(0); // x-position
+        currentCartesianState(1) = positionInertialFrame(1); // y-position
+        currentCartesianState(2) = positionInertialFrame(2); // z-position
+        currentCartesianState(3) = velocityInertialFrame(3); // x-velocity
+        currentCartesianState(4) = velocityInertialFrame(4); // y-velocity
+        currentCartesianState(5) = velocityInertialFrame(5); // z-velocity
+        currentCartesianState(6) = currentSphericalStateVector(6); // Mass
+
+        std::cout<<"Current Cartesian State = "<<currentCartesianState<<std::endl;
 
      countTSI++;
 
