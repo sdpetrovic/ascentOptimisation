@@ -171,7 +171,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     celestialBody Mars;
 
-    Mars.setRotationalVelocity(0); // Set Mars as a non-rotating planet for verification
+//    Mars.setRotationalVelocity(0); // Set Mars as a non-rotating planet for verification
 
 
 //    const double adiabeticIndex = Mars.adiabeticIndex();
@@ -198,7 +198,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // No Gravity
 
-    Mars.setStandardGravitationalParameter(0);
+//    Mars.setStandardGravitationalParameter(0);
 //    Mars.setStandardGravitationalParameter(-7.088e-5);
 //    std::cout<<"mu_M = "<<Mars.standardGravitationalParameter()<<std::endl;
 
@@ -216,7 +216,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // No Thrust
 
-//    MAV.setThrust(0);
+    MAV.setThrust(0);
 
     if (MAV.Thrust() == 0){
         std::cout<<"NO THRUST"<<std::endl;
@@ -226,13 +226,13 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     const bool comparison = true;
 
     /// Set initial flight path angle and heading angle
-    const double FlightPathAngle = deg2rad(45.0);     // Set flight-path angle in rad --> Default = 90.0 deg
+    const double FlightPathAngle = deg2rad(-90.0);     // Set flight-path angle in rad --> Default = 90.0 deg
     const double HeadingAngle = deg2rad(90.0);           // Set heading angle in rad --> Default = 0.0 deg
 
 
   /// Initial conditions /// a.k.a. control centre
 
-    const double setEndTime = 10.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
+    const double setEndTime = 200.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
 
 //std::cout<<"pi = "<<(4*atan(1))<<std::endl;
 
@@ -241,7 +241,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     /// TSI settings ///
 
     /// Integration settings ///
-    const double chosenLocalErrorTolerance = 1e-8;      // The chosen local error tolerance for TSI
+    const double chosenLocalErrorTolerance = 1e-15;      // The chosen local error tolerance for TSI
     const double chosenStepSize = 0.2; // The chosen initial step-size for TSI
 
     std::cout<<"The chosen local error tolerance = "<<chosenLocalErrorTolerance<<std::endl;
@@ -256,10 +256,10 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     // Launch site characteristics
 
 
-    const double initialAltitude = -0.6;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
+    const double initialAltitude = 20.0;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
-    const double initialLatitudeDeg = 0.0;               // Starting latitude [deg] initial condition is 21 deg
-    const double initialLongitudeDeg = 0.0;            // Starting longitude [deg] initial condition is 74.5 deg
+    const double initialLatitudeDeg = 45.0;               // Starting latitude [deg] initial condition is 21 deg
+    const double initialLongitudeDeg = 45.0;            // Starting longitude [deg] initial condition is 74.5 deg
 
 
 
@@ -752,9 +752,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         runningTimeTSI = updatedStateAndTimeVector(7);             // Updated time
 
 
-        if (runningTimeTSI == 0.2){
-                stateAtPoint2SecTSI = currentSphericalStateVector;
-        }
+
 
         currentSphericalStateAndTime.setCurrentStateAndTime(currentSphericalStateVector,runningTimeTSI); // Update the current state and time class!
 
@@ -786,18 +784,28 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         // Velocity from R-frame to I-frame
         const Eigen::Vector3d velocityInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(angleItoR)*velocityRotationalFrame;
 
+        /// Debug ///
+//        std::cout<<"velocityRotationalFrame = "<<velocityRotationalFrame<<std::endl;
+//        std::cout<<"velocityInertialFrame = "<<velocityInertialFrame<<std::endl;
+        /// Debug ///
 
         tudat::basic_mathematics::Vector7d currentCartesianState;
 
         currentCartesianState(0) = positionInertialFrame(0); // x-position
         currentCartesianState(1) = positionInertialFrame(1); // y-position
         currentCartesianState(2) = positionInertialFrame(2); // z-position
-        currentCartesianState(3) = velocityInertialFrame(3); // x-velocity
-        currentCartesianState(4) = velocityInertialFrame(4); // y-velocity
-        currentCartesianState(5) = velocityInertialFrame(5); // z-velocity
+        currentCartesianState(3) = velocityInertialFrame(0); // x-velocity
+        currentCartesianState(4) = velocityInertialFrame(1); // y-velocity
+        currentCartesianState(5) = velocityInertialFrame(2); // z-velocity
         currentCartesianState(6) = currentSphericalStateVector(6); // Mass
 
         std::cout<<"Current Cartesian State = "<<currentCartesianState<<std::endl;
+
+        if (runningTimeTSI == 0.2){
+                stateAtPoint2SecTSI = currentCartesianState;
+        }
+
+        currentStateAndTime.setCurrentStateAndTime(currentCartesianState,runningTimeTSI); // Update the current Cartesian state and time class!
 
      countTSI++;
 
@@ -1140,9 +1148,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                         if (runningTime == 0.2){
                             std::cout<<"State at time 0.2 = "<<currentState<<std::endl;
                             stateAtPoint2SecRKF = currentState;
-                            std::cout<<"Latitude = "<<atan2(currentState(1),currentState(0))<<std::endl;
-                            std::cout<<"FlightPathAngle = "<<-asin((currentState(3)*(-cos(atan2(currentState(1),currentState(0))))+currentState(4)*(-sin(atan2(currentState(1),currentState(0)))))/
-                                                                   (sqrt(currentState(3)*currentState(3)+currentState(4)*currentState(4)+currentState(5)*currentState(5))))<<std::endl;
+//                            std::cout<<"Latitude = "<<atan2(currentState(1),currentState(0))<<std::endl;
+//                            std::cout<<"FlightPathAngle = "<<-asin((currentState(3)*(-cos(atan2(currentState(1),currentState(0))))+currentState(4)*(-sin(atan2(currentState(1),currentState(0)))))/
+//                                                                   (sqrt(currentState(3)*currentState(3)+currentState(4)*currentState(4)+currentState(5)*currentState(5))))<<std::endl;
 
                         }
 

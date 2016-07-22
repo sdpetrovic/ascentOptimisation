@@ -182,7 +182,7 @@ public:
                     FlightPathAngle = FlightPathAngle_; // Flight path angle in rad
                     HeadingAngle = HeadingAngle_;  // Heading angle in rad
 
-                    std::cout<<"Flight-path angle and heading angle have been set"<<std::endl;
+//                    std::cout<<"Flight-path angle and heading angle have been set"<<std::endl;
                 }
                 else{
                     std::cout<<"Heading angle has to be specified between 0.0 and 2*pi"<<std::endl;
@@ -310,47 +310,51 @@ public:
 //         auxiliaryEquationsVector(12) = asin(auxiliaryEquationsVector(3)/auxiliaryEquationsVector(16));               // x12
 
          // Avoid cosine rounding errors
-                  double cx11;
+//                  double cx11;
 
-         if (abs(cos(auxiliaryEquationsVector(11)))<6.2e-17){
-             cx11 = 0;
-         }
-         else {
-             cx11 = cos(auxiliaryEquationsVector(11));
-         }
+////                  std::cout<<"x11 = "<<auxiliaryEquationsVector(11)<<std::endl;
 
-         double cx12;
+//         if (abs(cos(auxiliaryEquationsVector(11)))<6.2e-17){
+//             cx11 = 0;
+//         }
+//         else {
+//             cx11 = cos(auxiliaryEquationsVector(11));
 
-         if (abs(cos(auxiliaryEquationsVector(12)))<6.2e-17){
-             cx12 = 0;
-         }
-         else {
-             cx12 = cos(auxiliaryEquationsVector(12));
-         }
+////             std::cout<<"x11 has been set"<<std::endl;
+//         }
+
+//         double cx12;
+
+//         if (abs(cos(auxiliaryEquationsVector(12)))<6.2e-17){
+//             cx12 = 0;
+//         }
+//         else {
+//             cx12 = cos(auxiliaryEquationsVector(12));
+//         }
 
 
 
          // Same for sin
 
-         double sx11;
+//         double sx11;
 
-          if (abs(sin(auxiliaryEquationsVector(11)))<1.2e-16){
+//          if (abs(sin(auxiliaryEquationsVector(11)))<1.2e-16){
 
-              sx11 = 0;
+//              sx11 = 0;
 
-          }
-          else {
-              sx11 = sin(auxiliaryEquationsVector(11));
-          }
+//          }
+//          else {
+//              sx11 = sin(auxiliaryEquationsVector(11));
+//          }
 
-         double sx12;
+//         double sx12;
 
-         if (abs(sin(auxiliaryEquationsVector(12)))<6.2e-17){
-             sx12 = 0;
-         }
-         else {
-             sx12 = sin(auxiliaryEquationsVector(12));
-         }
+//         if (abs(sin(auxiliaryEquationsVector(12)))<6.2e-17){
+//             sx12 = 0;
+//         }
+//         else {
+//             sx12 = sin(auxiliaryEquationsVector(12));
+//         }
 
 
 //        const double verticalXvelocity = (auxiliaryEquationsVector(4)+rotationalVelocity*auxiliaryEquationsVector(2))*(sx12*sx10*sx11-
@@ -500,12 +504,16 @@ public:
 
         auxiliaryEquationsVector(33) = sqrt(adiabeticIndex*specificGasConstant*auxiliaryEquationsVector(34));              // x33
 
-
+//std::cout<<"Surely this works 5..."<<std::endl;
 
         auxiliaryEquationsVector(32) = auxiliaryEquationsVector(15)/auxiliaryEquationsVector(33);              // x32
 
 
         // Determine which section of the drag coefficient curve needs to be used
+
+        /// Debug ///
+//        std::cout<<"dragCoefficientMachRanges = "<<dragCoefficientMachRanges<<std::endl;
+        /// Debug ///
 
         for (int i=0; i < 5+1; i++){
 
@@ -513,20 +521,28 @@ public:
 
                 sectionCD = i;
 
+//                std::cout<<"sectionCD is set equal to "<<sectionCD<<std::endl;
+
 
             }
 
 
         };
 
+//std::cout<<"Surely this works 6..."<<std::endl;
 
+/// Debug ///
+std::cout<<"sectionCD = "<<sectionCD<<std::endl;
+std::cout<<"x32 = "<<auxiliaryEquationsVector(32)<<std::endl;
+/// Debug ///
 
         auxiliaryEquationsVector(29) = dragCoefficientPolyCoefficients(sectionCD,1)*auxiliaryEquationsVector(32)+dragCoefficientPolyCoefficients(sectionCD,0);              // x29
 
-
+//std::cout<<"Surely this works 7..."<<std::endl;
 
         auxiliaryEquationsVector(27) = 0.5*referenceArea*auxiliaryEquationsVector(28)*auxiliaryEquationsVector(15)*auxiliaryEquationsVector(15)*auxiliaryEquationsVector(29);              // x27
 
+//std::cout<<"Surely this works 8..."<<std::endl;
 
         auxiliaryEquationsVector(0) = thrustAccelerationsBframe(0)-(auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7));              // w4,2
 
@@ -741,22 +757,31 @@ public:
 }
 
     // Account for singularities at zero velocity
-    if (auxiliaryEquationsVector(15) == 0){
+    if (auxiliaryEquationsVector(15) == 0.0){
         auxiliaryDerivativesVector(14) = 2.0*rotationalVelocity*cx12*sx13;
 //        std::cout<<"u14 goes here 1"<<std::endl;
     }
     else {
 //        std::cout<<"u14 goes here 2"<<std::endl;
+//    auxiliaryDerivativesVector(14) = 2.0*rotationalVelocity*cx12*sx13+(auxiliaryEquationsVector(15)/auxiliaryEquationsVector(16))*cx14+
+//            (rotationalVelocity*rotationalVelocity/auxiliaryEquationsVector(15))*auxiliaryEquationsVector(16)*cx12*(cx12*cx14+sx14*sx12*cx13)
+//            -thrustAccelerationsBframe(2)/auxiliaryEquationsVector(15)-standardGravitationalParameter*cx14/(auxiliaryEquationsVector(15)*auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16));                // u14
+
     auxiliaryDerivativesVector(14) = 2.0*rotationalVelocity*cx12*sx13+(auxiliaryEquationsVector(15)/auxiliaryEquationsVector(16))*cx14+
-            (rotationalVelocity*rotationalVelocity/auxiliaryEquationsVector(15))*auxiliaryEquationsVector(16)*cx12*(cx12*cx14+
-                                                                                                                                                 sx14*sx12*cx13)+
-            -thrustAccelerationsBframe(2)/auxiliaryEquationsVector(15)-standardGravitationalParameter*cx14/(auxiliaryEquationsVector(15)*auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16));                // u14
-}
+            ((rotationalVelocity*rotationalVelocity)*auxiliaryEquationsVector(16)*cx12*(cx12*cx14+sx14*sx12*cx13)
+            -thrustAccelerationsBframe(2)-standardGravitationalParameter*cx14/(auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16)))/auxiliaryEquationsVector(15);                // u14
+
+//    auxiliaryDerivativesVector(14) = 2.0*rotationalVelocity*cx12*sx13+(auxiliaryEquationsVector(15)/auxiliaryEquationsVector(16))*cx14+
+//            ((-standardGravitationalParameter*cx14)/(auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16))-thrustAccelerationsBframe(2)+
+//             (rotationalVelocity*rotationalVelocity)*auxiliaryEquationsVector(16)*cx12*(cx12*cx14+sx14*sx12*cx13))/(auxiliaryEquationsVector(15)); // u14
+
+    }
     /// Debug ///
 //    std::cout<<"x10 = "<<auxiliaryEquationsVector(10)<<std::endl;
 //    std::cout<<"x11 = "<<auxiliaryEquationsVector(11)<<std::endl;
 //    std::cout<<"tau (using lambda) = "<<atan2(auxiliaryEquationsVector(2),auxiliaryEquationsVector(1))-auxiliaryEquationsVector(10)<<std::endl;
 //    std::cout<<"x12 = "<<auxiliaryEquationsVector(12)<<std::endl;
+//    std::cout<<"u14 = "<<auxiliaryDerivativesVector(14)<<std::endl;
 //    std::cout<<"u14 = "<<2.0*rotationalVelocity*cx12*sx13+(auxiliaryEquationsVector(15)/auxiliaryEquationsVector(16))*cx14+
 //               (rotationalVelocity*rotationalVelocity/auxiliaryEquationsVector(15))*auxiliaryEquationsVector(16)*cx12*(cx12*cx14+
 //                                                                                                                                                    sx14*sx12*cx13)+
@@ -766,6 +791,15 @@ public:
 //    std::cout<<"u14 part 3 = "<<(rotationalVelocity*rotationalVelocity/auxiliaryEquationsVector(15))*auxiliaryEquationsVector(16)*cx12*(cx12*cx14+sx14*sx12*cx13)<<std::endl;
 //    std::cout<<"u14 part 4 = "<<thrustAccelerationsBframe(2)/auxiliaryEquationsVector(15)<<std::endl;
 //    std::cout<<"u14 part 5 = "<<standardGravitationalParameter*cx14/(auxiliaryEquationsVector(15)*auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16))<<std::endl;
+//    std::cout<<"w14,0 = "<<-thrustAccelerationsBframe(2)<<std::endl;
+//    std::cout<<"w14,1 = "<<cx12*cx14+sx14*sx12*cx13<<std::endl;
+//    std::cout<<"w14,2 = "<<-standardGravitationalParameter*cx14<<std::endl;
+//    std::cout<<"w14,3 = "<<auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16)<<std::endl;
+//    std::cout<<"w14,4 = "<<(-standardGravitationalParameter*cx14)/(auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16))<<std::endl;
+//    std::cout<<"w14,5 = "<<(-standardGravitationalParameter*cx14)/(auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16))-thrustAccelerationsBframe(2)+(rotationalVelocity*rotationalVelocity)*auxiliaryEquationsVector(16)*cx12*(cx12*cx14+sx14*sx12*cx13)<<std::endl;
+//    std::cout<<"w14,6 = "<<((-standardGravitationalParameter*cx14)/(auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16))-thrustAccelerationsBframe(2)+(rotationalVelocity*rotationalVelocity)*auxiliaryEquationsVector(16)*cx12*(cx12*cx14+sx14*sx12*cx13))/(auxiliaryEquationsVector(15))<<std::endl;
+//    std::cout<<"w14,7 = "<<2.0*rotationalVelocity*cx12*sx13+(auxiliaryEquationsVector(15)/auxiliaryEquationsVector(16))*cx14+((-standardGravitationalParameter*cx14)/(auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16))-thrustAccelerationsBframe(2)+(rotationalVelocity*rotationalVelocity)*auxiliaryEquationsVector(16)*cx12*(cx12*cx14+sx14*sx12*cx13))/(auxiliaryEquationsVector(15))<<std::endl;
+
 
     /// Debug ///
 
@@ -961,16 +995,16 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
 
     // Same for sin
 
-   double sx10x11;
+//   double sx10x11;
 
-    if (abs(sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11)))<1.2e-16){ // Using x10 and x11
+//    if (abs(sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11)))<1.2e-16){ // Using x10 and x11
 
-        sx10x11 = 0;
+//        sx10x11 = 0;
 
-    }
-    else {
-        sx10x11 = sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11));
-    }
+//    }
+//    else {
+//        sx10x11 = sin(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11));
+//    }
 
     double sx12;
 
@@ -1188,6 +1222,15 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
 
     auxiliaryFunctionsMatrix(14,7) = 2.0*rotationalVelocity*auxiliaryFunctionsMatrix(4,6)*auxiliaryFunctionsMatrix(4,9)+auxiliaryFunctionsMatrix(11,1)+auxiliaryFunctionsMatrix(14,6);
 
+    /// Debug ///
+    std::cout<<"w4,6 = "<<auxiliaryFunctionsMatrix(4,6)<<std::endl;
+    std::cout<<"w4,9 = "<<auxiliaryFunctionsMatrix(4,9)<<std::endl;
+    std::cout<<"2.0*rotationalVelocity*auxiliaryFunctionsMatrix(4,6)*auxiliaryFunctionsMatrix(4,9) = "<<2.0*rotationalVelocity*auxiliaryFunctionsMatrix(4,6)*auxiliaryFunctionsMatrix(4,9)<<std::endl;
+    std::cout<<"w11,1 = "<<auxiliaryFunctionsMatrix(11,1)<<std::endl;
+    std::cout<<"w14,6 = "<<auxiliaryFunctionsMatrix(14,6)<<std::endl;
+    std::cout<<"w14,7 = "<<auxiliaryFunctionsMatrix(14,7)<<std::endl;
+    /// Debug ///
+
 
     // w15
     auxiliaryFunctionsMatrix(15,0) = Thrust*auxiliaryFunctionsMatrix(4,26)*auxiliaryFunctionsMatrix(4,27)-auxiliaryEquationsVector(27);
@@ -1199,7 +1242,7 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(15,6) = auxiliaryFunctionsMatrix(13,2)*auxiliaryFunctionsMatrix(15,5)+auxiliaryFunctionsMatrix(15,1)+auxiliaryFunctionsMatrix(15,3);
 
     /// Debug ///
-    std::cout<<"u15 = "<<auxiliaryFunctionsMatrix(15,6)<<std::endl;
+//    std::cout<<"u15 = "<<auxiliaryFunctionsMatrix(15,6)<<std::endl;
     /// Debug ///
 
     // w16

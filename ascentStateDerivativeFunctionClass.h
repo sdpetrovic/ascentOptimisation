@@ -315,18 +315,18 @@ public:
 
 
         /// Debug ///
-        std::cout<<"Here 5"<<std::endl;
-        std::cout<<"Latitude = "<<Latitude<<std::endl;
-        std::cout<<"rotationalLongitude = "<<rotationalLongitude<<std::endl;
-        std::cout<<"FlightPathAngle = "<<rotationalFlightPathAngle<<std::endl;
-        std::cout<<"FlightPathAngle (deg) = "<<rad2deg(rotationalFlightPathAngle)<<std::endl;
-        std::cout<<"HeadingAngle = "<<rotationalAzimuth<<std::endl;
-        std::cout<<"RotationalVelocity = "<<rotationalVelocity<<std::endl;
-        std::cout<<"verticalXvelocity = "<<verticalXvelocity<<std::endl;
-        std::cout<<"verticalYvelocity = "<<verticalYvelocity<<std::endl;
-        std::cout<<"verticalZvelocity = "<<verticalZvelocity<<std::endl;
-        std::cout<<"rotationalVelocity = "<<rotationalVelocity<<std::endl;
-        std::cout<<"Radius = "<<Radius<<std::endl;
+//        std::cout<<"Here 5"<<std::endl;
+//        std::cout<<"Latitude = "<<Latitude<<std::endl;
+//        std::cout<<"rotationalLongitude = "<<rotationalLongitude<<std::endl;
+//        std::cout<<"FlightPathAngle = "<<rotationalFlightPathAngle<<std::endl;
+//        std::cout<<"FlightPathAngle (deg) = "<<rad2deg(rotationalFlightPathAngle)<<std::endl;
+//        std::cout<<"HeadingAngle = "<<rotationalAzimuth<<std::endl;
+//        std::cout<<"RotationalVelocity = "<<rotationalVelocity<<std::endl;
+//        std::cout<<"verticalXvelocity = "<<verticalXvelocity<<std::endl;
+//        std::cout<<"verticalYvelocity = "<<verticalYvelocity<<std::endl;
+//        std::cout<<"verticalZvelocity = "<<verticalZvelocity<<std::endl;
+//        std::cout<<"rotationalVelocity = "<<rotationalVelocity<<std::endl;
+//        std::cout<<"Radius = "<<Radius<<std::endl;
 
 
         /// Debug ///
@@ -518,7 +518,7 @@ public:
 
         const Eigen::Vector3d thrustAccelerationsBframe = getPropulsionToBodyFrameTransformationMatrix(thrustAzimuthTest,thrustElevationTest)*thrustAccelerationsPframe;
 
-        std::cout<<"The thrust accelerations in the B-frame are "<<thrustAccelerationsBframe<<std::endl;
+//        std::cout<<"The thrust accelerations in the B-frame are "<<thrustAccelerationsBframe<<std::endl;
 
         /// Drag acceleration in B-frame ///
 
@@ -536,7 +536,7 @@ public:
         // Drag accelerations from B-frame to V-frame
         const Eigen::Vector3d dragAccelerationsVframe = tudat::reference_frames::getTrajectoryToLocalVerticalFrameTransformationMatrix(rotationalFlightPathAngle,rotationalAzimuth)*dragAccelerationsBframe;
 
-        std::cout<<"The thrust accelerations in the V-frame are "<<thrustAccelerationsVframe<<std::endl;
+//        std::cout<<"The thrust accelerations in the V-frame are "<<thrustAccelerationsVframe<<std::endl;
     //    std::cout<<"The drag accelerations in the V-frame are "<<dragAccelerationsVframe<<std::endl;
 
 
@@ -548,7 +548,7 @@ public:
         // Drag accelerations from V-frame to R-frame
         const Eigen::Vector3d dragAccelerationsRframe = tudat::reference_frames::getLocalVerticalToRotatingPlanetocentricFrameTransformationMatrix(rotationalLongitude,Latitude)*dragAccelerationsVframe;
 
-        std::cout<<"The thrust accelerations in the R-frame are "<<thrustAccelerationsRframe<<std::endl;
+//        std::cout<<"The thrust accelerations in the R-frame are "<<thrustAccelerationsRframe<<std::endl;
     //    std::cout<<"The drag accelerations in the R-frame are "<<dragAccelerationsRframe<<std::endl;
 
         /// Accelerations in the I-frame ///
@@ -561,7 +561,7 @@ public:
         // Drag accelerations from R-frame to I-frame
         const Eigen::Vector3d dragAccelerationsIframe = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(angleItoR)*dragAccelerationsRframe;
 
-        std::cout<<"The thrust accelerations in the I-frame are "<<thrustAccelerationsIframe<<std::endl;
+//        std::cout<<"The thrust accelerations in the I-frame are "<<thrustAccelerationsIframe<<std::endl;
     //    std::cout<<"The drag accelerations in the I-frame are "<<dragAccelerationsIframe<<std::endl;
 
     //    std::cout<<"The thrust+drag accelerations in the I-frame are "<<thrustAccelerationsIframe+dragAccelerationsIframe<<std::endl;
@@ -616,7 +616,7 @@ public:
         stateDerivativeVector(6) = massFlowRate;
 
         /// Debug ///
-        std::cout<<"stateDerivativeVector = "<<stateDerivativeVector<<std::endl;
+//        std::cout<<"stateDerivativeVector = "<<stateDerivativeVector<<std::endl;
         /// Debug ///
 
         return stateDerivativeVector;
