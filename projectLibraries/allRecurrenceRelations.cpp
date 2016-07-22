@@ -869,38 +869,38 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //    std::cout<<"WVector11_1 = "<<WVector11_1<<std::endl;
 //    std::cout<<"WVector4_12 = "<<WVector4_12<<std::endl;
 
-    std::cout<<"WVector13_0 = "<<WVector13_0<<std::endl;
-    std::cout<<"WVector13_1 = "<<WVector13_1<<std::endl;
-    std::cout<<"WVector13_2 = "<<WVector13_2<<std::endl;
-    std::cout<<"WVector13_3 = "<<WVector13_3<<std::endl;
-    std::cout<<"WVector13_4 = "<<WVector13_4<<std::endl;
-    std::cout<<"WVector13_5 = "<<WVector13_5<<std::endl;
-    std::cout<<"WVector13_6 = "<<WVector13_6<<std::endl;
-    std::cout<<"WVector13_7 = "<<WVector13_7<<std::endl;
-    std::cout<<"WVector13_8 = "<<WVector13_8<<std::endl;
-    std::cout<<"WVector13_9 = "<<WVector13_9<<std::endl;
+//    std::cout<<"WVector13_0 = "<<WVector13_0<<std::endl;
+//    std::cout<<"WVector13_1 = "<<WVector13_1<<std::endl;
+//    std::cout<<"WVector13_2 = "<<WVector13_2<<std::endl;
+//    std::cout<<"WVector13_3 = "<<WVector13_3<<std::endl;
+//    std::cout<<"WVector13_4 = "<<WVector13_4<<std::endl;
+//    std::cout<<"WVector13_5 = "<<WVector13_5<<std::endl;
+//    std::cout<<"WVector13_6 = "<<WVector13_6<<std::endl;
+//    std::cout<<"WVector13_7 = "<<WVector13_7<<std::endl;
+//    std::cout<<"WVector13_8 = "<<WVector13_8<<std::endl;
+//    std::cout<<"WVector13_9 = "<<WVector13_9<<std::endl;
 
 //    std::cout<<"WVector13_10 = "<<WVector13_10<<std::endl;
 //    std::cout<<"WVector13_11 = "<<WVector13_11<<std::endl;
 
-    std::cout<<"WVector4_6 (cos(x12)) = "<<WVector4_6<<std::endl;
+//    std::cout<<"WVector4_6 (cos(x12)) = "<<WVector4_6<<std::endl;
 
 //    std::cout<<"WVector4_3 (sin(x10+x11)) = "<<WVector4_3<<std::endl;
 //    std::cout<<"WVector4_8 (cos(x10+x11)) = "<<WVector4_8<<std::endl;
 
 //    std::cout<<"WVector4_5 (cos(x13)) = "<<WVector4_5<<std::endl;
-    std::cout<<"WVector4_9 (sin(x13)) = "<<WVector4_9<<std::endl;
+//    std::cout<<"WVector4_9 (sin(x13)) = "<<WVector4_9<<std::endl;
 
 //    std::cout<<"WVector4_7 (sin(x14)) = "<<WVector4_7<<std::endl;
-    std::cout<<"WVector4_38 (cos(x14)) = "<<WVector4_38<<std::endl;
+//    std::cout<<"WVector4_38 (cos(x14)) = "<<WVector4_38<<std::endl;
 
-    std::cout<<"WVector13_1 (sin(x14)*cos(x13)) = "<<WVector13_1<<std::endl;
-    std::cout<<"WVector4_7 (sin(x14)) = "<<WVector4_7<<std::endl;
-    std::cout<<"WVector4_5 (cos(x13)) = "<<WVector4_5<<std::endl;
-    std::cout<<"WVector4_4 (sin(x12)) = "<<WVector4_4<<std::endl;
+//    std::cout<<"WVector13_1 (sin(x14)*cos(x13)) = "<<WVector13_1<<std::endl;
+//    std::cout<<"WVector4_7 (sin(x14)) = "<<WVector4_7<<std::endl;
+//    std::cout<<"WVector4_5 (cos(x13)) = "<<WVector4_5<<std::endl;
+//    std::cout<<"WVector4_4 (sin(x12)) = "<<WVector4_4<<std::endl;
 
 //    std::cout<<"WVector14_0 = "<<WVector14_0<<std::endl;
-    std::cout<<"WVector14_1 = "<<WVector14_1<<std::endl;
+//    std::cout<<"WVector14_1 = "<<WVector14_1<<std::endl;
 //    std::cout<<"WVector14_2 = "<<WVector14_2<<std::endl;
 //    std::cout<<"WVector14_3 = "<<WVector14_3<<std::endl;
 //    std::cout<<"WVector14_4 = "<<WVector14_4<<std::endl;
@@ -939,14 +939,17 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
 //std::cout<<"XMatrix.row(11) = "<<XMatrix.row(11)<<std::endl;
 //std::cout<<"XMatrix.row(12) = "<<XMatrix.row(12)<<std::endl;
-std::cout<<"XMatrix.row(13) = "<<XMatrix.row(13)<<std::endl;
-std::cout<<"XMatrix.row(14) = "<<XMatrix.row(14)<<std::endl;
+//std::cout<<"XMatrix.row(13) = "<<XMatrix.row(13)<<std::endl;
+//std::cout<<"XMatrix.row(14) = "<<XMatrix.row(14)<<std::endl;
 //std::cout<<"XMatrix.row(15) = "<<XMatrix.row(15)<<std::endl;
 //std::cout<<"XMatrix.row(16) = "<<XMatrix.row(16)<<std::endl;
 
-std::cout<<"UMatrix.row(13) = "<<UMatrix.row(13)<<std::endl;
-std::cout<<"UMatrix.row(14) = "<<UMatrix.row(14)<<std::endl;
+//std::cout<<"UMatrix.row(11) = "<<UMatrix.row(11)<<std::endl;
+//std::cout<<"UMatrix.row(12) = "<<UMatrix.row(12)<<std::endl;
+//std::cout<<"UMatrix.row(13) = "<<UMatrix.row(13)<<std::endl;
+//std::cout<<"UMatrix.row(14) = "<<UMatrix.row(14)<<std::endl;
 //std::cout<<"UMatrix.row(15) = "<<UMatrix.row(15)<<std::endl;
+//std::cout<<"UMatrix.row(16) = "<<UMatrix.row(16)<<std::endl;
 
 //  std::cout<<"XMatrix.row(8) = "<<XMatrix.row(8)<<std::endl;
 //  std::cout<<"XMatrix.row(9) = "<<XMatrix.row(9)<<std::endl;

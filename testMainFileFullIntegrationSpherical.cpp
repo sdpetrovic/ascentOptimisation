@@ -216,7 +216,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // No Thrust
 
-    MAV.setThrust(0);
+//    MAV.setThrust(0);
 
     if (MAV.Thrust() == 0){
         std::cout<<"NO THRUST"<<std::endl;
@@ -226,13 +226,13 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     const bool comparison = true;
 
     /// Set initial flight path angle and heading angle
-    const double FlightPathAngle = deg2rad(-90.0);     // Set flight-path angle in rad --> Default = 90.0 deg
+    const double FlightPathAngle = deg2rad(89.0);     // Set flight-path angle in rad --> Default = 90.0 deg
     const double HeadingAngle = deg2rad(90.0);           // Set heading angle in rad --> Default = 0.0 deg
 
 
   /// Initial conditions /// a.k.a. control centre
 
-    const double setEndTime = 200.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
+    const double setEndTime = 77.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
 
 //std::cout<<"pi = "<<(4*atan(1))<<std::endl;
 
@@ -256,10 +256,11 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     // Launch site characteristics
 
 
-    const double initialAltitude = 20.0;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
+    const double initialAltitude = -0.6;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
-    const double initialLatitudeDeg = 45.0;               // Starting latitude [deg] initial condition is 21 deg
-    const double initialLongitudeDeg = 45.0;            // Starting longitude [deg] initial condition is 74.5 deg
+    const double initialLatitudeDeg = 21.0;               // Starting latitude [deg] initial condition is 21 deg
+    const double initialLongitudeDeg = 74.5;            // Starting longitude [deg] initial condition is 74.5 deg
+    const double initialGroundVelocity = 0.01;          // Starting velocity in km/s (is suppose to be 0.0...)
 
 
 
@@ -282,9 +283,28 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // Compute initial velocity in y-direction as seen from the launch site in the inertial frame
 
-    const Eigen::Vector3d initialVelocityLaunchSite = Eigen::Vector3d(0,(rotationalVelocityMars*initialRadius*cos(initialLatitude)),0);
+//    const Eigen::Vector3d initialVelocityLaunchSite = Eigen::Vector3d(0,(rotationalVelocityMars*initialRadius*cos(initialLatitude)),0);
 
-    const Eigen::Vector3d initialVelocityInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(rotationalVelocityMars*inertialFrameTime-primeMeridianAngle+initialLongitude)*initialVelocityLaunchSite;
+    Eigen::Vector3d initialVelocityLaunchSiteVertical;
+    initialVelocityLaunchSiteVertical(0) = initialGroundVelocity*cos(FlightPathAngle)*cos(HeadingAngle);
+    initialVelocityLaunchSiteVertical(1) = initialGroundVelocity*cos(FlightPathAngle)*sin(HeadingAngle);
+    initialVelocityLaunchSiteVertical(2) = -initialGroundVelocity*sin(FlightPathAngle);
+
+    const Eigen::Vector3d initialVelocityLaunchSite =  tudat::reference_frames::getLocalVerticalToRotatingPlanetocentricFrameTransformationMatrix(initialLongitude,initialLatitude)*initialVelocityLaunchSiteVertical;
+
+//    std::cout<<"initialVelocityLaunchSite = "<<initialVelocityLaunchSite<<std::endl;
+
+    Eigen::Vector3d initialVelocityDueToMars;
+
+    initialVelocityDueToMars(0) = -rotationalVelocityMars*initialCartesianPositionInertialFrame(1);
+    initialVelocityDueToMars(1) = rotationalVelocityMars*initialCartesianPositionInertialFrame(0);
+    initialVelocityDueToMars(2) = 0.0;
+
+
+
+    const Eigen::Vector3d initialVelocityInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(rotationalVelocityMars*inertialFrameTime-primeMeridianAngle)*initialVelocityLaunchSite+initialVelocityDueToMars;
+
+//    const Eigen::Vector3d initialVelocityInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(rotationalVelocityMars*inertialFrameTime-primeMeridianAngle+initialLongitude)*initialVelocityLaunchSite;
 
     /// Setting StateAndTime class using modified vector (Cartesian) ///
 
@@ -329,7 +349,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     sphericalState(0) = initialRadius;   // Radius (r)  [km]
     sphericalState(1) = initialLatitude;   // Latitude (delta)  [rad]
     sphericalState(2) = initialLongitude;   // Longitude (tau)  [rad]
-    sphericalState(3) = 0.0;   // Ground velocity (V_G) (initially 0.0 [km/s])
+    sphericalState(3) = initialGroundVelocity;   // Ground velocity (V_G) (initially 0.0 [km/s])
     sphericalState(4) = FlightPathAngle;   // Flight-path angle (gamma_G)  [rad]
     sphericalState(5) = HeadingAngle;   // Azimuth angle (chi_G)    [rad]
     sphericalState(6) = 227;    // Mass [kg] from literature study
@@ -781,8 +801,15 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         // Velocity from V-frame to R-frame
         const Eigen::Vector3d velocityRotationalFrame = tudat::reference_frames::getLocalVerticalToRotatingPlanetocentricFrameTransformationMatrix(currentSphericalStateVector(2),currentSphericalStateVector(1))*velocityVerticalFrame;
 
+        // Vector to account for the rotation of Mars
+        Eigen::Vector3d velocityDueToMars;
+
+        velocityDueToMars(0) = -rotationalVelocityMars*positionInertialFrame(1);
+        velocityDueToMars(1) = rotationalVelocityMars*positionInertialFrame(0);
+        velocityDueToMars(2) = 0.0;
+
         // Velocity from R-frame to I-frame
-        const Eigen::Vector3d velocityInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(angleItoR)*velocityRotationalFrame;
+        const Eigen::Vector3d velocityInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(angleItoR)*velocityRotationalFrame+velocityDueToMars;
 
         /// Debug ///
 //        std::cout<<"velocityRotationalFrame = "<<velocityRotationalFrame<<std::endl;
@@ -883,6 +910,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                         // Getting the initial conditions for storage
 //                        const tudat::basic_mathematics::Vector7d initialState = currentStateAndTime.getCurrentState();
                         const tudat::basic_mathematics::Vector7d initialState = aState;
+
+                        std::cout<<"initialState = "<<initialState<<std::endl;
 
                         // Filling the output vector
 //                        outputVector(0,0) = currentStateAndTime.getCurrentTime();   // Storing the initial time
