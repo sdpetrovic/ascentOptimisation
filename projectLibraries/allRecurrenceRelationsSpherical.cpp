@@ -41,7 +41,7 @@
 
 
 
-#include "allRecurrenceRelations.h"
+#include "allRecurrenceRelationsSpherical.h"
 #include "basicRecurrenceRelations.h"
 
 
@@ -511,19 +511,19 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
 //    std::cout<<"So far so good 3"<<std::endl;
 
-        // 1
-        UMatrix(1,k) = XMatrix(4,k);
+//        // 1
+//        UMatrix(1,k) = XMatrix(4,k);
 
-        // 2
-        UMatrix(2,k) = XMatrix(5,k);
+//        // 2
+//        UMatrix(2,k) = XMatrix(5,k);
 
-        // 3
-        UMatrix(3,k) = XMatrix(6,k);
+//        // 3
+//        UMatrix(3,k) = XMatrix(6,k);
 
         // 4
 
         WVector4_0(k) = getDivisionRecurrenceRelation(XMatrix.row(27),XMatrix.row(7),WVector4_0,k); // Added because of the mistake found in the recurrence relation of W4,2
-        WVector4_1(k) = getDivisionRecurrenceRelation(XMatrix.row(1),XMatrix.row(9),WVector4_1,k); //  XMatrix(1,k)/XMatrix(9,k);
+//        WVector4_1(k) = getDivisionRecurrenceRelation(XMatrix.row(1),XMatrix.row(9),WVector4_1,k); //  XMatrix(1,k)/XMatrix(9,k);
 //        WVector4_2(k) = thrustAccelerationsBframe(0)-WVector4_0(k);                                     /// This is wrong! For the division only the previous division should be taken. So an extra WVector should be added!!  Update: done
 
         // Thrust additions
@@ -574,13 +574,13 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         WVector4_35(k) = getMultiplicationRecurrenceRelation(WVector4_33,(WVector4_19-WVector4_14),k);
         WVector4_36(k) = getMultiplicationRecurrenceRelation(WVector4_34,(WVector4_23-WVector4_21),k);
 
-        UMatrix(4,k) = -standardGravitationalParameter*WVector4_1(k)+WVector4_24(k)+WVector4_35(k)-WVector4_36(k);
+//        UMatrix(4,k) = -standardGravitationalParameter*WVector4_1(k)+WVector4_24(k)+WVector4_35(k)-WVector4_36(k);
 
 
 
         // 5
 
-        WVector5_1(k) = getDivisionRecurrenceRelation(XMatrix.row(2),XMatrix.row(9),WVector5_1,k);
+//        WVector5_1(k) = getDivisionRecurrenceRelation(XMatrix.row(2),XMatrix.row(9),WVector5_1,k);
         WVector5_2(k) = getMultiplicationRecurrenceRelation(WVector4_8,(WVector4_11-WVector4_17),k);
         WVector5_3(k) = getMultiplicationRecurrenceRelation(WVector4_3,WVector4_12,k);
         WVector5_4(k) = getMultiplicationRecurrenceRelation(WVector4_8,WVector4_13,k);
@@ -592,12 +592,12 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         WVector5_10(k) = getMultiplicationRecurrenceRelation(WVector4_34,(WVector5_6+WVector5_7),k);
 
 
-        UMatrix(5,k) = -standardGravitationalParameter*WVector5_1(k)+WVector5_8(k)+WVector5_9(k)-WVector5_10(k);
+//        UMatrix(5,k) = -standardGravitationalParameter*WVector5_1(k)+WVector5_8(k)+WVector5_9(k)-WVector5_10(k);
 
         // 6
 
         WVector6_0(k) = getMultiplicationRecurrenceRelation(WVector4_4,WVector4_7,k);               // Added because of the mistake found in the complete transformation matrix
-        WVector6_1(k) = getDivisionRecurrenceRelation(XMatrix.row(3),XMatrix.row(9),WVector6_1,k);
+//        WVector6_1(k) = getDivisionRecurrenceRelation(XMatrix.row(3),XMatrix.row(9),WVector6_1,k);
         WVector6_2(k) = getMultiplicationRecurrenceRelation(WVector4_5,WVector4_15,k);
         WVector6_3(k) = getMultiplicationRecurrenceRelation(WVector4_6,WVector4_9,k);
         WVector6_4(k) = getMultiplicationRecurrenceRelation(WVector4_5,WVector4_11,k);
@@ -607,148 +607,32 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         WVector6_7(k) = getMultiplicationRecurrenceRelation(WVector4_33,WVector6_3,k);
         WVector6_8(k) = getMultiplicationRecurrenceRelation(WVector4_34,(WVector6_4-WVector6_5),k);
 
-        UMatrix(6,k) = -standardGravitationalParameter*WVector6_1(k)+WVector6_6(k)-WVector6_7(k)-WVector6_8(k);
+//        UMatrix(6,k) = -standardGravitationalParameter*WVector6_1(k)+WVector6_6(k)-WVector6_7(k)-WVector6_8(k);
 
         // 7
 
 //        UMatrix(7,k) =-thrust/(tudat::physical_constants::STANDARD_EARTH_GRAVITATIONAL_ACCELERATION*specificImpulse);
         UMatrix(7,k) = 0;
 
-        // 8
+//        // 8
 
-        WVector8_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(1),XMatrix.row(4),k);
-        WVector8_2(k) = getMultiplicationRecurrenceRelation(XMatrix.row(2),XMatrix.row(5),k);
-        WVector8_3(k) = getMultiplicationRecurrenceRelation(XMatrix.row(3),XMatrix.row(6),k);
+//        WVector8_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(1),XMatrix.row(4),k);
+//        WVector8_2(k) = getMultiplicationRecurrenceRelation(XMatrix.row(2),XMatrix.row(5),k);
+//        WVector8_3(k) = getMultiplicationRecurrenceRelation(XMatrix.row(3),XMatrix.row(6),k);
 
-        UMatrix(8,k) = 2.0*(WVector8_1(k)+WVector8_2(k)+WVector8_3(k));
+//        UMatrix(8,k) = 2.0*(WVector8_1(k)+WVector8_2(k)+WVector8_3(k));
 
-        // 9
+//        // 9
 
-        W9IntermediateVector(k) = getMultiplicationRecurrenceRelation(XMatrix.row(9),UMatrix.row(8),k);
+//        W9IntermediateVector(k) = getMultiplicationRecurrenceRelation(XMatrix.row(9),UMatrix.row(8),k);
 
-        WVector9(k) = getDivisionRecurrenceRelation(W9IntermediateVector,XMatrix.row(8),WVector9,k);
+//        WVector9(k) = getDivisionRecurrenceRelation(W9IntermediateVector,XMatrix.row(8),WVector9,k);
 
-        UMatrix(9,k) = 1.5*WVector9(k);
+//        UMatrix(9,k) = 1.5*WVector9(k);
 
-        // 10
+//        // 10
 
-        UMatrix(10,k) = 0;
-
-
-//        // 11
-//        WVector11_1(k) = getDivisionRecurrenceRelation(XMatrix.row(15),XMatrix.row(16),WVector11_1,k);
-//        WVector11_2(k) = getDivisionRecurrenceRelation(WVector4_12,WVector4_6,WVector11_2,k);
-//        WVector11_3(k) = getMultiplicationRecurrenceRelation(WVector11_1,WVector11_2,k);
-
-//        UMatrix(11,k) = WVector11_3(k);
-
-//        // 12
-//        WVector12_1(k) = getMultiplicationRecurrenceRelation(WVector4_5,WVector4_38,k);
-//        WVector12_2(k) = getMultiplicationRecurrenceRelation(WVector11_1,WVector12_1,k);
-
-//        UMatrix(12,k) = WVector12_2(k);
-
-//        // 13
-////        WVector13_0(k) = getDivisionRecurrenceRelation(XMatrix.row(16),XMatrix.row(15),WVector13_0,k);
-//////        WVector13_11(k) = getPowerRecurrenceRelation(XMatrix.row(15),WVector13_11,-1.0,k);
-//////        WVector13_0(k) = getMultiplicationRecurrenceRelation(XMatrix.row(16),WVector13_11,k);
-//////        WVector13_0(k) = getPowerRecurrenceRelation(WVector11_1,WVector13_0,-1.0,k);
-////        WVector13_1(k) = getMultiplicationRecurrenceRelation(WVector4_5,WVector4_11,k);
-////        WVector13_2(k) = getDivisionRecurrenceRelation(WVector4_7,WVector4_38,WVector13_2,k);
-////        WVector13_3(k) = getDivisionRecurrenceRelation(WVector4_4,WVector4_38,WVector13_3,k);
-////        WVector13_4(k) = getMultiplicationRecurrenceRelation(XMatrix.row(15),WVector4_38,k);
-////        WVector13_5(k) = getMultiplicationRecurrenceRelation(WVector13_0,WVector4_12,k);
-////        WVector13_6(k) = getMultiplicationRecurrenceRelation(WVector11_1,WVector13_3,k);
-////        WVector13_7(k) = getDivisionRecurrenceRelation((WVector6_5-WVector13_1),WVector4_38,WVector13_7,k);
-////        WVector13_8(k) = getMultiplicationRecurrenceRelation(WVector13_5,WVector13_2,k);
-////        WVector13_9(k) = getMultiplicationRecurrenceRelation(WVector13_6,WVector6_3,k);
-////        WVector13_10(k) = getDivisionRecurrenceRelation(WVector4_33,WVector13_4,WVector13_10,k);
-
-
-////        UMatrix(13,k) = 2.0*rotationalVelocity*WVector13_7(k)+WVector13_8(k)+rotationalVelocity*rotationalVelocity*WVector13_9(k)-WVector13_10(k);
-///*
-//        WVector13_0(k) = getMultiplicationRecurrenceRelation(XMatrix.row(15),WVector4_38,k);
-//        WVector13_1(k) = getDivisionRecurrenceRelation(WVector13_0,XMatrix.row(15),WVector13_1,k);
-//        WVector13_2(k) = rotationalVelocity*rotationalVelocity*getMultiplicationRecurrenceRelation(XMatrix.row(15),WVector4_6,k);
-//        WVector13_3(k) = getMultiplicationRecurrenceRelation(WVector4_7,WVector4_5,k);
-//        WVector13_5(k) = getDivisionRecurrenceRelation(WVector4_33,WVector13_0,WVector13_5,k);
-//        WVector13_6(k) = getMultiplicationRecurrenceRelation(WVector13_2,WVector4_4,k);
-//        WVector13_9(k) = getMultiplicationRecurrenceRelation(WVector13_6,WVector4_9,k);
-//        WVector13_10(k) = getDivisionRecurrenceRelation(WVector13_9,XMatrix.row(15),WVector13_10,k);
-//        WVector13_11(k) = WVector13_10(k)-2.0*rotationalVelocity*getMultiplicationRecurrenceRelation(WVector4_6,WVector13_3,k);
-//        WVector13_12(k) = getDivisionRecurrenceRelation(WVector13_11,WVector4_38,WVector13_12,k);
-
-//        UMatrix(13,k) = WVector13_12(k)-WVector13_5(k)+2.0*rotationalVelocity*WVector4_4(k)+getMultiplicationRecurrenceRelation(UMatrix.row(11),WVector4_4,k);
-//*/
-
-
-//        WVector13_0(k) = -2.0*rotationalVelocity*getMultiplicationRecurrenceRelation(WVector4_11,WVector4_5,k);
-//        WVector13_1(k) = rotationalVelocity*rotationalVelocity*XMatrix(16,k);
-//        WVector13_2(k) = getMultiplicationRecurrenceRelation(WVector4_6,WVector4_13,k);
-//        WVector13_3(k) = getMultiplicationRecurrenceRelation(WVector13_1,WVector13_2,k)-WVector4_33(k);
-//        WVector13_4(k) = getDivisionRecurrenceRelation(WVector13_3,XMatrix.row(15),WVector13_4,k);
-//        WVector13_5(k) = getDivisionRecurrenceRelation((WVector13_4+WVector13_0),WVector4_38,WVector13_5,k);
-
-//        UMatrix(13,k) = 2.0*rotationalVelocity*WVector4_4(k)+getMultiplicationRecurrenceRelation(UMatrix.row(11),WVector4_4,k)+WVector13_5(k);
-
-
-//        // 14
-////        WVector14_1(k) = getPowerRecurrenceRelation(XMatrix.row(16),WVector14_1,2.0,k);
-////        WVector14_2(k) = getMultiplicationRecurrenceRelation(WVector11_1,WVector4_38,k);
-////        WVector14_3(k) = getMultiplicationRecurrenceRelation(WVector13_0,WVector4_6,k);
-////        WVector14_4(k) = getMultiplicationRecurrenceRelation(WVector6_0,WVector4_5,k);
-////        WVector14_5(k) = getDivisionRecurrenceRelation(WVector4_34,XMatrix.row(15),WVector14_5,k);
-////        WVector14_6(k) = getDivisionRecurrenceRelation(WVector4_38,XMatrix.row(15),WVector14_6,k);
-////        WVector14_7(k) = getMultiplicationRecurrenceRelation(WVector14_3,(WVector4_15+WVector14_4),k);
-////        WVector14_9(k) = getDivisionRecurrenceRelation(WVector14_6,WVector14_1,WVector14_9,k);
-
-////        UMatrix(14,k) = 2.0*rotationalVelocity*WVector6_3(k)+WVector14_2(k)+rotationalVelocity*rotationalVelocity*WVector14_7(k)+WVector14_5(k)-standardGravitationalParameter*WVector14_9(k);
-
-///*        WVector14_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(16),WVector4_6,k);
-//        WVector14_2(k) = getMultiplicationRecurrenceRelation(XMatrix.row(15),WVector4_38,k);
-//        WVector14_3(k) = getDivisionRecurrenceRelation((-standardGravitationalParameter*WVector4_7),XMatrix.row(16),WVector14_3,k);
-//        WVector14_4(k) = getDivisionRecurrenceRelation(WVector14_3,XMatrix.row(16),WVector14_4,k);
-//        WVector14_5(k) = getDivisionRecurrenceRelation(WVector14_2,XMatrix.row(16),WVector14_5,k);
-//        WVector14_8(k) = getMultiplicationRecurrenceRelation(WVector6_0,WVector4_5,k);
-//        WVector14_6(k) = rotationalVelocity*rotationalVelocity*getMultiplicationRecurrenceRelation(WVector14_1,(WVector4_15+WVector14_8),k);
-//        WVector14_7(k) = getDivisionRecurrenceRelation((WVector4_0+WVector4_34+WVector14_4),XMatrix.row(15),WVector14_7,k);
-
-//        UMatrix(14,k) = 2.0*rotationalVelocity*getMultiplicationRecurrenceRelation(WVector4_6,WVector4_9,k)+WVector14_7(k);
-//*/
-
-//        WVector14_0(k) = getMultiplicationRecurrenceRelation(XMatrix.row(15),WVector4_38,k);
-//        WVector14_7(k) = getDivisionRecurrenceRelation(WVector14_0,XMatrix.row(16),WVector14_7,k);
-//        WVector14_8(k) = getMultiplicationRecurrenceRelation(WVector4_7,WVector4_5,k);
-//        WVector14_9(k) = rotationalVelocity*rotationalVelocity*getMultiplicationRecurrenceRelation(XMatrix.row(16),WVector4_6,k);
-//        WVector14_1(k) = getMultiplicationRecurrenceRelation(WVector4_6,WVector4_38,k)+getMultiplicationRecurrenceRelation(WVector14_8,WVector4_4,k);
-//        WVector14_2(k) = getMultiplicationRecurrenceRelation(XMatrix.row(16),XMatrix.row(16),k);
-//        WVector14_3(k) = -standardGravitationalParameter*WVector4_38(k);
-//        WVector14_4(k) = getDivisionRecurrenceRelation(WVector14_3,WVector14_2,WVector4_4,k);
-//        WVector14_5(k) = WVector14_4(k)+getMultiplicationRecurrenceRelation(WVector14_9,WVector14_1,k)+WVector4_34(k);
-//        WVector14_6(k) = getDivisionRecurrenceRelation(WVector14_5,XMatrix.row(15),WVector14_6,k);
-
-//        UMatrix(14,k) = 2.0*rotationalVelocity*getMultiplicationRecurrenceRelation(WVector4_6,WVector4_9,k)+WVector14_7(k)+WVector14_6(k);
-
-
-
-
-
-//        // 15
-//        WVector15_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(16),WVector4_6,k);
-//        WVector15_2(k) = getMultiplicationRecurrenceRelation(WVector4_38,WVector4_10,k);
-////        WVector15_3(k) = getDivisionRecurrenceRelation(WVector4_7,WVector14_1,WVector15_3,k);
-//        WVector15_3(k) = getDivisionRecurrenceRelation((-standardGravitationalParameter*WVector4_7),XMatrix.row(16),WVector15_3,k);
-//        WVector15_4(k) = getMultiplicationRecurrenceRelation(WVector15_1,(WVector4_11-WVector15_2),k);
-//        WVector15_5(k) = getDivisionRecurrenceRelation(WVector15_3,XMatrix.row(16),WVector15_5,k);
-
-////        UMatrix(15,k) = rotationalVelocity*rotationalVelocity*WVector15_4(k)+WVector4_2(k)-standardGravitationalParameter*WVector15_3(k);
-
-//        UMatrix(15,k) = rotationalVelocity*rotationalVelocity*WVector15_4(k)+WVector4_2(k)+WVector15_5(k);
-
-//        // 16
-//        WVector16(k) = getMultiplicationRecurrenceRelation(XMatrix.row(15),WVector4_7,k);
-
-//        UMatrix(16,k) = WVector16(k);
+//        UMatrix(10,k) = 0;
 
 
         // 11
@@ -968,20 +852,19 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
     Eigen::MatrixXd stateTaylorCoefficients = Eigen::MatrixXd::Zero(8,maxOrder+1);
 
-    stateTaylorCoefficients.row(1) = XMatrix.row(1);
-    stateTaylorCoefficients.row(2) = XMatrix.row(2);
-    stateTaylorCoefficients.row(3) = XMatrix.row(3);
-    stateTaylorCoefficients.row(4) = XMatrix.row(4);
-    stateTaylorCoefficients.row(5) = XMatrix.row(5);
-    stateTaylorCoefficients.row(6) = XMatrix.row(6);
-    stateTaylorCoefficients.row(7) = XMatrix.row(7);
+    stateTaylorCoefficients.row(1) = XMatrix.row(16);   // Radius (r)  [km]
+    stateTaylorCoefficients.row(2) = XMatrix.row(12);   // Latitude (delta)  [rad]
+    stateTaylorCoefficients.row(3) = XMatrix.row(11);   // Longitude (tau)  [rad]
+    stateTaylorCoefficients.row(4) = XMatrix.row(15);   // Ground velocity (V_G) [km/s]
+    stateTaylorCoefficients.row(5) = XMatrix.row(14);   // Flight-path angle (gamma_G)  [rad]
+    stateTaylorCoefficients.row(6) = XMatrix.row(13);   // Azimuth angle (chi_G)    [rad]
+    stateTaylorCoefficients.row(7) = XMatrix.row(7);    // Mass [kg] from literature study
 
 
     /// Debug ///
 
 //    std::cout<<"WVector4_7 = "<<WVector4_7<<std::endl;
-//    std::cout<<"XMatrix.row(15) = "<<XMatrix.row(15)<<std::endl;
-//    std::cout<<"XMatrix.row(16) = "<<XMatrix.row(16)<<std::endl;
+
 
 //    std::cout<<"WVector11_1 = "<<WVector11_1<<std::endl;
 //    std::cout<<"WVector4_12 = "<<WVector4_12<<std::endl;
@@ -1000,7 +883,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //    std::cout<<"WVector13_10 = "<<WVector13_10<<std::endl;
 //    std::cout<<"WVector13_11 = "<<WVector13_11<<std::endl;
 
-//    std::cout<<"WVector4_6 = "<<WVector4_6<<std::endl;
+//    std::cout<<"WVector4_6 (cos(x12)) = "<<WVector4_6<<std::endl;
 
 //    std::cout<<"WVector4_3 (sin(x10+x11)) = "<<WVector4_3<<std::endl;
 //    std::cout<<"WVector4_8 (cos(x10+x11)) = "<<WVector4_8<<std::endl;
@@ -1011,8 +894,10 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //    std::cout<<"WVector4_7 (sin(x14)) = "<<WVector4_7<<std::endl;
 //    std::cout<<"WVector4_38 (cos(x14)) = "<<WVector4_38<<std::endl;
 
-//    std::cout<<"WVector13_1 = "<<WVector13_1<<std::endl;
-//    std::cout<<"WVector4_4 = "<<WVector4_4<<std::endl;
+//    std::cout<<"WVector13_1 (sin(x14)*cos(x13)) = "<<WVector13_1<<std::endl;
+//    std::cout<<"WVector4_7 (sin(x14)) = "<<WVector4_7<<std::endl;
+//    std::cout<<"WVector4_5 (cos(x13)) = "<<WVector4_5<<std::endl;
+//    std::cout<<"WVector4_4 (sin(x12)) = "<<WVector4_4<<std::endl;
 
 //    std::cout<<"WVector14_0 = "<<WVector14_0<<std::endl;
 //    std::cout<<"WVector14_1 = "<<WVector14_1<<std::endl;
@@ -1025,7 +910,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //    std::cout<<"WVector14_8 = "<<WVector14_8<<std::endl;
 //    std::cout<<"WVector14_9 = "<<WVector14_9<<std::endl;
 
-    std::cout<<"WVector11_1 = "<<WVector11_1<<std::endl;
+//    std::cout<<"WVector11_1 = "<<WVector11_1<<std::endl;
 //    std::cout<<"WVectorTest = "<<WVectorTest<<std::endl;
 //    std::cout<<"WVector11_2 = "<<WVector11_2<<std::endl;
 //    std::cout<<"WVector11_3 = "<<WVector11_3<<std::endl;
@@ -1044,27 +929,27 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //        std::cout<<"WVector15_6 = "<<WVector15_6<<std::endl;
 
 
-//    std::cout<<"WVector4_1 = "<<WVector4_1<<std::endl;
-//    std::cout<<"-mu_M*WVector4_1 = "<<-standardGravitationalParameter*WVector4_1<<std::endl;
-//    std::cout<<"UMatrix.row(4) = "<<UMatrix.row(4)<<std::endl;
-//    std::cout<<"U4 rest = "<<WVector4_24+WVector4_35-WVector4_36<<std::endl;
-//    std::cout<<"mu_M (ARR) = "<<standardGravitationalParameter<<std::endl;
 
 //    std::cout<<"WVector4_6 = "<<WVector4_6<<std::endl;
 //    std::cout<<"WVector4_9 = "<<WVector4_9<<std::endl;
 //    std::cout<<"WVector4_38 = "<<WVector4_38<<std::endl;
 
-    std::cout<<"XMatrix.row(4) = "<<XMatrix.row(4)<<std::endl;
-    std::cout<<"XMatrix.row(5) = "<<XMatrix.row(5)<<std::endl;
+//    std::cout<<"XMatrix.row(4) = "<<XMatrix.row(4)<<std::endl;
+//    std::cout<<"XMatrix.row(5) = "<<XMatrix.row(5)<<std::endl;
 
-std::cout<<"XMatrix.row(11) = "<<XMatrix.row(11)<<std::endl;
-std::cout<<"XMatrix.row(12) = "<<XMatrix.row(12)<<std::endl;
-std::cout<<"XMatrix.row(13) = "<<XMatrix.row(13)<<std::endl;
-std::cout<<"XMatrix.row(14) = "<<XMatrix.row(14)<<std::endl;
-std::cout<<"XMatrix.row(15) = "<<XMatrix.row(15)<<std::endl;
-std::cout<<"XMatrix.row(16) = "<<XMatrix.row(16)<<std::endl;
+//std::cout<<"XMatrix.row(11) = "<<XMatrix.row(11)<<std::endl;
+//std::cout<<"XMatrix.row(12) = "<<XMatrix.row(12)<<std::endl;
+//std::cout<<"XMatrix.row(13) = "<<XMatrix.row(13)<<std::endl;
+//std::cout<<"XMatrix.row(14) = "<<XMatrix.row(14)<<std::endl;
+//std::cout<<"XMatrix.row(15) = "<<XMatrix.row(15)<<std::endl;
+//std::cout<<"XMatrix.row(16) = "<<XMatrix.row(16)<<std::endl;
 
-std::cout<<"UMatrix.row(15) = "<<UMatrix.row(15)<<std::endl;
+//std::cout<<"UMatrix.row(11) = "<<UMatrix.row(11)<<std::endl;
+//std::cout<<"UMatrix.row(12) = "<<UMatrix.row(12)<<std::endl;
+//std::cout<<"UMatrix.row(13) = "<<UMatrix.row(13)<<std::endl;
+//std::cout<<"UMatrix.row(14) = "<<UMatrix.row(14)<<std::endl;
+//std::cout<<"UMatrix.row(15) = "<<UMatrix.row(15)<<std::endl;
+//std::cout<<"UMatrix.row(16) = "<<UMatrix.row(16)<<std::endl;
 
 //  std::cout<<"XMatrix.row(8) = "<<XMatrix.row(8)<<std::endl;
 //  std::cout<<"XMatrix.row(9) = "<<XMatrix.row(9)<<std::endl;
