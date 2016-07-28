@@ -41,7 +41,7 @@
 #include <cmath>
 #include <Eigen/Core>
 
-#include "tudatApplications/thesisProject/projectLibraries/basicRecurrenceRelations.h"  // Not sure if such a long path is needed, but just in case
+#include "tudatApplications/thesisProject/projectLibraries/allRecurrenceRelations.h"  // Not sure if such a long path is needed, but just in case
 
 
 

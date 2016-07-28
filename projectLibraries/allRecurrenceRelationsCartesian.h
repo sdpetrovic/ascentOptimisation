@@ -41,7 +41,7 @@
 #include <cmath>
 #include <Eigen/Core>
 
-#include "tudatApplications/thesisProject/projectLibraries/allRecurrenceRelations.h"  // Not sure if such a long path is needed, but just in case
+#include "tudatApplications/thesisProject/projectLibraries/basicRecurrenceRelations.h"  // Not sure if such a long path is needed, but just in case
 
 
 
@@ -56,7 +56,7 @@
 /// \param currentTime
 /// \return
 ///
-Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double specificGasConstant_, const double standardGravitationalParameter_, const double rotationalVelocity_, const double primeMeridianAngle_,
+Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, const double specificGasConstant_, const double standardGravitationalParameter_, const double rotationalVelocity_, const double primeMeridianAngle_,
                       const double inertialFrameTime_, const double bodyReferenceRadius_, const Eigen::MatrixXd temperaturePolyCoefficients_, const Eigen::MatrixXd temperatureAltitudeRanges_,
                       const Eigen::VectorXd densityPolyCoefficients_, const double Thrust_, const double specificImpulse_,
                       const double referenceArea_, const Eigen::MatrixXd dragCoefficientPolyCoefficients_, const Eigen::MatrixXd dragCoefficientMachRanges_,

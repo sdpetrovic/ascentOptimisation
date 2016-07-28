@@ -67,13 +67,11 @@
 
 #include <thesisProject/stateAndTime.h>             // Final version
 
-//#include <thesisProject/Auxiliary.h>                // Original test file
-#include <thesisProject/AuxiliaryCartesian.h>                // Cartesian test file
+#include <thesisProject/Auxiliary.h>                // Original test file
 
 #include "thesisProject/projectLibraries/basicRecurrenceRelations.h"               // Original test file
 
-//#include "thesisProject/projectLibraries/allRecurrenceRelations.h"          // Original test file
-#include "thesisProject/projectLibraries/allRecurrenceRelationsCartesian.h"          // Cartesian test file
+#include "thesisProject/projectLibraries/allRecurrenceRelations.h"          // Original test file
 
 #include <thesisProject/StepSize.h>             // Original test file
 
@@ -90,7 +88,7 @@
 /// \param maxOrder
 /// \return updatedStateAndTime This is a vector output with 8 elements: the updated three position values, the updated three velocity values, the updated mass value and the updated time.
 ///
-Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody &planet_, const MarsAscentVehicle &MAV_, const StateAndTime &currentStateAndTime_, StepSize &stepSize, const double maxOrder_ = 20,
+Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody &planet_, const MarsAscentVehicle &MAV_, const StateAndTime &currentStateAndTime_, StepSize &stepSize, const double maxOrder_ = 20,
                                                    const double FlightPathAngle_ = 1000,
                                                    const double HeadingAngle_ = 1000);
 

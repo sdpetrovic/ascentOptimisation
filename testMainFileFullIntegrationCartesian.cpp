@@ -229,7 +229,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     const bool comparison = true;
 
     /// Set initial flight path angles and heading angles
-    const double FlightPathAngle = deg2rad(45.0);     // Set flight-path angle in rad --> Default = 90.0 deg
+    const double FlightPathAngle = deg2rad(90.0);     // Set flight-path angle in rad --> Default = 90.0 deg
     const double HeadingAngle = deg2rad(90.0);           // Set heading angle in rad --> Default = 0.0 deg
 //    double rotationalFlightPathAngle = deg2rad(90);         // Rotational flight-path angle in rad
 //    double inertialFlightPathAngle = deg2rad(90);           // Inertial flight-path angle in rad
@@ -238,12 +238,12 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
   /// Initial conditions /// a.k.a. control centre
 
-    const double setEndTime = 10.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
+    const double setEndTime = 1.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
 
 //std::cout<<"pi = "<<(4*atan(1))<<std::endl;
 
     /// TSI settings ///
-    const int maxOrder = 20; // Eventually want order 20 (testing is 8)
+    const int maxOrder = 8; // Eventually want order 20 (testing is 8)
     /// TSI settings ///
 
     /// Integration settings ///
@@ -258,10 +258,10 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     /// Integration settings ///
 
+//    std::cout<<"blalblablablabla"<<std::endl;
 
     // Launch site characteristics
 
-//    const double initialAltitude = -0.6e3;             // Starting altitude [m MOLA]
     const double initialAltitude = -0.6;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
     const double initialLatitudeDeg = 0.0;               // Starting latitude [deg] initial condition is 21 deg
@@ -693,7 +693,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                             stepSize.setCurrentStepSize(endTimeTSI - runningTimeTSI);
                         }
         std::cout<<"The new step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
-        Eigen::VectorXd updatedStateAndTimeVector = performTaylorSeriesIntegrationStep(Mars, MAV, currentStateAndTime, stepSize, maxOrder, FlightPathAngle, HeadingAngle); /// The actual integration step
+        Eigen::VectorXd updatedStateAndTimeVector = performCartesianTaylorSeriesIntegrationStep(Mars, MAV, currentStateAndTime, stepSize, maxOrder, FlightPathAngle, HeadingAngle); /// The actual integration step
         // This function has the output: updated position, updated velocity, updated mass and updated time
 
         std::cout<<"updatedStateAndTimeVector = "<<updatedStateAndTimeVector<<std::endl;

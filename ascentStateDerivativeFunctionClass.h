@@ -71,7 +71,7 @@
 #include <thesisProject/stateAndTime.h>             // Final version
 
 /// Testing the auxiliary equations ///
-#include <thesisProject/Auxiliary.h>                // Original test file
+//#include <thesisProject/Auxiliary.h>                // Original test file
 
 /// Testing the other required functions ///
 #include <thesisProject/projectLibraries/otherRequiredFunctions.h>              // Original test file

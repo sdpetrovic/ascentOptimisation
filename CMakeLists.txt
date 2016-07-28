@@ -180,10 +180,10 @@ endif( )
 set(PROJECTLIBRARIES_SOURCES
 #  "${SRCROOT}${PROJECTLIBRARIESDIR}/basicRecurrenceRelations.cpp"
     "${SRCROOT}/projectLibraries/basicRecurrenceRelations.cpp"
-    "${SRCROOT}/projectLibraries/allRecurrenceRelations.cpp"
+#    "${SRCROOT}/projectLibraries/allRecurrenceRelations.cpp"
     "${SRCROOT}/projectLibraries/allRecurrenceRelationsSpherical.cpp"
     "${SRCROOT}/projectLibraries/allRecurrenceRelationsCartesian.cpp"
-    "${SRCROOT}/projectLibraries/TaylorSeriesIntegration.cpp"
+#    "${SRCROOT}/projectLibraries/TaylorSeriesIntegration.cpp"
     "${SRCROOT}/projectLibraries/TaylorSeriesIntegrationSpherical.cpp"
     "${SRCROOT}/projectLibraries/TaylorSeriesIntegrationCartesian.cpp"
     "${SRCROOT}/projectLibraries/otherRequiredFunctions.cpp"
@@ -199,10 +199,10 @@ set(PROJECTLIBRARIES_SOURCES
 set(PROJECTLIBRARIES_HEADERS
 #  "${SRCROOT}${PROJECTLIBRARIESDIR}/basicRecurrenceRelations.h"
     "${SRCROOT}/projectLibraries/basicRecurrenceRelations.h"
-    "${SRCROOT}/projectLibraries/allRecurrenceRelations.h"
+#    "${SRCROOT}/projectLibraries/allRecurrenceRelations.h"
     "${SRCROOT}/projectLibraries/allRecurrenceRelationsSpherical.h"
     "${SRCROOT}/projectLibraries/allRecurrenceRelationsCartesian.h"
-    "${SRCROOT}/projectLibraries/TaylorSeriesIntegration.h"
+#    "${SRCROOT}/projectLibraries/TaylorSeriesIntegration.h"
     "${SRCROOT}/projectLibraries/TaylorSeriesIntegrationSpherical.h"
     "${SRCROOT}/projectLibraries/TaylorSeriesIntegrationCartesian.h"
     "${SRCROOT}/projectLibraries/otherRequiredFunctions.h"
@@ -229,21 +229,21 @@ add_library(project_libraries STATIC ${PROJECTLIBRARIES_SOURCES} ${PROJECTLIBRAR
 #setup_executable_target(simple_verification_testMainFileClassesAndHeaderAndSource "${SRCROOT}")
 #target_link_libraries(simple_verification_testMainFileClassesAndHeaderAndSource project_libraries tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
 
-add_executable(simple_verification_testMainFileTaylorSeriesIntegration "${SRCROOT}/testMainFileTaylorSeriesIntegration.cpp")
-setup_executable_target(simple_verification_testMainFileTaylorSeriesIntegration "${SRCROOT}")
-target_link_libraries(simple_verification_testMainFileTaylorSeriesIntegration project_libraries tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
+#add_executable(simple_verification_testMainFileTaylorSeriesIntegration "${SRCROOT}/testMainFileTaylorSeriesIntegration.cpp")
+#setup_executable_target(simple_verification_testMainFileTaylorSeriesIntegration "${SRCROOT}")
+#target_link_libraries(simple_verification_testMainFileTaylorSeriesIntegration project_libraries tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
 
-add_executable(simple_verification_testMainFileStateDerivativeFunction "${SRCROOT}/testMainFileStateDerivativeFunction.cpp")
-setup_executable_target(simple_verification_testMainFileStateDerivativeFunction "${SRCROOT}")
-target_link_libraries(simple_verification_testMainFileStateDerivativeFunction project_libraries tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
+#add_executable(simple_verification_testMainFileStateDerivativeFunction "${SRCROOT}/testMainFileStateDerivativeFunction.cpp")
+#setup_executable_target(simple_verification_testMainFileStateDerivativeFunction "${SRCROOT}")
+#target_link_libraries(simple_verification_testMainFileStateDerivativeFunction project_libraries tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
 
-add_executable(simple_verification_testMainFileRKF "${SRCROOT}/testMainFileRKF.cpp")
-setup_executable_target(simple_verification_testMainFileRKF "${SRCROOT}")
-target_link_libraries(simple_verification_testMainFileRKF project_libraries tudat_numerical_integrators tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
+#add_executable(simple_verification_testMainFileRKF "${SRCROOT}/testMainFileRKF.cpp")
+#setup_executable_target(simple_verification_testMainFileRKF "${SRCROOT}")
+#target_link_libraries(simple_verification_testMainFileRKF project_libraries tudat_numerical_integrators tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
 
-add_executable(simple_verification_testMainFileFullIntegration "${SRCROOT}/testMainFileFullIntegration.cpp")
-setup_executable_target(simple_verification_testMainFileFullIntegration "${SRCROOT}")
-target_link_libraries(simple_verification_testMainFileFullIntegration project_libraries tudat_numerical_integrators tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
+#add_executable(simple_verification_testMainFileFullIntegration "${SRCROOT}/testMainFileFullIntegration.cpp")
+#setup_executable_target(simple_verification_testMainFileFullIntegration "${SRCROOT}")
+#target_link_libraries(simple_verification_testMainFileFullIntegration project_libraries tudat_numerical_integrators tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
 
 add_executable(simple_verification_testMainFileFullIntegrationSpherical "${SRCROOT}/testMainFileFullIntegrationSpherical.cpp")
 setup_executable_target(simple_verification_testMainFileFullIntegrationSpherical "${SRCROOT}")

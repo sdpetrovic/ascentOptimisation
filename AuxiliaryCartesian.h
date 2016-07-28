@@ -66,7 +66,7 @@
 
 using namespace std;
 
-class Auxiliary
+class AuxiliaryCartesian
 
         /* This class will describe the different auxiliary equations, derivatives and functions
          * These are represented by:
@@ -111,7 +111,7 @@ public:
      */
 
 
-    Auxiliary(const double adiabeticIndex_, const double specificGasConstant_, const double standardGravitationalParameter_, const double rotationalVelocity_, const double primeMeridianAngle_,
+    AuxiliaryCartesian(const double adiabeticIndex_, const double specificGasConstant_, const double standardGravitationalParameter_, const double rotationalVelocity_, const double primeMeridianAngle_,
               const double inertialFrameTime_, const double bodyReferenceRadius_, const Eigen::MatrixXd temperaturePolyCoefficients_, const Eigen::MatrixXd temperatureAltitudeRanges_,
               const Eigen::VectorXd densityPolyCoefficients_, const double Thrust_, const Eigen::MatrixXd thrustAzimuthMatrix_, const Eigen::MatrixXd thrustElevationMatrix_, const double specificImpulse_,
               const double referenceArea_, const Eigen::MatrixXd dragCoefficientPolyCoefficients_, const Eigen::MatrixXd dragCoefficientMachRanges_){
@@ -201,32 +201,6 @@ public:
 
 
 
-//    void setRotationalFlightPathAngle(const double rotationalFlightPathAngle_){
-//     rotationalFlightPathAngle = rotationalFlightPathAngle_;
-//     rotationalFlightPathAngleSet = true;
-//     if (rotationalFlightPathAngle_ ==tudat::mathematical_constants::LONG_PI/2){
-//         verticalRotationalFlightPathAngleSet = true;
-//     }
-
-//    }         // Rotational flight path angle in rad
-
-//    void setInertialFlightPathAngle(const double inertialFlightPathAngle_){
-//        inertialFlightPathAngle = inertialFlightPathAngle_;
-//        inertialFlightPathAngleSet = true;
-//        if (inertialFlightPathAngle_ ==tudat::mathematical_constants::LONG_PI/2){
-//            verticalInertialFlightPathAngleSet = true;
-//        }
-//    }           // Inertial flight path angle in rad
-
-//    void setRotationalHeadingAngle(const double rotationalHeadingAngle_){
-//        rotationalHeadingAngle = rotationalHeadingAngle_;
-//        rotationalHeadingAngleSet = true;
-//    }            // Rotational heading angle in rad
-
-//    void setInertialHeadingAngle(const double inertialHeadingAngle_){
-//        inertialHeadingAngle = inertialHeadingAngle_;
-//        inertialHeadingAngleSet = true;
-//    }              // Inertial heading angle in rad
 
     /// Test functions to revert changes if tolerance is reached
 
@@ -246,7 +220,7 @@ public:
      *
      */
 
-    Eigen::VectorXd getAuxiliaryEquations( const tudat::basic_mathematics::Vector7d& aState, const double time, const Eigen::Vector3d& thrustAccelerationsBframe){
+    Eigen::VectorXd getCartesianAuxiliaryEquations( const tudat::basic_mathematics::Vector7d& aState, const double time, const Eigen::Vector3d& thrustAccelerationsBframe){
 //        std::cout<<"verticalInertialFlightPathAngleSet eq 1 = "<<verticalInertialFlightPathAngleSet<<std::endl;
 //        std::cout<<"verticalRotationalFlightPathAngleSet eq 1 = "<<verticalRotationalFlightPathAngleSet<<std::endl;
 
@@ -378,7 +352,7 @@ public:
 // auxiliaryEquationsVector() = ;               // x
 
 
-//std::cout<<"Surely this works end..."<<std::endl;
+//std::cout<<"Surely this works 2..."<<std::endl;
 
 
        return auxiliaryEquationsVector;
@@ -386,12 +360,13 @@ public:
 
 //////////////////////////////////////////////// Auxiliary Derivatives //////////////////////////////////////////////////////////////////////
 
-    Eigen::VectorXd getAuxiliaryDerivatives( const tudat::basic_mathematics::Vector7d& aState, const double time, const Eigen::Vector3d& thrustAccelerationsBframe, const Eigen::VectorXd& auxiliaryEquationsVector){
+    Eigen::VectorXd getCartesianAuxiliaryDerivatives( const tudat::basic_mathematics::Vector7d& aState, const double time, const Eigen::Vector3d& thrustAccelerationsBframe, const Eigen::VectorXd& auxiliaryEquationsVector){
 
+            //std::cout<<"Surely this works 3..."<<std::endl;
 
     auxiliaryDerivativesVector = Eigen::VectorXd::Zero(10);       // Setting the complete vector and filling it with zeros for now
 
-    auxiliaryFunctionsMatrix = Eigen::MatrixXd::Zero(28,53);       // Setting the complete matrix and filling it with zeros for now
+    Eigen::MatrixXd auxiliaryFunctionsMatrixDummy = Eigen::MatrixXd::Zero(28,53);       // Setting the complete matrix and filling it with zeros for now
 
     // The following expressions are described in the order in which the equations have to be computed corresponding to the respective vector entry
     // Which in this case means that the first entry of the vector is 0 and is not used.
@@ -407,72 +382,81 @@ public:
     auxiliaryDerivativesVector(3) = auxiliaryEquationsVector(6);                // u3
 
 
+
     // u4
 
-    auxiliaryFunctionsMatrix(4,1) = auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2);
-    auxiliaryFunctionsMatrix(4,2) = auxiliaryFunctionsMatrix(4,1)+auxiliaryEquationsVector(3)*auxiliaryEquationsVector(3);
-    auxiliaryFunctionsMatrix(4,3) = sqrt(auxiliaryFunctionsMatrix(4,2));        // Radius
-    auxiliaryFunctionsMatrix(4,4) = sqrt(auxiliaryFunctionsMatrix(4,1));        // 2-D Radius
-    auxiliaryFunctionsMatrix(4,5) = auxiliaryEquationsVector(2)/auxiliaryFunctionsMatrix(4,4);  // sin(lambda)
-    auxiliaryFunctionsMatrix(4,6) = auxiliaryEquationsVector(1)/auxiliaryFunctionsMatrix(4,4);  // cos(lambda)
-    auxiliaryFunctionsMatrix(4,7) = auxiliaryEquationsVector(3)/auxiliaryFunctionsMatrix(4,3);  // sin(delta)
-    auxiliaryFunctionsMatrix(4,8) = auxiliaryFunctionsMatrix(4,4)/auxiliaryFunctionsMatrix(4,3);    // cos(delta)
-    auxiliaryFunctionsMatrix(4,9) = auxiliaryEquationsVector(4)+rotationalVelocity*auxiliaryEquationsVector(2);
-    auxiliaryFunctionsMatrix(4,10) = auxiliaryEquationsVector(5)-rotationalVelocity*auxiliaryEquationsVector(1);
-    auxiliaryFunctionsMatrix(4,11) = auxiliaryFunctionsMatrix(4,9)*auxiliaryFunctionsMatrix(4,9)+auxiliaryFunctionsMatrix(4,10)*auxiliaryFunctionsMatrix(4,10)+auxiliaryEquationsVector(6)*auxiliaryEquationsVector(6);
-    auxiliaryFunctionsMatrix(4,12)= sqrt(auxiliaryFunctionsMatrix(4,11));
+    auxiliaryFunctionsMatrixDummy(4,1) = auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2);
+    auxiliaryFunctionsMatrixDummy(4,2) = auxiliaryFunctionsMatrixDummy(4,1)+auxiliaryEquationsVector(3)*auxiliaryEquationsVector(3);
+    auxiliaryFunctionsMatrixDummy(4,3) = sqrt(auxiliaryFunctionsMatrixDummy(4,2));        // Radius
+    auxiliaryFunctionsMatrixDummy(4,4) = sqrt(auxiliaryFunctionsMatrixDummy(4,1));        // 2-D Radius
+    // Avoid singularities
+    if (auxiliaryFunctionsMatrixDummy(4,4) == 0.0){
+        auxiliaryFunctionsMatrixDummy(4,5) = 0.0;
+        auxiliaryFunctionsMatrixDummy(4,6) = 1.0;
+    }
+    else{
+    auxiliaryFunctionsMatrixDummy(4,5) = auxiliaryEquationsVector(2)/auxiliaryFunctionsMatrixDummy(4,4);  // sin(lambda)
+    auxiliaryFunctionsMatrixDummy(4,6) = auxiliaryEquationsVector(1)/auxiliaryFunctionsMatrixDummy(4,4);  // cos(lambda)
+    }
+    auxiliaryFunctionsMatrixDummy(4,7) = auxiliaryEquationsVector(3)/auxiliaryFunctionsMatrixDummy(4,3);  // sin(delta)
+    auxiliaryFunctionsMatrixDummy(4,8) = auxiliaryFunctionsMatrixDummy(4,4)/auxiliaryFunctionsMatrixDummy(4,3);    // cos(delta)
+    auxiliaryFunctionsMatrixDummy(4,9) = auxiliaryEquationsVector(4)+rotationalVelocity*auxiliaryEquationsVector(2);
+    auxiliaryFunctionsMatrixDummy(4,10) = auxiliaryEquationsVector(5)-rotationalVelocity*auxiliaryEquationsVector(1);
+    auxiliaryFunctionsMatrixDummy(4,11) = auxiliaryFunctionsMatrixDummy(4,9)*auxiliaryFunctionsMatrixDummy(4,9)+auxiliaryFunctionsMatrixDummy(4,10)*auxiliaryFunctionsMatrixDummy(4,10)+auxiliaryEquationsVector(6)*auxiliaryEquationsVector(6);
+    auxiliaryFunctionsMatrixDummy(4,12)= sqrt(auxiliaryFunctionsMatrixDummy(4,11));
 
 
-    auxiliaryFunctionsMatrix(27,1) = auxiliaryFunctionsMatrix(4,3) - bodyReferenceRadius;
-    auxiliaryFunctionsMatrix(27,2) = auxiliaryFunctionsMatrix(27,1)*auxiliaryFunctionsMatrix(27,1);
-    auxiliaryFunctionsMatrix(27,3) = pow(auxiliaryFunctionsMatrix(27,1),3);
-    auxiliaryFunctionsMatrix(27,4) = pow(auxiliaryFunctionsMatrix(27,1),4);
-    auxiliaryFunctionsMatrix(27,5) = pow(auxiliaryFunctionsMatrix(27,1),5);
-    auxiliaryFunctionsMatrix(27,6) = pow(auxiliaryFunctionsMatrix(27,1),6);
-    auxiliaryFunctionsMatrix(27,7) = pow(auxiliaryFunctionsMatrix(27,1),7);
-    auxiliaryFunctionsMatrix(27,8) = pow(auxiliaryFunctionsMatrix(27,1),8);
-    auxiliaryFunctionsMatrix(27,9) = pow(auxiliaryFunctionsMatrix(27,1),9);
-    auxiliaryFunctionsMatrix(27,10) = pow(auxiliaryFunctionsMatrix(27,1),10);
+
+    auxiliaryFunctionsMatrixDummy(27,1) = auxiliaryFunctionsMatrixDummy(4,3) - bodyReferenceRadius;
+    auxiliaryFunctionsMatrixDummy(27,2) = auxiliaryFunctionsMatrixDummy(27,1)*auxiliaryFunctionsMatrixDummy(27,1);
+    auxiliaryFunctionsMatrixDummy(27,3) = pow(auxiliaryFunctionsMatrixDummy(27,1),3);
+    auxiliaryFunctionsMatrixDummy(27,4) = pow(auxiliaryFunctionsMatrixDummy(27,1),4);
+    auxiliaryFunctionsMatrixDummy(27,5) = pow(auxiliaryFunctionsMatrixDummy(27,1),5);
+    auxiliaryFunctionsMatrixDummy(27,6) = pow(auxiliaryFunctionsMatrixDummy(27,1),6);
+    auxiliaryFunctionsMatrixDummy(27,7) = pow(auxiliaryFunctionsMatrixDummy(27,1),7);
+    auxiliaryFunctionsMatrixDummy(27,8) = pow(auxiliaryFunctionsMatrixDummy(27,1),8);
+    auxiliaryFunctionsMatrixDummy(27,9) = pow(auxiliaryFunctionsMatrixDummy(27,1),9);
+    auxiliaryFunctionsMatrixDummy(27,10) = pow(auxiliaryFunctionsMatrixDummy(27,1),10);
 
     // Computing the polynomial fit using the altitude and fit parameters for density
             for (int i = 0; i < 10+1;i++) {
 
                 if (i == 0){
-                    auxiliaryFunctionsMatrix(27,11) = densityPolyCoefficients(i);
+                    auxiliaryFunctionsMatrixDummy(27,11) = densityPolyCoefficients(i);
                 }
             else{
-            auxiliaryFunctionsMatrix(27,11) += auxiliaryFunctionsMatrix(27,i)*densityPolyCoefficients(i);
+            auxiliaryFunctionsMatrixDummy(27,11) += auxiliaryFunctionsMatrixDummy(27,i)*densityPolyCoefficients(i);
     }};
 
-    auxiliaryFunctionsMatrix(27,12) = exp(auxiliaryFunctionsMatrix(27,11)); // Air density
+    auxiliaryFunctionsMatrixDummy(27,12) = exp(auxiliaryFunctionsMatrixDummy(27,11)); // Air density
 
             // Determine which section of the temperature curve needs to be used and what the corresponding order is
             // Also, because a computer is less than perfect, a small correction is made to the lower bound of the first section to make sure that the initial altitude is still valid
 
-            if ((temperatureAltitudeRanges(0,0)-0.000000000001) <= auxiliaryFunctionsMatrix(27,1) && auxiliaryFunctionsMatrix(27,1) < temperatureAltitudeRanges(0,1)){
+            if ((temperatureAltitudeRanges(0,0)-0.000000000001) <= auxiliaryFunctionsMatrixDummy(27,1) && auxiliaryFunctionsMatrixDummy(27,1) < temperatureAltitudeRanges(0,1)){
 
             sectionT = 0;
             powerT = 1;
 
             }
-            else if (temperatureAltitudeRanges(1,0) <= auxiliaryFunctionsMatrix(27,1) && auxiliaryFunctionsMatrix(27,1) < temperatureAltitudeRanges(1,1)){
+            else if (temperatureAltitudeRanges(1,0) <= auxiliaryFunctionsMatrixDummy(27,1) && auxiliaryFunctionsMatrixDummy(27,1) < temperatureAltitudeRanges(1,1)){
 
             sectionT = 1;
             powerT = 3;
 
             }
-            else if (temperatureAltitudeRanges(2,0) <= auxiliaryFunctionsMatrix(27,1) && auxiliaryFunctionsMatrix(27,1) < temperatureAltitudeRanges(2,1)){
+            else if (temperatureAltitudeRanges(2,0) <= auxiliaryFunctionsMatrixDummy(27,1) && auxiliaryFunctionsMatrixDummy(27,1) < temperatureAltitudeRanges(2,1)){
 
             sectionT = 2;
             powerT = 6;
 
             }
-            else if (temperatureAltitudeRanges(3,0) <= auxiliaryFunctionsMatrix(27,1) && auxiliaryFunctionsMatrix(27,1) < temperatureAltitudeRanges(3,1)){
+            else if (temperatureAltitudeRanges(3,0) <= auxiliaryFunctionsMatrixDummy(27,1) && auxiliaryFunctionsMatrixDummy(27,1) < temperatureAltitudeRanges(3,1)){
 
                 sectionT = 3;
                 powerT = 8;
             }
-            else if (temperatureAltitudeRanges(4,0) <= auxiliaryFunctionsMatrix(27,1)){
+            else if (temperatureAltitudeRanges(4,0) <= auxiliaryFunctionsMatrixDummy(27,1)){
 
                 sectionT = 4;
                 powerT = 0;
@@ -480,7 +464,7 @@ public:
             else {
 
 
-                std::cerr<<"The current altitude: "<<auxiliaryFunctionsMatrix(27,1)<<" [km MOLA] is not a valid altitude (lower than the lowest reference altitude)"<<std::endl;
+                std::cerr<<"The current altitude: "<<auxiliaryFunctionsMatrixDummy(27,1)<<" [km MOLA] is not a valid altitude (lower than the lowest reference altitude)"<<std::endl;
 
                            sectionT = 0;
                             powerT = 1;
@@ -491,24 +475,34 @@ public:
                     for (int i=0; i < powerT+1;i++){
 
                         if (i == 0){
-                            auxiliaryFunctionsMatrix(27,13) = temperaturePolyCoefficients(sectionT,i);
+                            auxiliaryFunctionsMatrixDummy(27,13) = temperaturePolyCoefficients(sectionT,i);
                         }
                         else {
-                    auxiliaryFunctionsMatrix(27,13) += auxiliaryFunctionsMatrix(27,i)*temperaturePolyCoefficients(sectionT,i);              // Air temperature
+                    auxiliaryFunctionsMatrixDummy(27,13) += auxiliaryFunctionsMatrixDummy(27,i)*temperaturePolyCoefficients(sectionT,i);              // Air temperature
 
 
             }};
 
-    auxiliaryFunctionsMatrix(27,14) = sqrt(adiabeticIndex*specificGasConstant*auxiliaryFunctionsMatrix(27,11)); // Speed of sound
-    auxiliaryFunctionsMatrix(27,15) = auxiliaryFunctionsMatrix(4,12)/auxiliaryFunctionsMatrix(27,14); // Mach number
+                    //std::cout<<"Surely this works 4..."<<std::endl;
 
+    auxiliaryFunctionsMatrixDummy(27,14) = sqrt(adiabeticIndex*specificGasConstant*auxiliaryFunctionsMatrixDummy(27,13)); // Speed of sound
+    auxiliaryFunctionsMatrixDummy(27,15) = auxiliaryFunctionsMatrixDummy(4,12)/auxiliaryFunctionsMatrixDummy(27,14); // Mach number
+
+    /// Debug ///
+ //std::cout<<"Surely this works 4.5..."<<std::endl;
+//  std::cout<<"Temp = "<<auxiliaryFunctionsMatrixDummy(27,13)<<std::endl;
+// std::cout<<"a = "<<auxiliaryFunctionsMatrixDummy(27,14)<<std::endl;
+// std::cout<<"Mach number = "<<auxiliaryFunctionsMatrixDummy(27,15)<<std::endl;
+ /// Debug ///
             // Determine which section of the drag coefficient curve needs to be used
 
             for (int i=0; i < 5+1; i++){
 
-                if (dragCoefficientMachRanges(i,0) <= auxiliaryFunctionsMatrix(27,15) && auxiliaryFunctionsMatrix(27,15) < dragCoefficientMachRanges(i,1)){
+                if (dragCoefficientMachRanges(i,0) <= auxiliaryFunctionsMatrixDummy(27,15) && auxiliaryFunctionsMatrixDummy(27,15) < dragCoefficientMachRanges(i,1)){
 
                     sectionCD = i;
+
+//                    std::cout<<"sectionCD = "<<sectionCD<<std::endl;
 
 
                 }
@@ -518,57 +512,93 @@ public:
 
 
 
-            auxiliaryFunctionsMatrix(27,16) = dragCoefficientPolyCoefficients(sectionCD,1)*auxiliaryFunctionsMatrix(27,15)+dragCoefficientPolyCoefficients(sectionCD,0);              // Drag coefficient
+            auxiliaryFunctionsMatrixDummy(27,16) = dragCoefficientPolyCoefficients(sectionCD,1)*auxiliaryFunctionsMatrixDummy(27,15)+dragCoefficientPolyCoefficients(sectionCD,0);              // Drag coefficient
+
+             //std::cout<<"Surely this works 5..."<<std::endl;
+
+    auxiliaryFunctionsMatrixDummy(27,17) = auxiliaryFunctionsMatrixDummy(4,12)*auxiliaryFunctionsMatrixDummy(4,12);
+    auxiliaryFunctionsMatrixDummy(27,18) = auxiliaryFunctionsMatrixDummy(27,17)*auxiliaryFunctionsMatrixDummy(27,16);
+    auxiliaryFunctionsMatrixDummy(27,19) = 0.5*referenceArea*auxiliaryFunctionsMatrixDummy(27,18)*auxiliaryFunctionsMatrixDummy(27,12);    // Drag
+
+ //std::cout<<"Surely this works 6..."<<std::endl;
+    auxiliaryFunctionsMatrixDummy(4,13) = -auxiliaryFunctionsMatrixDummy(4,6)*auxiliaryFunctionsMatrixDummy(4,7);
+    auxiliaryFunctionsMatrixDummy(4,14) = -auxiliaryFunctionsMatrixDummy(4,7)*auxiliaryFunctionsMatrixDummy(4,5);
+    auxiliaryFunctionsMatrixDummy(4,15) = -auxiliaryFunctionsMatrixDummy(4,8)*auxiliaryFunctionsMatrixDummy(4,6);
+    auxiliaryFunctionsMatrixDummy(4,16) = -auxiliaryFunctionsMatrixDummy(4,8)*auxiliaryFunctionsMatrixDummy(4,5);
+    auxiliaryFunctionsMatrixDummy(4,17) = auxiliaryEquationsVector(6)*auxiliaryFunctionsMatrixDummy(4,8)+auxiliaryFunctionsMatrixDummy(4,9)*auxiliaryFunctionsMatrixDummy(4,13)+auxiliaryFunctionsMatrixDummy(4,10)*auxiliaryFunctionsMatrixDummy(4,14);
+    auxiliaryFunctionsMatrixDummy(4,18) = auxiliaryFunctionsMatrixDummy(4,10)*auxiliaryFunctionsMatrixDummy(4,6)-auxiliaryFunctionsMatrixDummy(4,9)*auxiliaryFunctionsMatrixDummy(4,5);
+    auxiliaryFunctionsMatrixDummy(4,19) = auxiliaryFunctionsMatrixDummy(4,9)*auxiliaryFunctionsMatrixDummy(4,15)-auxiliaryEquationsVector(6)*auxiliaryFunctionsMatrixDummy(4,7)+auxiliaryFunctionsMatrixDummy(4,10)*auxiliaryFunctionsMatrixDummy(4,16);
+    auxiliaryFunctionsMatrixDummy(4,20) = auxiliaryFunctionsMatrixDummy(4,17)*auxiliaryFunctionsMatrixDummy(4,17)+auxiliaryFunctionsMatrixDummy(4,18)*auxiliaryFunctionsMatrixDummy(4,18);
+    auxiliaryFunctionsMatrixDummy(4,21) = sqrt(auxiliaryFunctionsMatrixDummy(4,20));
 
 
-    auxiliaryFunctionsMatrix(27,17) = auxiliaryFunctionsMatrix(4,12)*auxiliaryFunctionsMatrix(4,12);
-    auxiliaryFunctionsMatrix(27,18) = auxiliaryFunctionsMatrix(27,17)*auxiliaryFunctionsMatrix(27,16);
-    auxiliaryFunctionsMatrix(27,19) = 0.5*referenceArea*auxiliaryFunctionsMatrix(27,18)*auxiliaryFunctionsMatrix(27,12);    // Drag
 
+    if (auxiliaryFunctionsMatrixDummy(4,21) == 0.0){
+        auxiliaryFunctionsMatrixDummy(4,22) = sin(HeadingAngle);
+        auxiliaryFunctionsMatrixDummy(4,23) = cos(HeadingAngle);
+        if (abs(auxiliaryFunctionsMatrixDummy(4,22)) < 1.2e-16){
+            auxiliaryFunctionsMatrixDummy(4,22) = 0.0;
+        }
+        if (abs(auxiliaryFunctionsMatrixDummy(4,23)) < 6.2e-17){
+            auxiliaryFunctionsMatrixDummy(4,23) = 0.0;
+        }
+    }
+    else{
+    auxiliaryFunctionsMatrixDummy(4,22) = auxiliaryFunctionsMatrixDummy(4,18)/auxiliaryFunctionsMatrixDummy(4,21);     // sin(chi)
+    auxiliaryFunctionsMatrixDummy(4,23) = auxiliaryFunctionsMatrixDummy(4,17)/auxiliaryFunctionsMatrixDummy(4,21);     // cos(chi)
+}
+     //std::cout<<"Surely this works 7..."<<std::endl;
+    if (auxiliaryFunctionsMatrixDummy(4,12) == 0.0){
+        auxiliaryFunctionsMatrixDummy(4,24) = sin(FlightPathAngle);
+        auxiliaryFunctionsMatrixDummy(4,25) = cos(FlightPathAngle);
+        if (abs(auxiliaryFunctionsMatrixDummy(4,24)) < 1.2e-16){
+            auxiliaryFunctionsMatrixDummy(4,24) = 0.0;
+        }
+        if (abs(auxiliaryFunctionsMatrixDummy(4,25)) < 6.2e-17){
+            auxiliaryFunctionsMatrixDummy(4,25) = 0.0;
+        }
+    }
+    else{
+    auxiliaryFunctionsMatrixDummy(4,24) = -auxiliaryFunctionsMatrixDummy(4,19)/auxiliaryFunctionsMatrixDummy(4,12);    // sin(gamma)
+    auxiliaryFunctionsMatrixDummy(4,25) = auxiliaryFunctionsMatrixDummy(4,21)/auxiliaryFunctionsMatrixDummy(4,12);     // cos(gamma)
+  }
+    /// Debug ///
+//    std::cout<<"uw4,25 = "<<auxiliaryFunctionsMatrixDummy(4,25)<<std::endl;
 
-    auxiliaryFunctionsMatrix(4,13) = -auxiliaryFunctionsMatrix(4,6)*auxiliaryFunctionsMatrix(4,7);
-    auxiliaryFunctionsMatrix(4,14) = -auxiliaryFunctionsMatrix(4,7)*auxiliaryFunctionsMatrix(4,5);
-    auxiliaryFunctionsMatrix(4,15) = -auxiliaryFunctionsMatrix(4,8)*auxiliaryFunctionsMatrix(4,6);
-    auxiliaryFunctionsMatrix(4,16) = -auxiliaryFunctionsMatrix(4,8)*auxiliaryFunctionsMatrix(4,5);
-    auxiliaryFunctionsMatrix(4,17) = auxiliaryEquationsVector(6)*auxiliaryFunctionsMatrix(4,8)+auxiliaryFunctionsMatrix(4,9)*auxiliaryFunctionsMatrix(4,13)+auxiliaryFunctionsMatrix(4,10)*auxiliaryFunctionsMatrix(4,14);
-    auxiliaryFunctionsMatrix(4,18) = auxiliaryFunctionsMatrix(4,10)*auxiliaryFunctionsMatrix(4,6)-auxiliaryFunctionsMatrix(4,9)*auxiliaryFunctionsMatrix(4,5);
-    auxiliaryFunctionsMatrix(4,19) = auxiliaryFunctionsMatrix(4,9)*auxiliaryFunctionsMatrix(4,15)-auxiliaryEquationsVector(6)*auxiliaryFunctionsMatrix(4,7)+auxiliaryFunctionsMatrix(4,10)*auxiliaryFunctionsMatrix(4,16);
-    auxiliaryFunctionsMatrix(4,20) = auxiliaryFunctionsMatrix(4,17)*auxiliaryFunctionsMatrix(4,17)+auxiliaryFunctionsMatrix(4,18)*auxiliaryFunctionsMatrix(4,18);
-    auxiliaryFunctionsMatrix(4,21) = sqrt(auxiliaryFunctionsMatrix(4,20));
-    auxiliaryFunctionsMatrix(4,22) = auxiliaryFunctionsMatrix(4,18)/auxiliaryFunctionsMatrix(4,21);     // sin(chi)
-    auxiliaryFunctionsMatrix(4,23) = auxiliaryFunctionsMatrix(4,17)/auxiliaryFunctionsMatrix(4,21);     // cos(chi)
-    auxiliaryFunctionsMatrix(4,24) = -auxiliaryFunctionsMatrix(4,19)/auxiliaryFunctionsMatrix(4,12);    // sin(gamma)
-    auxiliaryFunctionsMatrix(4,25) = auxiliaryFunctionsMatrix(4,21)/auxiliaryFunctionsMatrix(4,12);     // cos(gamma)
-    auxiliaryFunctionsMatrix(4,26) = cos(thrustAzimuthMatrix(0,2));
-    auxiliaryFunctionsMatrix(4,27) = cos(thrustElevationMatrix(0,2));
-    auxiliaryFunctionsMatrix(4,28) = sin(thrustAzimuthMatrix(0,2));
-    auxiliaryFunctionsMatrix(4,29) = sin(thrustElevationMatrix(0,2));
-    auxiliaryFunctionsMatrix(4,30) = auxiliaryFunctionsMatrix(4,26)*auxiliaryFunctionsMatrix(4,27);
-    auxiliaryFunctionsMatrix(4,31) = auxiliaryFunctionsMatrix(4,27)*auxiliaryFunctionsMatrix(4,28);
-    auxiliaryFunctionsMatrix(4,32) = 1/auxiliaryEquationsVector(7);
-    auxiliaryFunctionsMatrix(4,33) = Thrust*auxiliaryFunctionsMatrix(4,32);
-    auxiliaryFunctionsMatrix(4,34) = auxiliaryFunctionsMatrix(4,33)*auxiliaryFunctionsMatrix(4,30);
-    auxiliaryFunctionsMatrix(4,35) = auxiliaryFunctionsMatrix(27,19)/auxiliaryEquationsVector(7);
-    auxiliaryFunctionsMatrix(4,36) = auxiliaryFunctionsMatrix(4,34)-auxiliaryFunctionsMatrix(4,35); //
-    auxiliaryFunctionsMatrix(4,37) = auxiliaryFunctionsMatrix(4,32)*auxiliaryFunctionsMatrix(4,31); //
-    auxiliaryFunctionsMatrix(4,38) = auxiliaryFunctionsMatrix(4,33)*auxiliaryFunctionsMatrix(4,29); //
-    auxiliaryFunctionsMatrix(4,39) = -standardGravitationalParameter*auxiliaryEquationsVector(1)/auxiliaryEquationsVector(9);    //
-    auxiliaryFunctionsMatrix(4,40) = -auxiliaryFunctionsMatrix(4,7)*auxiliaryFunctionsMatrix(4,23);
-    auxiliaryFunctionsMatrix(4,41) = -auxiliaryFunctionsMatrix(4,8)*auxiliaryFunctionsMatrix(4,24);
-    auxiliaryFunctionsMatrix(4,42) = -auxiliaryFunctionsMatrix(4,5)*auxiliaryFunctionsMatrix(4,22);
-    auxiliaryFunctionsMatrix(4,43) = -auxiliaryFunctionsMatrix(4,5)*auxiliaryFunctionsMatrix(4,23);
-    auxiliaryFunctionsMatrix(4,44) = -auxiliaryFunctionsMatrix(4,8)*auxiliaryFunctionsMatrix(4,25);
-    auxiliaryFunctionsMatrix(4,45) = auxiliaryFunctionsMatrix(4,40)*auxiliaryFunctionsMatrix(4,25);
-    auxiliaryFunctionsMatrix(4,46) = auxiliaryFunctionsMatrix(4,42)*auxiliaryFunctionsMatrix(4,25);
-    auxiliaryFunctionsMatrix(4,47) = -auxiliaryFunctionsMatrix(4,13)*auxiliaryFunctionsMatrix(4,22);
-    auxiliaryFunctionsMatrix(4,48) = auxiliaryFunctionsMatrix(4,40)*auxiliaryFunctionsMatrix(4,24);
-    auxiliaryFunctionsMatrix(4,49) = auxiliaryFunctionsMatrix(4,42)*auxiliaryFunctionsMatrix(4,24);
-    auxiliaryFunctionsMatrix(4,50) = auxiliaryFunctionsMatrix(4,6)*(auxiliaryFunctionsMatrix(4,43)+auxiliaryFunctionsMatrix(4,41))+auxiliaryFunctionsMatrix(4,46);
-    auxiliaryFunctionsMatrix(4,51) = auxiliaryFunctionsMatrix(4,6)*(auxiliaryFunctionsMatrix(4,48)+auxiliaryFunctionsMatrix(4,44))+auxiliaryFunctionsMatrix(4,49);
-    auxiliaryFunctionsMatrix(4,52) = auxiliaryFunctionsMatrix(4,39)+auxiliaryFunctionsMatrix(4,36)*auxiliaryFunctionsMatrix(4,50)+auxiliaryFunctionsMatrix(4,37)*(auxiliaryFunctionsMatrix(4,47)+auxiliaryFunctionsMatrix(4,43))-auxiliaryFunctionsMatrix(4,38)*auxiliaryFunctionsMatrix(4,51);
+     //std::cout<<"Surely this works 8..."<<std::endl;
+    /// Debug ///
 
-    auxiliaryDerivativesVector(4) = auxiliaryFunctionsMatrix(4,52); // u4
+    auxiliaryFunctionsMatrixDummy(4,26) = cos(thrustAzimuthMatrix(0,2));
+    auxiliaryFunctionsMatrixDummy(4,27) = cos(thrustElevationMatrix(0,2));
+    auxiliaryFunctionsMatrixDummy(4,28) = sin(thrustAzimuthMatrix(0,2));
+    auxiliaryFunctionsMatrixDummy(4,29) = sin(thrustElevationMatrix(0,2));
+    auxiliaryFunctionsMatrixDummy(4,30) = auxiliaryFunctionsMatrixDummy(4,26)*auxiliaryFunctionsMatrixDummy(4,27);
+    auxiliaryFunctionsMatrixDummy(4,31) = auxiliaryFunctionsMatrixDummy(4,27)*auxiliaryFunctionsMatrixDummy(4,28);
+    auxiliaryFunctionsMatrixDummy(4,32) = 1/auxiliaryEquationsVector(7);
+    auxiliaryFunctionsMatrixDummy(4,33) = Thrust*auxiliaryFunctionsMatrixDummy(4,32);
+    auxiliaryFunctionsMatrixDummy(4,34) = auxiliaryFunctionsMatrixDummy(4,33)*auxiliaryFunctionsMatrixDummy(4,30);
+    auxiliaryFunctionsMatrixDummy(4,35) = auxiliaryFunctionsMatrixDummy(27,19)/auxiliaryEquationsVector(7);
+    auxiliaryFunctionsMatrixDummy(4,36) = auxiliaryFunctionsMatrixDummy(4,34)-auxiliaryFunctionsMatrixDummy(4,35); //
+    auxiliaryFunctionsMatrixDummy(4,37) = auxiliaryFunctionsMatrixDummy(4,32)*auxiliaryFunctionsMatrixDummy(4,31); //
+    auxiliaryFunctionsMatrixDummy(4,38) = auxiliaryFunctionsMatrixDummy(4,33)*auxiliaryFunctionsMatrixDummy(4,29); //
+    auxiliaryFunctionsMatrixDummy(4,39) = -standardGravitationalParameter*auxiliaryEquationsVector(1)/auxiliaryEquationsVector(9);    //
+    auxiliaryFunctionsMatrixDummy(4,40) = -auxiliaryFunctionsMatrixDummy(4,7)*auxiliaryFunctionsMatrixDummy(4,23);
+    auxiliaryFunctionsMatrixDummy(4,41) = auxiliaryFunctionsMatrixDummy(4,8)*auxiliaryFunctionsMatrixDummy(4,24);
+    auxiliaryFunctionsMatrixDummy(4,42) = -auxiliaryFunctionsMatrixDummy(4,5)*auxiliaryFunctionsMatrixDummy(4,22);
+    auxiliaryFunctionsMatrixDummy(4,43) = -auxiliaryFunctionsMatrixDummy(4,5)*auxiliaryFunctionsMatrixDummy(4,23);
+    auxiliaryFunctionsMatrixDummy(4,44) = -auxiliaryFunctionsMatrixDummy(4,8)*auxiliaryFunctionsMatrixDummy(4,25);
+    auxiliaryFunctionsMatrixDummy(4,45) = auxiliaryFunctionsMatrixDummy(4,40)*auxiliaryFunctionsMatrixDummy(4,25);
+    auxiliaryFunctionsMatrixDummy(4,46) = auxiliaryFunctionsMatrixDummy(4,42)*auxiliaryFunctionsMatrixDummy(4,25);
+    auxiliaryFunctionsMatrixDummy(4,47) = -auxiliaryFunctionsMatrixDummy(4,13)*auxiliaryFunctionsMatrixDummy(4,22);
+    auxiliaryFunctionsMatrixDummy(4,48) = auxiliaryFunctionsMatrixDummy(4,40)*auxiliaryFunctionsMatrixDummy(4,24);
+    auxiliaryFunctionsMatrixDummy(4,49) = auxiliaryFunctionsMatrixDummy(4,42)*auxiliaryFunctionsMatrixDummy(4,24);
+    auxiliaryFunctionsMatrixDummy(4,50) = auxiliaryFunctionsMatrixDummy(4,6)*(auxiliaryFunctionsMatrixDummy(4,43)+auxiliaryFunctionsMatrixDummy(4,41))+auxiliaryFunctionsMatrixDummy(4,46);
+    auxiliaryFunctionsMatrixDummy(4,51) = auxiliaryFunctionsMatrixDummy(4,6)*(auxiliaryFunctionsMatrixDummy(4,48)+auxiliaryFunctionsMatrixDummy(4,44))+auxiliaryFunctionsMatrixDummy(4,49);
+    auxiliaryFunctionsMatrixDummy(4,52) = auxiliaryFunctionsMatrixDummy(4,39)+auxiliaryFunctionsMatrixDummy(4,36)*auxiliaryFunctionsMatrixDummy(4,50)+auxiliaryFunctionsMatrixDummy(4,37)*(auxiliaryFunctionsMatrixDummy(4,47)+auxiliaryFunctionsMatrixDummy(4,43))-auxiliaryFunctionsMatrixDummy(4,38)*auxiliaryFunctionsMatrixDummy(4,51);
 
+    auxiliaryDerivativesVector(4) = auxiliaryFunctionsMatrixDummy(4,52); // u4
+
+    //std::cout<<"Surely this works 9..."<<std::endl;
 
 //    auxiliaryDerivativesVector(4) = -standardGravitationalParameter*(auxiliaryEquationsVector(1)/auxiliaryEquationsVector(9))+auxiliaryEquationsVector(0)*
 //            (cx10x11*(-sx12*cx13*cx14+cx12*sx14)-
@@ -580,14 +610,14 @@ public:
 
     // u5
 
-    auxiliaryFunctionsMatrix(5,1) = -standardGravitationalParameter*auxiliaryEquationsVector(2)/auxiliaryEquationsVector(9);
-    auxiliaryFunctionsMatrix(5,2) = auxiliaryFunctionsMatrix(4,6)*auxiliaryFunctionsMatrix(4,22);
-    auxiliaryFunctionsMatrix(5,3) = auxiliaryFunctionsMatrix(4,5)*(auxiliaryFunctionsMatrix(4,45)+auxiliaryFunctionsMatrix(4,41)+auxiliaryFunctionsMatrix(5,2)*auxiliaryFunctionsMatrix(4,25));
-    auxiliaryFunctionsMatrix(5,4) = -auxiliaryFunctionsMatrix(4,14)*auxiliaryFunctionsMatrix(4,22)+auxiliaryFunctionsMatrix(4,6)*auxiliaryFunctionsMatrix(4,23);
-    auxiliaryFunctionsMatrix(5,5) = auxiliaryFunctionsMatrix(4,5)*(auxiliaryFunctionsMatrix(4,48)+auxiliaryFunctionsMatrix(4,44))+auxiliaryFunctionsMatrix(5,2)*auxiliaryFunctionsMatrix(4,24);
-    auxiliaryFunctionsMatrix(5,6) = auxiliaryFunctionsMatrix(5,1)+auxiliaryFunctionsMatrix(4,36)*auxiliaryFunctionsMatrix(5,3)+auxiliaryFunctionsMatrix(4,37)*auxiliaryFunctionsMatrix(5,4)-auxiliaryFunctionsMatrix(4,38)*auxiliaryFunctionsMatrix(5,5);
+    auxiliaryFunctionsMatrixDummy(5,1) = -standardGravitationalParameter*auxiliaryEquationsVector(2)/auxiliaryEquationsVector(9);
+    auxiliaryFunctionsMatrixDummy(5,2) = auxiliaryFunctionsMatrixDummy(4,6)*auxiliaryFunctionsMatrixDummy(4,22);
+    auxiliaryFunctionsMatrixDummy(5,3) = auxiliaryFunctionsMatrixDummy(4,5)*(auxiliaryFunctionsMatrixDummy(4,45)+auxiliaryFunctionsMatrixDummy(4,41)+auxiliaryFunctionsMatrixDummy(5,2)*auxiliaryFunctionsMatrixDummy(4,25));
+    auxiliaryFunctionsMatrixDummy(5,4) = -auxiliaryFunctionsMatrixDummy(4,14)*auxiliaryFunctionsMatrixDummy(4,22)+auxiliaryFunctionsMatrixDummy(4,6)*auxiliaryFunctionsMatrixDummy(4,23);
+    auxiliaryFunctionsMatrixDummy(5,5) = auxiliaryFunctionsMatrixDummy(4,5)*(auxiliaryFunctionsMatrixDummy(4,48)+auxiliaryFunctionsMatrixDummy(4,44))+auxiliaryFunctionsMatrixDummy(5,2)*auxiliaryFunctionsMatrixDummy(4,24);
+    auxiliaryFunctionsMatrixDummy(5,6) = auxiliaryFunctionsMatrixDummy(5,1)+auxiliaryFunctionsMatrixDummy(4,36)*auxiliaryFunctionsMatrixDummy(5,3)+auxiliaryFunctionsMatrixDummy(4,37)*auxiliaryFunctionsMatrixDummy(5,4)-auxiliaryFunctionsMatrixDummy(4,38)*auxiliaryFunctionsMatrixDummy(5,5);
 
-    auxiliaryDerivativesVector(5) = auxiliaryFunctionsMatrix(5,6);  // u5
+    auxiliaryDerivativesVector(5) = auxiliaryFunctionsMatrixDummy(5,6);  // u5
 
 //    auxiliaryDerivativesVector(5) = -standardGravitationalParameter*(auxiliaryEquationsVector(2)/auxiliaryEquationsVector(9))+auxiliaryEquationsVector(0)*
 //            (sx10x11*(-sx12*cx13*cx14+cx12*sx14)+
@@ -599,15 +629,15 @@ public:
 
     // u6
 
-    auxiliaryFunctionsMatrix(6,1) = -standardGravitationalParameter*auxiliaryEquationsVector(3)/auxiliaryEquationsVector(9);
-    auxiliaryFunctionsMatrix(6,2) = auxiliaryFunctionsMatrix(4,7)*auxiliaryFunctionsMatrix(4,24);
-    auxiliaryFunctionsMatrix(6,3) = auxiliaryFunctionsMatrix(4,8)*auxiliaryFunctionsMatrix(4,22);
-    auxiliaryFunctionsMatrix(6,4) = -auxiliaryFunctionsMatrix(4,7)*auxiliaryFunctionsMatrix(4,25);
-    auxiliaryFunctionsMatrix(6,5) = -auxiliaryFunctionsMatrix(4,44)*auxiliaryFunctionsMatrix(4,23)+auxiliaryFunctionsMatrix(6,2);
-    auxiliaryFunctionsMatrix(6,6) = auxiliaryFunctionsMatrix(4,41)*auxiliaryFunctionsMatrix(4,23)+auxiliaryFunctionsMatrix(6,4);
-    auxiliaryFunctionsMatrix(6,7) = auxiliaryFunctionsMatrix(6,1)+auxiliaryFunctionsMatrix(4,36)*auxiliaryFunctionsMatrix(6,5)-auxiliaryFunctionsMatrix(4,37)*auxiliaryFunctionsMatrix(6,3);
+    auxiliaryFunctionsMatrixDummy(6,1) = -standardGravitationalParameter*auxiliaryEquationsVector(3)/auxiliaryEquationsVector(9);
+    auxiliaryFunctionsMatrixDummy(6,2) = auxiliaryFunctionsMatrixDummy(4,7)*auxiliaryFunctionsMatrixDummy(4,24);
+    auxiliaryFunctionsMatrixDummy(6,3) = auxiliaryFunctionsMatrixDummy(4,8)*auxiliaryFunctionsMatrixDummy(4,22);
+    auxiliaryFunctionsMatrixDummy(6,4) = -auxiliaryFunctionsMatrixDummy(4,7)*auxiliaryFunctionsMatrixDummy(4,25);
+    auxiliaryFunctionsMatrixDummy(6,5) = -auxiliaryFunctionsMatrixDummy(4,44)*auxiliaryFunctionsMatrixDummy(4,23)+auxiliaryFunctionsMatrixDummy(6,2);
+    auxiliaryFunctionsMatrixDummy(6,6) = auxiliaryFunctionsMatrixDummy(4,41)*auxiliaryFunctionsMatrixDummy(4,23)+auxiliaryFunctionsMatrixDummy(6,4);
+    auxiliaryFunctionsMatrixDummy(6,7) = auxiliaryFunctionsMatrixDummy(6,1)+auxiliaryFunctionsMatrixDummy(4,36)*auxiliaryFunctionsMatrixDummy(6,5)-auxiliaryFunctionsMatrixDummy(4,37)*auxiliaryFunctionsMatrixDummy(6,3);
 
-    auxiliaryDerivativesVector(6) = auxiliaryFunctionsMatrix(6,7);
+    auxiliaryDerivativesVector(6) = auxiliaryFunctionsMatrixDummy(6,7);
 
 //    auxiliaryDerivativesVector(6) = -standardGravitationalParameter*(auxiliaryEquationsVector(3)/auxiliaryEquationsVector(9))+auxiliaryEquationsVector(0)*
 //            (cx12*cx13*cx14+sx12*sx14)-
@@ -627,17 +657,29 @@ public:
 // auxiliaryDerivativesVector() = ;                // u
 
 
+//std::cout<<"Surely this works 10..."<<std::endl;
+//std::cout<<"auxiliaryFunctionsMatrixDummy = "<<auxiliaryFunctionsMatrixDummy<<std::endl;
+//std::cout<<"auxFunct row 4 = "<<auxiliaryFunctionsMatrixDummy.row(4)<<std::endl;
+//std::cout<<"auxFunct row 5 = "<<auxiliaryFunctionsMatrixDummy.row(5)<<std::endl;
+//std::cout<<"auxFunct row 6 = "<<auxiliaryFunctionsMatrixDummy.row(6)<<std::endl;
+//std::cout<<"auxFunct row 7 = "<<auxiliaryFunctionsMatrixDummy.row(7)<<std::endl;
+//std::cout<<"auxFunct row 8 = "<<auxiliaryFunctionsMatrixDummy.row(8)<<std::endl;
+//std::cout<<"auxFunct row 9 = "<<auxiliaryFunctionsMatrixDummy.row(9)<<std::endl;
+//std::cout<<"auxFunct row 27 = "<<auxiliaryFunctionsMatrixDummy.row(27)<<std::endl;
 
+//std::cout<<"auxiliaryDerivativesVector = "<<auxiliaryDerivativesVector<<std::endl;
+
+//sectionCD = 100;
 
     return auxiliaryDerivativesVector;
 }
 
 //////////////////////////////////////////////// Auxiliary Functions //////////////////////////////////////////////////////////////////////
 
-Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d& aState, const double time, const Eigen::Vector3d& thrustAccelerationsBframe, const Eigen::VectorXd& auxiliaryEquationsVector,
-                                         const Eigen::VectorXd& auxiliaryDerivativesVector){
+Eigen::MatrixXd getCartesianAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d& aState, const double time, const Eigen::Vector3d& thrustAccelerationsBframe, const Eigen::VectorXd& auxiliaryEquationsVector,
+                                         const Eigen::VectorXd& auxiliaryDerivativesVectorInput){
 
-    auxiliaryFunctionsMatrix = Eigen::MatrixXd::Zero(35,39);       // Setting the complete matrix and filling it with zeros for now
+    auxiliaryFunctionsMatrix = Eigen::MatrixXd::Zero(28,53);       // Setting the complete matrix and filling it with zeros for now
 
 //    Eigen::MatrixXd thrustAzimuthMatrix = MAV.thrustAzimuth();      // Setting the thrust angle matrices
 //    Eigen::MatrixXd thrustElevationMatrix = MAV.thrustElevation();
@@ -645,14 +687,25 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     // The following expressions are described in the order in which the equations have to be computed corresponding to the respective vector entry
     // Which in this case means that the not all positions in the matrix will be used. The other values will simply be 0.
 
+    //std::cout<<"I mean, come on... it works 1"<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrix beginning = "<<auxiliaryFunctionsMatrix<<std::endl;
+
     // u4
 
     auxiliaryFunctionsMatrix(4,1) = auxiliaryEquationsVector(1)*auxiliaryEquationsVector(1)+auxiliaryEquationsVector(2)*auxiliaryEquationsVector(2);
     auxiliaryFunctionsMatrix(4,2) = auxiliaryFunctionsMatrix(4,1)+auxiliaryEquationsVector(3)*auxiliaryEquationsVector(3);
     auxiliaryFunctionsMatrix(4,3) = sqrt(auxiliaryFunctionsMatrix(4,2));        // Radius
     auxiliaryFunctionsMatrix(4,4) = sqrt(auxiliaryFunctionsMatrix(4,1));        // 2-D Radius
+
+    // Avoid singularities
+    if (auxiliaryFunctionsMatrix(4,4) == 0.0){
+        auxiliaryFunctionsMatrix(4,5) = 0.0;
+        auxiliaryFunctionsMatrix(4,6) = 1.0;
+    }
+    else{
     auxiliaryFunctionsMatrix(4,5) = auxiliaryEquationsVector(2)/auxiliaryFunctionsMatrix(4,4);  // sin(lambda)
     auxiliaryFunctionsMatrix(4,6) = auxiliaryEquationsVector(1)/auxiliaryFunctionsMatrix(4,4);  // cos(lambda)
+   }
     auxiliaryFunctionsMatrix(4,7) = auxiliaryEquationsVector(3)/auxiliaryFunctionsMatrix(4,3);  // sin(delta)
     auxiliaryFunctionsMatrix(4,8) = auxiliaryFunctionsMatrix(4,4)/auxiliaryFunctionsMatrix(4,3);    // cos(delta)
     auxiliaryFunctionsMatrix(4,9) = auxiliaryEquationsVector(4)+rotationalVelocity*auxiliaryEquationsVector(2);
@@ -660,6 +713,15 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(4,11) = auxiliaryFunctionsMatrix(4,9)*auxiliaryFunctionsMatrix(4,9)+auxiliaryFunctionsMatrix(4,10)*auxiliaryFunctionsMatrix(4,10)+auxiliaryEquationsVector(6)*auxiliaryEquationsVector(6);
     auxiliaryFunctionsMatrix(4,12)= sqrt(auxiliaryFunctionsMatrix(4,11));
 
+    /// Debug ///
+//        std::cout<<"w4,4 = "<<auxiliaryFunctionsMatrix(4,4)<<std::endl;
+//    std::cout<<"w4,5 = "<<auxiliaryFunctionsMatrix(4,5)<<std::endl;
+//    std::cout<<"w4,6 = "<<auxiliaryFunctionsMatrix(4,6)<<std::endl;
+//    std::cout<<"w4,7 = "<<auxiliaryFunctionsMatrix(4,7)<<std::endl;
+//    std::cout<<"w4,8 = "<<auxiliaryFunctionsMatrix(4,8)<<std::endl;
+
+    /// Debug ///
+      //std::cout<<"I mean, come on... it works 2"<<std::endl;
 
     auxiliaryFunctionsMatrix(27,1) = auxiliaryFunctionsMatrix(4,3) - bodyReferenceRadius;
     auxiliaryFunctionsMatrix(27,2) = auxiliaryFunctionsMatrix(27,1)*auxiliaryFunctionsMatrix(27,1);
@@ -687,43 +749,43 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
             // Determine which section of the temperature curve needs to be used and what the corresponding order is
             // Also, because a computer is less than perfect, a small correction is made to the lower bound of the first section to make sure that the initial altitude is still valid
 
-            if ((temperatureAltitudeRanges(0,0)-0.000000000001) <= auxiliaryFunctionsMatrix(27,1) && auxiliaryFunctionsMatrix(27,1) < temperatureAltitudeRanges(0,1)){
+//            if ((temperatureAltitudeRanges(0,0)-0.000000000001) <= auxiliaryFunctionsMatrix(27,1) && auxiliaryFunctionsMatrix(27,1) < temperatureAltitudeRanges(0,1)){
 
-            sectionT = 0;
-            powerT = 1;
+//            sectionT = 0;
+//            powerT = 1;
 
-            }
-            else if (temperatureAltitudeRanges(1,0) <= auxiliaryFunctionsMatrix(27,1) && auxiliaryFunctionsMatrix(27,1) < temperatureAltitudeRanges(1,1)){
+//            }
+//            else if (temperatureAltitudeRanges(1,0) <= auxiliaryFunctionsMatrix(27,1) && auxiliaryFunctionsMatrix(27,1) < temperatureAltitudeRanges(1,1)){
 
-            sectionT = 1;
-            powerT = 3;
+//            sectionT = 1;
+//            powerT = 3;
 
-            }
-            else if (temperatureAltitudeRanges(2,0) <= auxiliaryFunctionsMatrix(27,1) && auxiliaryFunctionsMatrix(27,1) < temperatureAltitudeRanges(2,1)){
+//            }
+//            else if (temperatureAltitudeRanges(2,0) <= auxiliaryFunctionsMatrix(27,1) && auxiliaryFunctionsMatrix(27,1) < temperatureAltitudeRanges(2,1)){
 
-            sectionT = 2;
-            powerT = 6;
+//            sectionT = 2;
+//            powerT = 6;
 
-            }
-            else if (temperatureAltitudeRanges(3,0) <= auxiliaryFunctionsMatrix(27,1) && auxiliaryFunctionsMatrix(27,1) < temperatureAltitudeRanges(3,1)){
+//            }
+//            else if (temperatureAltitudeRanges(3,0) <= auxiliaryFunctionsMatrix(27,1) && auxiliaryFunctionsMatrix(27,1) < temperatureAltitudeRanges(3,1)){
 
-                sectionT = 3;
-                powerT = 8;
-            }
-            else if (temperatureAltitudeRanges(4,0) <= auxiliaryFunctionsMatrix(27,1)){
+//                sectionT = 3;
+//                powerT = 8;
+//            }
+//            else if (temperatureAltitudeRanges(4,0) <= auxiliaryFunctionsMatrix(27,1)){
 
-                sectionT = 4;
-                powerT = 0;
-            }
-            else {
+//                sectionT = 4;
+//                powerT = 0;
+//            }
+//            else {
 
 
-                std::cerr<<"The current altitude: "<<auxiliaryFunctionsMatrix(27,1)<<" [km MOLA] is not a valid altitude (lower than the lowest reference altitude)"<<std::endl;
+//                std::cerr<<"The current altitude: "<<auxiliaryFunctionsMatrix(27,1)<<" [km MOLA] is not a valid altitude (lower than the lowest reference altitude)"<<std::endl;
 
-                           sectionT = 0;
-                            powerT = 1;
+//                           sectionT = 0;
+//                            powerT = 1;
 
-            };
+//            };
 
                     // Computing the polynomial fit using the altitude and fit parameters for temperature
                     for (int i=0; i < powerT+1;i++){
@@ -737,24 +799,27 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
 
             }};
 
-    auxiliaryFunctionsMatrix(27,14) = sqrt(adiabeticIndex*specificGasConstant*auxiliaryFunctionsMatrix(27,11)); // Speed of sound
+    auxiliaryFunctionsMatrix(27,14) = sqrt(adiabeticIndex*specificGasConstant*auxiliaryFunctionsMatrix(27,13)); // Speed of sound
     auxiliaryFunctionsMatrix(27,15) = auxiliaryFunctionsMatrix(4,12)/auxiliaryFunctionsMatrix(27,14); // Mach number
 
             // Determine which section of the drag coefficient curve needs to be used
+//    std::cout<<"sectionCD before = "<<sectionCD<<std::endl;
 
-            for (int i=0; i < 5+1; i++){
+//            for (int i=0; i < 5+1; i++){
 
-                if (dragCoefficientMachRanges(i,0) <= auxiliaryFunctionsMatrix(27,15) && auxiliaryFunctionsMatrix(27,15) < dragCoefficientMachRanges(i,1)){
+//                if (dragCoefficientMachRanges(i,0) <= auxiliaryFunctionsMatrix(27,15) && auxiliaryFunctionsMatrix(27,15) < dragCoefficientMachRanges(i,1)){
 
-                    sectionCD = i;
+//                    sectionCD = i;
 
-
-                }
-
-
-            };
+//                    std::cout<<"sectionCD after = "<<sectionCD<<std::endl;
 
 
+//                }
+
+
+//            };
+
+  //std::cout<<"I mean, come on... it works 3"<<std::endl;
 
             auxiliaryFunctionsMatrix(27,16) = dragCoefficientPolyCoefficients(sectionCD,1)*auxiliaryFunctionsMatrix(27,15)+dragCoefficientPolyCoefficients(sectionCD,0);              // Drag coefficient
 
@@ -768,15 +833,48 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(4,14) = -auxiliaryFunctionsMatrix(4,7)*auxiliaryFunctionsMatrix(4,5);
     auxiliaryFunctionsMatrix(4,15) = -auxiliaryFunctionsMatrix(4,8)*auxiliaryFunctionsMatrix(4,6);
     auxiliaryFunctionsMatrix(4,16) = -auxiliaryFunctionsMatrix(4,8)*auxiliaryFunctionsMatrix(4,5);
-    auxiliaryFunctionsMatrix(4,17) = auxiliaryEquationsVector(6)*auxiliaryFunctionsMatrix(4,8)+auxiliaryFunctionsMatrix(4,9)*auxiliaryFunctionsMatrix(4,13)+auxiliaryFunctionsMatrix(4,10)*auxiliaryFunctionsMatrix(4,14);
-    auxiliaryFunctionsMatrix(4,18) = auxiliaryFunctionsMatrix(4,10)*auxiliaryFunctionsMatrix(4,6)-auxiliaryFunctionsMatrix(4,9)*auxiliaryFunctionsMatrix(4,5);
-    auxiliaryFunctionsMatrix(4,19) = auxiliaryFunctionsMatrix(4,9)*auxiliaryFunctionsMatrix(4,15)-auxiliaryEquationsVector(6)*auxiliaryFunctionsMatrix(4,7)+auxiliaryFunctionsMatrix(4,10)*auxiliaryFunctionsMatrix(4,16);
+    auxiliaryFunctionsMatrix(4,17) = auxiliaryEquationsVector(6)*auxiliaryFunctionsMatrix(4,8)+auxiliaryFunctionsMatrix(4,9)*auxiliaryFunctionsMatrix(4,13)+auxiliaryFunctionsMatrix(4,10)*auxiliaryFunctionsMatrix(4,14); // Vx_v
+    auxiliaryFunctionsMatrix(4,18) = auxiliaryFunctionsMatrix(4,10)*auxiliaryFunctionsMatrix(4,6)-auxiliaryFunctionsMatrix(4,9)*auxiliaryFunctionsMatrix(4,5);  // Vy_v
+    auxiliaryFunctionsMatrix(4,19) = auxiliaryFunctionsMatrix(4,9)*auxiliaryFunctionsMatrix(4,15)-auxiliaryEquationsVector(6)*auxiliaryFunctionsMatrix(4,7)+auxiliaryFunctionsMatrix(4,10)*auxiliaryFunctionsMatrix(4,16); // Vz_v
     auxiliaryFunctionsMatrix(4,20) = auxiliaryFunctionsMatrix(4,17)*auxiliaryFunctionsMatrix(4,17)+auxiliaryFunctionsMatrix(4,18)*auxiliaryFunctionsMatrix(4,18);
     auxiliaryFunctionsMatrix(4,21) = sqrt(auxiliaryFunctionsMatrix(4,20));
+
+//    std::cout<<"w4,19 (Vz_v) = "<<auxiliaryFunctionsMatrix(4,19)<<std::endl;
+
+    if (auxiliaryFunctionsMatrix(4,21) == 0.0){
+        auxiliaryFunctionsMatrix(4,22) = sin(HeadingAngle);
+        auxiliaryFunctionsMatrix(4,23) = cos(HeadingAngle);
+        if (abs(auxiliaryFunctionsMatrix(4,22)) < 1.2e-16){
+            auxiliaryFunctionsMatrix(4,22) = 0.0;
+        }
+        if (abs(auxiliaryFunctionsMatrix(4,23)) < 6.2e-17){
+            auxiliaryFunctionsMatrix(4,23) = 0.0;
+        }
+    }
+    else{
     auxiliaryFunctionsMatrix(4,22) = auxiliaryFunctionsMatrix(4,18)/auxiliaryFunctionsMatrix(4,21);     // sin(chi)
     auxiliaryFunctionsMatrix(4,23) = auxiliaryFunctionsMatrix(4,17)/auxiliaryFunctionsMatrix(4,21);     // cos(chi)
+}
+
+    if (auxiliaryFunctionsMatrix(4,12) == 0.0){
+        auxiliaryFunctionsMatrix(4,24) = sin(FlightPathAngle);
+        auxiliaryFunctionsMatrix(4,25) = cos(FlightPathAngle);
+        if (abs(auxiliaryFunctionsMatrix(4,24)) < 1.2e-16){
+            auxiliaryFunctionsMatrix(4,24) = 0.0;
+        }
+        if (abs(auxiliaryFunctionsMatrix(4,25)) < 6.2e-17){
+            auxiliaryFunctionsMatrix(4,25) = 0.0;
+        }
+    }
+    else{
     auxiliaryFunctionsMatrix(4,24) = -auxiliaryFunctionsMatrix(4,19)/auxiliaryFunctionsMatrix(4,12);    // sin(gamma)
     auxiliaryFunctionsMatrix(4,25) = auxiliaryFunctionsMatrix(4,21)/auxiliaryFunctionsMatrix(4,12);     // cos(gamma)
+  }
+
+    /// Debug ///
+//    std::cout<<"w4,25 = "<<auxiliaryFunctionsMatrix(4,25)<<std::endl;
+    /// Debug ///
+
     auxiliaryFunctionsMatrix(4,26) = cos(thrustAzimuthMatrix(0,2));
     auxiliaryFunctionsMatrix(4,27) = cos(thrustElevationMatrix(0,2));
     auxiliaryFunctionsMatrix(4,28) = sin(thrustAzimuthMatrix(0,2));
@@ -787,12 +885,19 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(4,33) = Thrust*auxiliaryFunctionsMatrix(4,32);
     auxiliaryFunctionsMatrix(4,34) = auxiliaryFunctionsMatrix(4,33)*auxiliaryFunctionsMatrix(4,30);
     auxiliaryFunctionsMatrix(4,35) = auxiliaryFunctionsMatrix(27,19)/auxiliaryEquationsVector(7);
+
+    /// Debug ///
+//    std::cout<<"w4,35 = "<<auxiliaryFunctionsMatrix(4,35)<<std::endl;
+//    std::cout<<"x7 = "<<auxiliaryEquationsVector(7)<<std::endl;
+//    std::cout<<"w17,19 = "<<auxiliaryFunctionsMatrix(27,19)<<std::endl;
+    /// Debug ///
+
     auxiliaryFunctionsMatrix(4,36) = auxiliaryFunctionsMatrix(4,34)-auxiliaryFunctionsMatrix(4,35); //
     auxiliaryFunctionsMatrix(4,37) = auxiliaryFunctionsMatrix(4,32)*auxiliaryFunctionsMatrix(4,31); //
     auxiliaryFunctionsMatrix(4,38) = auxiliaryFunctionsMatrix(4,33)*auxiliaryFunctionsMatrix(4,29); //
     auxiliaryFunctionsMatrix(4,39) = -standardGravitationalParameter*auxiliaryEquationsVector(1)/auxiliaryEquationsVector(9);    //
     auxiliaryFunctionsMatrix(4,40) = -auxiliaryFunctionsMatrix(4,7)*auxiliaryFunctionsMatrix(4,23);
-    auxiliaryFunctionsMatrix(4,41) = -auxiliaryFunctionsMatrix(4,8)*auxiliaryFunctionsMatrix(4,24);
+    auxiliaryFunctionsMatrix(4,41) = auxiliaryFunctionsMatrix(4,8)*auxiliaryFunctionsMatrix(4,24);
     auxiliaryFunctionsMatrix(4,42) = -auxiliaryFunctionsMatrix(4,5)*auxiliaryFunctionsMatrix(4,22);
     auxiliaryFunctionsMatrix(4,43) = -auxiliaryFunctionsMatrix(4,5)*auxiliaryFunctionsMatrix(4,23);
     auxiliaryFunctionsMatrix(4,44) = -auxiliaryFunctionsMatrix(4,8)*auxiliaryFunctionsMatrix(4,25);
@@ -806,6 +911,23 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(4,52) = auxiliaryFunctionsMatrix(4,39)+auxiliaryFunctionsMatrix(4,36)*auxiliaryFunctionsMatrix(4,50)+auxiliaryFunctionsMatrix(4,37)*(auxiliaryFunctionsMatrix(4,47)+auxiliaryFunctionsMatrix(4,43))-auxiliaryFunctionsMatrix(4,38)*auxiliaryFunctionsMatrix(4,51);
 
 
+    /// Debug ///
+//    std::cout<<"auxiliaryFunctionsMatrix(4,52) = "<<auxiliaryFunctionsMatrix(4,52)<<std::endl;
+////    std::cout<<"auxiliaryFunctionsMatrix(4,39) = "<<auxiliaryFunctionsMatrix(4,39)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrix(4,36)*auxiliaryFunctionsMatrix(4,50) = "<<auxiliaryFunctionsMatrix(4,36)*auxiliaryFunctionsMatrix(4,50)<<std::endl;
+////    std::cout<<"auxiliaryFunctionsMatrix(4,37)*(auxiliaryFunctionsMatrix(4,47)+auxiliaryFunctionsMatrix(4,43)) = "<<auxiliaryFunctionsMatrix(4,37)*(auxiliaryFunctionsMatrix(4,47)+auxiliaryFunctionsMatrix(4,43))<<std::endl;
+////    std::cout<<"-auxiliaryFunctionsMatrix(4,38)*auxiliaryFunctionsMatrix(4,51) = "<<-auxiliaryFunctionsMatrix(4,38)*auxiliaryFunctionsMatrix(4,51)<<std::endl;
+////    std::cout<<"auxiliaryFunctionsMatrix(4,36) = "<<auxiliaryFunctionsMatrix(4,36)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrix(4,50) = "<<auxiliaryFunctionsMatrix(4,50)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrix(4,6)*(auxiliaryFunctionsMatrix(4,43)+auxiliaryFunctionsMatrix(4,41)) = "<<auxiliaryFunctionsMatrix(4,6)*(auxiliaryFunctionsMatrix(4,43)+auxiliaryFunctionsMatrix(4,41))<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrix(4,46) = "<<auxiliaryFunctionsMatrix(4,46)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrix(4,6) = "<<auxiliaryFunctionsMatrix(4,6)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrix(4,43) = "<<auxiliaryFunctionsMatrix(4,43)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrix(4,41) = "<<auxiliaryFunctionsMatrix(4,41)<<std::endl;
+
+
+    /// Debug ///
+
     // w5
 
     auxiliaryFunctionsMatrix(5,1) = -standardGravitationalParameter*auxiliaryEquationsVector(2)/auxiliaryEquationsVector(9);
@@ -815,7 +937,7 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(5,5) = auxiliaryFunctionsMatrix(4,5)*(auxiliaryFunctionsMatrix(4,48)+auxiliaryFunctionsMatrix(4,44))+auxiliaryFunctionsMatrix(5,2)*auxiliaryFunctionsMatrix(4,24);
     auxiliaryFunctionsMatrix(5,6) = auxiliaryFunctionsMatrix(5,1)+auxiliaryFunctionsMatrix(4,36)*auxiliaryFunctionsMatrix(5,3)+auxiliaryFunctionsMatrix(4,37)*auxiliaryFunctionsMatrix(5,4)-auxiliaryFunctionsMatrix(4,38)*auxiliaryFunctionsMatrix(5,5);
 
-
+  //std::cout<<"I mean, come on... it works 4"<<std::endl;
     // w6
 
     auxiliaryFunctionsMatrix(6,1) = -standardGravitationalParameter*auxiliaryEquationsVector(3)/auxiliaryEquationsVector(9);
@@ -838,11 +960,20 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
 
 
     // w9
-    auxiliaryFunctionsMatrix(9,1) = (auxiliaryEquationsVector(9)*auxiliaryDerivativesVector(8))/auxiliaryEquationsVector(8);
+    auxiliaryFunctionsMatrix(9,1) = (auxiliaryEquationsVector(9)*auxiliaryDerivativesVectorInput(8))/auxiliaryEquationsVector(8);
 
 
 // auxiliaryFunctionsMatrix(,)
 
+      //std::cout<<"I mean, come on... it works 5"<<std::endl;
+//      std::cout<<"auxiliaryFunctionsMatrix end = "<<auxiliaryFunctionsMatrix<<std::endl;
+//      std::cout<<"auxFunct row 4 = "<<auxiliaryFunctionsMatrix.row(4)<<std::endl;
+//      std::cout<<"auxFunct row 5 = "<<auxiliaryFunctionsMatrix.row(5)<<std::endl;
+//      std::cout<<"auxFunct row 6 = "<<auxiliaryFunctionsMatrix.row(6)<<std::endl;
+//      std::cout<<"auxFunct row 7 = "<<auxiliaryFunctionsMatrix.row(7)<<std::endl;
+//      std::cout<<"auxFunct row 8 = "<<auxiliaryFunctionsMatrix.row(8)<<std::endl;
+//      std::cout<<"auxFunct row 9 = "<<auxiliaryFunctionsMatrix.row(9)<<std::endl;
+//      std::cout<<"auxFunct row 27 = "<<auxiliaryFunctionsMatrix.row(27)<<std::endl;
 
     return auxiliaryFunctionsMatrix;
 

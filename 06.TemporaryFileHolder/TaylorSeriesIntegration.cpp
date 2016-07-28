@@ -32,7 +32,7 @@
  *
  */
 
-#include "TaylorSeriesIntegrationCartesian.h"
+#include "TaylorSeriesIntegration.h"
 
 
 
@@ -106,7 +106,7 @@ Eigen::Quaterniond getPropulsionToBodyFrameTransformationQuaternion(
 /// Taylor series integration step ///
 
 
-Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody& planet_, const MarsAscentVehicle& MAV_, const StateAndTime& currentStateAndTime_, StepSize& stepSize, const double maxOrder_ ,
+Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_, const MarsAscentVehicle& MAV_, const StateAndTime& currentStateAndTime_, StepSize& stepSize, const double maxOrder_ ,
                                                    const double FlightPathAngle_,
                                                    const double HeadingAngle_){
 
@@ -191,7 +191,7 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
     /// Computing the auxiliary equations, derivatives and functions ///
 
-    AuxiliaryCartesian Aux(adiabeticIndex, specificGasConstant,standardGravitationalParameter, rotationalVelocity, primeMeridianAngle,
+    Auxiliary Aux(adiabeticIndex, specificGasConstant,standardGravitationalParameter, rotationalVelocity, primeMeridianAngle,
               inertialFrameTime, bodyReferenceRadius, temperaturePolyCoefficients, temperatureAltitudeRanges,
               densityPolyCoefficients, Thrust, thrustAzimuthMatrix, thrustElevationMatrix, specificImpulse,
               referenceArea, dragCoefficientPolyCoefficients, dragCoefficientMachRanges);
@@ -203,7 +203,7 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
     // Compute the auxiliary equations
 
-    Eigen::VectorXd auxiliaryEquations =  Aux.getCartesianAuxiliaryEquations(currentState,currentTime,thrustAccelerationsBframe);
+    Eigen::VectorXd auxiliaryEquations =  Aux.getAuxiliaryEquations(currentState,currentTime,thrustAccelerationsBframe);
 
 //    std::cout<<"The auxiliaryEquations are "<<auxiliaryEquations<<std::endl;
 
@@ -217,19 +217,19 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
     // Compute the auxiliary derivatives
 
-    Eigen::VectorXd auxiliaryDerivatives = Aux.getCartesianAuxiliaryDerivatives(currentState,currentTime,thrustAccelerationsBframe,auxiliaryEquations);
+    Eigen::VectorXd auxiliaryDerivatives = Aux.getAuxiliaryDerivatives(currentState,currentTime,thrustAccelerationsBframe,auxiliaryEquations);
 
 //    std::cout<<"The auxiliaryDerivatives are "<<auxiliaryDerivatives<<std::endl;
 
     // Compute the auxiliary functions
 
-    Eigen::MatrixXd auxiliaryFunctions = Aux.getCartesianAuxiliaryFunctions(currentState,currentTime,thrustAccelerationsBframe,auxiliaryEquations,auxiliaryDerivatives);
+    Eigen::MatrixXd auxiliaryFunctions = Aux.getAuxiliaryFunctions(currentState,currentTime,thrustAccelerationsBframe,auxiliaryEquations,auxiliaryDerivatives);
 
 //    std::cout<<"The auxiliaryFunctions are "<<auxiliaryFunctions<<std::endl;
 
     /// Computing the Taylor Coefficients ///
 
-    Eigen::MatrixXd TaylorCoefficients = getCartesianTaylorCoefficients(adiabeticIndex, specificGasConstant, standardGravitationalParameter, rotationalVelocity, primeMeridianAngle,
+    Eigen::MatrixXd TaylorCoefficients = getTaylorCoefficients(adiabeticIndex, specificGasConstant, standardGravitationalParameter, rotationalVelocity, primeMeridianAngle,
                           inertialFrameTime, bodyReferenceRadius,temperaturePolyCoefficients, temperatureAltitudeRanges,
                           densityPolyCoefficients, Thrust, specificImpulse,
                           referenceArea, dragCoefficientPolyCoefficients, dragCoefficientMachRanges,
@@ -391,8 +391,6 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
         updatedStateAndTime(5) = updatedState(5);   // Updated velocity in the z-direction
         updatedStateAndTime(6) = updatedState(6);   // Updated mass
         updatedStateAndTime(7) = updatedTime;   // Updated time
-
-//        std::cout<<"updatedStateAndTime = "<<updatedStateAndTime<<std::endl;
 
 //        std::cout<<"TaylorSeriesIntegration works till here 3"<<std::endl;
 
