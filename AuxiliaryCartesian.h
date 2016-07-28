@@ -714,6 +714,7 @@ Eigen::MatrixXd getCartesianAuxiliaryFunctions( const tudat::basic_mathematics::
     auxiliaryFunctionsMatrix(4,12)= sqrt(auxiliaryFunctionsMatrix(4,11));
 
     /// Debug ///
+//    std::cout<<"x1-x2 = "<<auxiliaryEquationsVector(1)-auxiliaryEquationsVector(2)<<std::endl;
 //        std::cout<<"w4,4 = "<<auxiliaryFunctionsMatrix(4,4)<<std::endl;
 //    std::cout<<"w4,5 = "<<auxiliaryFunctionsMatrix(4,5)<<std::endl;
 //    std::cout<<"w4,6 = "<<auxiliaryFunctionsMatrix(4,6)<<std::endl;

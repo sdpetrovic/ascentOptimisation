@@ -469,7 +469,12 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
         else{
         WVector4_4(k) = getPowerRecurrenceRelation(WVector4_1,WVector4_4,0.5,k);
         }
+        if (k == 1 && XMatrix(2,1)-WVector4_4(1)*WVector4_5(0) <= 1e-18){
+            WVector4_5(k) = 0.0;
+        }
+        else{
         WVector4_5(k) = getDivisionRecurrenceRelation(XMatrix.row(2),WVector4_4,WVector4_5,k);  // sin(lambda)
+        }
         WVector4_6(k) = getDivisionRecurrenceRelation(XMatrix.row(1),WVector4_4,WVector4_6,k);  // cos(lambda)
         WVector4_7(k) = getDivisionRecurrenceRelation(XMatrix.row(3),WVector4_3,WVector4_7,k);  // sin(delta)
         WVector4_8(k) = getDivisionRecurrenceRelation(WVector4_4,WVector4_3,WVector4_8,k);      // cos(delta)
@@ -602,7 +607,13 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
         WVector4_21(k) = getPowerRecurrenceRelation(WVector4_20,WVector4_21,0.5,k);
         WVector4_22(k) = getDivisionRecurrenceRelation(WVector4_18,WVector4_21,WVector4_22,k);  // sin(chi)
         WVector4_23(k) = getDivisionRecurrenceRelation(WVector4_17,WVector4_21,WVector4_23,k);  // cos(chi)
+
+        if (k == 1 && -WVector4_19(1)-WVector4_12(1) <= 1e-15){
+            WVector4_24(k) = 0.0;
+        }
+        else{
         WVector4_24(k) = getDivisionRecurrenceRelation(-WVector4_19,WVector4_12,WVector4_24,k); // sin(gamma)
+        }
         WVector4_25(k) = getDivisionRecurrenceRelation(WVector4_21,WVector4_12,WVector4_25,k);  // cos(gamma)
         WVector4_26(k) = getCosineRecurrenceRelation(thrustAzimuthVector,WVector4_28,k);
         WVector4_27(k) = getCosineRecurrenceRelation(thrustElevationVector,WVector4_29,k);
@@ -657,6 +668,38 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
         WVector5_5(k) = getMultiplicationRecurrenceRelation(WVector4_5,(WVector4_48+WVector4_44),k)+getMultiplicationRecurrenceRelation(WVector5_2,WVector4_24,k);
         WVector5_6(k) = WVector5_1(k)+getMultiplicationRecurrenceRelation(WVector4_36,WVector5_3,k)+getMultiplicationRecurrenceRelation(WVector4_37,WVector5_4,k)+getMultiplicationRecurrenceRelation(-WVector4_38,WVector5_5,k);
 
+        /// Debug ///
+        if (k==1){
+        std::cout<<"w5,6 = "<<WVector5_6<<std::endl;
+        std::cout<<"getMultiplicationRecurrenceRelation(WVector4_36,WVector5_3,k) = "<<getMultiplicationRecurrenceRelation(WVector4_36,WVector5_3,k)<<std::endl;
+        std::cout<<"w5,3 = "<<WVector5_3<<std::endl;
+        std::cout<<"getMultiplicationRecurrenceRelation(WVector4_5,(WVector4_45+WVector4_41),k) = "<<getMultiplicationRecurrenceRelation(WVector4_5,(WVector4_45+WVector4_41),k)<<std::endl;
+        std::cout<<"getMultiplicationRecurrenceRelation(WVector5_2,WVector4_25,k) = "<<getMultiplicationRecurrenceRelation(WVector5_2,WVector4_25,k)<<std::endl;
+        std::cout<<"x2 = "<<XMatrix.row(2)<<std::endl;
+        std::cout<<"w4,4 = "<<WVector4_4<<std::endl;
+        std::cout<<"w4,4(1) * w4,5(0) =  "<<WVector4_4(1)*WVector4_5(0)<<std::endl;
+        std::cout<<"x2(1) - w4,4(1) * w4,5(0) =  "<<XMatrix(2,1)-WVector4_4(1)*WVector4_5(0)<<std::endl;
+        std::cout<<"w4,5 = "<<WVector4_5<<std::endl;
+        std::cout<<"w4,6 = "<<WVector4_6<<std::endl;
+        std::cout<<"w4_8 = "<<WVector4_8<<std::endl;
+        std::cout<<"w4_9 = "<<WVector4_9<<std::endl;
+        std::cout<<"w4_10 = "<<WVector4_10<<std::endl;
+        std::cout<<"w4_15 = "<<WVector4_15<<std::endl;
+        std::cout<<"w4_16 = "<<WVector4_16<<std::endl;
+
+        std::cout<<"w4_24 = "<<WVector4_24<<std::endl;
+        std::cout<<"w4_25 = "<<WVector4_25<<std::endl;
+        std::cout<<"w4_12 = "<<WVector4_12<<std::endl;
+        std::cout<<"-w4_19 = "<<-WVector4_19<<std::endl;
+
+        std::cout<<"w4_41 = "<<WVector4_41<<std::endl;
+
+}
+
+
+
+
+        /// Debug ///
 
 
         UMatrix(5,k) = WVector5_6(k);
@@ -736,112 +779,112 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
 
     /// Debug ///
 
-    std::cout<<"WVector4_1 = "<<WVector4_1<<std::endl;     // W4,1
-    std::cout<<"WVector4_2 = "<<WVector4_2<<std::endl;     // W4,2
-//    std::cout<<"XVector.row(3) = "<<XMatrix.row(3)<<std::endl; // x3
-    std::cout<<"WVector4_3 = "<<WVector4_3<<std::endl;     // W4,3
-    std::cout<<"WVector4_4 = "<<WVector4_4<<std::endl;     // W4,4
-    std::cout<<"WVector4_5 = "<<WVector4_5<<std::endl;     // W4,5
-    std::cout<<"WVector4_6 = "<<WVector4_6<<std::endl;     // W4,6
-    std::cout<<"WVector4_7 = "<<WVector4_7<<std::endl;     // W4,7
-    std::cout<<"WVector4_8 = "<<WVector4_8<<std::endl;     // W4,8
-    std::cout<<"WVector4_9 = "<<WVector4_9<<std::endl;     // W4,9
-    std::cout<<"WVector4_10 = "<<WVector4_10<<std::endl;     // W4,10
+//    std::cout<<"WVector4_1 = "<<WVector4_1<<std::endl;     // W4,1
+//    std::cout<<"WVector4_2 = "<<WVector4_2<<std::endl;     // W4,2
+////    std::cout<<"XVector.row(3) = "<<XMatrix.row(3)<<std::endl; // x3
+//    std::cout<<"WVector4_3 = "<<WVector4_3<<std::endl;     // W4,3
+//    std::cout<<"WVector4_4 = "<<WVector4_4<<std::endl;     // W4,4
+//    std::cout<<"WVector4_5 = "<<WVector4_5<<std::endl;     // W4,5
+//    std::cout<<"WVector4_6 = "<<WVector4_6<<std::endl;     // W4,6
+//    std::cout<<"WVector4_7 = "<<WVector4_7<<std::endl;     // W4,7
+//    std::cout<<"WVector4_8 = "<<WVector4_8<<std::endl;     // W4,8
+//    std::cout<<"WVector4_9 = "<<WVector4_9<<std::endl;     // W4,9
+//    std::cout<<"WVector4_10 = "<<WVector4_10<<std::endl;     // W4,10
 
-    std::cout<<"WVector4_11 = "<<WVector4_11<<std::endl;     // W4,11
-    std::cout<<"WVector4_12 = "<<WVector4_12<<std::endl;     // W4,12
-    std::cout<<"WVector4_13 = "<<WVector4_13<<std::endl;     // W4,13
-    std::cout<<"WVector4_14 = "<<WVector4_14<<std::endl;     // W4,14
-    std::cout<<"WVector4_15 = "<<WVector4_15<<std::endl;     // W4,15
-    std::cout<<"WVector4_16 = "<<WVector4_16<<std::endl;     // W4,16
-    std::cout<<"WVector4_17 = "<<WVector4_17<<std::endl;     // W4,17
-    std::cout<<"WVector4_18 = "<<WVector4_18<<std::endl;     // W4,18
-    std::cout<<"WVector4_19 = "<<WVector4_19<<std::endl;     // W4,19
-    std::cout<<"WVector4_20 = "<<WVector4_20<<std::endl;     // W4,20
+//    std::cout<<"WVector4_11 = "<<WVector4_11<<std::endl;     // W4,11
+//    std::cout<<"WVector4_12 = "<<WVector4_12<<std::endl;     // W4,12
+//    std::cout<<"WVector4_13 = "<<WVector4_13<<std::endl;     // W4,13
+//    std::cout<<"WVector4_14 = "<<WVector4_14<<std::endl;     // W4,14
+//    std::cout<<"WVector4_15 = "<<WVector4_15<<std::endl;     // W4,15
+//    std::cout<<"WVector4_16 = "<<WVector4_16<<std::endl;     // W4,16
+//    std::cout<<"WVector4_17 = "<<WVector4_17<<std::endl;     // W4,17
+//    std::cout<<"WVector4_18 = "<<WVector4_18<<std::endl;     // W4,18
+//    std::cout<<"WVector4_19 = "<<WVector4_19<<std::endl;     // W4,19
+//    std::cout<<"WVector4_20 = "<<WVector4_20<<std::endl;     // W4,20
 
-    std::cout<<"WVector4_21 = "<<WVector4_21<<std::endl;     // W4,21
-    std::cout<<"WVector4_22 = "<<WVector4_22<<std::endl;     // W4,22
-    std::cout<<"WVector4_23 = "<<WVector4_23<<std::endl;     // W4,23
-    std::cout<<"WVector4_24 = "<<WVector4_24<<std::endl;     // W4,24
-    std::cout<<"WVector4_25 = "<<WVector4_25<<std::endl;     // W4,25
-    std::cout<<"WVector4_26 = "<<WVector4_26<<std::endl;     // W4,26
-    std::cout<<"WVector4_27 = "<<WVector4_27<<std::endl;     // W4,27
-    std::cout<<"WVector4_28 = "<<WVector4_28<<std::endl;     // W4,28
-    std::cout<<"WVector4_29 = "<<WVector4_29<<std::endl;     // W4,29
-    std::cout<<"WVector4_30 = "<<WVector4_30<<std::endl;     // W4,30
+//    std::cout<<"WVector4_21 = "<<WVector4_21<<std::endl;     // W4,21
+//    std::cout<<"WVector4_22 = "<<WVector4_22<<std::endl;     // W4,22
+//    std::cout<<"WVector4_23 = "<<WVector4_23<<std::endl;     // W4,23
+//    std::cout<<"WVector4_24 = "<<WVector4_24<<std::endl;     // W4,24
+//    std::cout<<"WVector4_25 = "<<WVector4_25<<std::endl;     // W4,25
+//    std::cout<<"WVector4_26 = "<<WVector4_26<<std::endl;     // W4,26
+//    std::cout<<"WVector4_27 = "<<WVector4_27<<std::endl;     // W4,27
+//    std::cout<<"WVector4_28 = "<<WVector4_28<<std::endl;     // W4,28
+//    std::cout<<"WVector4_29 = "<<WVector4_29<<std::endl;     // W4,29
+//    std::cout<<"WVector4_30 = "<<WVector4_30<<std::endl;     // W4,30
 
-    std::cout<<"WVector4_31 = "<<WVector4_31<<std::endl;     // W4,31
-    std::cout<<"WVector4_32 = "<<WVector4_32<<std::endl;     // W4,32
-    std::cout<<"WVector4_33 = "<<WVector4_33<<std::endl;     // W4,33
-    std::cout<<"WVector4_34 = "<<WVector4_34<<std::endl;     // W4,34
-    std::cout<<"WVector4_35 = "<<WVector4_35<<std::endl;     // W4,35
-    std::cout<<"WVector4_36 = "<<WVector4_36<<std::endl;     // W4,36
-    std::cout<<"WVector4_37 = "<<WVector4_37<<std::endl;     // W4,37
-    std::cout<<"WVector4_38 = "<<WVector4_38<<std::endl;     // W4,38
-    std::cout<<"WVector4_39 = "<<WVector4_39<<std::endl;     // W4,39
-    std::cout<<"WVector4_40 = "<<WVector4_40<<std::endl;     // W4,40
+//    std::cout<<"WVector4_31 = "<<WVector4_31<<std::endl;     // W4,31
+//    std::cout<<"WVector4_32 = "<<WVector4_32<<std::endl;     // W4,32
+//    std::cout<<"WVector4_33 = "<<WVector4_33<<std::endl;     // W4,33
+//    std::cout<<"WVector4_34 = "<<WVector4_34<<std::endl;     // W4,34
+//    std::cout<<"WVector4_35 = "<<WVector4_35<<std::endl;     // W4,35
+//    std::cout<<"WVector4_36 = "<<WVector4_36<<std::endl;     // W4,36
+//    std::cout<<"WVector4_37 = "<<WVector4_37<<std::endl;     // W4,37
+//    std::cout<<"WVector4_38 = "<<WVector4_38<<std::endl;     // W4,38
+//    std::cout<<"WVector4_39 = "<<WVector4_39<<std::endl;     // W4,39
+//    std::cout<<"WVector4_40 = "<<WVector4_40<<std::endl;     // W4,40
 
-    std::cout<<"WVector4_41 = "<<WVector4_41<<std::endl;     // W4,41
-    std::cout<<"WVector4_42 = "<<WVector4_42<<std::endl;     // W4,42
-    std::cout<<"WVector4_43 = "<<WVector4_43<<std::endl;     // W4,43
-    std::cout<<"WVector4_44 = "<<WVector4_44<<std::endl;     // W4,44
-    std::cout<<"WVector4_45 = "<<WVector4_45<<std::endl;     // W4,45
-    std::cout<<"WVector4_46 = "<<WVector4_46<<std::endl;     // W4,46
-    std::cout<<"WVector4_47 = "<<WVector4_47<<std::endl;     // W4,47
-    std::cout<<"WVector4_48 = "<<WVector4_48<<std::endl;     // W4,48
-    std::cout<<"WVector4_49 = "<<WVector4_49<<std::endl;     // W4,49
-    std::cout<<"WVector4_50 = "<<WVector4_50<<std::endl;     // W4,50
+//    std::cout<<"WVector4_41 = "<<WVector4_41<<std::endl;     // W4,41
+//    std::cout<<"WVector4_42 = "<<WVector4_42<<std::endl;     // W4,42
+//    std::cout<<"WVector4_43 = "<<WVector4_43<<std::endl;     // W4,43
+//    std::cout<<"WVector4_44 = "<<WVector4_44<<std::endl;     // W4,44
+//    std::cout<<"WVector4_45 = "<<WVector4_45<<std::endl;     // W4,45
+//    std::cout<<"WVector4_46 = "<<WVector4_46<<std::endl;     // W4,46
+//    std::cout<<"WVector4_47 = "<<WVector4_47<<std::endl;     // W4,47
+//    std::cout<<"WVector4_48 = "<<WVector4_48<<std::endl;     // W4,48
+//    std::cout<<"WVector4_49 = "<<WVector4_49<<std::endl;     // W4,49
+//    std::cout<<"WVector4_50 = "<<WVector4_50<<std::endl;     // W4,50
 
-    std::cout<<"WVector4_51 = "<<WVector4_51<<std::endl;     // W4,51
-    std::cout<<"WVector4_52 = "<<WVector4_52<<std::endl;     // W4,52
+//    std::cout<<"WVector4_51 = "<<WVector4_51<<std::endl;     // W4,51
+//    std::cout<<"WVector4_52 = "<<WVector4_52<<std::endl;     // W4,52
 
-    std::cout<<"WVector5_1 = "<<WVector5_1<<std::endl;     // W5,1
-    std::cout<<"WVector5_2 = "<<WVector5_2<<std::endl;     // W5,2
-    std::cout<<"WVector5_3 = "<<WVector5_3<<std::endl;     // W5,3
-    std::cout<<"WVector5_4 = "<<WVector5_4<<std::endl;     // W5,4
-    std::cout<<"WVector5_5 = "<<WVector5_5<<std::endl;     // W5,5
+//    std::cout<<"WVector5_1 = "<<WVector5_1<<std::endl;     // W5,1
+//    std::cout<<"WVector5_2 = "<<WVector5_2<<std::endl;     // W5,2
+//    std::cout<<"WVector5_3 = "<<WVector5_3<<std::endl;     // W5,3
+//    std::cout<<"WVector5_4 = "<<WVector5_4<<std::endl;     // W5,4
+//    std::cout<<"WVector5_5 = "<<WVector5_5<<std::endl;     // W5,5
     std::cout<<"WVector5_6 = "<<WVector5_6<<std::endl;     // W5,6
 
-    std::cout<<"WVector6_1 = "<<WVector6_1<<std::endl;     // W6,1
-    std::cout<<"WVector6_2 = "<<WVector6_2<<std::endl;     // W6,2
-    std::cout<<"WVector6_3 = "<<WVector6_3<<std::endl;     // W6,3
-    std::cout<<"WVector6_4 = "<<WVector6_4<<std::endl;     // W6,4
-    std::cout<<"WVector6_5 = "<<WVector6_5<<std::endl;     // W6,5
-    std::cout<<"WVector6_6 = "<<WVector6_6<<std::endl;     // W6,6
-    std::cout<<"WVector6_7 = "<<WVector6_7<<std::endl;     // W6,7
+//    std::cout<<"WVector6_1 = "<<WVector6_1<<std::endl;     // W6,1
+//    std::cout<<"WVector6_2 = "<<WVector6_2<<std::endl;     // W6,2
+//    std::cout<<"WVector6_3 = "<<WVector6_3<<std::endl;     // W6,3
+//    std::cout<<"WVector6_4 = "<<WVector6_4<<std::endl;     // W6,4
+//    std::cout<<"WVector6_5 = "<<WVector6_5<<std::endl;     // W6,5
+//    std::cout<<"WVector6_6 = "<<WVector6_6<<std::endl;     // W6,6
+//    std::cout<<"WVector6_7 = "<<WVector6_7<<std::endl;     // W6,7
 
 
 
-    std::cout<<"WVector8_1 = "<<WVector8_1<<std::endl;     // W8,1
-    std::cout<<"WVector8_2 = "<<WVector8_2<<std::endl;     // W8,2
-    std::cout<<"WVector8_3 = "<<WVector8_3<<std::endl;     // W8,3
+//    std::cout<<"WVector8_1 = "<<WVector8_1<<std::endl;     // W8,1
+//    std::cout<<"WVector8_2 = "<<WVector8_2<<std::endl;     // W8,2
+//    std::cout<<"WVector8_3 = "<<WVector8_3<<std::endl;     // W8,3
 
 
-    std::cout<<"WVector9 = "<<WVector9<<std::endl;     // W9
+//    std::cout<<"WVector9 = "<<WVector9<<std::endl;     // W9
 
 
 
 
-    std::cout<<"WVector27_1 = "<<WVector27_1<<std::endl;     // W27,1
-    std::cout<<"WVector27_2 = "<<WVector27_2<<std::endl;     // W27,2
-    std::cout<<"WVector27_3 = "<<WVector27_3<<std::endl;     // W27,3
-    std::cout<<"WVector27_4 = "<<WVector27_4<<std::endl;     // W27,4
-    std::cout<<"WVector27_5 = "<<WVector27_5<<std::endl;     // W27,5
-    std::cout<<"WVector27_6 = "<<WVector27_6<<std::endl;     // W27,6
-    std::cout<<"WVector27_7 = "<<WVector27_7<<std::endl;     // W27,7
-    std::cout<<"WVector27_8 = "<<WVector27_8<<std::endl;     // W27,8
-    std::cout<<"WVector27_9 = "<<WVector27_9<<std::endl;     // W27,9
-    std::cout<<"WVector27_10 = "<<WVector27_10<<std::endl;     // W27,10
+//    std::cout<<"WVector27_1 = "<<WVector27_1<<std::endl;     // W27,1
+//    std::cout<<"WVector27_2 = "<<WVector27_2<<std::endl;     // W27,2
+//    std::cout<<"WVector27_3 = "<<WVector27_3<<std::endl;     // W27,3
+//    std::cout<<"WVector27_4 = "<<WVector27_4<<std::endl;     // W27,4
+//    std::cout<<"WVector27_5 = "<<WVector27_5<<std::endl;     // W27,5
+//    std::cout<<"WVector27_6 = "<<WVector27_6<<std::endl;     // W27,6
+//    std::cout<<"WVector27_7 = "<<WVector27_7<<std::endl;     // W27,7
+//    std::cout<<"WVector27_8 = "<<WVector27_8<<std::endl;     // W27,8
+//    std::cout<<"WVector27_9 = "<<WVector27_9<<std::endl;     // W27,9
+//    std::cout<<"WVector27_10 = "<<WVector27_10<<std::endl;     // W27,10
 
-    std::cout<<"WVector27_11 = "<<WVector27_11<<std::endl;     // W27,11
-    std::cout<<"WVector27_12 = "<<WVector27_12<<std::endl;     // W27,12
-    std::cout<<"WVector27_13 = "<<WVector27_13<<std::endl;     // W27,13
-    std::cout<<"WVector27_14 = "<<WVector27_14<<std::endl;     // W27,14
-    std::cout<<"WVector27_15 = "<<WVector27_15<<std::endl;     // W27,15
-    std::cout<<"WVector27_16 = "<<WVector27_16<<std::endl;     // W27,16
-    std::cout<<"WVector27_17 = "<<WVector27_17<<std::endl;     // W27,17
-    std::cout<<"WVector27_18 = "<<WVector27_18<<std::endl;     // W27,18
-    std::cout<<"WVector27_19 = "<<WVector27_19<<std::endl;     // W27,19
+//    std::cout<<"WVector27_11 = "<<WVector27_11<<std::endl;     // W27,11
+//    std::cout<<"WVector27_12 = "<<WVector27_12<<std::endl;     // W27,12
+//    std::cout<<"WVector27_13 = "<<WVector27_13<<std::endl;     // W27,13
+//    std::cout<<"WVector27_14 = "<<WVector27_14<<std::endl;     // W27,14
+//    std::cout<<"WVector27_15 = "<<WVector27_15<<std::endl;     // W27,15
+//    std::cout<<"WVector27_16 = "<<WVector27_16<<std::endl;     // W27,16
+//    std::cout<<"WVector27_17 = "<<WVector27_17<<std::endl;     // W27,17
+//    std::cout<<"WVector27_18 = "<<WVector27_18<<std::endl;     // W27,18
+//    std::cout<<"WVector27_19 = "<<WVector27_19<<std::endl;     // W27,19
 
 //Eigen::VectorXd diff = Eigen::VectorXd::Zero(maxOrder);
 //Eigen::VectorXd fraction = Eigen::VectorXd::Zero(maxOrder);

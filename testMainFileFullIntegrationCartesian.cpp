@@ -229,7 +229,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     const bool comparison = true;
 
     /// Set initial flight path angles and heading angles
-    const double FlightPathAngle = deg2rad(90.0);     // Set flight-path angle in rad --> Default = 90.0 deg
+    const double FlightPathAngle = deg2rad(89.0);     // Set flight-path angle in rad --> Default = 90.0 deg
     const double HeadingAngle = deg2rad(90.0);           // Set heading angle in rad --> Default = 0.0 deg
 //    double rotationalFlightPathAngle = deg2rad(90);         // Rotational flight-path angle in rad
 //    double inertialFlightPathAngle = deg2rad(90);           // Inertial flight-path angle in rad
@@ -243,7 +243,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //std::cout<<"pi = "<<(4*atan(1))<<std::endl;
 
     /// TSI settings ///
-    const int maxOrder = 8; // Eventually want order 20 (testing is 8)
+    const int maxOrder = 9; // Eventually want order 20 (testing is 8)
     /// TSI settings ///
 
     /// Integration settings ///
@@ -265,7 +265,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     const double initialAltitude = -0.6;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
     const double initialLatitudeDeg = 0.0;               // Starting latitude [deg] initial condition is 21 deg
-    const double initialLongitudeDeg = 0.0;            // Starting longitude [deg] initial condition is 74.5 deg
+    const double initialLongitudeDeg = 45.0;            // Starting longitude [deg] initial condition is 74.5 deg
 
 //    const double initialLatitude = initialLatitudeDeg*tudat::mathematical_constants::LONG_PI/180;       // Starting latitude [rad]
 //    const double initialLongitude = initialLongitudeDeg*tudat::mathematical_constants::LONG_PI/180;     // Starting longitude [rad]
