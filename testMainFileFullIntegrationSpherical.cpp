@@ -304,6 +304,13 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     initialVelocityDueToMars(2) = 0.0;
 
 
+    /// Debug ///
+    std::cout<<"initialVelocityLaunchSiteVertical = "<<initialVelocityLaunchSiteVertical<<std::endl;
+    std::cout<<"initialVelocityLaunchSite = "<<initialVelocityLaunchSite<<std::endl;
+    std::cout<<"initialVelocityDueToMars = "<<initialVelocityDueToMars<<std::endl;
+
+
+    /// Debug ///
 
     const Eigen::Vector3d initialVelocityInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(rotationalVelocityMars*inertialFrameTime-primeMeridianAngle)*initialVelocityLaunchSite+initialVelocityDueToMars;
 
@@ -887,6 +894,24 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
             std::cerr<<"Error: values could not be stored because storage file does not exist"<<std::endl;
         };
 
+        /// Determine the CPU time taken ///
+
+
+        // Determine the CPU time
+        const double TSICPUTime = clock();
+        // Determine the CPU time
+
+        // Determine the elapsed CPU time
+
+        const double elapsedTSICPUTime = TSICPUTime-initialCPUTime;
+
+        std::cout<<"The elapsed TSI CPU time = "<<elapsedTSICPUTime/CLOCKS_PER_SEC<<" sec"<<std::endl;
+//                    std::cout<<"The elapsed CPU time in clocks = "<<elapsedCPUTime<<std::endl;
+//                    std::cout<<"CLOCKS_PER_SEC = "<<CLOCKS_PER_SEC<<std::endl;
+
+//                    std::cout<<"sin(pi) = "<<sin(tudat::mathematical_constants::LONG_PI)<<std::endl;
+//                    std::cout<<"cos(pi/2) = "<<cos(tudat::mathematical_constants::LONG_PI/2)<<std::endl;
+
         std::cout<<"////////////////////////////////////////////////////////////////// End of TSI //////////////////////////////////////////////////////////////////"<<std::endl;
 //*/
 
@@ -1269,6 +1294,24 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                     std::cout<<"Final number of integration steps is "<<count<<std::endl;
                     std::cout<<"The end state is "<<endState<<std::endl;
 
+                    /// Determine the CPU time taken ///
+
+
+                    // Determine the CPU time
+                    const double finalCPUTime = clock();
+                    // Determine the CPU time
+
+                    // Determine the elapsed CPU time
+
+                    const double elapsedCPUTime = finalCPUTime-TSICPUTime;
+
+                    std::cout<<"The elapsed RKF CPU time = "<<elapsedCPUTime/CLOCKS_PER_SEC<<" sec"<<std::endl;
+//                    std::cout<<"The elapsed CPU time in clocks = "<<elapsedCPUTime<<std::endl;
+//                    std::cout<<"CLOCKS_PER_SEC = "<<CLOCKS_PER_SEC<<std::endl;
+
+//                    std::cout<<"sin(pi) = "<<sin(tudat::mathematical_constants::LONG_PI)<<std::endl;
+//                    std::cout<<"cos(pi/2) = "<<cos(tudat::mathematical_constants::LONG_PI/2)<<std::endl;
+
                     std::cout<<"////////////////////////////////////////////////////////////////// End of RKF //////////////////////////////////////////////////////////////////"<<std::endl;
 
                     //*/
@@ -1319,23 +1362,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                                differenceEnd<<std::endl;
                     } // end comparison
 
-                    /// Determine the CPU time taken ///
 
-
-                    // Determine the CPU time
-                    const double finalCPUTime = clock();
-                    // Determine the CPU time
-
-                    // Determine the elapsed CPU time
-
-                    const double elapsedCPUTime = finalCPUTime-initialCPUTime;
-
-                    std::cout<<"The elapsed CPU time = "<<elapsedCPUTime/CLOCKS_PER_SEC<<" sec"<<std::endl;
-//                    std::cout<<"The elapsed CPU time in clocks = "<<elapsedCPUTime<<std::endl;
-//                    std::cout<<"CLOCKS_PER_SEC = "<<CLOCKS_PER_SEC<<std::endl;
-
-//                    std::cout<<"sin(pi) = "<<sin(tudat::mathematical_constants::LONG_PI)<<std::endl;
-//                    std::cout<<"cos(pi/2) = "<<cos(tudat::mathematical_constants::LONG_PI/2)<<std::endl;
 
 //*/
 

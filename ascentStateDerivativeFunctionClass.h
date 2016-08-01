@@ -321,6 +321,8 @@ public:
 //        std::cout<<"FlightPathAngle = "<<rotationalFlightPathAngle<<std::endl;
 //        std::cout<<"FlightPathAngle (deg) = "<<rad2deg(rotationalFlightPathAngle)<<std::endl;
 //        std::cout<<"HeadingAngle = "<<rotationalAzimuth<<std::endl;
+//        std::cout<<"HeadingAngle (deg) = "<<rad2deg(rotationalAzimuth)<<std::endl;
+
 //        std::cout<<"RotationalVelocity = "<<rotationalVelocity<<std::endl;
 //        std::cout<<"verticalXvelocity = "<<verticalXvelocity<<std::endl;
 //        std::cout<<"verticalYvelocity = "<<verticalYvelocity<<std::endl;

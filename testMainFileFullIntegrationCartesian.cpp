@@ -228,7 +228,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     const bool comparison = true;
 
     /// Set initial flight path angles and heading angles
-    const double FlightPathAngle = deg2rad(58.0);     // Set flight-path angle in rad --> Default = 90.0 deg
+    const double FlightPathAngle = deg2rad(89.0);     // Set flight-path angle in rad --> Default = 90.0 deg
     const double HeadingAngle = deg2rad(90.0);           // Set heading angle in rad --> Default = 0.0 deg
 //    double rotationalFlightPathAngle = deg2rad(90);         // Rotational flight-path angle in rad
 //    double inertialFlightPathAngle = deg2rad(90);           // Inertial flight-path angle in rad
@@ -267,14 +267,12 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     const double initialLongitudeDeg = 74.5;            // Starting longitude [deg] initial condition is 74.5 deg
     const double initialGroundVelocity = 0.01;          // Starting ground velocity in km/s
 
-//    const double initialLatitude = initialLatitudeDeg*tudat::mathematical_constants::LONG_PI/180;       // Starting latitude [rad]
-//    const double initialLongitude = initialLongitudeDeg*tudat::mathematical_constants::LONG_PI/180;     // Starting longitude [rad]
+
 
     const double initialLatitude = deg2rad(initialLatitudeDeg);       // Starting latitude [rad]
     const double initialLongitude = deg2rad(initialLongitudeDeg);     // Starting longitude [rad]
 
     const double initialRadius = bodyReferenceRadius+initialAltitude;               // Starting radius in km
-//        const double initialRadius = bodyReferenceRadius+initialAltitude;               // Starting radius in m
 
         // Converting the initial spherical position to cartesian position using the standard convertSphericalToCartesian function of Tudat
         // Please note that this function requires the zenith angle as input which is pi/2-latitude!
@@ -290,9 +288,37 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // Compute initial velocity in y-direction as seen from the launch site in the inertial frame
 
-    const Eigen::Vector3d initialVelocityLaunchSite = Eigen::Vector3d(0,(rotationalVelocityMars*initialRadius*cos(initialLatitude)),0);
+//    const Eigen::Vector3d initialVelocityLaunchSite = Eigen::Vector3d(0,(rotationalVelocityMars*initialRadius*cos(initialLatitude)),0);
 
-    const Eigen::Vector3d initialVelocityInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(rotationalVelocityMars*inertialFrameTime-primeMeridianAngle+initialLongitude)*initialVelocityLaunchSite;
+//    const Eigen::Vector3d initialVelocityInertialFrame = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(rotationalVelocityMars*inertialFrameTime-primeMeridianAngle+initialLongitude)*initialVelocityLaunchSite;
+
+    // Compute initial velocity
+
+    Eigen::Vector3d initialVerticalVelocity = Eigen::Vector3d::Zero(3);
+
+    initialVerticalVelocity(0) = initialGroundVelocity*cos(FlightPathAngle)*cos(HeadingAngle); // Vx_v
+    initialVerticalVelocity(1) = initialGroundVelocity*cos(FlightPathAngle)*sin(HeadingAngle); // Vy_v
+    initialVerticalVelocity(2) = -initialGroundVelocity*sin(FlightPathAngle); // Vz_v
+
+    const Eigen::Vector3d initialRotationalVelocity = tudat::reference_frames::getLocalVerticalToRotatingPlanetocentricFrameTransformationMatrix(initialLongitude,initialLatitude)*initialVerticalVelocity;
+
+    Eigen::Vector3d rotatingPlanetCorrection = Eigen::Vector3d::Zero(3);
+
+    rotatingPlanetCorrection(0) = -rotationalVelocityMars*initialCartesianPositionInertialFrame(1);
+    rotatingPlanetCorrection(1) = rotationalVelocityMars*initialCartesianPositionInertialFrame(0);
+    rotatingPlanetCorrection(2) = 0.0;
+
+    /// Debug ///
+    std::cout<<"initialVerticalVelocity = "<<initialVerticalVelocity<<std::endl;
+    std::cout<<"initialRotationalVelocity = "<<initialRotationalVelocity<<std::endl;
+    std::cout<<"rotatingPlanetCorrection = "<<rotatingPlanetCorrection<<std::endl;
+
+    /// Debug ///
+
+
+    const Eigen::Vector3d initialInertialVelocity = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(rotationalVelocityMars*inertialFrameTime-primeMeridianAngle)*initialRotationalVelocity+rotatingPlanetCorrection;
+
+
 
     /// Setting StateAndTime class using modified vector ///
 
@@ -301,10 +327,18 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     aState(0) = initialCartesianPositionInertialFrame(0);
     aState(1) = initialCartesianPositionInertialFrame(1);
     aState(2) = initialCartesianPositionInertialFrame(2);
-    aState(3) = initialVelocityInertialFrame(0)+0.01;
-    aState(4) = initialVelocityInertialFrame(1)+0.01;
-    aState(5) = initialVelocityInertialFrame(2)+0.01;
+    aState(3) = initialInertialVelocity(0);
+    aState(4) = initialInertialVelocity(1);
+    aState(5) = initialInertialVelocity(2);
     aState(6) = 227;  // Mass [kg] from literature study
+
+//    aState(0) = initialCartesianPositionInertialFrame(0);
+//    aState(1) = initialCartesianPositionInertialFrame(1);
+//    aState(2) = initialCartesianPositionInertialFrame(2);
+//    aState(3) = initialVelocityInertialFrame(0);
+//    aState(4) = initialVelocityInertialFrame(1);
+//    aState(5) = initialVelocityInertialFrame(2);
+//    aState(6) = 227;  // Mass [kg] from literature study
 
 //    /// Debug ///
 
@@ -811,6 +845,24 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
             std::cerr<<"Error: values could not be stored because storage file does not exist"<<std::endl;
         };
 
+        /// Determine the CPU time taken for TSI ///
+
+
+        // Determine the CPU time
+        const double TSICPUTime = clock();
+        // Determine the CPU time
+
+        // Determine the elapsed CPU time
+
+        const double elapsedTSICPUTime = TSICPUTime-initialCPUTime;
+
+        std::cout<<"The elapsed TSI CPU time = "<<elapsedTSICPUTime/CLOCKS_PER_SEC<<" sec"<<std::endl;
+//                    std::cout<<"The elapsed CPU time in clocks = "<<elapsedCPUTime<<std::endl;
+//                    std::cout<<"CLOCKS_PER_SEC = "<<CLOCKS_PER_SEC<<std::endl;
+
+//                    std::cout<<"sin(pi) = "<<sin(tudat::mathematical_constants::LONG_PI)<<std::endl;
+//                    std::cout<<"cos(pi/2) = "<<cos(tudat::mathematical_constants::LONG_PI/2)<<std::endl;
+
         std::cout<<"////////////////////////////////////////////////////////////////// End of TSI //////////////////////////////////////////////////////////////////"<<std::endl;
 //*/
 
@@ -1191,6 +1243,24 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                     std::cout<<"Final number of integration steps is "<<count<<std::endl;
                     std::cout<<"The end state is "<<endState<<std::endl;
 
+                    /// Determine the CPU time taken for RKF ///
+
+
+                    // Determine the CPU time
+                    const double finalCPUTime = clock();
+                    // Determine the CPU time
+
+                    // Determine the elapsed CPU time
+
+                    const double elapsedCPUTime = finalCPUTime-TSICPUTime;
+
+                    std::cout<<"The elapsed RKF CPU time = "<<elapsedCPUTime/CLOCKS_PER_SEC<<" sec"<<std::endl;
+//                    std::cout<<"The elapsed CPU time in clocks = "<<elapsedCPUTime<<std::endl;
+//                    std::cout<<"CLOCKS_PER_SEC = "<<CLOCKS_PER_SEC<<std::endl;
+
+//                    std::cout<<"sin(pi) = "<<sin(tudat::mathematical_constants::LONG_PI)<<std::endl;
+//                    std::cout<<"cos(pi/2) = "<<cos(tudat::mathematical_constants::LONG_PI/2)<<std::endl;
+
                     std::cout<<"////////////////////////////////////////////////////////////////// End of RKF //////////////////////////////////////////////////////////////////"<<std::endl;
 
                     //*/
@@ -1241,23 +1311,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                                differenceEnd<<std::endl;
                     } // end comparison
 
-                    /// Determine the CPU time taken ///
 
-
-                    // Determine the CPU time
-                    const double finalCPUTime = clock();
-                    // Determine the CPU time
-
-                    // Determine the elapsed CPU time
-
-                    const double elapsedCPUTime = finalCPUTime-initialCPUTime;
-
-                    std::cout<<"The elapsed CPU time = "<<elapsedCPUTime/CLOCKS_PER_SEC<<" sec"<<std::endl;
-//                    std::cout<<"The elapsed CPU time in clocks = "<<elapsedCPUTime<<std::endl;
-//                    std::cout<<"CLOCKS_PER_SEC = "<<CLOCKS_PER_SEC<<std::endl;
-
-//                    std::cout<<"sin(pi) = "<<sin(tudat::mathematical_constants::LONG_PI)<<std::endl;
-//                    std::cout<<"cos(pi/2) = "<<cos(tudat::mathematical_constants::LONG_PI/2)<<std::endl;
 
 //*/
 
