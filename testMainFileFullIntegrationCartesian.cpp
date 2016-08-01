@@ -174,7 +174,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     celestialBody Mars;
 
-    Mars.setRotationalVelocity(0); // Set Mars as a non-rotating planet for verification
+//    Mars.setRotationalVelocity(0); // Set Mars as a non-rotating planet for verification
 
 
 //    const double adiabeticIndex = Mars.adiabeticIndex();
@@ -201,8 +201,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // No Gravity
 
-    Mars.setStandardGravitationalParameter(0);
-//    Mars.setStandardGravitationalParameter(-7.088e-5);
+//    Mars.setStandardGravitationalParameter(0);
 //    std::cout<<"mu_M = "<<Mars.standardGravitationalParameter()<<std::endl;
 
     if (Mars.standardGravitationalParameter() == 0){
@@ -229,7 +228,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     const bool comparison = true;
 
     /// Set initial flight path angles and heading angles
-    const double FlightPathAngle = deg2rad(89.0);     // Set flight-path angle in rad --> Default = 90.0 deg
+    const double FlightPathAngle = deg2rad(58.0);     // Set flight-path angle in rad --> Default = 90.0 deg
     const double HeadingAngle = deg2rad(90.0);           // Set heading angle in rad --> Default = 0.0 deg
 //    double rotationalFlightPathAngle = deg2rad(90);         // Rotational flight-path angle in rad
 //    double inertialFlightPathAngle = deg2rad(90);           // Inertial flight-path angle in rad
@@ -238,16 +237,16 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
   /// Initial conditions /// a.k.a. control centre
 
-    const double setEndTime = 1.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
+    const double setEndTime = 77.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
 
 //std::cout<<"pi = "<<(4*atan(1))<<std::endl;
 
     /// TSI settings ///
-    const int maxOrder = 9; // Eventually want order 20 (testing is 8)
+    const int maxOrder = 20; // Eventually want order 20 (testing is 8)
     /// TSI settings ///
 
     /// Integration settings ///
-    const double chosenLocalErrorTolerance = 1e-8;      // The chosen local error tolerance for TSI
+    const double chosenLocalErrorTolerance = 1e-15;      // The chosen local error tolerance for TSI
     const double chosenStepSize = 0.2; // The chosen initial step-size for TSI
 
     std::cout<<"The chosen local error tolerance = "<<chosenLocalErrorTolerance<<std::endl;
@@ -264,8 +263,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     const double initialAltitude = -0.6;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
-    const double initialLatitudeDeg = 0.0;               // Starting latitude [deg] initial condition is 21 deg
-    const double initialLongitudeDeg = 45.0;            // Starting longitude [deg] initial condition is 74.5 deg
+    const double initialLatitudeDeg = 21.0;               // Starting latitude [deg] initial condition is 21 deg
+    const double initialLongitudeDeg = 74.5;            // Starting longitude [deg] initial condition is 74.5 deg
+    const double initialGroundVelocity = 0.01;          // Starting ground velocity in km/s
 
 //    const double initialLatitude = initialLatitudeDeg*tudat::mathematical_constants::LONG_PI/180;       // Starting latitude [rad]
 //    const double initialLongitude = initialLongitudeDeg*tudat::mathematical_constants::LONG_PI/180;     // Starting longitude [rad]
@@ -301,9 +301,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     aState(0) = initialCartesianPositionInertialFrame(0);
     aState(1) = initialCartesianPositionInertialFrame(1);
     aState(2) = initialCartesianPositionInertialFrame(2);
-    aState(3) = initialVelocityInertialFrame(0);
-    aState(4) = initialVelocityInertialFrame(1);
-    aState(5) = initialVelocityInertialFrame(2);
+    aState(3) = initialVelocityInertialFrame(0)+0.01;
+    aState(4) = initialVelocityInertialFrame(1)+0.01;
+    aState(5) = initialVelocityInertialFrame(2)+0.01;
     aState(6) = 227;  // Mass [kg] from literature study
 
 //    /// Debug ///
@@ -311,10 +311,18 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //        aState(0) = 0;
 //        aState(1) = 0;
 //        aState(2) = 1224.18491564675;
-//        aState(3) = 0;
-//        aState(4) = 0;
-//        aState(5) = 0;
+//        aState(3) = 0.0001;
+//        aState(4) = 0.0001;
+//        aState(5) = 0.0001;
 //        aState(6) = 227;  // Mass [kg] from literature study
+
+//            aState(0) = 2400.91068937552;
+//            aState(1) = 2400.91069921769;
+//            aState(2) = 0;
+//            aState(3) = -initialGroundVelocity*sin(initialLongitude)*cos(FlightPathAngle)+initialGroundVelocity*cos(initialLongitude)*sin(FlightPathAngle);
+//            aState(4) = initialGroundVelocity*cos(initialLongitude)*cos(FlightPathAngle)+initialGroundVelocity*sin(initialLongitude)*sin(FlightPathAngle);
+//            aState(5) = 0;
+//            aState(6) = 226.671059286136;  // Mass [kg] from literature study
 
 //    /// Debug //
 

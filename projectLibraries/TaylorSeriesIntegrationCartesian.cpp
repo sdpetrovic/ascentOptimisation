@@ -341,8 +341,8 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
             updatedState(n) += TaylorCoefficients((n+1),k)*pow(currentStepSize,k);      // Perform one step of the taylor series expansion and then add it to the previous step
 
-//            if (n==6){
-//           std::cout<<"updatedState(6) = "<<updatedState(6)<<std::endl;
+//            if (n==3){
+//           std::cout<<"updatedState(3) = "<<updatedState(3)<<std::endl;
 //           std::cout<<"currentStepSize = "<<currentStepSize<<std::endl;
 //           std::cout<<"TaylorCoefficients((n+1),k) = "<<TaylorCoefficients((n+1),k)<<std::endl;
 

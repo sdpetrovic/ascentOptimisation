@@ -446,35 +446,35 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
         WVector4_1(k) = getMultiplicationRecurrenceRelation(XMatrix.row(1),XMatrix.row(1),k)+getMultiplicationRecurrenceRelation(XMatrix.row(2),XMatrix.row(2),k);
         WVector4_2(k) = WVector4_1(k)+getMultiplicationRecurrenceRelation(XMatrix.row(3),XMatrix.row(3),k);
 
-        if (WVector4_1 == Eigen::VectorXd::Zero(k)){
-            WVector4_3(k) = XMatrix(3,k);
-        }
-        else if (XMatrix.row(1) == Eigen::VectorXd::Zero(k) && XMatrix.row(3) == Eigen::VectorXd::Zero(k) ){
-            WVector4_3(k) = XMatrix(2,k);
-        }
-        else if (XMatrix.row(2) == Eigen::VectorXd::Zero(k) && XMatrix.row(3) == Eigen::VectorXd::Zero(k) ){
-            WVector4_3(k) = XMatrix(1,k);
-//            std::cout<<"It doesn't actually go here does it?"<<std::endl;
-        }
-        else {
+//        if (WVector4_1 == Eigen::VectorXd::Zero(k+1)){
+//            WVector4_3(k) = fabs(XMatrix(3,k));
+//        }
+//        else if (XMatrix.row(1) == Eigen::VectorXd::Zero(k+1) && XMatrix.row(3) == Eigen::VectorXd::Zero(k+1) ){
+//            WVector4_3(k) = fabs(XMatrix(2,k));
+//        }
+//        else if (XMatrix.row(2) == Eigen::VectorXd::Zero(k+1) && XMatrix.row(3) == Eigen::VectorXd::Zero(k+1) ){
+//            WVector4_3(k) = fabs(XMatrix(1,k));
+////            std::cout<<"It doesn't actually go here does it?"<<std::endl;
+//        }
+//        else {
         WVector4_3(k) = getPowerRecurrenceRelation(WVector4_2,WVector4_3,0.5,k); // Radius
-        }
+//        }
 
-        if (XMatrix.row(1) == Eigen::VectorXd::Zero(k)){
-            WVector4_4(k) = XMatrix(2,k);
-        }
-        else if (XMatrix.row(2) == Eigen::VectorXd::Zero(k)){
-            WVector4_4(k) = XMatrix(1,k);
-        }
-        else{
+//        if (XMatrix.row(1) == Eigen::VectorXd::Zero(k+1)){
+//            WVector4_4(k) = fabs(XMatrix(2,k));
+//        }
+//        else if (XMatrix.row(2) == Eigen::VectorXd::Zero(k+1)){
+//            WVector4_4(k) = fabs(XMatrix(1,k));
+//        }
+//        else{
         WVector4_4(k) = getPowerRecurrenceRelation(WVector4_1,WVector4_4,0.5,k);
-        }
-        if (k == 1 && XMatrix(2,1)-WVector4_4(1)*WVector4_5(0) <= 1e-18){
-            WVector4_5(k) = 0.0;
-        }
-        else{
+//        }
+//        if (k == 1 && XMatrix(2,1)-WVector4_4(1)*WVector4_5(0) <= 1e-18){
+//            WVector4_5(k) = 0.0;
+//        }
+//        else{
         WVector4_5(k) = getDivisionRecurrenceRelation(XMatrix.row(2),WVector4_4,WVector4_5,k);  // sin(lambda)
-        }
+//        }
         WVector4_6(k) = getDivisionRecurrenceRelation(XMatrix.row(1),WVector4_4,WVector4_6,k);  // cos(lambda)
         WVector4_7(k) = getDivisionRecurrenceRelation(XMatrix.row(3),WVector4_3,WVector4_7,k);  // sin(delta)
         WVector4_8(k) = getDivisionRecurrenceRelation(WVector4_4,WVector4_3,WVector4_8,k);      // cos(delta)
@@ -494,19 +494,109 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
 //        std::cout<<"getPowerRecurrenceRelation(test1,test2,2.0,1.0) = "<<getPowerRecurrenceRelation(test1,test2,2.0,2)<<std::endl;
         /// Debug ///
 
-        if (WVector4_9 == Eigen::VectorXd::Zero(k) && WVector4_10 == Eigen::VectorXd::Zero(k)){
-            WVector4_12(k) = XMatrix(6,k);
-        }
-        else if (WVector4_9 == Eigen::VectorXd::Zero(k) && XMatrix.row(6) == Eigen::VectorXd::Zero(k) ){
-            WVector4_12(k) = WVector4_10(k);
-        }
-        else if (WVector4_10 == Eigen::VectorXd::Zero(k) && XMatrix.row(6) == Eigen::VectorXd::Zero(k) ){
-            WVector4_12(k) = WVector4_9(k);
-//            std::cout<<"It doesn't actually go here does it?"<<std::endl;
-        }
-        else {
+//        if (WVector4_9 == Eigen::VectorXd::Zero(k+1) && WVector4_10 == Eigen::VectorXd::Zero(k+1)){
+//            WVector4_12(k) = fabs(XMatrix(6,k));
+//        }
+//        else if (WVector4_9 == Eigen::VectorXd::Zero(k+1) && XMatrix.row(6) == Eigen::VectorXd::Zero(k+1) ){
+//            WVector4_12(k) = fabs(WVector4_10(k));
+//        }
+//        else if (WVector4_10 == Eigen::VectorXd::Zero(k+1) && XMatrix.row(6) == Eigen::VectorXd::Zero(k+1) ){
+//            WVector4_12(k) = fabs(WVector4_9(k));
+////            std::cout<<"It doesn't actually go here does it?"<<std::endl;
+//        }
+//        else {
          WVector4_12(k) = getPowerRecurrenceRelation(WVector4_11,WVector4_12,0.5,k);    // Ground velocity
-        }
+//        }
+
+
+
+         WVector4_13(k) = getDivisionRecurrenceRelation(WVector4_9,WVector4_12,WVector4_13,k);  //X1
+         WVector4_14(k) = getDivisionRecurrenceRelation(WVector4_10,WVector4_12,WVector4_14,k);  //X2
+         WVector4_15(k) = getDivisionRecurrenceRelation(XMatrix.row(6),WVector4_12,WVector4_15,k);  //X3
+
+         WVector4_16(k) = getMultiplicationRecurrenceRelation(WVector4_10,XMatrix.row(3),k)-getMultiplicationRecurrenceRelation(XMatrix.row(6),XMatrix.row(2),k);
+         WVector4_17(k) = getMultiplicationRecurrenceRelation(XMatrix.row(6),XMatrix.row(1),k)-getMultiplicationRecurrenceRelation(WVector4_9,XMatrix.row(3),k);
+         WVector4_18(k) = getMultiplicationRecurrenceRelation(WVector4_9,XMatrix.row(2),k)-getMultiplicationRecurrenceRelation(WVector4_10,XMatrix.row(1),k);
+
+
+         WVector4_19(k) = getMultiplicationRecurrenceRelation(WVector4_16,WVector4_16,k)+getMultiplicationRecurrenceRelation(WVector4_17,WVector4_17,k)+getMultiplicationRecurrenceRelation(WVector4_18,WVector4_18,k);
+         WVector4_20(k) = getPowerRecurrenceRelation(WVector4_19,WVector4_20,0.5,k);
+
+         WVector4_21(k) = getDivisionRecurrenceRelation(WVector4_16,WVector4_20,WVector4_21,k); // Y1
+         WVector4_22(k) = getDivisionRecurrenceRelation(WVector4_17,WVector4_20,WVector4_21,k); // Y2
+         WVector4_23(k) = getDivisionRecurrenceRelation(WVector4_18,WVector4_20,WVector4_21,k); // Y3
+
+
+         WVector4_24(k) = getMultiplicationRecurrenceRelation(WVector4_14,WVector4_23,k)-getMultiplicationRecurrenceRelation(WVector4_15,WVector4_22,k); // Z1
+         WVector4_25(k) = getMultiplicationRecurrenceRelation(WVector4_15,WVector4_21,k)-getMultiplicationRecurrenceRelation(WVector4_13,WVector4_23,k); // Z2
+         WVector4_40(k) = getMultiplicationRecurrenceRelation(WVector4_13,WVector4_22,k)-getMultiplicationRecurrenceRelation(WVector4_14,WVector4_21,k); // Z3
+
+
+//        WVector4_13(k) = -getMultiplicationRecurrenceRelation(WVector4_6,WVector4_7,k);
+//        WVector4_14(k) = -getMultiplicationRecurrenceRelation(WVector4_7,WVector4_5,k);
+//        WVector4_15(k) = -getMultiplicationRecurrenceRelation(WVector4_8,WVector4_6,k);
+//        WVector4_16(k) = -getMultiplicationRecurrenceRelation(WVector4_8,WVector4_5,k);
+//        WVector4_17(k) = getMultiplicationRecurrenceRelation(XMatrix.row(6),WVector4_8,k)+getMultiplicationRecurrenceRelation(WVector4_9,WVector4_13,k)+getMultiplicationRecurrenceRelation(WVector4_10,WVector4_14,k); // Vx_v
+////        WVector4_17(k) = 0.0;
+
+//        /// Debug ///
+
+//        if (k == 1){
+//        std::cout<<"getMultiplicationRecurrenceRelation(XMatrix.row(6),WVector4_8,k) = "<<getMultiplicationRecurrenceRelation(XMatrix.row(6),WVector4_8,k)<<std::endl;
+//        std::cout<<"getMultiplicationRecurrenceRelation(WVector4_9,WVector4_13,k) = "<<getMultiplicationRecurrenceRelation(WVector4_9,WVector4_13,k)<<std::endl;
+//        std::cout<<"getMultiplicationRecurrenceRelation(WVector4_10,WVector4_14,k) = "<<getMultiplicationRecurrenceRelation(WVector4_10,WVector4_14,k)<<std::endl;
+//        std::cout<<"getMultiplicationRecurrenceRelation(XMatrix.row(6),WVector4_8,k)+getMultiplicationRecurrenceRelation(WVector4_9,WVector4_13,k) = "<<getMultiplicationRecurrenceRelation(XMatrix.row(6),WVector4_8,k)+getMultiplicationRecurrenceRelation(WVector4_9,WVector4_13,k)<<std::endl;
+//        std::cout<<"getMultiplicationRecurrenceRelation(XMatrix.row(6),WVector4_8,k)/getMultiplicationRecurrenceRelation(WVector4_9,WVector4_13,k) = "<<getMultiplicationRecurrenceRelation(XMatrix.row(6),WVector4_8,k)/getMultiplicationRecurrenceRelation(WVector4_9,WVector4_13,k)<<std::endl;
+
+//        }
+//        /// Debug ///
+
+//        WVector4_18(k) = getMultiplicationRecurrenceRelation(WVector4_10,WVector4_6,k)-getMultiplicationRecurrenceRelation(WVector4_9,WVector4_5,k);   // Vy_v
+//        WVector4_19(k) = getMultiplicationRecurrenceRelation(WVector4_9,WVector4_15,k)-getMultiplicationRecurrenceRelation(XMatrix.row(6),WVector4_7,k)+getMultiplicationRecurrenceRelation(WVector4_10,WVector4_16,k); // Vz_v
+//        WVector4_20(k) = getMultiplicationRecurrenceRelation(WVector4_17,WVector4_17,k)+getMultiplicationRecurrenceRelation(WVector4_18,WVector4_18,k);
+
+////        if (WVector4_17 == Eigen::VectorXd::Zero(k+1)){
+////            WVector4_21(k) = fabs(WVector4_18(k));
+//////            std::cout<<"right1 k = "<<k<<std::endl;
+//////            std::cout<<"w4,18 = "<<WVector4_18(k)<<std::endl;
+//////            std::cout<<"fabs(0.000347805161450851) = "<<fabs(0.000347805161450851)<<std::endl;
+//////            std::cout<<"abs(2) = "<<abs(2)<<std::endl;
+//////            std::cout<<"fabs(2.5) = "<<fabs(2.5)<<std::endl;
+//////            std::cout<<"fabs(w4,18) = "<<fabs(WVector4_18(k))<<std::endl;
+//////            std::cout<<"w4,21 = "<<WVector4_21(k)<<std::endl;
+////        }
+////        else if (WVector4_18 == Eigen::VectorXd::Zero(k+1)){
+////            WVector4_21(k) = fabs(WVector4_17(k));
+////            std::cout<<"right2 k = "<<k<<std::endl;
+////        }
+////        else{
+//        WVector4_21(k) = getPowerRecurrenceRelation(WVector4_20,WVector4_21,0.5,k);
+////        }
+
+//        WVector4_11(k) = WVector4_20(k)+getMultiplicationRecurrenceRelation(WVector4_19,WVector4_19,k);
+//        WVector4_12(k) = getPowerRecurrenceRelation(WVector4_11,WVector4_12,0.5,k);    // Ground velocity
+
+//        WVector4_22(k) = getDivisionRecurrenceRelation(WVector4_18,WVector4_21,WVector4_22,k);  // sin(chi)
+//        WVector4_23(k) = getDivisionRecurrenceRelation(WVector4_17,WVector4_21,WVector4_23,k);  // cos(chi)
+
+////        if (k == 1 && -WVector4_19(1)-WVector4_12(1) <= 1e-15){
+////            WVector4_24(k) = 0.0;
+////        }
+////        else{
+//        WVector4_24(k) = getDivisionRecurrenceRelation(-WVector4_19,WVector4_12,WVector4_24,k); // sin(gamma)
+////        WVector4_24(k) = 0.0;
+////        }
+//        WVector4_25(k) = getDivisionRecurrenceRelation(WVector4_21,WVector4_12,WVector4_25,k);  // cos(gamma)
+        WVector4_26(k) = getCosineRecurrenceRelation(thrustAzimuthVector,WVector4_28,k);
+        WVector4_27(k) = getCosineRecurrenceRelation(thrustElevationVector,WVector4_29,k);
+        WVector4_28(k) = getSineRecurrenceRelation(thrustAzimuthVector,WVector4_26,k);
+        WVector4_29(k) = getSineRecurrenceRelation(thrustElevationVector,WVector4_27,k);
+        WVector4_30(k) = getMultiplicationRecurrenceRelation(WVector4_26,WVector4_27,k);
+
+        WVector4_31(k) = getMultiplicationRecurrenceRelation(WVector4_27,WVector4_28,k);
+        WVector4_32(k) = getPowerRecurrenceRelation(XMatrix.row(7),WVector4_32,-1.0,k);
+        WVector4_33(k) = Thrust_*WVector4_32(k);
+        WVector4_34(k) = getMultiplicationRecurrenceRelation(WVector4_33,WVector4_30,k);
 
         WVector27_1(k) = WVector4_3(k); // Height derivative is just radius
         WVector27_2(k) = getMultiplicationRecurrenceRelation(WVector27_1,WVector27_1,k);
@@ -593,61 +683,65 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
         WVector27_18(k) = getMultiplicationRecurrenceRelation(WVector27_17,WVector27_16,k);
         WVector27_19(k) = 0.5*referenceArea*getMultiplicationRecurrenceRelation(WVector27_18,WVector27_12,k); // Drag
 
-
-
-        WVector4_13(k) = getMultiplicationRecurrenceRelation(-WVector4_6,WVector4_7,k);
-        WVector4_14(k) = getMultiplicationRecurrenceRelation(-WVector4_7,WVector4_5,k);
-        WVector4_15(k) = getMultiplicationRecurrenceRelation(-WVector4_8,WVector4_6,k);
-        WVector4_16(k) = getMultiplicationRecurrenceRelation(-WVector4_8,WVector4_5,k);
-        WVector4_17(k) = getMultiplicationRecurrenceRelation(XMatrix.row(6),WVector4_8,k)+getMultiplicationRecurrenceRelation(WVector4_9,WVector4_13,k)+getMultiplicationRecurrenceRelation(WVector4_10,WVector4_14,k); // Vx_v
-        WVector4_18(k) = getMultiplicationRecurrenceRelation(WVector4_10,WVector4_6,k)+getMultiplicationRecurrenceRelation(-WVector4_9,WVector4_5,k);   // Vy_v
-        WVector4_19(k) = getMultiplicationRecurrenceRelation(WVector4_9,WVector4_15,k)+getMultiplicationRecurrenceRelation(-XMatrix.row(6),WVector4_7,k)+getMultiplicationRecurrenceRelation(WVector4_10,WVector4_16,k); // Vz_v
-        WVector4_20(k) = getMultiplicationRecurrenceRelation(WVector4_17,WVector4_17,k)+getMultiplicationRecurrenceRelation(WVector4_18,WVector4_18,k);
-
-        WVector4_21(k) = getPowerRecurrenceRelation(WVector4_20,WVector4_21,0.5,k);
-        WVector4_22(k) = getDivisionRecurrenceRelation(WVector4_18,WVector4_21,WVector4_22,k);  // sin(chi)
-        WVector4_23(k) = getDivisionRecurrenceRelation(WVector4_17,WVector4_21,WVector4_23,k);  // cos(chi)
-
-        if (k == 1 && -WVector4_19(1)-WVector4_12(1) <= 1e-15){
-            WVector4_24(k) = 0.0;
-        }
-        else{
-        WVector4_24(k) = getDivisionRecurrenceRelation(-WVector4_19,WVector4_12,WVector4_24,k); // sin(gamma)
-        }
-        WVector4_25(k) = getDivisionRecurrenceRelation(WVector4_21,WVector4_12,WVector4_25,k);  // cos(gamma)
-        WVector4_26(k) = getCosineRecurrenceRelation(thrustAzimuthVector,WVector4_28,k);
-        WVector4_27(k) = getCosineRecurrenceRelation(thrustElevationVector,WVector4_29,k);
-        WVector4_28(k) = getSineRecurrenceRelation(thrustAzimuthVector,WVector4_26,k);
-        WVector4_29(k) = getSineRecurrenceRelation(thrustElevationVector,WVector4_27,k);
-        WVector4_30(k) = getMultiplicationRecurrenceRelation(WVector4_26,WVector4_27,k);
-
-        WVector4_31(k) = getMultiplicationRecurrenceRelation(WVector4_27,WVector4_28,k);
-        WVector4_32(k) = getPowerRecurrenceRelation(XMatrix.row(7),WVector4_32,-1.0,k);
-        WVector4_33(k) = Thrust_*WVector4_32(k);
-        WVector4_34(k) = getMultiplicationRecurrenceRelation(WVector4_33,WVector4_30,k);
         WVector4_35(k) = getDivisionRecurrenceRelation(WVector27_19,XMatrix.row(7),WVector4_35,k);
         WVector4_36(k) = WVector4_34(k)-WVector4_35(k);
         WVector4_37(k) = getMultiplicationRecurrenceRelation(WVector4_32,WVector4_31,k);
         WVector4_38(k) = getMultiplicationRecurrenceRelation(WVector4_33,WVector4_29,k);
         WVector4_39(k) = getDivisionRecurrenceRelation((-standardGravitationalParameter*XMatrix.row(1)),XMatrix.row(9),WVector4_39,k);
-        WVector4_40(k) = getMultiplicationRecurrenceRelation(-WVector4_7,WVector4_23,k);
+//        WVector4_40(k) = -getMultiplicationRecurrenceRelation(WVector4_7,WVector4_23,k);
 
-        WVector4_41(k) = getMultiplicationRecurrenceRelation(WVector4_8,WVector4_24,k);
-        WVector4_42(k) = getMultiplicationRecurrenceRelation(-WVector4_5,WVector4_22,k);
-        WVector4_43(k) = getMultiplicationRecurrenceRelation(-WVector4_5,WVector4_23,k);
-        WVector4_44(k) = getMultiplicationRecurrenceRelation(-WVector4_8,WVector4_25,k);
-        WVector4_45(k) = getMultiplicationRecurrenceRelation(WVector4_40,WVector4_25,k);
-        WVector4_46(k) = getMultiplicationRecurrenceRelation(WVector4_42,WVector4_25,k);
-        WVector4_47(k) = getMultiplicationRecurrenceRelation(-WVector4_13,WVector4_22,k);
-        WVector4_48(k) = getMultiplicationRecurrenceRelation(WVector4_40,WVector4_24,k);
-        WVector4_49(k) = getMultiplicationRecurrenceRelation(WVector4_42,WVector4_24,k);
-        WVector4_50(k) = getMultiplicationRecurrenceRelation(WVector4_6,(WVector4_43+WVector4_41),k)+WVector4_46(k);
+//        WVector4_41(k) = getMultiplicationRecurrenceRelation(WVector4_8,WVector4_24,k);
+//        WVector4_42(k) = -getMultiplicationRecurrenceRelation(WVector4_5,WVector4_22,k);
+//        WVector4_43(k) = -getMultiplicationRecurrenceRelation(WVector4_5,WVector4_23,k);
+//        WVector4_44(k) = -getMultiplicationRecurrenceRelation(WVector4_8,WVector4_25,k);
+//        WVector4_45(k) = getMultiplicationRecurrenceRelation(WVector4_40,WVector4_25,k);
+//        WVector4_46(k) = getMultiplicationRecurrenceRelation(WVector4_42,WVector4_25,k);
+//        WVector4_47(k) = -getMultiplicationRecurrenceRelation(WVector4_13,WVector4_22,k);
+//        WVector4_48(k) = getMultiplicationRecurrenceRelation(WVector4_40,WVector4_24,k);
+//        WVector4_49(k) = getMultiplicationRecurrenceRelation(WVector4_42,WVector4_24,k);
+//        WVector4_50(k) = getMultiplicationRecurrenceRelation(WVector4_6,(WVector4_45+WVector4_41),k)+WVector4_46(k);
 
-        WVector4_51(k) = getMultiplicationRecurrenceRelation(WVector4_6,(WVector4_48+WVector4_44),k)+WVector4_49(k);
-        WVector4_52(k) = WVector4_39(k)+getMultiplicationRecurrenceRelation(WVector4_36,WVector4_50,k)+getMultiplicationRecurrenceRelation(WVector4_37,(WVector4_47+WVector4_43),k)+
-                getMultiplicationRecurrenceRelation(-WVector4_38,WVector4_51,k);
+//        WVector4_51(k) = getMultiplicationRecurrenceRelation(WVector4_6,(WVector4_48+WVector4_44),k)+WVector4_49(k);
+//        WVector4_52(k) = WVector4_39(k)+getMultiplicationRecurrenceRelation(WVector4_36,WVector4_50,k)+getMultiplicationRecurrenceRelation(WVector4_37,(WVector4_47+WVector4_43),k)-
+//                getMultiplicationRecurrenceRelation(WVector4_38,WVector4_51,k);
 
         /// Debug ///
+        if (k == 1 || k==2){
+//            std::cout<<"k = "<<k<<std::endl;
+//        std::cout<<"WVector4_52(k) = "<<WVector4_52(k)<<std::endl;
+//        std::cout<<"WVector4_39(k) = "<<WVector4_39(k)<<std::endl;
+//        std::cout<<"getMultiplicationRecurrenceRelation(WVector4_36,WVector4_50,k) = "<<getMultiplicationRecurrenceRelation(WVector4_36,WVector4_50,k)<<std::endl;
+////        std::cout<<"getMultiplicationRecurrenceRelation(WVector4_37,(WVector4_47+WVector4_43),k) = "<<getMultiplicationRecurrenceRelation(WVector4_37,(WVector4_47+WVector4_43),k)<<std::endl;
+////        std::cout<<"getMultiplicationRecurrenceRelation(WVector4_38,WVector4_51,k) = "<<getMultiplicationRecurrenceRelation(WVector4_38,WVector4_51,k)<<std::endl;
+//        std::cout<<"WVector4_36(k) = "<<WVector4_36(k)<<std::endl;
+//        std::cout<<"WVector4_50(k) = "<<WVector4_50(k)<<std::endl;
+//        std::cout<<"getMultiplicationRecurrenceRelation(WVector4_6,(WVector4_45+WVector4_41),k) = "<<getMultiplicationRecurrenceRelation(WVector4_6,(WVector4_45+WVector4_41),k)<<std::endl;
+//        std::cout<<"WVector4_46(k) = "<<WVector4_46(k)<<std::endl;
+//        std::cout<<"WVector4_42(k) = "<<WVector4_42(k)<<std::endl;
+//        std::cout<<"WVector4_25(k) = "<<WVector4_25(k)<<std::endl;
+//        std::cout<<"WVector4_22(k) = "<<WVector4_22(k)<<std::endl;
+//        std::cout<<"WVector4_18(k) = "<<WVector4_18(k)<<std::endl;
+//        std::cout<<"WVector4_21(k) = "<<WVector4_21(k)<<std::endl;
+//        std::cout<<"WVector4_10(k) = "<<WVector4_10(k)<<std::endl;
+//        std::cout<<"WVector4_9(k) = "<<WVector4_9(k)<<std::endl;
+
+
+
+
+
+//        std::cout<<"WVector4_6(k) = "<<WVector4_6(k)<<std::endl;
+//        std::cout<<"WVector4_45(k) = "<<WVector4_45(k)<<std::endl;
+//        std::cout<<"WVector4_41(k) = "<<WVector4_41(k)<<std::endl;
+//        std::cout<<"WVector4_8(k) = "<<WVector4_8(k)<<std::endl;
+//        std::cout<<"WVector4_24(k) = "<<WVector4_24(k)<<std::endl;
+//        std::cout<<"WVector4_19(k) = "<<WVector4_19(k)<<std::endl;
+//        std::cout<<"WVector4_12(k) = "<<WVector4_12(k)<<std::endl;
+
+
+
+
+
+        }
 //        std::cout<<"WVector4_39(k) = "<<WVector4_39(k)<<std::endl;
 //        std::cout<<"getMultiplicationRecurrenceRelation(WVector4_36,WVector4_50,k) = "<<getMultiplicationRecurrenceRelation(WVector4_36,WVector4_50,k)<<std::endl;
 //        std::cout<<"getMultiplicationRecurrenceRelation(WVector4_37,(WVector4_47+WVector4_43),k) = "<<getMultiplicationRecurrenceRelation(WVector4_37,(WVector4_47+WVector4_43),k)<<std::endl;
@@ -655,67 +749,76 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
         /// Debug ///
 
 
-        UMatrix(4,k) = WVector4_52(k);
+//        UMatrix(4,k) = WVector4_52(k);
+        UMatrix(4,k) = WVector4_39(k)+getMultiplicationRecurrenceRelation(WVector4_36,WVector4_13,k)+getMultiplicationRecurrenceRelation(WVector4_37,WVector4_21,k)-getMultiplicationRecurrenceRelation(WVector4_38,WVector4_24,k); // U4
 
 
 
         // 5
 
         WVector5_1(k) = getDivisionRecurrenceRelation((-standardGravitationalParameter*XMatrix.row(2)),XMatrix.row(9),WVector5_1,k);
-        WVector5_2(k) = getMultiplicationRecurrenceRelation(WVector4_6,WVector4_22,k);
-        WVector5_3(k) = getMultiplicationRecurrenceRelation(WVector4_5,(WVector4_45+WVector4_41),k)+getMultiplicationRecurrenceRelation(WVector5_2,WVector4_25,k);
-        WVector5_4(k) = getMultiplicationRecurrenceRelation(-WVector4_19,WVector4_22,k)+getMultiplicationRecurrenceRelation(WVector4_6,WVector4_23,k);
-        WVector5_5(k) = getMultiplicationRecurrenceRelation(WVector4_5,(WVector4_48+WVector4_44),k)+getMultiplicationRecurrenceRelation(WVector5_2,WVector4_24,k);
-        WVector5_6(k) = WVector5_1(k)+getMultiplicationRecurrenceRelation(WVector4_36,WVector5_3,k)+getMultiplicationRecurrenceRelation(WVector4_37,WVector5_4,k)+getMultiplicationRecurrenceRelation(-WVector4_38,WVector5_5,k);
+//        WVector5_2(k) = getMultiplicationRecurrenceRelation(WVector4_6,WVector4_22,k);
+//        WVector5_3(k) = getMultiplicationRecurrenceRelation(WVector4_5,(WVector4_45+WVector4_41),k)+getMultiplicationRecurrenceRelation(WVector5_2,WVector4_25,k);
+//        WVector5_4(k) = -getMultiplicationRecurrenceRelation(WVector4_14,WVector4_22,k)+getMultiplicationRecurrenceRelation(WVector4_6,WVector4_23,k);
+//        WVector5_5(k) = getMultiplicationRecurrenceRelation(WVector4_5,(WVector4_48+WVector4_44),k)+getMultiplicationRecurrenceRelation(WVector5_2,WVector4_24,k);
+//        WVector5_6(k) = WVector5_1(k)+getMultiplicationRecurrenceRelation(WVector4_36,WVector5_3,k)+getMultiplicationRecurrenceRelation(WVector4_37,WVector5_4,k)-getMultiplicationRecurrenceRelation(WVector4_38,WVector5_5,k);
 
         /// Debug ///
-        if (k==1){
-        std::cout<<"w5,6 = "<<WVector5_6<<std::endl;
-        std::cout<<"getMultiplicationRecurrenceRelation(WVector4_36,WVector5_3,k) = "<<getMultiplicationRecurrenceRelation(WVector4_36,WVector5_3,k)<<std::endl;
-        std::cout<<"w5,3 = "<<WVector5_3<<std::endl;
-        std::cout<<"getMultiplicationRecurrenceRelation(WVector4_5,(WVector4_45+WVector4_41),k) = "<<getMultiplicationRecurrenceRelation(WVector4_5,(WVector4_45+WVector4_41),k)<<std::endl;
-        std::cout<<"getMultiplicationRecurrenceRelation(WVector5_2,WVector4_25,k) = "<<getMultiplicationRecurrenceRelation(WVector5_2,WVector4_25,k)<<std::endl;
-        std::cout<<"x2 = "<<XMatrix.row(2)<<std::endl;
-        std::cout<<"w4,4 = "<<WVector4_4<<std::endl;
-        std::cout<<"w4,4(1) * w4,5(0) =  "<<WVector4_4(1)*WVector4_5(0)<<std::endl;
-        std::cout<<"x2(1) - w4,4(1) * w4,5(0) =  "<<XMatrix(2,1)-WVector4_4(1)*WVector4_5(0)<<std::endl;
-        std::cout<<"w4,5 = "<<WVector4_5<<std::endl;
-        std::cout<<"w4,6 = "<<WVector4_6<<std::endl;
-        std::cout<<"w4_8 = "<<WVector4_8<<std::endl;
-        std::cout<<"w4_9 = "<<WVector4_9<<std::endl;
-        std::cout<<"w4_10 = "<<WVector4_10<<std::endl;
-        std::cout<<"w4_15 = "<<WVector4_15<<std::endl;
-        std::cout<<"w4_16 = "<<WVector4_16<<std::endl;
+        if (k==1 || k==2){
+//        std::cout<<"w5,6(k) = "<<WVector5_6(k)<<std::endl;
+//        std::cout<<"getMultiplicationRecurrenceRelation(WVector4_36,WVector5_3,k) = "<<getMultiplicationRecurrenceRelation(WVector4_36,WVector5_3,k)<<std::endl;
+//        std::cout<<"w4,36(k) = "<<WVector4_36(k)<<std::endl;
+//        std::cout<<"w5,3(k) = "<<WVector5_3(k)<<std::endl;
+//        std::cout<<"getMultiplicationRecurrenceRelation(WVector4_5,(WVector4_45+WVector4_41),k) = "<<getMultiplicationRecurrenceRelation(WVector4_5,(WVector4_45+WVector4_41),k)<<std::endl;
+//        std::cout<<"getMultiplicationRecurrenceRelation(WVector5_2,WVector4_25,k) = "<<getMultiplicationRecurrenceRelation(WVector5_2,WVector4_25,k)<<std::endl;
+//        std::cout<<"x2 = "<<XMatrix.row(2)<<std::endl;
+//        std::cout<<"w4,4 = "<<WVector4_4<<std::endl;
+//        std::cout<<"w4,4(1) * w4,5(0) =  "<<WVector4_4(1)*WVector4_5(0)<<std::endl;
+//        std::cout<<"x2(1) - w4,4(1) * w4,5(0) =  "<<XMatrix(2,1)-WVector4_4(1)*WVector4_5(0)<<std::endl;
+//        std::cout<<"w4,5 = "<<WVector4_5<<std::endl;
+//        std::cout<<"w4,6 = "<<WVector4_6<<std::endl;
+//        std::cout<<"w4_8 = "<<WVector4_8<<std::endl;
+//        std::cout<<"w4_9 = "<<WVector4_9<<std::endl;
+//        std::cout<<"w4_10 = "<<WVector4_10<<std::endl;
+//        std::cout<<"w4_15 = "<<WVector4_15<<std::endl;
+//        std::cout<<"w4_16 = "<<WVector4_16<<std::endl;
+//        std::cout<<"w5,2 = "<<WVector5_2<<std::endl;
+//        std::cout<<"w4_17 = "<<WVector4_17<<std::endl;
+//        std::cout<<"w4_18 = "<<WVector4_18<<std::endl;
+//        std::cout<<"w4_21 = "<<WVector4_21<<std::endl;
+//        std::cout<<"w4_22 = "<<WVector4_22<<std::endl;
+//        std::cout<<"w4_24 = "<<WVector4_24<<std::endl;
+//        std::cout<<"w4_25 = "<<WVector4_25<<std::endl;
+//        std::cout<<"w4_12 = "<<WVector4_12<<std::endl;
+//        std::cout<<"-w4_19 = "<<-WVector4_19<<std::endl;
 
-        std::cout<<"w4_24 = "<<WVector4_24<<std::endl;
-        std::cout<<"w4_25 = "<<WVector4_25<<std::endl;
-        std::cout<<"w4_12 = "<<WVector4_12<<std::endl;
-        std::cout<<"-w4_19 = "<<-WVector4_19<<std::endl;
-
-        std::cout<<"w4_41 = "<<WVector4_41<<std::endl;
+//        std::cout<<"w4_41 = "<<WVector4_41<<std::endl;
 
 }
 
-
-
-
         /// Debug ///
 
 
-        UMatrix(5,k) = WVector5_6(k);
+//        UMatrix(5,k) = WVector5_6(k);
+
+        UMatrix(5,k) = WVector5_1(k)+getMultiplicationRecurrenceRelation(WVector4_36,WVector4_14,k)+getMultiplicationRecurrenceRelation(WVector4_37,WVector4_22,k)-getMultiplicationRecurrenceRelation(WVector4_38,WVector4_25,k); // U5
+
+
 
         // 6
 
         WVector6_1(k) = getDivisionRecurrenceRelation((-standardGravitationalParameter*XMatrix.row(3)),XMatrix.row(9),WVector6_1,k);
-        WVector6_2(k) = getMultiplicationRecurrenceRelation(WVector4_7,WVector4_24,k);
-        WVector6_3(k) = getMultiplicationRecurrenceRelation(WVector4_8,WVector4_22,k);
-        WVector6_4(k) = getMultiplicationRecurrenceRelation(-WVector4_7,WVector4_25,k);
-        WVector6_5(k) = getMultiplicationRecurrenceRelation(-WVector4_44,WVector4_23,k)+WVector6_2(k);
-        WVector6_6(k) = getMultiplicationRecurrenceRelation(WVector4_41,WVector4_23,k)+WVector6_4(k);
-        WVector6_7(k) = WVector6_1(k)+getMultiplicationRecurrenceRelation(WVector4_36,WVector6_5,k)+getMultiplicationRecurrenceRelation(-WVector4_38,WVector6_6,k);
+//        WVector6_2(k) = getMultiplicationRecurrenceRelation(WVector4_7,WVector4_24,k);
+//        WVector6_3(k) = getMultiplicationRecurrenceRelation(WVector4_8,WVector4_22,k);
+//        WVector6_4(k) = -getMultiplicationRecurrenceRelation(WVector4_7,WVector4_25,k);
+//        WVector6_5(k) = -getMultiplicationRecurrenceRelation(WVector4_44,WVector4_23,k)+WVector6_2(k);
+//        WVector6_6(k) = getMultiplicationRecurrenceRelation(WVector4_41,WVector4_23,k)+WVector6_4(k);
+//        WVector6_7(k) = WVector6_1(k)+getMultiplicationRecurrenceRelation(WVector4_36,WVector6_5,k)-getMultiplicationRecurrenceRelation(WVector4_37,WVector6_3,k)-getMultiplicationRecurrenceRelation(WVector4_38,WVector6_6,k);
 
 
-        UMatrix(6,k) = WVector6_7(k);
+//        UMatrix(6,k) = WVector6_7(k);
+        UMatrix(6,k) = WVector6_1(k)+getMultiplicationRecurrenceRelation(WVector4_36,WVector4_15,k)+getMultiplicationRecurrenceRelation(WVector4_37,WVector4_23,k)-getMultiplicationRecurrenceRelation(WVector4_38,WVector4_40,k);
+
 
         // 7
 
@@ -843,7 +946,7 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
 //    std::cout<<"WVector5_3 = "<<WVector5_3<<std::endl;     // W5,3
 //    std::cout<<"WVector5_4 = "<<WVector5_4<<std::endl;     // W5,4
 //    std::cout<<"WVector5_5 = "<<WVector5_5<<std::endl;     // W5,5
-    std::cout<<"WVector5_6 = "<<WVector5_6<<std::endl;     // W5,6
+//    std::cout<<"WVector5_6 = "<<WVector5_6<<std::endl;     // W5,6
 
 //    std::cout<<"WVector6_1 = "<<WVector6_1<<std::endl;     // W6,1
 //    std::cout<<"WVector6_2 = "<<WVector6_2<<std::endl;     // W6,2
