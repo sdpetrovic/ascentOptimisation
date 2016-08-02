@@ -532,8 +532,8 @@ public:
 //std::cout<<"Surely this works 6..."<<std::endl;
 
 /// Debug ///
-std::cout<<"sectionCD = "<<sectionCD<<std::endl;
-std::cout<<"x32 = "<<auxiliaryEquationsVector(32)<<std::endl;
+//std::cout<<"sectionCD = "<<sectionCD<<std::endl;
+//std::cout<<"x32 = "<<auxiliaryEquationsVector(32)<<std::endl;
 /// Debug ///
 
         auxiliaryEquationsVector(29) = dragCoefficientPolyCoefficients(sectionCD,1)*auxiliaryEquationsVector(32)+dragCoefficientPolyCoefficients(sectionCD,0);              // x29
@@ -1223,13 +1223,13 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(14,7) = 2.0*rotationalVelocity*auxiliaryFunctionsMatrix(4,6)*auxiliaryFunctionsMatrix(4,9)+auxiliaryFunctionsMatrix(11,1)+auxiliaryFunctionsMatrix(14,6);
 
     /// Debug ///
-    std::cout<<"w14,5 = "<<auxiliaryFunctionsMatrix(14,5)<<std::endl;
-    std::cout<<"x15 = "<<auxiliaryEquationsVector(15)<<std::endl;
+//    std::cout<<"w14,5 = "<<auxiliaryFunctionsMatrix(14,5)<<std::endl;
+//    std::cout<<"x15 = "<<auxiliaryEquationsVector(15)<<std::endl;
 //    std::cout<<"w4,6 = "<<auxiliaryFunctionsMatrix(4,6)<<std::endl;
 //    std::cout<<"w4,9 = "<<auxiliaryFunctionsMatrix(4,9)<<std::endl;
 //    std::cout<<"2.0*rotationalVelocity*auxiliaryFunctionsMatrix(4,6)*auxiliaryFunctionsMatrix(4,9) = "<<2.0*rotationalVelocity*auxiliaryFunctionsMatrix(4,6)*auxiliaryFunctionsMatrix(4,9)<<std::endl;
 //    std::cout<<"w11,1 = "<<auxiliaryFunctionsMatrix(11,1)<<std::endl;
-    std::cout<<"w14,6 = "<<auxiliaryFunctionsMatrix(14,6)<<std::endl;
+//    std::cout<<"w14,6 = "<<auxiliaryFunctionsMatrix(14,6)<<std::endl;
 //    std::cout<<"w14,7 = "<<auxiliaryFunctionsMatrix(14,7)<<std::endl;
     /// Debug ///
 

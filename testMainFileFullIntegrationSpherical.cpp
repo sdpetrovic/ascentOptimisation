@@ -250,6 +250,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     std::cout<<"The chosen local error tolerance = "<<chosenLocalErrorTolerance<<std::endl;
     std::cout<<"The chosen initial step-size = "<<chosenStepSize<<std::endl;
     std::cout<<"The chosen end time = "<<setEndTime<<std::endl;
+    std::cout<<"The initial Flight-path angle = "<<rad2deg(FlightPathAngle)<<" deg"<<std::endl;
+    std::cout<<"The initial Heading angle = "<<rad2deg(HeadingAngle)<<" deg"<<std::endl;
 
 //    const std::string currentIntegrator = "TSI";
 
@@ -264,6 +266,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     const double initialLatitudeDeg = 21.0;               // Starting latitude [deg] initial condition is 21 deg
     const double initialLongitudeDeg = 74.5;            // Starting longitude [deg] initial condition is 74.5 deg
     const double initialGroundVelocity = 0.01;          // Starting velocity in km/s (is suppose to be 0.0...)
+    std::cout<<"The initial ground velocity = "<<initialGroundVelocity<<" km/s"<<std::endl;
+    std::cout<<"The initial latitude = "<<initialLatitudeDeg<<" deg"<<std::endl;
+    std::cout<<"The initial longitude = "<<initialLongitudeDeg<<" deg"<<std::endl;
 
 
 
@@ -305,9 +310,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 
     /// Debug ///
-    std::cout<<"initialVelocityLaunchSiteVertical = "<<initialVelocityLaunchSiteVertical<<std::endl;
-    std::cout<<"initialVelocityLaunchSite = "<<initialVelocityLaunchSite<<std::endl;
-    std::cout<<"initialVelocityDueToMars = "<<initialVelocityDueToMars<<std::endl;
+//    std::cout<<"initialVelocityLaunchSiteVertical = "<<initialVelocityLaunchSiteVertical<<std::endl;
+//    std::cout<<"initialVelocityLaunchSite = "<<initialVelocityLaunchSite<<std::endl;
+//    std::cout<<"initialVelocityDueToMars = "<<initialVelocityDueToMars<<std::endl;
 
 
     /// Debug ///
@@ -715,8 +720,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //     for (int i = 0; i<4; i++){
          /// Debug ///
-    std::cout<<"The current step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
-    std::cout<<"The current runningTime = "<<runningTimeTSI<<std::endl;
+//    std::cout<<"The current step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
+//    std::cout<<"The current runningTime = "<<runningTimeTSI<<std::endl;
 //    std::cout<<"std::fabs(endTime-runningTime) = "<<std::fabs(endTimeTSI-runningTimeTSI)<<std::endl;
 //    std::cout<<"std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) = "<<std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) )<<std::endl;
          /// Debug ///
@@ -729,11 +734,11 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //        std::cout<<"It is indeed smaller than the step-size"<<std::endl;
                             stepSize.setCurrentStepSize(endTimeTSI - runningTimeTSI);
                         }
-        std::cout<<"The new step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
+//        std::cout<<"The new step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
         Eigen::VectorXd updatedStateAndTimeVector = performTaylorSeriesIntegrationStep(Mars, MAV, currentSphericalStateAndTime, stepSize, maxOrder, FlightPathAngle, HeadingAngle); /// The actual integration step
         // This function has the output: updated position, updated velocity, updated mass and updated time
 
-        std::cout<<"updatedStateAndTimeVector = "<<updatedStateAndTimeVector<<std::endl;
+//        std::cout<<"updatedStateAndTimeVector = "<<updatedStateAndTimeVector<<std::endl;
 
 
         // Check to see if the class has been updated from within the TSI function
@@ -836,17 +841,18 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         currentCartesianState(5) = velocityInertialFrame(2); // z-velocity
         currentCartesianState(6) = currentSphericalStateVector(6); // Mass
 
-        std::cout<<"Current Cartesian State = "<<currentCartesianState<<std::endl;
+//        std::cout<<"Current Cartesian State = "<<currentCartesianState<<std::endl;
 
         if (runningTimeTSI == 0.2){
                 stateAtPoint2SecTSI = currentCartesianState;
+                std::cout<<"The TSI state at 0.2 sec = "<<stateAtPoint2SecTSI<<std::endl;
         }
 
         currentStateAndTime.setCurrentStateAndTime(currentCartesianState,runningTimeTSI); // Update the current Cartesian state and time class!
 
      countTSI++;
 
-     std::cout<<"countTSI = "<<countTSI<<std::endl;
+//     std::cout<<"countTSI = "<<countTSI<<std::endl;
 //     }; // end of for-loop
 
     }while( !( endTimeTSI - runningTimeTSI <= std::numeric_limits< double >::epsilon( ) ) );
@@ -893,6 +899,10 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
             std::cerr<<"Error: values could not be stored because storage file does not exist"<<std::endl;
         };
+
+        std::cout<<"The TSI final state = "<<currentStateAndTime.getCurrentState()<<std::endl;
+        std::cout<<"The final time ="<<currentStateAndTime.getCurrentTime()<<std::endl;
+        std::cout<<"countTSI = "<<countTSI<<std::endl;
 
         /// Determine the CPU time taken ///
 

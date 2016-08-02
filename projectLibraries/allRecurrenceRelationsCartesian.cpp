@@ -999,7 +999,7 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
 //std::cout<<"x3/w4,3-1 = "<<fraction<<std::endl;
 
 
-    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
+//    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
 //    std::cout<<"UMatrix = "<<UMatrix<<std::endl;
 
 

@@ -252,6 +252,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     std::cout<<"The chosen local error tolerance = "<<chosenLocalErrorTolerance<<std::endl;
     std::cout<<"The chosen initial step-size = "<<chosenStepSize<<std::endl;
     std::cout<<"The chosen end time = "<<setEndTime<<std::endl;
+    std::cout<<"The initial Flight-path angle = "<<rad2deg(FlightPathAngle)<<" deg"<<std::endl;
+    std::cout<<"The initial Heading angle = "<<rad2deg(HeadingAngle)<<" deg"<<std::endl;
+
 
 //    const std::string currentIntegrator = "TSI";
 
@@ -266,6 +269,10 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     const double initialLatitudeDeg = 21.0;               // Starting latitude [deg] initial condition is 21 deg
     const double initialLongitudeDeg = 74.5;            // Starting longitude [deg] initial condition is 74.5 deg
     const double initialGroundVelocity = 0.01;          // Starting ground velocity in km/s
+    std::cout<<"The initial ground velocity = "<<initialGroundVelocity<<" km/s"<<std::endl;
+    std::cout<<"The initial latitude = "<<initialLatitudeDeg<<" deg"<<std::endl;
+    std::cout<<"The initial longitude = "<<initialLongitudeDeg<<" deg"<<std::endl;
+
 
 
 
@@ -309,9 +316,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     rotatingPlanetCorrection(2) = 0.0;
 
     /// Debug ///
-    std::cout<<"initialVerticalVelocity = "<<initialVerticalVelocity<<std::endl;
-    std::cout<<"initialRotationalVelocity = "<<initialRotationalVelocity<<std::endl;
-    std::cout<<"rotatingPlanetCorrection = "<<rotatingPlanetCorrection<<std::endl;
+//    std::cout<<"initialVerticalVelocity = "<<initialVerticalVelocity<<std::endl;
+//    std::cout<<"initialRotationalVelocity = "<<initialRotationalVelocity<<std::endl;
+//    std::cout<<"rotatingPlanetCorrection = "<<rotatingPlanetCorrection<<std::endl;
 
     /// Debug ///
 
@@ -720,8 +727,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //     for (int i = 0; i<4; i++){
          /// Debug ///
-    std::cout<<"The current step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
-    std::cout<<"The current runningTime = "<<runningTimeTSI<<std::endl;
+//    std::cout<<"The current step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
+//    std::cout<<"The current runningTime = "<<runningTimeTSI<<std::endl;
 //    std::cout<<"std::fabs(endTime-runningTime) = "<<std::fabs(endTimeTSI-runningTimeTSI)<<std::endl;
 //    std::cout<<"std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) = "<<std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) )<<std::endl;
          /// Debug ///
@@ -734,11 +741,14 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //        std::cout<<"It is indeed smaller than the step-size"<<std::endl;
                             stepSize.setCurrentStepSize(endTimeTSI - runningTimeTSI);
                         }
-        std::cout<<"The new step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
+//        std::cout<<"The new step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
         Eigen::VectorXd updatedStateAndTimeVector = performCartesianTaylorSeriesIntegrationStep(Mars, MAV, currentStateAndTime, stepSize, maxOrder, FlightPathAngle, HeadingAngle); /// The actual integration step
         // This function has the output: updated position, updated velocity, updated mass and updated time
 
-        std::cout<<"updatedStateAndTimeVector = "<<updatedStateAndTimeVector<<std::endl;
+//        std::cout<<"updatedStateAndTimeVector = "<<updatedStateAndTimeVector<<std::endl;
+
+
+
 
 
         // Check to see if the class has been updated from within the TSI function
@@ -789,6 +799,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
         if (runningTimeTSI == 0.2){
                 stateAtPoint2SecTSI = currentStateVector;
+                std::cout<<"The TSI state at 0.2 sec = "<<stateAtPoint2SecTSI<<std::endl;
         }
 
         currentStateAndTime.setCurrentStateAndTime(currentStateVector,runningTimeTSI); // Update the current state and time class!
@@ -797,7 +808,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
      countTSI++;
 
-     std::cout<<"countTSI = "<<countTSI<<std::endl;
+//     std::cout<<"countTSI = "<<countTSI<<std::endl;
 //     }; // end of for-loop
 
     }while( !( endTimeTSI - runningTimeTSI <= std::numeric_limits< double >::epsilon( ) ) );
@@ -844,6 +855,11 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
             std::cerr<<"Error: values could not be stored because storage file does not exist"<<std::endl;
         };
+
+        // Print the final TSI conditions
+        std::cout<<"The final TSI state = "<<currentStateAndTime.getCurrentState()<<std::endl;
+        std::cout<<"The final time = "<<currentStateAndTime.getCurrentTime()<<std::endl;
+        std::cout<<"countTSI = "<<countTSI<<std::endl;
 
         /// Determine the CPU time taken for TSI ///
 
@@ -1135,7 +1151,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                             stepSizeRKF = endTime - integrator.getCurrentIndependentVariable( );
                         }
 
-//                        double prevStepSize = stepSizeRKF;
+                        double prevStepSize = stepSizeRKF;
 
 //                         std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
 
@@ -1146,17 +1162,17 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
                         Eigen::VectorXd currentState = integrator.getCurrentState();
 
-//                        std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
-//                        std::cout<<"The current running time is "<<runningTime<<std::endl;
+                        std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
+                        std::cout<<"The current running time is "<<runningTime<<std::endl;
 
 
 
                         if (runningTime == 0.2){
                             std::cout<<"State at time 0.2 = "<<currentState<<std::endl;
                             stateAtPoint2SecRKF = currentState;
-                            std::cout<<"Latitude = "<<atan2(currentState(1),currentState(0))<<std::endl;
-                            std::cout<<"FlightPathAngle = "<<-asin((currentState(3)*(-cos(atan2(currentState(1),currentState(0))))+currentState(4)*(-sin(atan2(currentState(1),currentState(0)))))/
-                                                                   (sqrt(currentState(3)*currentState(3)+currentState(4)*currentState(4)+currentState(5)*currentState(5))))<<std::endl;
+//                            std::cout<<"Latitude = "<<atan2(currentState(1),currentState(0))<<std::endl;
+//                            std::cout<<"FlightPathAngle = "<<-asin((currentState(3)*(-cos(atan2(currentState(1),currentState(0))))+currentState(4)*(-sin(atan2(currentState(1),currentState(0)))))/
+//                                                                   (sqrt(currentState(3)*currentState(3)+currentState(4)*currentState(4)+currentState(5)*currentState(5))))<<std::endl;
 
                         }
 

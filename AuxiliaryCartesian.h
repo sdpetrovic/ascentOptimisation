@@ -181,7 +181,7 @@ public:
                     FlightPathAngle = FlightPathAngle_; // Flight path angle in rad
                     HeadingAngle = HeadingAngle_;  // Heading angle in rad
 
-                    std::cout<<"Flight-path angle and heading angle have been set"<<std::endl;
+//                    std::cout<<"Flight-path angle and heading angle have been set"<<std::endl;
                 }
                 else{
                     std::cout<<"Heading angle has to be specified between 0.0 and 2*pi"<<std::endl;
