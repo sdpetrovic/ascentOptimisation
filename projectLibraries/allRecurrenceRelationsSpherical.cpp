@@ -811,6 +811,21 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         UMatrix(32,k) = WVector32_4(k);
 
+        // 29
+        // Determine which section of the drag coefficient curve needs to be used
+
+        for (int i=0; i < 5+1; i++){
+
+            if (dragCoefficientMachRanges(i,0) <= XMatrix(32,0) && XMatrix(32,0) < dragCoefficientMachRanges(i,1)){
+
+                sectionCD = i;
+            }
+
+        };
+
+
+        UMatrix(29,k) = dragCoefficientPolyCoefficients(sectionCD,1)*UMatrix(32,k);
+
 
         // 27
 

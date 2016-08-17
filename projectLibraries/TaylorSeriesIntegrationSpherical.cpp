@@ -454,16 +454,28 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
         if (temperatureAltitudeRanges(i,0) <= originalAltitude && originalAltitude < temperatureAltitudeRanges(i,1)){
 
 //            currentSectionT = i;
+//            std::cout<<"It actually does go inside the limitAltitude section"<<std::endl;
              limitAltitude = temperatureAltitudeRanges(i,1);
+//             std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
 
 
         }
         else {
-            std::cout<<"The originalAltitude = "<<originalAltitude<<", which is lower than the lowest altitude."<<std::endl;
+//            std::cout<<"The originalAltitude = "<<originalAltitude<<", which is lower than the lowest altitude."<<std::endl;
         }
 
+        /// Debug ///
+
+//        std::cout<<"originalAltitude = "<<originalAltitude<<std::endl;
+//        std::cout<<"temperatureAltitudeRanges(i,0) = "<<temperatureAltitudeRanges(i,0)<<std::endl;
+//        std::cout<<"temperatureAltitudeRanges(i,1) = "<<temperatureAltitudeRanges(i,1)<<std::endl;
+
+
+        /// Debug ///
 
 };
+
+
 
                 // Set the initial values for the time-step domain
 
@@ -475,21 +487,36 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
                 double fTo = newAltitude-limitAltitude; // f(t1,0)
 
+                /// Debug ///
+
+                std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
+                std::cout<<"originalAltitude = "<<originalAltitude<<std::endl;
+                std::cout<<"newAltitude = "<<newAltitude<<std::endl;
+                std::cout<<"fFrom = "<<fFrom<<std::endl;
+                std::cout<<"fTo = "<<fTo<<std::endl;
+                std::cout<<"initialNewTime = "<<currentTime+currentStepSize<<std::endl;
+
+                /// Debug ///
 
 
-bool signIsPositive = false;
+bool signIsPositive = false; // Check in which direction, up or down, the curve is heading
 
         if (fFrom<0){
             signIsPositive = true;
         }
 
 
-bool altitudeAccept = false;
+bool altitudeAccept = false; // Default value is that the altitude is not accepted and has therefore gone beyond the altitude limit
+
+if (fTo <0){    // If the newAltitude is below the limitAltitude (so fTO<0) then the new altitude is still within the same section and can be accepted
+
+    altitudeAccept = true;
+}
+else{
 
 
 
-
-        do{
+        do{ // If the altitude has gone beyond the limit altitude, this do loop will determine a new "currentStepSize"
 
 
         if (newAltitude - limitAltitude <= 1e-6 && newAltitude - limitAltitude >= 0.0){   // Checking if the convergence condition has been met and an answer has been found
@@ -550,11 +577,12 @@ bool altitudeAccept = false;
 
 }while(altitudeAccept == false);
 
-
+}
 
 
 //std::cout<<"Does this even work4?"<<std::endl;
         double updatedTime = currentTime+currentStepSize;           // Create the updated time variable
+        std::cout<<"updatedTime = "<<updatedTime<<std::endl;
 
 
         /// Updating the step-size ///

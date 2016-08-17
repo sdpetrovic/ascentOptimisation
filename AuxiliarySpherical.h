@@ -1041,9 +1041,9 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
 //    auxiliaryFunctionsMatrix(4,3) = cx10x11;
 //    auxiliaryFunctionsMatrix(4,3) = cos(auxiliaryEquationsVector(49));
     // Avoid cosine rounding errors
-            if (abs(auxiliaryFunctionsMatrix(4,3))<6.2e-17){
-              auxiliaryFunctionsMatrix(4,3) = 0;
-            }
+//            if (abs(auxiliaryFunctionsMatrix(4,3))<6.2e-17){
+//              auxiliaryFunctionsMatrix(4,3) = 0;
+//            }
     auxiliaryFunctionsMatrix(4,4) = sx12;
 //    std::cout<<"w4,4 (sin(x12)) = "<<auxiliaryFunctionsMatrix(4,4)<<std::endl;
     auxiliaryFunctionsMatrix(4,5) = cx13;
@@ -1067,9 +1067,9 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
 //    auxiliaryFunctionsMatrix(4,8) = sx10x11;
 //    auxiliaryFunctionsMatrix(4,8) = sin(auxiliaryEquationsVector(49));
     // Avoid sine rounding errors
-    if (abs(auxiliaryFunctionsMatrix(4,8))<1.22e-16){
-        auxiliaryFunctionsMatrix(4,8) = 0;
-    }
+//    if (abs(auxiliaryFunctionsMatrix(4,8))<1.22e-16){
+//        auxiliaryFunctionsMatrix(4,8) = 0;
+//    }
     /// Debug ///
 
 //    std::cout<<"sin(x13) = "<<sin(auxiliaryEquationsVector(13))<<std::endl;
