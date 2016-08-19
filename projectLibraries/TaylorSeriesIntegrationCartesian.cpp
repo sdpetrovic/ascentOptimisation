@@ -151,7 +151,7 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
     const double currentMass = currentStateAndTime.getCurrentMass();                                // The mass seperately
     const double currentTime = currentStateAndTime.getCurrentTime();                                // The current time
 
-    const double currentStepSize = stepSize.getCurrentStepSize();                      // The current step-size
+    double currentStepSize = stepSize.getCurrentStepSize();                      // The current step-size
 
     // Specified initial conditions
 
@@ -246,15 +246,26 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
     //std::cout<<"Does this even work1?"<<std::endl;
 
-        Eigen::MatrixXd TaylorCoefficientsOutputMatrix = Eigen::MatrixXd::Zero(7,maxOrder+1);       // Create an output matrix for the file without the first empty row
+//        Eigen::MatrixXd TaylorCoefficientsOutputMatrix = Eigen::MatrixXd::Zero(7,maxOrder+1);       // Create an output matrix for the file without the first empty row
 
-        TaylorCoefficientsOutputMatrix.row(0) = TaylorCoefficients.row(1);                  // The first line entries are the maxOrder+1 Taylor Series Coefficients for     the position in the x-direction
-        TaylorCoefficientsOutputMatrix.row(1) = TaylorCoefficients.row(2);                  // The second line entries are the maxOrder+1 Taylor Series Coefficients for    the position in the y-direction
-        TaylorCoefficientsOutputMatrix.row(2) = TaylorCoefficients.row(3);                  // The third line entries are the maxOrder+1 Taylor Series Coefficients for     the position in the z-direction
-        TaylorCoefficientsOutputMatrix.row(3) = TaylorCoefficients.row(4);                  // The fourth line entries are the maxOrder+1 Taylor Series Coefficients for    the velocity in the x-direction
-        TaylorCoefficientsOutputMatrix.row(4) = TaylorCoefficients.row(5);                  // The fifth line entries are the maxOrder+1 Taylor Series Coefficients for     the velocity in the y-direction
-        TaylorCoefficientsOutputMatrix.row(5) = TaylorCoefficients.row(6);                  // The sixth line entries are the maxOrder+1 Taylor Series Coefficients for     the velocity in the z-direction
-        TaylorCoefficientsOutputMatrix.row(6) = TaylorCoefficients.row(7);                  // The seventh line entries are the maxOrder+1 Taylor Series Coefficients for   the mass
+//        TaylorCoefficientsOutputMatrix.row(0) = TaylorCoefficients.row(1);                  // The first line entries are the maxOrder+1 Taylor Series Coefficients for     the position in the x-direction
+//        TaylorCoefficientsOutputMatrix.row(1) = TaylorCoefficients.row(2);                  // The second line entries are the maxOrder+1 Taylor Series Coefficients for    the position in the y-direction
+//        TaylorCoefficientsOutputMatrix.row(2) = TaylorCoefficients.row(3);                  // The third line entries are the maxOrder+1 Taylor Series Coefficients for     the position in the z-direction
+//        TaylorCoefficientsOutputMatrix.row(3) = TaylorCoefficients.row(4);                  // The fourth line entries are the maxOrder+1 Taylor Series Coefficients for    the velocity in the x-direction
+//        TaylorCoefficientsOutputMatrix.row(4) = TaylorCoefficients.row(5);                  // The fifth line entries are the maxOrder+1 Taylor Series Coefficients for     the velocity in the y-direction
+//        TaylorCoefficientsOutputMatrix.row(5) = TaylorCoefficients.row(6);                  // The sixth line entries are the maxOrder+1 Taylor Series Coefficients for     the velocity in the z-direction
+//        TaylorCoefficientsOutputMatrix.row(6) = TaylorCoefficients.row(7);                  // The seventh line entries are the maxOrder+1 Taylor Series Coefficients for   the mass
+
+        Eigen::MatrixXd TaylorCoefficientsOutputMatrix = Eigen::MatrixXd::Zero(8,maxOrder+1);       // Create an output matrix for the file without the first empty row
+
+        TaylorCoefficientsOutputMatrix(0,0) = currentTime;                                  // The first line entries give the current time as primary entry and zero as the rest
+        TaylorCoefficientsOutputMatrix.row(1) = TaylorCoefficients.row(1);                  // The second line entries are the maxOrder+1 Taylor Series Coefficients for     the position in the x-direction
+        TaylorCoefficientsOutputMatrix.row(2) = TaylorCoefficients.row(2);                  // The third line entries are the maxOrder+1 Taylor Series Coefficients for      the position in the y-direction
+        TaylorCoefficientsOutputMatrix.row(3) = TaylorCoefficients.row(3);                  // The fourth line entries are the maxOrder+1 Taylor Series Coefficients for     the position in the z-direction
+        TaylorCoefficientsOutputMatrix.row(4) = TaylorCoefficients.row(4);                  // The fifth line entries are the maxOrder+1 Taylor Series Coefficients for      the velocity in the x-direction
+        TaylorCoefficientsOutputMatrix.row(5) = TaylorCoefficients.row(5);                  // The sixth line entries are the maxOrder+1 Taylor Series Coefficients for      the velocity in the y-direction
+        TaylorCoefficientsOutputMatrix.row(6) = TaylorCoefficients.row(6);                  // The seventh line entries are the maxOrder+1 Taylor Series Coefficients for    the velocity in the z-direction
+        TaylorCoefficientsOutputMatrix.row(7) = TaylorCoefficients.row(7);                  // The eighth line entries are the maxOrder+1 Taylor Series Coefficients for     the mass
 
 
         /// Start debug ///
@@ -271,6 +282,8 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
  //*/       /// End debug ///
 
+
+
         // Set directory where output files will be stored. THIS REQUIRES THE COMPLETE PATH IN ORDER TO WORK!!
         const std::string outputDirectory = "/home/stachap/Documents/Thesis/03. Tudat/tudatBundle/tudatApplications/thesisProject/02.taylorSeriesCoefficientsOutputFolder/";
 
@@ -278,8 +291,95 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
         // Set output format for matrix output.
         Eigen::IOFormat csvFormat( 15, 0, ", ", "\n" );
 
+
+        /// Get time ///
+
+        time_t rawtime;
+        struct tm * timeinfo;
+
+        time ( &rawtime );
+        timeinfo = localtime ( &rawtime );
+//        printf ( "Current local time and date: %s", asctime (timeinfo) );         // (from stackoverflow.com/questions/997946/how-to-get-current-time-and-date-in-c and from stackoverflow.com/questions/1442116/how-to-get-date-and-time-value-in-c-program)
+//        std::cout<<"time = "<<time ( &rawtime )<<std::endl;
+//        std::cout<< (timeinfo->tm_year+1900) << "-"
+//                 << (timeinfo->tm_mon + 1) << "-"
+//                 << timeinfo->tm_mday << " "
+//                 << timeinfo->tm_hour << ":"
+//                 << timeinfo->tm_min << ":"
+//                 << timeinfo->tm_sec <<std::endl;
+
+        ostringstream ConvertYear;
+        ConvertYear << (timeinfo->tm_year+1900);
+        std::string currentYear = ConvertYear.str();
+
+        ostringstream ConvertMonth;
+        ConvertMonth << (timeinfo->tm_mon+1);
+        std::string currentMonth = ConvertMonth.str();
+
+        ostringstream ConvertDay;
+        ConvertDay << timeinfo->tm_mday;
+        std::string currentDay = ConvertDay.str();
+
+        ostringstream ConvertHour;
+        ConvertHour << timeinfo->tm_hour;
+        std::string currentHour = ConvertHour.str();
+
+//        std::cout<<"currentHour = "<<currentHour<<std::endl;
+
+        ostringstream ConvertMin;
+        ConvertMin << timeinfo->tm_min;
+        std::string currentMin = ConvertMin.str();
+
+//        std::cout<<"currentMin = "<<currentMin<<std::endl;
+
+        ostringstream ConvertSec;
+        ConvertSec << timeinfo->tm_sec;
+        std::string currentSec = ConvertSec.str();
+
+//        std::cout<<"currentSec = "<<currentSec<<std::endl;
+
+        // Making sure each one of the representation has at two numbers
+        if(currentMonth.size() == 1){
+            currentMonth = "0" + currentMonth;
+        }
+
+
+        if(currentDay.size() == 1){
+            currentDay = "0" + currentDay;
+        }
+
+
+        if(currentSec.size() == 1){
+            currentSec = "0" + currentSec;
+        }
+
+        if (currentMin.size() == 1){
+            currentMin = "0" + currentMin;
+        }
+
+        if (currentHour.size() == 1){
+            currentHour = "0" + currentHour;
+        }
+
+
+//        std::cout<<"The length of currentSec = "<<currentSec.size()<<" and the value = "<<currentSec<<std::endl;
+
+        std::string ComputerTimeString = currentYear + "-" + currentMonth + "-" + currentDay + "_" + currentHour + ":" + currentMin + ":" + currentSec;  // Convert to string and store
+
+        std::string newFileName = "CartesianTaylorSeriesCoefficientsFileAtDateAndTime_" + ComputerTimeString + ".csv";
+
+//    std::cerr<<"The file name that you have chosen already exists, a new file with name "<<newFileName<<" will be created to store the data for now"<<std::endl;
+
+//    // Set new absolute path to file containing the data.
+//    dataAbsolutePathTSI = outputDirectoryTSI + newFileName;
+
+    // Set absolute path to file containing the Taylor Series Coefficients.
+    const std::string taylorSeriesCoefficientsAbsolutePath = outputDirectory + newFileName;
+
+
         // Set absolute path to file containing the Taylor Series Coefficients.
-        const std::string taylorSeriesCoefficientsAbsolutePath = outputDirectory + "test1TaylorSeriesCoefficients(bugSearch31-05-2016).csv";
+//        const std::string taylorSeriesCoefficientsAbsolutePath = outputDirectory + "test1TaylorSeriesCoefficients(bugSearch31-05-2016).csv";
+
 
 
         // Check if the file already exists.
@@ -351,6 +451,230 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
         } // Taylor series summation
 
 }   // All variables
+
+
+
+
+
+
+
+        /// Determine if a new section has been reached for the temperature and correct timestep accordingly ///
+
+    //        int currentSectionT = 0; // Default value
+//            double originalAltitude = currentState(0)-bodyReferenceRadius; // h
+            double originalAltitude = sqrt(currentState(0)*currentState(0)+currentState(1)*currentState(1)+currentState(2)*currentState(2))-bodyReferenceRadius; //h
+            double limitAltitude = temperatureAltitudeRanges(0,1); // Default value
+
+                    for (int i=0; i < 3+1; i++){
+
+            if (temperatureAltitudeRanges(i,0) <= originalAltitude && originalAltitude < temperatureAltitudeRanges(i,1)){
+
+    //            currentSectionT = i;
+    //            std::cout<<"It actually does go inside the limitAltitude section"<<std::endl;
+                 limitAltitude = temperatureAltitudeRanges(i,1);
+    //             std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
+
+
+            }
+            else {
+    //            std::cout<<"The originalAltitude = "<<originalAltitude<<", which is lower than the lowest altitude."<<std::endl;
+            }
+
+            /// Debug ///
+
+    //        std::cout<<"originalAltitude = "<<originalAltitude<<std::endl;
+    //        std::cout<<"temperatureAltitudeRanges(i,0) = "<<temperatureAltitudeRanges(i,0)<<std::endl;
+    //        std::cout<<"temperatureAltitudeRanges(i,1) = "<<temperatureAltitudeRanges(i,1)<<std::endl;
+
+
+            /// Debug ///
+
+    };
+
+
+
+                    // Set the initial values for the time-step domain
+
+                    double tFrom = currentTime;    // t0,0
+                    double fFrom = originalAltitude-limitAltitude; // f(t0,0)
+                    double fFromDot;        // fdot(t0,0)
+                    double fFromDotX;       // fdotx (t0,0)
+                    double fFromDotY;       // fdoty (t0,0)
+                    double fFromDotZ;       // fdotz (t0,0)
+                    double tTo = currentTime+currentStepSize;  // t1,0
+//                    double newAltitude = updatedState(0)-bodyReferenceRadius; // h_new
+                    double newAltitude = sqrt(updatedState(0)*updatedState(0)+updatedState(1)*updatedState(1)+updatedState(2)*updatedState(2))-bodyReferenceRadius; // h_new
+
+
+                    double fTo = newAltitude-limitAltitude; // f(t1,0)
+
+                    /// Debug ///
+
+                    std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
+                    std::cout<<"originalAltitude = "<<originalAltitude<<std::endl;
+                    std::cout<<"newAltitude = "<<newAltitude<<std::endl;
+                    std::cout<<"fFrom = "<<fFrom<<std::endl;
+                    std::cout<<"fTo = "<<fTo<<std::endl;
+                    std::cout<<"currentStepSize before = "<<currentStepSize<<std::endl;
+                    std::cout<<"initialNewTime = "<<currentTime+currentStepSize<<std::endl;
+
+                    /// Debug ///
+
+
+    bool signIsPositive = false; // Check in which direction, up or down, the curve is heading
+
+            if (fFrom<0){
+                signIsPositive = true;
+            }
+
+
+    bool altitudeAccept = false; // Default value is that the altitude is not accepted and has therefore gone beyond the altitude limit
+
+    if (fTo <0){    // If the newAltitude is below the limitAltitude (so fTO<0) then the new altitude is still within the same section and can be accepted
+
+        altitudeAccept = true;
+    }
+    else{
+
+            std::cout<<"//////////////////////////////////////////////////////////////////////// Do loop has been started ////////////////////////////////////////////////////////////////////////"<<std::endl;
+            do{ // If the altitude has gone beyond the limit altitude, this do loop will determine a new "currentStepSize"
+
+
+            if (newAltitude - limitAltitude <= 1e-6 && newAltitude - limitAltitude >= 0.0){   // Checking if the convergence condition has been met and an answer has been found
+
+                altitudeAccept = true;
+    }
+            else{
+                // Compute an updated time step //
+
+                fFromDot = 0.0; // Reset
+                fFromDotX = 0.0; // Reset
+                fFromDotY = 0.0; // Reset
+                fFromDotZ = 0.0; // Reset
+
+                for (int k = 1; k < maxOrder+1; k++){
+                fFromDotX += k*TaylorCoefficients(1,k)*pow(currentStepSize,(k-1)) ;      // Compute tFromDotX
+                fFromDotY += k*TaylorCoefficients(2,k)*pow(currentStepSize,(k-1)) ;      // Compute tFromDotY
+                fFromDotZ += k*TaylorCoefficients(3,k)*pow(currentStepSize,(k-1)) ;      // Compute tFromDotZ
+
+    }
+                fFromDot = (currentState(0)*fFromDotX+currentState(1)*fFromDotY+currentState(2)*fFromDotZ)/(sqrt(updatedState(0)*updatedState(0)+updatedState(1)*updatedState(1)+updatedState(2)*updatedState(2))); // Compute tFromDot which is the derivative of the radius vector
+
+                double alpha = (fTo-fFrom)/((tTo-tFrom)*(tTo-tFrom))-fFromDot/(tTo-tFrom);  // Basically computing fFromDoubleDot/2 (or coefficient)
+
+                double tFromNew;
+                if (signIsPositive == true){    // Compute the new "from" time
+            tFromNew = tFrom + (-fFromDot+sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))/(2.0*alpha);
+
+            /// Debug ///
+
+            std::cout<<"Debug"<<std::endl;
+            std::cout<<"tTo = "<<tTo<<std::endl;
+            std::cout<<"tFrom = "<<tFrom<<std::endl;
+            std::cout<<"(tTo-tFrom) = "<<(tTo-tFrom)<<std::endl;
+
+            std::cout<<"(fTo-fFrom) = "<<(fTo-fFrom)<<std::endl;
+            std::cout<<"fFromDot = "<<fFromDot<<std::endl;
+
+            std::cout<<"(fTo-fFrom)/((tTo-tFrom)*(tTo-tFrom)) = "<<(fTo-fFrom)/((tTo-tFrom)*(tTo-tFrom))<<std::endl;
+            std::cout<<"fFromDot/(tTo-tFrom) = "<<fFromDot/(tTo-tFrom)<<std::endl;
+            std::cout<<"(tTo-tFrom) = "<<(tTo-tFrom)<<std::endl;
+            std::cout<<"((tTo-tFrom)*(tTo-tFrom)) = "<<((tTo-tFrom)*(tTo-tFrom))<<std::endl;
+
+
+            std::cout<<"(-fFromDot+sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))/(2.0*alpha) = "<<(-fFromDot+sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))/(2.0*alpha)<<std::endl;
+            std::cout<<"alpha = "<<alpha<<std::endl;
+            std::cout<<"sqrt(fFromDot*fFromDot+4.0*alpha*fFrom) = "<<sqrt(fFromDot*fFromDot+4.0*alpha*fFrom)<<std::endl;
+            std::cout<<"fFromDot*fFromDot+4.0*alpha*fFrom = "<<fFromDot*fFromDot+4.0*alpha*fFrom<<std::endl;
+
+//            std::cout<<"Debug"<<std::endl;
+            std::cout<<" "<<std::endl;
+
+            /// Debug ///
+
+    } // +
+                else {
+                   tFromNew = tFrom + (-fFromDot-sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))/(2.0*alpha);
+                } // -
+
+                currentStepSize = currentTime-tFromNew; // Update the new step-size to compute the new value for the altitude using the Taylor Coefficients
+
+                /// Debug ///
+//                std::cout<<"signIsPositive = "<<signIsPositive<<std::endl;
+//                std::cout<<"fFromDot = "<<fFromDot<<std::endl;
+//                std::cout<<"tFromNew = "<<tFromNew<<std::endl;
+//                std::cout<<"tFrom = "<<tFrom<<std::endl;
+//                std::cout<<"currentStepSize = currentTime-tFromNew = "<<currentStepSize<<std::endl;
+////                std::cout<<" "<<std::endl;
+                /// Debug ///
+
+
+            tudat::basic_mathematics::Vector7d updatedStateNew = tudat::basic_mathematics::Vector7d::Zero();        // Create a vector for the updatedState and setting it to zero
+
+                for (int n = 0; n<updatedStateNew.size();n++){                 // All variables
+
+                for (int k = 0; k<maxOrder+1;k++){                      // Taylor series summation
+
+                    updatedStateNew(n) += TaylorCoefficients((n+1),k)*pow(currentStepSize,k);      // Perform one step of the taylor series expansion and then add it to the previous step
+
+
+                } // Taylor series summation
+
+                }   // All variables
+
+                updatedState = updatedStateNew; // update the updated state
+
+//                newAltitude = updatedState(0)-bodyReferenceRadius;  // Determine the new final altitude at the end of the integration step (if this step-size would be the actual step-size for this integration step)
+                newAltitude = sqrt(updatedState(0)*updatedState(0)+updatedState(1)*updatedState(1)+updatedState(2)*updatedState(2))-bodyReferenceRadius;  // Determine the new final altitude at the end of the integration step (if this step-size would be the actual step-size for this integration step)
+
+
+                double fFromNew = newAltitude-limitAltitude; // Determine the new "from" function value
+
+                if ((fFrom/(fabs(fFrom))) != (fFromNew/(fabs(fFromNew)))){  // If the function value of the new "from" value is on the other side of the root, then the old "from" values are now the new "to" values (evaluate back to the beginning). Otherwise the "to" values don't change.
+                    fTo = fFrom;
+                    tTo = tFrom;
+
+                    /// Debug ///
+//                    std::cout<<"fTo and tTo changed!"<<std::endl;
+//                    std::cout<<"tTo = "<<tTo<<std::endl;
+//                    std::cout<<"tFromNew = "<<tFromNew<<std::endl;
+//                    std::cout<<"tFrom = "<<tFrom<<std::endl;
+                    /// Debug ///
+
+                }
+
+                fFrom = fFromNew;   // Update the new "from" values
+                tFrom = tFromNew;
+
+                /// Debug ///
+//                std::cout<<"Debug"<<std::endl;
+//                std::cout<<" "<<std::endl;
+                /// Debug ///
+
+
+
+
+
+
+            } // update!
+
+    }while(altitudeAccept == false);
+
+            std::cout<<"currentStepSize after = "<<currentStepSize<<std::endl;
+            std::cout<<"//////////////////////////////////////////////////////////////////////// Do loop has ended ////////////////////////////////////////////////////////////////////////"<<std::endl;
+
+    } // end of else
+
+
+
+//*/
+
+
+
+
+
+
+
 
 
 //std::cout<<"Does this even work4?"<<std::endl;

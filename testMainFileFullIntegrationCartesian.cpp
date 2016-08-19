@@ -727,8 +727,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //     for (int i = 0; i<4; i++){
          /// Debug ///
-//    std::cout<<"The current step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
-//    std::cout<<"The current runningTime = "<<runningTimeTSI<<std::endl;
+    std::cout<<"The current step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
+    std::cout<<"The current runningTime = "<<runningTimeTSI<<std::endl;
 //    std::cout<<"std::fabs(endTime-runningTime) = "<<std::fabs(endTimeTSI-runningTimeTSI)<<std::endl;
 //    std::cout<<"std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) = "<<std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) )<<std::endl;
          /// Debug ///
@@ -1151,7 +1151,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                             stepSizeRKF = endTime - integrator.getCurrentIndependentVariable( );
                         }
 
-                        double prevStepSize = stepSizeRKF;
+//                        double prevStepSize = stepSizeRKF;
 
 //                         std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
 
@@ -1162,8 +1162,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
                         Eigen::VectorXd currentState = integrator.getCurrentState();
 
-                        std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
-                        std::cout<<"The current running time is "<<runningTime<<std::endl;
+//                        std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
+//                        std::cout<<"The current running time is "<<runningTime<<std::endl;
 
 
 

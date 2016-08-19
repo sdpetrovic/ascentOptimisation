@@ -876,6 +876,9 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     stateTaylorCoefficients.row(7) = XMatrix.row(7);    // Mass [kg] from literature study
 
 
+
+    stateTaylorCoefficients.row(0) = XMatrix.row(32);   // Mach number [-] required to determine the time at which the CD section boundary was passsed
+
     /// Debug ///
 
 //    std::cout<<"WVector4_7 = "<<WVector4_7<<std::endl;
@@ -981,7 +984,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
 
 
-
+//std::cout<<"XMatrix.row(32) = "<<XMatrix.row(32)<<std::endl;
 
 
 //    std::cout<<"XMatrix = "<<XMatrix<<std::endl;

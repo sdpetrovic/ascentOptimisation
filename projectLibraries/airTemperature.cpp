@@ -83,7 +83,7 @@ for (int j = 0; j<order+1; j++){
     currentTemperature += temperaturePolyCoefficients(section,j)*pow(altitude,j);
 };
 
-
+//std::cout<<"The temperature section = "<<section<<std::endl;
 
 return currentTemperature;
 

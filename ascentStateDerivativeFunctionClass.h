@@ -331,6 +331,7 @@ public:
 //        std::cout<<"Radius = "<<Radius<<std::endl;
 
 
+
         /// Debug ///
 
         /* // Old functions
@@ -462,7 +463,7 @@ public:
 
         const double currentTemperature = air_temperature::airTemperature(Mars.temperaturePolyCoefficients(), Mars.temperatureAltitudeRanges(),currentAltitude);
 
-    /*   // Check output
+ /*      // Check output
         std::cout<<"currentAltitude = "<<currentAltitude<<std::endl;
         std::cout<<"currentTemperature = "<<currentTemperature<<std::endl;
         std::cout<<"Radius = "<<Radius<<std::endl;

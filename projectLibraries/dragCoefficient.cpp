@@ -60,7 +60,7 @@ const double dragCoefficient(const double machNumber, const Eigen::MatrixXd drag
 
     const double currentDragCoefficient = dragCoefficientPolyCoefficients(section,1)*machNumber+dragCoefficientPolyCoefficients(section,0);
 
-
+//std::cout<<"The CD section = "<<section<<std::endl;
 
 return currentDragCoefficient;
 } // end of dragCoefficient function

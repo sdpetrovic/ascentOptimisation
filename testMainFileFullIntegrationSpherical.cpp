@@ -742,9 +742,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 
         // Check to see if the class has been updated from within the TSI function
-//        const double nextStepSize = stepSize.getCurrentStepSize();
+        const double nextStepSize = stepSize.getCurrentStepSize();
 
-//        std::cout<<"The next stepSize = "<<nextStepSize<<std::endl;
+        std::cout<<"The next stepSize = "<<nextStepSize<<std::endl;
 
 /// Storing the values ///
 
@@ -1196,7 +1196,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                             stepSizeRKF = endTime - integrator.getCurrentIndependentVariable( );
                         }
 
-//                        double prevStepSize = stepSizeRKF;
+                        double prevStepSize = stepSizeRKF;
 
 //                         std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
 
