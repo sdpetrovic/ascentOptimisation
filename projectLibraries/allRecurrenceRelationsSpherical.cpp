@@ -1011,11 +1011,11 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //    std::cout<<"WVector34_4 = "<<WVector34_4<<std::endl;
 
 
-std::cout<<"XMatrix.row(33) = "<<XMatrix.row(33)<<std::endl;
-std::cout<<"XMatrix.row(34) = "<<XMatrix.row(34)<<std::endl;
-std::cout<<"XMatrix.row(15) = "<<XMatrix.row(15)<<std::endl;
-std::cout<<"XMatrix.row(31) = "<<XMatrix.row(31)<<std::endl;
-std::cout<<"XMatrix.row(16) = "<<XMatrix.row(16)<<std::endl;
+//std::cout<<"XMatrix.row(33) = "<<XMatrix.row(33)<<std::endl;
+//std::cout<<"XMatrix.row(34) = "<<XMatrix.row(34)<<std::endl;
+//std::cout<<"XMatrix.row(15) = "<<XMatrix.row(15)<<std::endl;
+//std::cout<<"XMatrix.row(31) = "<<XMatrix.row(31)<<std::endl;
+//std::cout<<"XMatrix.row(16) = "<<XMatrix.row(16)<<std::endl;
 
 
 //std::cout<<"XMatrix.row(32) = "<<XMatrix.row(32)<<std::endl;

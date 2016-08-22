@@ -449,14 +449,14 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
         double originalAltitude = currentState(0)-bodyReferenceRadius;
         double limitAltitude = temperatureAltitudeRanges(0,1); // Default value
 
-                for (int i=0; i < 3+1; i++){
+                for (int i=0; i < 4+1; i++){
 
         if (temperatureAltitudeRanges(i,0) <= originalAltitude && originalAltitude < temperatureAltitudeRanges(i,1)){
 
             currentSectionT = i;
 //            std::cout<<"It actually does go inside the limitAltitude section"<<std::endl;
              limitAltitude = temperatureAltitudeRanges(i,1);
-//             std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
+             std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
 
 
         }
@@ -485,16 +485,17 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
                 double tTo = currentTime+currentStepSize;  // t1,0
                 double newAltitude = updatedState(0)-bodyReferenceRadius;
 
+
                 double fTo = newAltitude-limitAltitude; // f(t1,0)
 
                 /// Debug ///
 
-                std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
-                std::cout<<"originalAltitude = "<<originalAltitude<<std::endl;
-                std::cout<<"newAltitude = "<<newAltitude<<std::endl;
-                std::cout<<"fFrom = "<<fFrom<<std::endl;
-                std::cout<<"fTo = "<<fTo<<std::endl;
-                std::cout<<"initialNewTime = "<<currentTime+currentStepSize<<std::endl;
+//                std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
+//                std::cout<<"originalAltitude = "<<originalAltitude<<std::endl;
+//                std::cout<<"newAltitude = "<<newAltitude<<std::endl;
+//                std::cout<<"fFrom = "<<fFrom<<std::endl;
+//                std::cout<<"fTo = "<<fTo<<std::endl;
+//                std::cout<<"initialNewTime = "<<currentTime+currentStepSize<<std::endl;
 
                 /// Debug ///
 
@@ -515,6 +516,8 @@ if (fTo <0){    // If the newAltitude is below the limitAltitude (so fTo<0) then
 else{
 
 std::cout<<"////////////////////////////////////////////////////////////////////////////////// Beginning of altitude do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
+
+std::cout<<"Initial new altitude = "<<newAltitude<<std::endl;
 
         do{ // If the altitude has gone beyond the limit altitude, this do loop will determine a new "currentStepSize"
 
@@ -583,23 +586,24 @@ std::cout<<"////////////////////////////////////////////////////////////////////
 
 }while(altitudeAccept == false);
 
+std::cout<<"Original altitude = "<<currentState(0)-bodyReferenceRadius<<std::endl;
 std::cout<<"Current altitude = "<<updatedState(0)-bodyReferenceRadius<<std::endl;
-std::cout<<"Current velocity = "<<updatedState(3)<<std::endl;
+//std::cout<<"Current velocity = "<<updatedState(3)<<std::endl;
 
 std::cout<<"////////////////////////////////////////////////////////////////////////////////// End of altitude do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
 
 } // else get new step-size
 
-
+//std::cout<<"Current altitude = "<<updatedState(0)-bodyReferenceRadius<<std::endl;
 
 /////////////////////// End of temperature section checker//////////////////
 
 
 
-std::cout<<"It works till the end of the temperature section checker"<<std::endl;
+//std::cout<<"It works till the end of the temperature section checker"<<std::endl;
 
 
-/*
+
 
 /// Determine if a new section has been reached for the drag-coefficient and correct timestep accordingly ///
 
@@ -609,7 +613,7 @@ std::cout<<"It works till the end of the temperature section checker"<<std::endl
     int powerT = 1; // Default = 1
 
     if (currentSectionT == 1){
-        powerT = 3;
+        powerT = 2;
     }
     else if (currentSectionT == 2){
         powerT = 6;
@@ -679,17 +683,18 @@ std::cout<<"It works till the end of the temperature section checker"<<std::endl
 
             double newMach = updatedState(3)/newSpeedOfSound;
 
+
             double fToM = newMach-limitMach; // f(t1,0)
 
             /// Debug ///
 
-                std::cout<<"limitMach = "<<limitMach<<std::endl;
-                std::cout<<"originalMach = "<<originalMach<<std::endl;
-                std::cout<<"newMach = "<<newMach<<std::endl;
-                std::cout<<"fFromM = "<<fFromM<<std::endl;
-                std::cout<<"fToM = "<<fToM<<std::endl;
-                std::cout<<"initialNewTimeM = "<<currentTime+currentStepSize<<std::endl;
-                std::cout<<"Mach Taylor Series coefficients = "<<TaylorCoefficients.row(0)<<std::endl;
+//                std::cout<<"limitMach = "<<limitMach<<std::endl;
+//                std::cout<<"originalMach = "<<originalMach<<std::endl;
+//                std::cout<<"newMach = "<<newMach<<std::endl;
+//                std::cout<<"fFromM = "<<fFromM<<std::endl;
+//                std::cout<<"fToM = "<<fToM<<std::endl;
+//                std::cout<<"initialNewTimeM = "<<currentTime+currentStepSize<<std::endl;
+//                std::cout<<"Mach Taylor Series coefficients = "<<TaylorCoefficients.row(0)<<std::endl;
 
             /// Debug ///
 
@@ -710,6 +715,8 @@ MachAccept = true;
 else{
 
     std::cout<<"////////////////////////////////////////////////////////////////////////////////// Beginning of Mach do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
+
+     std::cout<<"InitialNewMachNumber = "<<newMach<<std::endl;
 
     do{ // If the Mach number has gone beyond the limit Mach number, this do loop will determine a new "currentStepSize"
 
@@ -736,12 +743,12 @@ else{
         } // -
 
 /// Debug ///
-        std::cout<<"/// Debug ///"<<std::endl;
+//        std::cout<<"/// Debug ///"<<std::endl;
 
-        std::cout<<"signIsPositiveMach = "<<signIsPositiveMach<<std::endl;
-        std::cout<<"fFromDotM = "<<fFromDotM<<std::endl;
-        std::cout<<"(fToM-fFromM)/((tToM-tFromM)*(tToM-tFromM)) = "<<(fToM-fFromM)/((tToM-tFromM)*(tToM-tFromM))<<std::endl;
-        std::cout<<"fFromDotM/(tToM-tFromM) = "<<fFromDotM/(tToM-tFromM)<<std::endl;
+//        std::cout<<"signIsPositiveMach = "<<signIsPositiveMach<<std::endl;
+//        std::cout<<"fFromDotM = "<<fFromDotM<<std::endl;
+//        std::cout<<"(fToM-fFromM)/((tToM-tFromM)*(tToM-tFromM)) = "<<(fToM-fFromM)/((tToM-tFromM)*(tToM-tFromM))<<std::endl;
+//        std::cout<<"fFromDotM/(tToM-tFromM) = "<<fFromDotM/(tToM-tFromM)<<std::endl;
 //        std::cout<<"fFromDotM = "<<fFromDotM<<std::endl;
 //        std::cout<<"fFromDotM = "<<fFromDotM<<std::endl;
 
@@ -750,16 +757,16 @@ else{
         Mach += TaylorCoefficients(0,k)*pow(currentStepSize,(k)) ;      // Compute Mach (The TaylorSeriesCoefficients for the Mach number (or x32) were stored in TaylorCoefficients(0)
 }
 
-        std::cout<<"Mach = "<<Mach<<std::endl;
-        std::cout<<"MachOriginal = "<<auxiliaryEquations(32)<<std::endl;
-        std::cout<<"TaylorCoefficients for Mach = "<<TaylorCoefficients.row(0)<<std::endl;
-        std::cout<<"alphaM = "<<alphaM<<std::endl;
-        std::cout<<"sqrt(fFromDotM*fFromDotM+4.0*alphaM*fFromM) = "<<sqrt(fFromDotM*fFromDotM+4.0*alphaM*fFromM)<<std::endl;
-        std::cout<<"(fFromDotM*fFromDotM+4.0*alphaM*fFromM) = "<<(fFromDotM*fFromDotM+4.0*alphaM*fFromM)<<std::endl;
-        std::cout<<"tFromNewM = "<<tFromNewM<<std::endl;
+//        std::cout<<"Mach = "<<Mach<<std::endl;
+//        std::cout<<"MachOriginal = "<<auxiliaryEquations(32)<<std::endl;
+//        std::cout<<"TaylorCoefficients for Mach = "<<TaylorCoefficients.row(0)<<std::endl;
+//        std::cout<<"alphaM = "<<alphaM<<std::endl;
+//        std::cout<<"sqrt(fFromDotM*fFromDotM+4.0*alphaM*fFromM) = "<<sqrt(fFromDotM*fFromDotM+4.0*alphaM*fFromM)<<std::endl;
+//        std::cout<<"(fFromDotM*fFromDotM+4.0*alphaM*fFromM) = "<<(fFromDotM*fFromDotM+4.0*alphaM*fFromM)<<std::endl;
+//        std::cout<<"tFromNewM = "<<tFromNewM<<std::endl;
 
 
-        std::cout<<"/// Debug ///"<<std::endl;
+//        std::cout<<"/// Debug ///"<<std::endl;
         /// Debug ///
 
 
@@ -815,6 +822,11 @@ else{
 
 }while(MachAccept == false);
 
+
+
+    std::cout<<"OriginalMachNumber = "<<auxiliaryEquations(32)<<std::endl;
+    std::cout<<"NewMachNumber = "<<newMach<<std::endl;
+
     std::cout<<"////////////////////////////////////////////////////////////////////////////////// End of Mach do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
 
 } // else get new step-size
@@ -824,8 +836,8 @@ else{
 
 //*/
 
-std::cout<<"It works till the end of the drag-coefficient section checker"<<std::endl;
-std::cout<<" "<<std::endl;
+//std::cout<<"It works till the end of the drag-coefficient section checker"<<std::endl;
+//std::cout<<" "<<std::endl;
 
 
 
