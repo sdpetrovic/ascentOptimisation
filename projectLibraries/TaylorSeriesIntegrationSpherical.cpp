@@ -489,12 +489,12 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
                 /// Debug ///
 
-//                std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
-//                std::cout<<"originalAltitude = "<<originalAltitude<<std::endl;
-//                std::cout<<"newAltitude = "<<newAltitude<<std::endl;
-//                std::cout<<"fFrom = "<<fFrom<<std::endl;
-//                std::cout<<"fTo = "<<fTo<<std::endl;
-//                std::cout<<"initialNewTime = "<<currentTime+currentStepSize<<std::endl;
+                std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
+                std::cout<<"originalAltitude = "<<originalAltitude<<std::endl;
+                std::cout<<"newAltitude = "<<newAltitude<<std::endl;
+                std::cout<<"fFrom = "<<fFrom<<std::endl;
+                std::cout<<"fTo = "<<fTo<<std::endl;
+                std::cout<<"initialNewTime = "<<currentTime+currentStepSize<<std::endl;
 
                 /// Debug ///
 
@@ -514,7 +514,7 @@ if (fTo <0){    // If the newAltitude is below the limitAltitude (so fTo<0) then
 }
 else{
 
-
+std::cout<<"////////////////////////////////////////////////////////////////////////////////// Beginning of altitude do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
 
         do{ // If the altitude has gone beyond the limit altitude, this do loop will determine a new "currentStepSize"
 
@@ -583,7 +583,14 @@ else{
 
 }while(altitudeAccept == false);
 
+std::cout<<"Current altitude = "<<updatedState(0)-bodyReferenceRadius<<std::endl;
+std::cout<<"Current velocity = "<<updatedState(3)<<std::endl;
+
+std::cout<<"////////////////////////////////////////////////////////////////////////////////// End of altitude do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
+
 } // else get new step-size
+
+
 
 /////////////////////// End of temperature section checker//////////////////
 
@@ -592,7 +599,7 @@ else{
 std::cout<<"It works till the end of the temperature section checker"<<std::endl;
 
 
-
+/*
 
 /// Determine if a new section has been reached for the drag-coefficient and correct timestep accordingly ///
 
@@ -682,6 +689,7 @@ std::cout<<"It works till the end of the temperature section checker"<<std::endl
                 std::cout<<"fFromM = "<<fFromM<<std::endl;
                 std::cout<<"fToM = "<<fToM<<std::endl;
                 std::cout<<"initialNewTimeM = "<<currentTime+currentStepSize<<std::endl;
+                std::cout<<"Mach Taylor Series coefficients = "<<TaylorCoefficients.row(0)<<std::endl;
 
             /// Debug ///
 
@@ -814,9 +822,10 @@ else{
 
 /////////////////////// End of drag-coefficient section checker//////////////////
 
-
+//*/
 
 std::cout<<"It works till the end of the drag-coefficient section checker"<<std::endl;
+std::cout<<" "<<std::endl;
 
 
 

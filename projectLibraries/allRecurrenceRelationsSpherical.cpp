@@ -274,8 +274,11 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     Eigen::VectorXd WVector33 = Eigen::VectorXd::Zero(maxOrder);     // W33
 
 
+    Eigen::VectorXd WVector34_12 = Eigen::VectorXd::Zero(maxOrder);     // W34,12
     Eigen::VectorXd WVector34_2 = Eigen::VectorXd::Zero(maxOrder);     // W34,2
+    Eigen::VectorXd WVector34_13 = Eigen::VectorXd::Zero(maxOrder);     // W34,13
     Eigen::VectorXd WVector34_3 = Eigen::VectorXd::Zero(maxOrder);     // W34,3
+    Eigen::VectorXd WVector34_14 = Eigen::VectorXd::Zero(maxOrder);     // W34,14
     Eigen::VectorXd WVector34_4 = Eigen::VectorXd::Zero(maxOrder);     // W34,4
 
 
@@ -433,9 +436,12 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     WVector33(0) = initialFunctionsMatrix(33,1);     // W33
 
 
-    WVector34_2(0) = initialFunctionsMatrix(34,1);     // W34,2
-    WVector34_3(0) = initialFunctionsMatrix(34,2);     // W34,3
-    WVector34_4(0) = initialFunctionsMatrix(34,3);     // W34,4
+    WVector34_12(0) = initialFunctionsMatrix(34,12);     // W34,12
+    WVector34_2(0) = initialFunctionsMatrix(34,2);     // W34,2
+    WVector34_13(0) = initialFunctionsMatrix(34,13);     // W34,13
+    WVector34_3(0) = initialFunctionsMatrix(34,3);     // W34,3
+    WVector34_14(0) = initialFunctionsMatrix(34,14);     // W34,14
+    WVector34_4(0) = initialFunctionsMatrix(34,4);     // W34,4
 
     /// Debug ///
     Eigen::VectorXd WVectorTest = Eigen::VectorXd::Zero(maxOrder);     // Wtest
@@ -459,9 +465,9 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     Eigen::VectorXd onesVector = Eigen::VectorXd::Zero(maxOrder);       // Vector used to represent the int 1 in cases where the entire vector has to be substracted from 1(for instance)
 
     Eigen::VectorXd densityPolyCoefficient_1 = Eigen::VectorXd::Zero(maxOrder);             // Vectors used to represent the polynomials when required for addition of vectors
-    Eigen::VectorXd temperaturePolyCoefficient_1_2 = Eigen::VectorXd::Zero(maxOrder);
-    Eigen::VectorXd temperaturePolyCoefficient_1_3 = Eigen::VectorXd::Zero(maxOrder);
-    Eigen::VectorXd temperaturePolyCoefficient_1_4 = Eigen::VectorXd::Zero(maxOrder);
+    Eigen::VectorXd temperaturePolyCoefficient_1_1 = Eigen::VectorXd::Zero(maxOrder);
+    Eigen::VectorXd temperaturePolyCoefficient_2_1 = Eigen::VectorXd::Zero(maxOrder);
+    Eigen::VectorXd temperaturePolyCoefficient_3_1 = Eigen::VectorXd::Zero(maxOrder);
     Eigen::VectorXd ThrustVector = Eigen::VectorXd::Zero(maxOrder);
     Eigen::VectorXd thrustAzimuthVector = Eigen::VectorXd::Zero(maxOrder);
     Eigen::VectorXd thrustElevationVector = Eigen::VectorXd::Zero(maxOrder);
@@ -495,9 +501,9 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
 //            onesVector(i) = 1;
             densityPolyCoefficient_1(i) = densityPolyCoefficients(1);
-            temperaturePolyCoefficient_1_2(i) = temperaturePolyCoefficients(1,0);
-            temperaturePolyCoefficient_1_3(i) = temperaturePolyCoefficients(2,0);
-            temperaturePolyCoefficient_1_4(i) = temperaturePolyCoefficients(3,0);
+            temperaturePolyCoefficient_1_1(i) = temperaturePolyCoefficients(1,1);
+            temperaturePolyCoefficient_2_1(i) = temperaturePolyCoefficients(2,1);
+            temperaturePolyCoefficient_3_1(i) = temperaturePolyCoefficients(3,1);
             ThrustVector(i) = Thrust_;
             if (i==0){
             thrustAzimuthVector(i) = thrustAzimuthMatrix(0,2);
@@ -731,6 +737,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         // Deal with wrong vector orientation...
         Eigen::VectorXd x31Transpose = XMatrix.row(31);
+//        std::cout<<"x31Transpose = "<<x31Transpose<<std::endl;
 //        x31.row(0)=XMatrix.row(31);
 //        Eigen::MatrixXd x31Transpose = x31.transpose();
 
@@ -753,7 +760,9 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         else if (temperatureAltitudeRanges(1,0)<=XMatrix(31,0) && XMatrix(31,0)<temperatureAltitudeRanges(1,1)){
 
-            WVector34_2(k) = getMultiplicationRecurrenceRelation(UMatrix.row(31),(3.0*temperaturePolyCoefficients(1,2)*WVector30_8+2.0*temperaturePolyCoefficients(1,1)*x31Transpose+temperaturePolyCoefficient_1_2),k);
+            WVector34_12(k) = (2.0*temperaturePolyCoefficients(1,2)*XMatrix(31,k));
+
+            WVector34_2(k) = getMultiplicationRecurrenceRelation(UMatrix.row(31),WVector34_12,k)+temperaturePolyCoefficients(1,1)*UMatrix(31,k);
         // change to Eigen::VectorXd
 
             UMatrix(34,k) = WVector34_2(k);
@@ -761,9 +770,15 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         else if (temperatureAltitudeRanges(2,0)<=XMatrix(31,0) && XMatrix(31,0)<temperatureAltitudeRanges(2,1)){
 
-            WVector34_3(k) = getMultiplicationRecurrenceRelation(UMatrix.row(31),(6.0*temperaturePolyCoefficients(2,5)*WVector30_5+5.0*temperaturePolyCoefficients(2,4)*WVector30_6+4.0*temperaturePolyCoefficients(2,3)*WVector30_7+
-                                                                                  3.0*temperaturePolyCoefficients(2,2)*WVector30_8+2.0*temperaturePolyCoefficients(2,1)*x31Transpose+temperaturePolyCoefficient_1_3),k);
-            // change to Eigen::VectorXd
+//            WVector34_3(k) = getMultiplicationRecurrenceRelation(UMatrix.row(31),(6.0*temperaturePolyCoefficients(2,6)*WVector30_5+5.0*temperaturePolyCoefficients(2,5)*WVector30_6+4.0*temperaturePolyCoefficients(2,4)*WVector30_7+
+//                                                                                  3.0*temperaturePolyCoefficients(2,3)*WVector30_8+2.0*temperaturePolyCoefficients(2,2)*x31Transpose+temperaturePolyCoefficient_2_1),k);
+
+            WVector34_13(k) = (6.0*temperaturePolyCoefficients(2,6)*WVector30_5(k)+5.0*temperaturePolyCoefficients(2,5)*WVector30_6(k)+4.0*temperaturePolyCoefficients(2,4)*WVector30_7(k)+
+                               3.0*temperaturePolyCoefficients(2,3)*WVector30_8(k)+2.0*temperaturePolyCoefficients(2,2)*XMatrix(31,k));
+
+            WVector34_3(k) = getMultiplicationRecurrenceRelation(UMatrix.row(31),WVector34_13,k)+temperaturePolyCoefficients(2,1)*UMatrix(31,k);
+
+
 
             UMatrix(34,k) = WVector34_3(k);
 
@@ -771,10 +786,15 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         else if (temperatureAltitudeRanges(3,0)<=XMatrix(31,0) && XMatrix(31,0)<temperatureAltitudeRanges(3,1)){
 
-            WVector34_4(k) = getMultiplicationRecurrenceRelation(UMatrix.row(31),(8.0*temperaturePolyCoefficients(3,7)*WVector30_3+7.0*temperaturePolyCoefficients(3,6)*WVector30_4+
-                                                                     6.0*temperaturePolyCoefficients(3,5)*WVector30_5+5.0*temperaturePolyCoefficients(3,4)*WVector30_6+4.0*temperaturePolyCoefficients(3,3)*WVector30_7+
-                                                                                  3.0*temperaturePolyCoefficients(3,2)*WVector30_8+2.0*temperaturePolyCoefficients(3,1)*x31Transpose+temperaturePolyCoefficient_1_4),k);
-            // change to Eigen::VectorXd
+//            WVector34_4(k) = getMultiplicationRecurrenceRelation(UMatrix.row(31),(8.0*temperaturePolyCoefficients(3,8)*WVector30_3+7.0*temperaturePolyCoefficients(3,7)*WVector30_4+
+//                                                                     6.0*temperaturePolyCoefficients(3,6)*WVector30_5+5.0*temperaturePolyCoefficients(3,5)*WVector30_6+4.0*temperaturePolyCoefficients(3,4)*WVector30_7+
+//                                                                                  3.0*temperaturePolyCoefficients(3,3)*WVector30_8+2.0*temperaturePolyCoefficients(3,2)*x31Transpose+temperaturePolyCoefficient_3_1),k);
+
+            WVector34_14(k) = (8.0*temperaturePolyCoefficients(3,8)*WVector30_3(k)+7.0*temperaturePolyCoefficients(3,7)*WVector30_4(k)+
+                               6.0*temperaturePolyCoefficients(3,6)*WVector30_5(k)+5.0*temperaturePolyCoefficients(3,5)*WVector30_6(k)+4.0*temperaturePolyCoefficients(3,4)*WVector30_7(k)+
+                                            3.0*temperaturePolyCoefficients(3,3)*WVector30_8(k)+2.0*temperaturePolyCoefficients(3,2)*XMatrix(31,k));
+
+            WVector34_4(k) = getMultiplicationRecurrenceRelation(UMatrix.row(31),WVector34_14,k)+temperaturePolyCoefficients(3,1)*UMatrix(31,k);
 
             UMatrix(34,k) = WVector34_4(k);
 
@@ -982,6 +1002,20 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //    std::cout<<"WVector6_7 = "<<WVector6_7<<std::endl;
 //    std::cout<<"WVector6_8 = "<<WVector6_8<<std::endl;
 
+//std::cout<<"WVector32_1 = "<<WVector32_1<<std::endl;
+//std::cout<<"WVector32_2 = "<<WVector32_2<<std::endl;
+//std::cout<<"WVector32_3 = "<<WVector32_3<<std::endl;
+//std::cout<<"WVector32_4 = "<<WVector32_4<<std::endl;
+
+//    std::cout<<"WVector34_14 = "<<WVector34_14<<std::endl;
+//    std::cout<<"WVector34_4 = "<<WVector34_4<<std::endl;
+
+
+std::cout<<"XMatrix.row(33) = "<<XMatrix.row(33)<<std::endl;
+std::cout<<"XMatrix.row(34) = "<<XMatrix.row(34)<<std::endl;
+std::cout<<"XMatrix.row(15) = "<<XMatrix.row(15)<<std::endl;
+std::cout<<"XMatrix.row(31) = "<<XMatrix.row(31)<<std::endl;
+std::cout<<"XMatrix.row(16) = "<<XMatrix.row(16)<<std::endl;
 
 
 //std::cout<<"XMatrix.row(32) = "<<XMatrix.row(32)<<std::endl;

@@ -76,7 +76,7 @@ else if (section == 4){
 
 // Compute the current temperature
 
-double currentTemperature = 0; // Set current temperature to 0;
+double currentTemperature = 0.0; // Set current temperature to 0;
 
 for (int j = 0; j<order+1; j++){
 

@@ -845,6 +845,8 @@ public:
 
 //    auxiliaryDerivativesVector(9) = 1.5*((auxiliaryEquationsVector(9)*auxiliaryDerivativesVector(8))/auxiliaryEquationsVector(8));                // u9
 
+    auxiliaryDerivativesVector(31) = auxiliaryDerivativesVector(16);                    // u31
+
 
     // Computing the polynomial fit derivative using the altitude and fit parameters for density
     for (int i = 1; i < 10+1;i++) {
@@ -865,7 +867,7 @@ public:
     else if (temperatureAltitudeRanges(1,0) <= auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31) < temperatureAltitudeRanges(1,1)){
 
     sectionT = 1;
-    powerT = 3;
+    powerT = 2;
 
     }
     else if (temperatureAltitudeRanges(2,0) <= auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31) < temperatureAltitudeRanges(2,1)){
@@ -899,6 +901,16 @@ public:
 
     auxiliaryDerivativesVector(34) += auxiliaryDerivativesVector(31)*i*pow(auxiliaryEquationsVector(31),i-1)*temperaturePolyCoefficients(sectionT,i);              // u34
 
+//    std::cout<<"i = "<<i<<std::endl;
+//    std::cout<<"auxiliaryDerivativesVector(16) = "<<auxiliaryDerivativesVector(16)<<std::endl;
+//    std::cout<<"auxiliaryDerivativesVector(31) = "<<auxiliaryDerivativesVector(31)<<std::endl;
+
+//    std::cout<<"pow(auxiliaryEquationsVector(31),i-1) = "<<pow(auxiliaryEquationsVector(31),i-1)<<std::endl;
+//    std::cout<<"temperaturePolyCoefficients(sectionT,i) = "<<temperaturePolyCoefficients(sectionT,i)<<std::endl;
+//    std::cout<<"auxiliaryDerivativesVector(31)*i*pow(auxiliaryEquationsVector(31),i-1)*temperaturePolyCoefficients(sectionT,i) = "<<auxiliaryDerivativesVector(31)*i*pow(auxiliaryEquationsVector(31),i-1)*temperaturePolyCoefficients(sectionT,i)<<std::endl;
+//    std::cout<<"This temperature loop is computed and the current temperature change = "<<auxiliaryDerivativesVector(34)<<std::endl;
+//    std::cout<<" "<<std::endl;
+
 };
 
 
@@ -918,6 +930,8 @@ public:
         }
 
     };
+
+    auxiliaryDerivativesVector(32) = (auxiliaryEquationsVector(33)*auxiliaryDerivativesVector(15)-auxiliaryEquationsVector(15)*auxiliaryDerivativesVector(33))/(auxiliaryEquationsVector(33)*auxiliaryEquationsVector(33)); // u32
 
     auxiliaryDerivativesVector(29) = dragCoefficientPolyCoefficients(sectionCD,1)*auxiliaryDerivativesVector(32);              // u29
 
@@ -1319,46 +1333,59 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     // w34
     // First it has to be determined whether or not these functions have to be computed. If not, they remain zero. If so they only one of them is computed.
 
-    if (temperatureAltitudeRanges(1,0)<=auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31)<temperatureAltitudeRanges(1,1)){
+    if (temperatureAltitudeRanges(1,0)<=auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31)<temperatureAltitudeRanges(1,1)){   // Section 2
 
-      auxiliaryFunctionsMatrix(34,2) = auxiliaryDerivativesVector(31)*(3.0*temperaturePolyCoefficients(3,2)*auxiliaryFunctionsMatrix(30,8)+2.0*temperaturePolyCoefficients(2,2)*auxiliaryEquationsVector(31)+temperaturePolyCoefficients(1,2));
+        auxiliaryFunctionsMatrix(34,12) = (2.0*temperaturePolyCoefficients(1,2)*auxiliaryEquationsVector(31));
+
+      auxiliaryFunctionsMatrix(34,2) = auxiliaryDerivativesVector(31)*auxiliaryFunctionsMatrix(34,12)+temperaturePolyCoefficients(1,1)*auxiliaryDerivativesVector(31);
     }
-    else if (temperatureAltitudeRanges(2,0)<=auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31)<temperatureAltitudeRanges(2,1)){
+    else if (temperatureAltitudeRanges(2,0)<=auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31)<temperatureAltitudeRanges(2,1)){ // Section 3
 
         for (int i=2; i<6+1;i++){
 
             if (i==2){
 
-                auxiliaryFunctionsMatrix(34,3) = auxiliaryDerivativesVector(31)*(2*temperaturePolyCoefficients(2,3)*auxiliaryEquationsVector(31)+temperaturePolyCoefficients(1,3));
+//                auxiliaryFunctionsMatrix(34,3) = auxiliaryDerivativesVector(31)*(2.0*temperaturePolyCoefficients(2,2)*auxiliaryEquationsVector(31)+temperaturePolyCoefficients(2,1));
+                auxiliaryFunctionsMatrix(34,13) = (2.0*temperaturePolyCoefficients(2,2)*auxiliaryEquationsVector(31));
             }
 
 
             else {
 
-                auxiliaryFunctionsMatrix(34,3) += auxiliaryDerivativesVector(31)*i*temperaturePolyCoefficients(i,3)*auxiliaryFunctionsMatrix(30,(11-i));
+//                auxiliaryFunctionsMatrix(34,3) += auxiliaryDerivativesVector(31)*i*temperaturePolyCoefficients(2,i)*auxiliaryFunctionsMatrix(30,(11-i));
+                auxiliaryFunctionsMatrix(34,13) += i*temperaturePolyCoefficients(2,i)*auxiliaryFunctionsMatrix(30,(11-i));
+//                std::cout<<"i*temperaturePolyCoefficients(2,i)*auxiliaryFunctionsMatrix(30,(11-i)) = "<<i*temperaturePolyCoefficients(2,i)*auxiliaryFunctionsMatrix(30,(11-i))<<std::endl;
             };
+
 
         };
 
-
+    auxiliaryFunctionsMatrix(34,3) = auxiliaryDerivativesVector(31)*auxiliaryFunctionsMatrix(34,13)+temperaturePolyCoefficients(2,1)*auxiliaryDerivativesVector(31);
+//    std::cout<<"auxiliaryFunctionsMatrix(34,3) = "<<auxiliaryFunctionsMatrix(34,3)<<std::endl;
 
     }
-    else if (temperatureAltitudeRanges(3,0)<=auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31)<temperatureAltitudeRanges(3,1)){
+    else if (temperatureAltitudeRanges(3,0)<=auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31)<temperatureAltitudeRanges(3,1)){ // Section 4
 
         for (int i=2; i<8+1;i++){
 
             if (i==2){
 
-                auxiliaryFunctionsMatrix(34,4) = auxiliaryDerivativesVector(31)*(2.0*temperaturePolyCoefficients(2,4)*auxiliaryEquationsVector(31)+temperaturePolyCoefficients(1,4));
+//                auxiliaryFunctionsMatrix(34,4) = auxiliaryDerivativesVector(31)*(2.0*temperaturePolyCoefficients(3,2)*auxiliaryEquationsVector(31)+temperaturePolyCoefficients(3,1));
+                auxiliaryFunctionsMatrix(34,14) = (2.0*temperaturePolyCoefficients(3,2)*auxiliaryEquationsVector(31));
             }
 
 
             else {
 
-                auxiliaryFunctionsMatrix(34,4) += auxiliaryDerivativesVector(31)*i*temperaturePolyCoefficients(i,4)*auxiliaryFunctionsMatrix(30,(11-i));
+//                auxiliaryFunctionsMatrix(34,4) += auxiliaryDerivativesVector(31)*i*temperaturePolyCoefficients(3,i)*auxiliaryFunctionsMatrix(30,(11-i));
+                auxiliaryFunctionsMatrix(34,14) += i*temperaturePolyCoefficients(3,i)*auxiliaryFunctionsMatrix(30,(11-i));
+
             };
 
         };
+
+
+        auxiliaryFunctionsMatrix(34,4) = auxiliaryDerivativesVector(31)*auxiliaryFunctionsMatrix(34,14)+temperaturePolyCoefficients(3,1)*auxiliaryDerivativesVector(31);
 };
 
 
