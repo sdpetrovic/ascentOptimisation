@@ -752,10 +752,10 @@ else{
 //        std::cout<<"fFromDotM = "<<fFromDotM<<std::endl;
 //        std::cout<<"fFromDotM = "<<fFromDotM<<std::endl;
 
-        double Mach = 0.0; // Reset
-        for (int k = 0; k < maxOrder+1; k++){
-        Mach += TaylorCoefficients(0,k)*pow(currentStepSize,(k)) ;      // Compute Mach (The TaylorSeriesCoefficients for the Mach number (or x32) were stored in TaylorCoefficients(0)
-}
+//        double Mach = 0.0; // Reset
+//        for (int k = 0; k < maxOrder+1; k++){
+//        Mach += TaylorCoefficients(0,k)*pow(currentStepSize,(k)) ;      // Compute Mach (The TaylorSeriesCoefficients for the Mach number (or x32) were stored in TaylorCoefficients(0)
+//}
 
 //        std::cout<<"Mach = "<<Mach<<std::endl;
 //        std::cout<<"MachOriginal = "<<auxiliaryEquations(32)<<std::endl;

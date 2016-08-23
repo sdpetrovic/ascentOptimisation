@@ -460,16 +460,16 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
         /// Determine if a new section has been reached for the temperature and correct timestep accordingly ///
 
-    //        int currentSectionT = 0; // Default value
+            int currentSectionT = 0; // Default value
 //            double originalAltitude = currentState(0)-bodyReferenceRadius; // h
             double originalAltitude = sqrt(currentState(0)*currentState(0)+currentState(1)*currentState(1)+currentState(2)*currentState(2))-bodyReferenceRadius; //h
             double limitAltitude = temperatureAltitudeRanges(0,1); // Default value
 
-                    for (int i=0; i < 3+1; i++){
+                    for (int i=0; i < 4+1; i++){
 
             if (temperatureAltitudeRanges(i,0) <= originalAltitude && originalAltitude < temperatureAltitudeRanges(i,1)){
 
-    //            currentSectionT = i;
+                currentSectionT = i;
     //            std::cout<<"It actually does go inside the limitAltitude section"<<std::endl;
                  limitAltitude = temperatureAltitudeRanges(i,1);
     //             std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
@@ -510,13 +510,13 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
                     /// Debug ///
 
-                    std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
-                    std::cout<<"originalAltitude = "<<originalAltitude<<std::endl;
-                    std::cout<<"newAltitude = "<<newAltitude<<std::endl;
-                    std::cout<<"fFrom = "<<fFrom<<std::endl;
-                    std::cout<<"fTo = "<<fTo<<std::endl;
-                    std::cout<<"currentStepSize before = "<<currentStepSize<<std::endl;
-                    std::cout<<"initialNewTime = "<<currentTime+currentStepSize<<std::endl;
+//                    std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
+//                    std::cout<<"originalAltitude = "<<originalAltitude<<std::endl;
+//                    std::cout<<"newAltitude = "<<newAltitude<<std::endl;
+//                    std::cout<<"fFrom = "<<fFrom<<std::endl;
+//                    std::cout<<"fTo = "<<fTo<<std::endl;
+//                    std::cout<<"currentStepSize before = "<<currentStepSize<<std::endl;
+//                    std::cout<<"initialNewTime = "<<currentTime+currentStepSize<<std::endl;
 
                     /// Debug ///
 
@@ -536,7 +536,10 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
     }
     else{
 
-            std::cout<<"//////////////////////////////////////////////////////////////////////// Do loop has been started ////////////////////////////////////////////////////////////////////////"<<std::endl;
+            std::cout<<"//////////////////////////////////////////////////////////////////////// Altitude do loop has been started ////////////////////////////////////////////////////////////////////////"<<std::endl;
+
+            std::cout<<"InitialNewAltitude = "<<newAltitude<<std::endl;
+
             do{ // If the altitude has gone beyond the limit altitude, this do loop will determine a new "currentStepSize"
 
 
@@ -568,27 +571,27 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
             /// Debug ///
 
-            std::cout<<"Debug"<<std::endl;
-            std::cout<<"tTo = "<<tTo<<std::endl;
-            std::cout<<"tFrom = "<<tFrom<<std::endl;
-            std::cout<<"(tTo-tFrom) = "<<(tTo-tFrom)<<std::endl;
-
-            std::cout<<"(fTo-fFrom) = "<<(fTo-fFrom)<<std::endl;
-            std::cout<<"fFromDot = "<<fFromDot<<std::endl;
-
-            std::cout<<"(fTo-fFrom)/((tTo-tFrom)*(tTo-tFrom)) = "<<(fTo-fFrom)/((tTo-tFrom)*(tTo-tFrom))<<std::endl;
-            std::cout<<"fFromDot/(tTo-tFrom) = "<<fFromDot/(tTo-tFrom)<<std::endl;
-            std::cout<<"(tTo-tFrom) = "<<(tTo-tFrom)<<std::endl;
-            std::cout<<"((tTo-tFrom)*(tTo-tFrom)) = "<<((tTo-tFrom)*(tTo-tFrom))<<std::endl;
-
-
-            std::cout<<"(-fFromDot+sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))/(2.0*alpha) = "<<(-fFromDot+sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))/(2.0*alpha)<<std::endl;
-            std::cout<<"alpha = "<<alpha<<std::endl;
-            std::cout<<"sqrt(fFromDot*fFromDot+4.0*alpha*fFrom) = "<<sqrt(fFromDot*fFromDot+4.0*alpha*fFrom)<<std::endl;
-            std::cout<<"fFromDot*fFromDot+4.0*alpha*fFrom = "<<fFromDot*fFromDot+4.0*alpha*fFrom<<std::endl;
-
 //            std::cout<<"Debug"<<std::endl;
-            std::cout<<" "<<std::endl;
+//            std::cout<<"tTo = "<<tTo<<std::endl;
+//            std::cout<<"tFrom = "<<tFrom<<std::endl;
+//            std::cout<<"(tTo-tFrom) = "<<(tTo-tFrom)<<std::endl;
+
+//            std::cout<<"(fTo-fFrom) = "<<(fTo-fFrom)<<std::endl;
+//            std::cout<<"fFromDot = "<<fFromDot<<std::endl;
+
+//            std::cout<<"(fTo-fFrom)/((tTo-tFrom)*(tTo-tFrom)) = "<<(fTo-fFrom)/((tTo-tFrom)*(tTo-tFrom))<<std::endl;
+//            std::cout<<"fFromDot/(tTo-tFrom) = "<<fFromDot/(tTo-tFrom)<<std::endl;
+//            std::cout<<"(tTo-tFrom) = "<<(tTo-tFrom)<<std::endl;
+//            std::cout<<"((tTo-tFrom)*(tTo-tFrom)) = "<<((tTo-tFrom)*(tTo-tFrom))<<std::endl;
+
+
+//            std::cout<<"(-fFromDot+sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))/(2.0*alpha) = "<<(-fFromDot+sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))/(2.0*alpha)<<std::endl;
+//            std::cout<<"alpha = "<<alpha<<std::endl;
+//            std::cout<<"sqrt(fFromDot*fFromDot+4.0*alpha*fFrom) = "<<sqrt(fFromDot*fFromDot+4.0*alpha*fFrom)<<std::endl;
+//            std::cout<<"fFromDot*fFromDot+4.0*alpha*fFrom = "<<fFromDot*fFromDot+4.0*alpha*fFrom<<std::endl;
+
+////            std::cout<<"Debug"<<std::endl;
+//            std::cout<<" "<<std::endl;
 
             /// Debug ///
 
@@ -660,8 +663,10 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
     }while(altitudeAccept == false);
 
+            std::cout<<"OriginalAltitude = "<<originalAltitude<<std::endl;
+            std::cout<<"NewAltitude = "<<newAltitude<<std::endl;
             std::cout<<"currentStepSize after = "<<currentStepSize<<std::endl;
-            std::cout<<"//////////////////////////////////////////////////////////////////////// Do loop has ended ////////////////////////////////////////////////////////////////////////"<<std::endl;
+            std::cout<<"//////////////////////////////////////////////////////////////////////// Altitude do loop has ended ////////////////////////////////////////////////////////////////////////"<<std::endl;
 
     } // end of else
 
@@ -672,7 +677,261 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
 
 
+//std::cout<<"TaylorCoefficients.row(0) = "<<TaylorCoefficients.row(0)<<std::endl;
 
+
+
+
+
+
+
+    /// Determine if a new section has been reached for the drag-coefficient and correct timestep accordingly ///
+
+//        // First compute the current Temperature, Speed of sound and then Mach number
+
+//        // Temperature
+//        int powerT = 1; // Default = 1
+
+//        if (currentSectionT == 1){
+//            powerT = 2;
+//        }
+//        else if (currentSectionT == 2){
+//            powerT = 6;
+//        }
+//        else if (currentSectionT == 3){
+//            powerT = 8;
+//        }
+//        else if (currentSectionT == 4){
+//            powerT = 0;
+//        }
+
+
+//        double originalTemp = 0.0; // Default = 0.0
+//        double r = sqrt(updatedState(0)*updatedState(0)+updatedState(1)*updatedState(1)+updatedState(2)*updatedState(2)); // Radius
+////        double V_G = ;
+
+//        for (int i=0; i < powerT+1;i++){ // Compute the corresponding temperature polynomial
+
+//        originalTemp += pow((r-bodyReferenceRadius),i)*temperaturePolyCoefficients(currentSectionT,i);              // Temperature
+
+//    } // Get temp
+
+//        double originalSpeedOfSound = sqrt(adiabeticIndex*specificGasConstant*originalTemp); // a
+//        double originalMach = currentState(3)/originalSpeedOfSound; // M (can also be taken from auxiliaryEquationsVector(32)...)
+
+
+    double originalMach = TaylorCoefficients(0,0);              // The (1 order lower than the state variables) TaylorSeriesCoefficients were stored in TaylorCoefficients(0). The first value is the original Mach number
+
+
+        double limitMach = dragCoefficientMachRanges(0,1)+1e-12; // Default value
+
+                for (int i=0; i < 5+1; i++){
+
+        if (dragCoefficientMachRanges(i,0) <= originalMach && originalMach < dragCoefficientMachRanges(i,1)){
+
+             limitMach = dragCoefficientMachRanges(i,1)+1e-14;
+
+        }
+        else {
+    //            std::cout<<"The originalAltitude = "<<originalAltitude<<", which is lower than the lowest altitude."<<std::endl;
+        }
+
+        /// Debug ///
+
+    //        std::cout<<"originalAltitude = "<<originalAltitude<<std::endl;
+    //        std::cout<<"temperatureAltitudeRanges(i,0) = "<<temperatureAltitudeRanges(i,0)<<std::endl;
+    //        std::cout<<"temperatureAltitudeRanges(i,1) = "<<temperatureAltitudeRanges(i,1)<<std::endl;
+
+
+        /// Debug ///
+
+    };
+
+                // Set the initial values for the time-step domain
+
+                double tFromM = currentTime;    // t0,0
+                double fFromM = originalMach-limitMach; // f(t0,0)
+                double fFromDotM;        // fdot(t0,0)
+                double tToM = currentTime+currentStepSize;  // t1,0
+
+//                // Temperature and speed of sound have to be computed first again
+
+//                // Temperature (because of the previous root finding method it is assured that the temperature is always in the same section)
+//                double newTemp = 0.0; // Default = 0.0
+
+//                for (int i=0; i < powerT+1;i++){ // Compute the corresponding temperature polynomial
+
+//                newTemp += pow((updatedState(0)-bodyReferenceRadius),i)*temperaturePolyCoefficients(currentSectionT,i);              // Temperature
+
+//            } // Get temp
+
+//                double newSpeedOfSound = sqrt(adiabeticIndex*specificGasConstant*newTemp); // a
+
+//                double newMach = updatedState(3)/newSpeedOfSound;
+
+                double newMach = 0.0; // Reset
+                for (int k = 0; k < maxOrder; k++){
+                newMach += TaylorCoefficients(0,k)*pow(currentStepSize,(k)) ;      // Compute Mach (The TaylorSeriesCoefficients for the Mach number were stored in TaylorCoefficients(0), these are however 1 order lower than the state variables!)
+            }
+
+
+                double fToM = newMach-limitMach; // f(t1,0)
+
+                /// Debug ///
+
+    //                std::cout<<"limitMach = "<<limitMach<<std::endl;
+    //                std::cout<<"originalMach = "<<originalMach<<std::endl;
+    //                std::cout<<"newMach = "<<newMach<<std::endl;
+    //                std::cout<<"fFromM = "<<fFromM<<std::endl;
+    //                std::cout<<"fToM = "<<fToM<<std::endl;
+    //                std::cout<<"initialNewTimeM = "<<currentTime+currentStepSize<<std::endl;
+    //                std::cout<<"Mach Taylor Series coefficients = "<<TaylorCoefficients.row(0)<<std::endl;
+
+                /// Debug ///
+
+
+    bool signIsPositiveMach = false; // Check in which direction, up or down, the curve is heading
+
+        if (fFromM<0){
+            signIsPositiveMach = true;
+        }
+
+
+    bool MachAccept = false; // Default value is that the Mach number is not accepted and has therefore gone beyond the Mach limit
+
+    if (fToM <0){    // If the newMach is below the limitMach (so fToM<0) then the new Mach number is still within the same section and can be accepted
+
+    MachAccept = true;
+    }
+    else{
+
+        std::cout<<"////////////////////////////////////////////////////////////////////////////////// Beginning of Mach do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
+
+         std::cout<<"InitialNewMachNumber = "<<newMach<<std::endl;
+
+        do{ // If the Mach number has gone beyond the limit Mach number, this do loop will determine a new "currentStepSize"
+
+
+        if (newMach - limitMach <= 1e-6 && newMach - limitMach >= 0.0){   // Checking if the convergence condition has been met and an answer has been found
+
+            MachAccept = true;
+    }
+        else{
+            // Compute an updated time step //
+
+            fFromDotM = 0.0; // Reset
+            for (int k = 1; k < maxOrder; k++){
+            fFromDotM += k*TaylorCoefficients(0,k)*pow(currentStepSize,(k-1)) ;      // Compute tFromDotM (The TaylorSeriesCoefficients for the Mach number were stored in TaylorCoefficients(0), these are however 1 order lower than the state variables!)
+    }
+            double alphaM = (fToM-fFromM)/((tToM-tFromM)*(tToM-tFromM))-fFromDotM/(tToM-tFromM);  // Basically computing fFromDoubleDotM/2 (or coefficient)
+
+            double tFromNewM;
+            if (signIsPositiveMach == true){    // Compute the new "from" time
+        tFromNewM = tFromM + (-fFromDotM+sqrt(fFromDotM*fFromDotM+4.0*alphaM*fFromM))/(2.0*alphaM);
+    } // +
+            else {
+               tFromNewM = tFromM + (-fFromDotM-sqrt(fFromDotM*fFromDotM+4.0*alphaM*fFromM))/(2.0*alphaM);
+            } // -
+
+    /// Debug ///
+    //        std::cout<<"/// Debug ///"<<std::endl;
+
+    //        std::cout<<"signIsPositiveMach = "<<signIsPositiveMach<<std::endl;
+    //        std::cout<<"fFromDotM = "<<fFromDotM<<std::endl;
+    //        std::cout<<"(fToM-fFromM)/((tToM-tFromM)*(tToM-tFromM)) = "<<(fToM-fFromM)/((tToM-tFromM)*(tToM-tFromM))<<std::endl;
+    //        std::cout<<"fFromDotM/(tToM-tFromM) = "<<fFromDotM/(tToM-tFromM)<<std::endl;
+    //        std::cout<<"fFromDotM = "<<fFromDotM<<std::endl;
+    //        std::cout<<"fFromDotM = "<<fFromDotM<<std::endl;
+
+//            double Mach = 0.0; // Reset
+//            for (int k = 0; k < maxOrder; k++){
+//            Mach += TaylorCoefficients(0,k)*pow(currentStepSize,(k)) ;      // Compute Mach (The TaylorSeriesCoefficients for the Mach number were stored in TaylorCoefficients(0), these are however 1 order lower than the state variables!)
+//    }
+
+    //        std::cout<<"Mach = "<<Mach<<std::endl;
+    //        std::cout<<"MachOriginal = "<<auxiliaryEquations(32)<<std::endl;
+    //        std::cout<<"TaylorCoefficients for Mach = "<<TaylorCoefficients.row(0)<<std::endl;
+    //        std::cout<<"alphaM = "<<alphaM<<std::endl;
+    //        std::cout<<"sqrt(fFromDotM*fFromDotM+4.0*alphaM*fFromM) = "<<sqrt(fFromDotM*fFromDotM+4.0*alphaM*fFromM)<<std::endl;
+    //        std::cout<<"(fFromDotM*fFromDotM+4.0*alphaM*fFromM) = "<<(fFromDotM*fFromDotM+4.0*alphaM*fFromM)<<std::endl;
+    //        std::cout<<"tFromNewM = "<<tFromNewM<<std::endl;
+
+
+    //        std::cout<<"/// Debug ///"<<std::endl;
+            /// Debug ///
+
+
+            currentStepSize = currentTime-tFromNewM; // Update the new step-size to compute the new value for the Mach number using the Taylor Coefficients
+
+        tudat::basic_mathematics::Vector7d updatedStateNewM = tudat::basic_mathematics::Vector7d::Zero();        // Create a vector for the updatedState and setting it to zero
+
+            for (int n = 0; n<updatedStateNewM.size();n++){                 // All variables
+
+            for (int k = 0; k<maxOrder+1;k++){                      // Taylor series summation
+
+                updatedStateNewM(n) += TaylorCoefficients((n+1),k)*pow(currentStepSize,k);      // Perform one step of the taylor series expansion and then add it to the previous step
+
+
+            } // Taylor series summation
+
+            }   // All variables
+
+            updatedState = updatedStateNewM; // update the updated state
+
+//            // Temperature and speed of sound have to be computed first again
+
+//            // Temperature (because of the previous root finding method it is assured that the temperature is always in the same section)
+//            newTemp = 0.0; // Default = 0.0
+
+//            for (int i=0; i < powerT+1;i++){ // Compute the corresponding temperature polynomial
+
+//            newTemp += pow((updatedState(0)-bodyReferenceRadius),i)*temperaturePolyCoefficients(currentSectionT,i);              // Temperature
+
+//        } // Get temp
+
+//            newSpeedOfSound = sqrt(adiabeticIndex*specificGasConstant*newTemp); // a
+
+//            newMach = updatedState(3)/newSpeedOfSound; // Determine the new final Mach number at the end of the integration step (if this step-size would be the actual step-size for this integration step)
+
+            newMach = 0.0; // Reset
+            for (int k = 0; k < maxOrder; k++){
+            newMach += TaylorCoefficients(0,k)*pow(currentStepSize,(k)) ;      // Compute newMach (The TaylorSeriesCoefficients for the Mach number were stored in TaylorCoefficients(0), these are however 1 order lower than the state variables!)
+    }
+
+            double fFromNewM = newMach-limitMach; // Determine the new "from" function value
+
+            if ((fFromM/(fabs(fFromM))) != (fFromNewM/(fabs(fFromNewM)))){  // If the function value of the new "from" value is on the other side of the root, then the old "from" values are now the new "to" values (evaluate back to the beginning). Otherwise the "to" values don't change.
+                fToM = fFromM;
+                tToM = tFromM;
+            }
+
+            fFromM = fFromNewM;   // Update the new "from" values
+            tFromM = tFromNewM;
+
+
+
+
+
+
+
+        } // update!
+
+    }while(MachAccept == false);
+
+
+
+        std::cout<<"OriginalMachNumber = "<<originalMach<<std::endl;
+        std::cout<<"NewMachNumber = "<<newMach<<std::endl;
+        std::cout<<"currentStepSize after = "<<currentStepSize<<std::endl;
+
+        std::cout<<"////////////////////////////////////////////////////////////////////////////////// End of Mach do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
+
+    } // else get new step-size
+
+
+    /////////////////////// End of drag-coefficient section checker//////////////////
+
+    //*/
 
 
 

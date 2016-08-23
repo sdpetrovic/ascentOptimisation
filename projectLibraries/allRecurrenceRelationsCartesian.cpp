@@ -631,7 +631,8 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
         }
         else if (temperatureAltitudeRanges(1,0) <= WVector27_1(0) && WVector27_1(0) < temperatureAltitudeRanges(1,1)){  // Section 2
 
-        WVector27_13(k) = temperaturePolyCoefficients(1,3)*WVector27_3(k)+temperaturePolyCoefficients(1,2)*WVector27_2(k)+temperaturePolyCoefficients(1,1)*WVector27_1(k);
+//        WVector27_13(k) = temperaturePolyCoefficients(1,3)*WVector27_3(k)+temperaturePolyCoefficients(1,2)*WVector27_2(k)+temperaturePolyCoefficients(1,1)*WVector27_1(k);
+            WVector27_13(k) = temperaturePolyCoefficients(1,2)*WVector27_2(k)+temperaturePolyCoefficients(1,1)*WVector27_1(k);
 
         }
         else if (temperatureAltitudeRanges(2,0) <= WVector27_1(0) && WVector27_1(0) < temperatureAltitudeRanges(2,1)){ // Section 3
@@ -870,6 +871,8 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
     /// Set return matrix ///
 
     Eigen::MatrixXd stateTaylorCoefficients = Eigen::MatrixXd::Zero(8,maxOrder+1);
+
+    stateTaylorCoefficients.row(0) = WVector27_15;
 
     stateTaylorCoefficients.row(1) = XMatrix.row(1);
     stateTaylorCoefficients.row(2) = XMatrix.row(2);

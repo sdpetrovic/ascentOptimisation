@@ -538,7 +538,7 @@ public:
             else if (temperatureAltitudeRanges(1,0) <= auxiliaryFunctionsMatrixDummy(27,1) && auxiliaryFunctionsMatrixDummy(27,1) < temperatureAltitudeRanges(1,1)){
 
             sectionT = 1;
-            powerT = 3;
+            powerT = 2;
 
             }
             else if (temperatureAltitudeRanges(2,0) <= auxiliaryFunctionsMatrixDummy(27,1) && auxiliaryFunctionsMatrixDummy(27,1) < temperatureAltitudeRanges(2,1)){
@@ -905,7 +905,7 @@ Eigen::MatrixXd getCartesianAuxiliaryFunctions( const tudat::basic_mathematics::
 //            else if (temperatureAltitudeRanges(1,0) <= auxiliaryFunctionsMatrix(27,1) && auxiliaryFunctionsMatrix(27,1) < temperatureAltitudeRanges(1,1)){
 
 //            sectionT = 1;
-//            powerT = 3;
+//            powerT = 2;
 
 //            }
 //            else if (temperatureAltitudeRanges(2,0) <= auxiliaryFunctionsMatrix(27,1) && auxiliaryFunctionsMatrix(27,1) < temperatureAltitudeRanges(2,1)){
