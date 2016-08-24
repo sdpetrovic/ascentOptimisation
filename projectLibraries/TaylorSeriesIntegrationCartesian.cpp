@@ -510,13 +510,13 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
                     /// Debug ///
 
-//                    std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
-//                    std::cout<<"originalAltitude = "<<originalAltitude<<std::endl;
-//                    std::cout<<"newAltitude = "<<newAltitude<<std::endl;
-//                    std::cout<<"fFrom = "<<fFrom<<std::endl;
-//                    std::cout<<"fTo = "<<fTo<<std::endl;
-//                    std::cout<<"currentStepSize before = "<<currentStepSize<<std::endl;
-//                    std::cout<<"initialNewTime = "<<currentTime+currentStepSize<<std::endl;
+                    std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
+                    std::cout<<"originalAltitude = "<<originalAltitude<<std::endl;
+                    std::cout<<"newAltitude = "<<newAltitude<<std::endl;
+                    std::cout<<"fFrom = "<<fFrom<<std::endl;
+                    std::cout<<"fTo = "<<fTo<<std::endl;
+                    std::cout<<"currentStepSize before = "<<currentStepSize<<std::endl;
+                    std::cout<<"initialNewTime = "<<currentTime+currentStepSize<<std::endl;
 
                     /// Debug ///
 
@@ -563,10 +563,18 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
     }
                 fFromDot = (currentState(0)*fFromDotX+currentState(1)*fFromDotY+currentState(2)*fFromDotZ)/(sqrt(updatedState(0)*updatedState(0)+updatedState(1)*updatedState(1)+updatedState(2)*updatedState(2))); // Compute tFromDot which is the derivative of the radius vector
 
-                double alpha = (fTo-fFrom)/((tTo-tFrom)*(tTo-tFrom))-fFromDot/(tTo-tFrom);  // Basically computing fFromDoubleDot/2 (or coefficient)
+                double alpha = (fTo+fFrom)/((tTo-tFrom)*(tTo-tFrom))-fFromDot/(tTo-tFrom);  // Basically computing fFromDoubleDot/2 (or coefficient)
 
                 double tFromNew;
+
+                if ((fFromDot*fFromDot+4.0*alpha*fFrom) < 0.0){  // Avoid a determinant that is smaller than zero, in that case, for the timestep
+                    tFromNew = tFrom + (-fFromDot+0.0)/(2.0*alpha);
+                }
+                else {
+
                 if (signIsPositive == true){    // Compute the new "from" time
+
+
             tFromNew = tFrom + (-fFromDot+sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))/(2.0*alpha);
 
             /// Debug ///
@@ -576,10 +584,12 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 //            std::cout<<"tFrom = "<<tFrom<<std::endl;
 //            std::cout<<"(tTo-tFrom) = "<<(tTo-tFrom)<<std::endl;
 
-//            std::cout<<"(fTo-fFrom) = "<<(fTo-fFrom)<<std::endl;
+//            std::cout<<"(fTo+fFrom) = "<<(fTo+fFrom)<<std::endl;
 //            std::cout<<"fFromDot = "<<fFromDot<<std::endl;
 
-//            std::cout<<"(fTo-fFrom)/((tTo-tFrom)*(tTo-tFrom)) = "<<(fTo-fFrom)/((tTo-tFrom)*(tTo-tFrom))<<std::endl;
+//            std::cout<<"fFrom = "<<fFrom<<std::endl;
+//            std::cout<<"fTo = "<<fTo<<std::endl;
+//            std::cout<<"(fTo+fFrom)/((tTo-tFrom)*(tTo-tFrom)) = "<<(fTo+fFrom)/((tTo-tFrom)*(tTo-tFrom))<<std::endl;
 //            std::cout<<"fFromDot/(tTo-tFrom) = "<<fFromDot/(tTo-tFrom)<<std::endl;
 //            std::cout<<"(tTo-tFrom) = "<<(tTo-tFrom)<<std::endl;
 //            std::cout<<"((tTo-tFrom)*(tTo-tFrom)) = "<<((tTo-tFrom)*(tTo-tFrom))<<std::endl;
@@ -587,6 +597,7 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
 //            std::cout<<"(-fFromDot+sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))/(2.0*alpha) = "<<(-fFromDot+sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))/(2.0*alpha)<<std::endl;
 //            std::cout<<"alpha = "<<alpha<<std::endl;
+//            std::cout<<"4.0*alpha*fFrom = "<<4.0*alpha*fFrom<<std::endl;
 //            std::cout<<"sqrt(fFromDot*fFromDot+4.0*alpha*fFrom) = "<<sqrt(fFromDot*fFromDot+4.0*alpha*fFrom)<<std::endl;
 //            std::cout<<"fFromDot*fFromDot+4.0*alpha*fFrom = "<<fFromDot*fFromDot+4.0*alpha*fFrom<<std::endl;
 
@@ -596,9 +607,13 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
             /// Debug ///
 
     } // +
+
+
                 else {
                    tFromNew = tFrom + (-fFromDot-sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))/(2.0*alpha);
                 } // -
+
+                } // Avoid zero determinant
 
                 currentStepSize = currentTime-tFromNew; // Update the new step-size to compute the new value for the altitude using the Taylor Coefficients
 
@@ -608,7 +623,7 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 //                std::cout<<"tFromNew = "<<tFromNew<<std::endl;
 //                std::cout<<"tFrom = "<<tFrom<<std::endl;
 //                std::cout<<"currentStepSize = currentTime-tFromNew = "<<currentStepSize<<std::endl;
-////                std::cout<<" "<<std::endl;
+//                std::cout<<" "<<std::endl;
                 /// Debug ///
 
 
@@ -650,6 +665,7 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
                 tFrom = tFromNew;
 
                 /// Debug ///
+//                 std::cout<<"newAltitude = "<<newAltitude<<std::endl;
 //                std::cout<<"Debug"<<std::endl;
 //                std::cout<<" "<<std::endl;
                 /// Debug ///
@@ -754,38 +770,85 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
                 double fFromDotM;        // fdot(t0,0)
                 double tToM = currentTime+currentStepSize;  // t1,0
 
-//                // Temperature and speed of sound have to be computed first again
 
-//                // Temperature (because of the previous root finding method it is assured that the temperature is always in the same section)
-//                double newTemp = 0.0; // Default = 0.0
 
-//                for (int i=0; i < powerT+1;i++){ // Compute the corresponding temperature polynomial
+     ///////////////// Test ///////////////////////////////////
 
-//                newTemp += pow((updatedState(0)-bodyReferenceRadius),i)*temperaturePolyCoefficients(currentSectionT,i);              // Temperature
+                // First compute the new Temperature, Speed of sound and then Mach number
 
-//            } // Get temp
+                // Temperature
+                int powerT = 1; // Default = 1
 
-//                double newSpeedOfSound = sqrt(adiabeticIndex*specificGasConstant*newTemp); // a
+                if (currentSectionT == 1){
+                    powerT = 2;
+                }
+                else if (currentSectionT == 2){
+                    powerT = 6;
+                }
+                else if (currentSectionT == 3){
+                    powerT = 8;
+                }
+                else if (currentSectionT == 4){
+                    powerT = 0;
+                }
 
-//                double newMach = updatedState(3)/newSpeedOfSound;
+                double updatedRadius = sqrt(updatedState(0)*updatedState(0)+updatedState(1)*updatedState(1)+updatedState(2)*updatedState(2)); // The current final radius
 
-                double newMach = 0.0; // Reset
-                for (int k = 0; k < maxOrder; k++){
-                newMach += TaylorCoefficients(0,k)*pow(currentStepSize,(k)) ;      // Compute Mach (The TaylorSeriesCoefficients for the Mach number were stored in TaylorCoefficients(0), these are however 1 order lower than the state variables!)
-            }
+                // Temperature and speed of sound have to be computed first again
+
+                // Temperature (because of the previous root finding method it is assured that the temperature is always in the same section)
+                double newTemp = 0.0; // Default = 0.0
+
+                for (int i=0; i < powerT+1;i++){ // Compute the corresponding temperature polynomial
+
+                newTemp += pow((updatedRadius-bodyReferenceRadius),i)*temperaturePolyCoefficients(currentSectionT,i);              // The current final temperature
+
+            } // Get temp
+
+
+
+                double updatedGroundVelocity = sqrt((updatedState(3)+rotationalVelocity*updatedState(1))*(updatedState(3)+rotationalVelocity*updatedState(1))+
+                                             (updatedState(4)-rotationalVelocity*updatedState(0))*(updatedState(4)-rotationalVelocity*updatedState(0))+
+                                             updatedState(5)*updatedState(5)); // The current final ground velocity
+
+                double newSpeedOfSound = sqrt(adiabeticIndex*specificGasConstant*newTemp); // The current final speed of sound
+
+                double newMachTest = updatedGroundVelocity/newSpeedOfSound;
+
+//                std::cout<<"///////////////// Test /////////////////"<<std::endl;
+
+//                std::cout<<"newTemp = "<<newTemp<<std::endl;
+//                std::cout<<"updatedGroundVelocity = "<<updatedGroundVelocity<<std::endl;
+//                std::cout<<"updatedInertialVelocity = "<<sqrt(updatedState(3)*updatedState(3)+updatedState(4)*updatedState(4)+updatedState(5)*updatedState(5))<<std::endl;
+//                std::cout<<"newSpeedOfSound = "<<newSpeedOfSound<<std::endl;
+//                std::cout<<"newMachTest = "<<newMachTest<<std::endl;
+
+//                std::cout<<"///////////////// Test /////////////////"<<std::endl;
+
+      ///////////////// Test ///////////////////////////////////
+
+
+                double newMach = newMachTest;       // Alternate way to compute the new Mach number by avoiding problems in the Mach number coefficients... (needs to be solved still!)
+
+
+//                double newMach = 0.0; // Reset
+//                for (int k = 0; k < maxOrder; k++){
+//                    std::cout<<"newMach = "<<newMach<<std::endl;
+//                newMach += TaylorCoefficients(0,k)*pow(currentStepSize,(k)) ;      // Compute Mach (The TaylorSeriesCoefficients for the Mach number were stored in TaylorCoefficients(0), these are however 1 order lower than the state variables!)
+//            }
 
 
                 double fToM = newMach-limitMach; // f(t1,0)
 
                 /// Debug ///
 
-    //                std::cout<<"limitMach = "<<limitMach<<std::endl;
-    //                std::cout<<"originalMach = "<<originalMach<<std::endl;
-    //                std::cout<<"newMach = "<<newMach<<std::endl;
-    //                std::cout<<"fFromM = "<<fFromM<<std::endl;
-    //                std::cout<<"fToM = "<<fToM<<std::endl;
-    //                std::cout<<"initialNewTimeM = "<<currentTime+currentStepSize<<std::endl;
-    //                std::cout<<"Mach Taylor Series coefficients = "<<TaylorCoefficients.row(0)<<std::endl;
+//                    std::cout<<"limitMach = "<<limitMach<<std::endl;
+//                    std::cout<<"originalMach = "<<originalMach<<std::endl;
+//                    std::cout<<"newMach = "<<newMach<<std::endl;
+//                    std::cout<<"fFromM = "<<fFromM<<std::endl;
+//                    std::cout<<"fToM = "<<fToM<<std::endl;
+//                    std::cout<<"initialNewTimeM = "<<currentTime+currentStepSize<<std::endl;
+//                    std::cout<<"Mach Taylor Series coefficients = "<<TaylorCoefficients.row(0)<<std::endl;
 
                 /// Debug ///
 
@@ -823,7 +886,7 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
             for (int k = 1; k < maxOrder; k++){
             fFromDotM += k*TaylorCoefficients(0,k)*pow(currentStepSize,(k-1)) ;      // Compute tFromDotM (The TaylorSeriesCoefficients for the Mach number were stored in TaylorCoefficients(0), these are however 1 order lower than the state variables!)
     }
-            double alphaM = (fToM-fFromM)/((tToM-tFromM)*(tToM-tFromM))-fFromDotM/(tToM-tFromM);  // Basically computing fFromDoubleDotM/2 (or coefficient)
+            double alphaM = (fToM+fFromM)/((tToM-tFromM)*(tToM-tFromM))-fFromDotM/(tToM-tFromM);  // Basically computing fFromDoubleDotM/2 (or coefficient)
 
             double tFromNewM;
             if (signIsPositiveMach == true){    // Compute the new "from" time
@@ -834,30 +897,30 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
             } // -
 
     /// Debug ///
-    //        std::cout<<"/// Debug ///"<<std::endl;
+//            std::cout<<"/// Debug ///"<<std::endl;
 
-    //        std::cout<<"signIsPositiveMach = "<<signIsPositiveMach<<std::endl;
-    //        std::cout<<"fFromDotM = "<<fFromDotM<<std::endl;
-    //        std::cout<<"(fToM-fFromM)/((tToM-tFromM)*(tToM-tFromM)) = "<<(fToM-fFromM)/((tToM-tFromM)*(tToM-tFromM))<<std::endl;
-    //        std::cout<<"fFromDotM/(tToM-tFromM) = "<<fFromDotM/(tToM-tFromM)<<std::endl;
-    //        std::cout<<"fFromDotM = "<<fFromDotM<<std::endl;
-    //        std::cout<<"fFromDotM = "<<fFromDotM<<std::endl;
+//            std::cout<<"signIsPositiveMach = "<<signIsPositiveMach<<std::endl;
+//            std::cout<<"fFromDotM = "<<fFromDotM<<std::endl;
+//            std::cout<<"(fToM-fFromM)/((tToM-tFromM)*(tToM-tFromM)) = "<<(fToM-fFromM)/((tToM-tFromM)*(tToM-tFromM))<<std::endl;
+//            std::cout<<"fFromDotM/(tToM-tFromM) = "<<fFromDotM/(tToM-tFromM)<<std::endl;
+//            std::cout<<"fFromDotM = "<<fFromDotM<<std::endl;
+//            std::cout<<"fFromDotM = "<<fFromDotM<<std::endl;
 
 //            double Mach = 0.0; // Reset
 //            for (int k = 0; k < maxOrder; k++){
 //            Mach += TaylorCoefficients(0,k)*pow(currentStepSize,(k)) ;      // Compute Mach (The TaylorSeriesCoefficients for the Mach number were stored in TaylorCoefficients(0), these are however 1 order lower than the state variables!)
 //    }
 
-    //        std::cout<<"Mach = "<<Mach<<std::endl;
-    //        std::cout<<"MachOriginal = "<<auxiliaryEquations(32)<<std::endl;
-    //        std::cout<<"TaylorCoefficients for Mach = "<<TaylorCoefficients.row(0)<<std::endl;
-    //        std::cout<<"alphaM = "<<alphaM<<std::endl;
-    //        std::cout<<"sqrt(fFromDotM*fFromDotM+4.0*alphaM*fFromM) = "<<sqrt(fFromDotM*fFromDotM+4.0*alphaM*fFromM)<<std::endl;
-    //        std::cout<<"(fFromDotM*fFromDotM+4.0*alphaM*fFromM) = "<<(fFromDotM*fFromDotM+4.0*alphaM*fFromM)<<std::endl;
-    //        std::cout<<"tFromNewM = "<<tFromNewM<<std::endl;
+//            std::cout<<"Mach = "<<Mach<<std::endl;
+//            std::cout<<"MachOriginal = "<<auxiliaryEquations(32)<<std::endl;
+//            std::cout<<"TaylorCoefficients for Mach = "<<TaylorCoefficients.row(0)<<std::endl;
+//            std::cout<<"alphaM = "<<alphaM<<std::endl;
+//            std::cout<<"sqrt(fFromDotM*fFromDotM+4.0*alphaM*fFromM) = "<<sqrt(fFromDotM*fFromDotM+4.0*alphaM*fFromM)<<std::endl;
+//            std::cout<<"(fFromDotM*fFromDotM+4.0*alphaM*fFromM) = "<<(fFromDotM*fFromDotM+4.0*alphaM*fFromM)<<std::endl;
+//            std::cout<<"tFromNewM = "<<tFromNewM<<std::endl;
 
 
-    //        std::cout<<"/// Debug ///"<<std::endl;
+//            std::cout<<"/// Debug ///"<<std::endl;
             /// Debug ///
 
 

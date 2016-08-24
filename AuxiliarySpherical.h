@@ -1300,14 +1300,17 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
 
         if (i==2){
 
-            auxiliaryFunctionsMatrix(30,9) = auxiliaryDerivativesVector(31)*(2.0*densityPolyCoefficients(2)*auxiliaryEquationsVector(31)+densityPolyCoefficients(1));
+//            auxiliaryFunctionsMatrix(30,9) = auxiliaryDerivativesVector(31)*(2.0*densityPolyCoefficients(2)*auxiliaryEquationsVector(31)+densityPolyCoefficients(1));
+            auxiliaryFunctionsMatrix(30,19) = (2.0*densityPolyCoefficients(2)*auxiliaryEquationsVector(31));
         }
         else {
 
-           auxiliaryFunctionsMatrix(30,9) += auxiliaryDerivativesVector(31)*i*densityPolyCoefficients(i)*auxiliaryFunctionsMatrix(30,(11-i));
+//           auxiliaryFunctionsMatrix(30,9) += auxiliaryDerivativesVector(31)*i*densityPolyCoefficients(i)*auxiliaryFunctionsMatrix(30,(11-i));
+            auxiliaryFunctionsMatrix(30,19) += i*densityPolyCoefficients(i)*auxiliaryFunctionsMatrix(30,(11-i));
 
         };
     };
+    auxiliaryFunctionsMatrix(30,9) = auxiliaryDerivativesVector(31)*auxiliaryFunctionsMatrix(30,19)+densityPolyCoefficients(1)*auxiliaryFunctionsMatrix(31);
 
 
 

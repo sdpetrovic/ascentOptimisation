@@ -210,7 +210,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // No Drag
 
-    MAV.setReferenceArea(0);
+//    MAV.setReferenceArea(0);
 
     if (MAV.referenceArea() == 0){
         std::cout<<"NO DRAG"<<std::endl;
@@ -652,7 +652,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
         std::string ComputerTimeString = currentYear + "-" + currentMonth + "-" + currentDay + "_" + currentHour + ":" + currentMin + ":" + currentSec;  // Convert to string and store
 
-        std::string newFileName = "backupTSIFileAtDateAndTime_" + ComputerTimeString + ".csv";
+        std::string newFileName = "backupCartesianTSIFileAtDateAndTime_" + ComputerTimeString + ".csv";
 
     std::cerr<<"The file name that you have chosen already exists, a new file with name "<<newFileName<<" will be created to store the data for now"<<std::endl;
 
@@ -727,8 +727,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //     for (int i = 0; i<4; i++){
          /// Debug ///
-    std::cout<<"The current step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
-    std::cout<<"The current runningTime = "<<runningTimeTSI<<std::endl;
+//    std::cout<<"The current step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
+//    std::cout<<"The current runningTime = "<<runningTimeTSI<<std::endl;
 //    std::cout<<"std::fabs(endTime-runningTime) = "<<std::fabs(endTimeTSI-runningTimeTSI)<<std::endl;
 //    std::cout<<"std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) = "<<std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) )<<std::endl;
          /// Debug ///

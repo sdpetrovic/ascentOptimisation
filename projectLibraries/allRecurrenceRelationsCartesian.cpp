@@ -873,6 +873,7 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
     Eigen::MatrixXd stateTaylorCoefficients = Eigen::MatrixXd::Zero(8,maxOrder+1);
 
     stateTaylorCoefficients.row(0) = WVector27_15;
+    stateTaylorCoefficients(0,maxOrder) = 0.0;  // Last element is not used so set to zero
 
     stateTaylorCoefficients.row(1) = XMatrix.row(1);
     stateTaylorCoefficients.row(2) = XMatrix.row(2);

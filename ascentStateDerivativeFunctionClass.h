@@ -476,7 +476,7 @@ public:
 
         const double currentDensity= air_density::airDensity(Mars.densityPolyCoefficients(),  currentAltitude);
 
-    //    std::cout<<"The current air density = "<<currentDensity<<std::endl;
+//        std::cout<<"The current air density = "<<currentDensity<<std::endl;
 
     /// Testing the ascentDragForce function ///
 
@@ -504,7 +504,7 @@ public:
                                                          MAV.dragCoefficientPolyCoefficients(),MAV.dragCoefficientMachRanges(),
                                                          MAV.referenceArea(), currentDensity);
 
-    //    std::cout<<"currentDrag = "<<currentDrag<<std::endl;
+//        std::cout<<"currentDrag = "<<currentDrag<<std::endl;
 
 
 

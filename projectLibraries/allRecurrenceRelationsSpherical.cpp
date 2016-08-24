@@ -262,6 +262,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     Eigen::VectorXd WVector30_6 = Eigen::VectorXd::Zero(maxOrder);     // W30,6
     Eigen::VectorXd WVector30_7 = Eigen::VectorXd::Zero(maxOrder);     // W30,7
     Eigen::VectorXd WVector30_8 = Eigen::VectorXd::Zero(maxOrder);     // W30,8
+    Eigen::VectorXd WVector30_19 = Eigen::VectorXd::Zero(maxOrder);     // W30,19
     Eigen::VectorXd WVector30_9 = Eigen::VectorXd::Zero(maxOrder);     // W30,9
 
 
@@ -424,6 +425,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
     WVector30_6(0) = initialFunctionsMatrix(30,6);     // W30,6
     WVector30_7(0) = initialFunctionsMatrix(30,7);     // W30,7
     WVector30_8(0) = initialFunctionsMatrix(30,8);     // W30,8
+    WVector30_19(0) = initialFunctionsMatrix(30,19);     // W30,19
     WVector30_9(0) = initialFunctionsMatrix(30,9);     // W30,9
 
 
@@ -744,7 +746,13 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         WVector30_9(k) = getMultiplicationRecurrenceRelation(UMatrix.row(31),(10.0*densityPolyCoefficients(10)*WVector30_1+9.0*densityPolyCoefficients(9)*WVector30_2+8.0*densityPolyCoefficients(8)*WVector30_3+
                                           7.0*densityPolyCoefficients(7)*WVector30_4+6.0*densityPolyCoefficients(6)*WVector30_5+5.0*densityPolyCoefficients(5)*WVector30_6+
                                           4.0*densityPolyCoefficients(4)*WVector30_7+3.0*densityPolyCoefficients(3)*WVector30_8+2.0*densityPolyCoefficients(2)*x31Transpose+densityPolyCoefficient_1),k);
-                            // change to Eigen::VectorXd
+
+        WVector30_19(k) = (10.0*densityPolyCoefficients(10)*WVector30_1(k)+9.0*densityPolyCoefficients(9)*WVector30_2(k)+8.0*densityPolyCoefficients(8)*WVector30_3(k)+
+                7.0*densityPolyCoefficients(7)*WVector30_4(k)+6.0*densityPolyCoefficients(6)*WVector30_5(k)+5.0*densityPolyCoefficients(5)*WVector30_6(k)+
+                4.0*densityPolyCoefficients(4)*WVector30_7(k)+3.0*densityPolyCoefficients(3)*WVector30_8(k)+2.0*densityPolyCoefficients(2)*XMatrix(31,k));
+
+
+        WVector30_9(k) = getMultiplicationRecurrenceRelation(UMatrix.row(31),WVector30_19,k) + densityPolyCoefficients(1)*UMatrix(31,k);
 
         UMatrix(30,k) = WVector30_9(k);
 
@@ -1016,9 +1024,11 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 //std::cout<<"XMatrix.row(15) = "<<XMatrix.row(15)<<std::endl;
 //std::cout<<"XMatrix.row(31) = "<<XMatrix.row(31)<<std::endl;
 //std::cout<<"XMatrix.row(16) = "<<XMatrix.row(16)<<std::endl;
+//    std::cout<<"XMatrix.row(27) = "<<XMatrix.row(27)<<std::endl;
+//    std::cout<<"XMatrix.row(28) = "<<XMatrix.row(28)<<std::endl;
 
 
-std::cout<<"XMatrix.row(32) = "<<XMatrix.row(32)<<std::endl;
+//std::cout<<"XMatrix.row(32) = "<<XMatrix.row(32)<<std::endl;
 
 
 //    std::cout<<"XMatrix = "<<XMatrix<<std::endl;

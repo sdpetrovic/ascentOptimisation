@@ -211,7 +211,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // No Drag
 
-    MAV.setReferenceArea(0);
+//    MAV.setReferenceArea(0);
 
     if (MAV.referenceArea() == 0){
         std::cout<<"NO DRAG"<<std::endl;
@@ -235,7 +235,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
   /// Initial conditions /// a.k.a. control centre
 
-    const double setEndTime = 77.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
+    const double setEndTime = 120.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
 
 //std::cout<<"pi = "<<(4*atan(1))<<std::endl;
 
@@ -645,7 +645,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
         std::string ComputerTimeString = currentYear + "-" + currentMonth + "-" + currentDay + "_" + currentHour + ":" + currentMin + ":" + currentSec;  // Convert to string and store
 
-        std::string newFileName = "backupTSIFileAtDateAndTime_" + ComputerTimeString + ".csv";
+        std::string newFileName = "backupSphericalTSIFileAtDateAndTime_" + ComputerTimeString + ".csv";
 
     std::cerr<<"The file name that you have chosen already exists, a new file with name "<<newFileName<<" will be created to store the data for now"<<std::endl;
 
@@ -742,9 +742,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 
         // Check to see if the class has been updated from within the TSI function
-        const double nextStepSize = stepSize.getCurrentStepSize();
+//        const double nextStepSize = stepSize.getCurrentStepSize();
 
-        std::cout<<"The next stepSize = "<<nextStepSize<<std::endl;
+//        std::cout<<"The next stepSize = "<<nextStepSize<<std::endl;
 
 /// Storing the values ///
 

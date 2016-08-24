@@ -456,7 +456,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
             currentSectionT = i;
 //            std::cout<<"It actually does go inside the limitAltitude section"<<std::endl;
              limitAltitude = temperatureAltitudeRanges(i,1);
-             std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
+//             std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
 
 
         }
@@ -515,9 +515,9 @@ if (fTo <0){    // If the newAltitude is below the limitAltitude (so fTo<0) then
 }
 else{
 
-std::cout<<"////////////////////////////////////////////////////////////////////////////////// Beginning of altitude do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
+//std::cout<<"////////////////////////////////////////////////////////////////////////////////// Beginning of altitude do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
 
-std::cout<<"Initial new altitude = "<<newAltitude<<std::endl;
+//std::cout<<"Initial new altitude = "<<newAltitude<<std::endl;
 
         do{ // If the altitude has gone beyond the limit altitude, this do loop will determine a new "currentStepSize"
 
@@ -533,7 +533,7 @@ std::cout<<"Initial new altitude = "<<newAltitude<<std::endl;
             for (int k = 1; k < maxOrder+1; k++){
             fFromDot += k*TaylorCoefficients(1,k)*pow(currentStepSize,(k-1)) ;      // Compute tFromDot
 }
-            double alpha = (fTo-fFrom)/((tTo-tFrom)*(tTo-tFrom))-fFromDot/(tTo-tFrom);  // Basically computing fFromDoubleDot/2 (or coefficient)
+            double alpha = (fTo+fFrom)/((tTo-tFrom)*(tTo-tFrom))-fFromDot/(tTo-tFrom);  // Basically computing fFromDoubleDot/2 (or coefficient)
 
             double tFromNew;
             if (signIsPositive == true){    // Compute the new "from" time
@@ -586,11 +586,11 @@ std::cout<<"Initial new altitude = "<<newAltitude<<std::endl;
 
 }while(altitudeAccept == false);
 
-std::cout<<"Original altitude = "<<currentState(0)-bodyReferenceRadius<<std::endl;
-std::cout<<"Current altitude = "<<updatedState(0)-bodyReferenceRadius<<std::endl;
-//std::cout<<"Current velocity = "<<updatedState(3)<<std::endl;
+//std::cout<<"Original altitude = "<<currentState(0)-bodyReferenceRadius<<std::endl;
+//std::cout<<"Current altitude = "<<updatedState(0)-bodyReferenceRadius<<std::endl;
+////std::cout<<"Current velocity = "<<updatedState(3)<<std::endl;
 
-std::cout<<"////////////////////////////////////////////////////////////////////////////////// End of altitude do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
+//std::cout<<"////////////////////////////////////////////////////////////////////////////////// End of altitude do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
 
 } // else get new step-size
 
@@ -643,7 +643,7 @@ std::cout<<"////////////////////////////////////////////////////////////////////
 
     if (dragCoefficientMachRanges(i,0) <= originalMach && originalMach < dragCoefficientMachRanges(i,1)){
 
-         limitMach = dragCoefficientMachRanges(i,1);
+         limitMach = dragCoefficientMachRanges(i,1)+1e-14;
 
     }
     else {
@@ -690,11 +690,11 @@ std::cout<<"////////////////////////////////////////////////////////////////////
 
 //                std::cout<<"limitMach = "<<limitMach<<std::endl;
 //                std::cout<<"originalMach = "<<originalMach<<std::endl;
-//                std::cout<<"newMach = "<<newMach<<std::endl;
+                std::cout<<"newMach = "<<newMach<<std::endl;
 //                std::cout<<"fFromM = "<<fFromM<<std::endl;
 //                std::cout<<"fToM = "<<fToM<<std::endl;
 //                std::cout<<"initialNewTimeM = "<<currentTime+currentStepSize<<std::endl;
-//                std::cout<<"Mach Taylor Series coefficients = "<<TaylorCoefficients.row(0)<<std::endl;
+                std::cout<<"Mach Taylor Series coefficients = "<<TaylorCoefficients.row(0)<<std::endl;
 
             /// Debug ///
 
@@ -714,11 +714,15 @@ MachAccept = true;
 }
 else{
 
-    std::cout<<"////////////////////////////////////////////////////////////////////////////////// Beginning of Mach do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
+//    std::cout<<"////////////////////////////////////////////////////////////////////////////////// Beginning of Mach do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
 
-     std::cout<<"InitialNewMachNumber = "<<newMach<<std::endl;
+//     std::cout<<"InitialNewMachNumber = "<<newMach<<std::endl;
 
     do{ // If the Mach number has gone beyond the limit Mach number, this do loop will determine a new "currentStepSize"
+
+//         std::cout<<"newMach-limitMach = "<<newMach-limitMach<<std::endl;
+//         std::cout<<"newMach = "<<newMach<<std::endl;
+//         std::cout<<"limitMach = "<<limitMach<<std::endl;
 
 
     if (newMach - limitMach <= 1e-6 && newMach - limitMach >= 0.0){   // Checking if the convergence condition has been met and an answer has been found
@@ -732,7 +736,7 @@ else{
         for (int k = 1; k < maxOrder+1; k++){
         fFromDotM += k*TaylorCoefficients(0,k)*pow(currentStepSize,(k-1)) ;      // Compute tFromDotM (The TaylorSeriesCoefficients for the Mach number (or x32) were stored in TaylorCoefficients(0)
 }
-        double alphaM = (fToM-fFromM)/((tToM-tFromM)*(tToM-tFromM))-fFromDotM/(tToM-tFromM);  // Basically computing fFromDoubleDotM/2 (or coefficient)
+        double alphaM = (fToM+fFromM)/((tToM-tFromM)*(tToM-tFromM))-fFromDotM/(tToM-tFromM);  // Basically computing fFromDoubleDotM/2 (or coefficient)
 
         double tFromNewM;
         if (signIsPositiveMach == true){    // Compute the new "from" time
@@ -750,7 +754,7 @@ else{
 //        std::cout<<"(fToM-fFromM)/((tToM-tFromM)*(tToM-tFromM)) = "<<(fToM-fFromM)/((tToM-tFromM)*(tToM-tFromM))<<std::endl;
 //        std::cout<<"fFromDotM/(tToM-tFromM) = "<<fFromDotM/(tToM-tFromM)<<std::endl;
 //        std::cout<<"fFromDotM = "<<fFromDotM<<std::endl;
-//        std::cout<<"fFromDotM = "<<fFromDotM<<std::endl;
+////        std::cout<<"fFromDotM = "<<fFromDotM<<std::endl;
 
 //        double Mach = 0.0; // Reset
 //        for (int k = 0; k < maxOrder+1; k++){
@@ -824,10 +828,10 @@ else{
 
 
 
-    std::cout<<"OriginalMachNumber = "<<auxiliaryEquations(32)<<std::endl;
-    std::cout<<"NewMachNumber = "<<newMach<<std::endl;
+//    std::cout<<"OriginalMachNumber = "<<auxiliaryEquations(32)<<std::endl;
+//    std::cout<<"NewMachNumber = "<<newMach<<std::endl;
 
-    std::cout<<"////////////////////////////////////////////////////////////////////////////////// End of Mach do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
+//    std::cout<<"////////////////////////////////////////////////////////////////////////////////// End of Mach do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
 
 } // else get new step-size
 
