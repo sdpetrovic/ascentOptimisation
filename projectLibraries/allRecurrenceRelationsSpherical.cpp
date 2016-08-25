@@ -530,7 +530,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
 
         // 4
 
-        WVector4_0(k) = getDivisionRecurrenceRelation(XMatrix.row(27),XMatrix.row(7),WVector4_0,k); // Added because of the mistake found in the recurrence relation of W4,2
+//        WVector4_0(k) = getDivisionRecurrenceRelation(XMatrix.row(27),XMatrix.row(7),WVector4_0,k); // Added because of the mistake found in the recurrence relation of W4,2
 //        WVector4_1(k) = getDivisionRecurrenceRelation(XMatrix.row(1),XMatrix.row(9),WVector4_1,k); //  XMatrix(1,k)/XMatrix(9,k);
 //        WVector4_2(k) = thrustAccelerationsBframe(0)-WVector4_0(k);                                     /// This is wrong! For the division only the previous division should be taken. So an extra WVector should be added!!  Update: done
 
@@ -546,7 +546,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         WVector4_31(k) = getMultiplicationRecurrenceRelation(WVector4_28,WVector4_27,k);
         WVector4_32(k) = getMultiplicationRecurrenceRelation(WVector4_25,WVector4_30,k);
 
-        WVector4_2(k) = WVector4_32(k)-WVector4_0(k);
+//        WVector4_2(k) = WVector4_32(k)-WVector4_0(k);
 //        WVector4_3(k) = getCosineRecurrenceRelation((XMatrix.row(10)+XMatrix.row(11)),WVector4_8,k);
         WVector4_3(k) = getCosineRecurrenceRelation((XMatrix.row(49)),WVector4_8,k);
         WVector4_4(k) = getSineRecurrenceRelation(XMatrix.row(12),WVector4_6,k);

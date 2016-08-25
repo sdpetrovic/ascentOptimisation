@@ -442,6 +442,31 @@ public:
 //        auxiliaryEquationsVector(31) = (auxiliaryEquationsVector(20)*1e6-bodyReferenceRadius*1e6)/1e6;              // x31 [km]!!!
         auxiliaryEquationsVector(31) = (auxiliaryEquationsVector(16)-bodyReferenceRadius);              // x31 [km]!!!
 
+        // Determining the Thrust azimuth (psiT) and the Thrust elevation (epsilonT) angles based on the altitude
+                // Determine the proper azimuth value for the current altitude section
+                int sectionThrustAz = 0;    // Set the current azimuth value to the default first section
+                for (int i = 0; i < thrustAzimuthMatrix.rows();i++){
+                    if (thrustAzimuthMatrix(i,0) <= auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31) < thrustAzimuthMatrix(i,1)){ // Test for all the sections (independent of how many sections there are)
+                        sectionThrustAz = i;
+//                        std::cout<<"sectionThrustAz = "<<sectionThrustAz+1<<std::endl;
+                    }
+                }
+
+//                const double thrustAzimuth = thrustAzimuthMatrix(sectionThrustAz,2); // Set the thrust azimuth to the current azimuth corresponding to the current altitude section
+
+                // Determine the proper elevation value for the current altitude section
+                int sectionThrustEl = 0;    // Set the current elevation value to the default first section
+                for (int i = 0; i < thrustElevationMatrix.rows();i++){
+                    if (thrustElevationMatrix(i,0) <= auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31) < thrustElevationMatrix(i,1)){ // Test for all the sections (independent of how many sections there are)
+                        sectionThrustEl = i;
+                    }
+                }
+
+//                const double thrustElevation = thrustElevationMatrix(sectionThrustEl,2); // Set the thrust elevation to the current elevation corresponding to the current altitude section
+
+                const double thrustAzimuth = 0.0; // Test
+                const double thrustElevation = 0.0; // Test
+
 
         // Computing the polynomial fit using the altitude and fit parameters for density
         for (int i = 0; i < 10+1;i++) {
@@ -544,7 +569,8 @@ public:
 
 //std::cout<<"Surely this works 8..."<<std::endl;
 
-        auxiliaryEquationsVector(0) = thrustAccelerationsBframe(0)-(auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7));              // w4,2
+//        auxiliaryEquationsVector(0) = thrustAccelerationsBframe(0)-(auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7));              // w4,2
+        auxiliaryEquationsVector(0) = (Thrust*cos(thrustAzimuth)*cos(thrustElevation)/auxiliaryEquationsVector(7))-(auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7));              // w4,2
 
 //        /// Debug ///
 //        std::cout<<"thrustAccelerationsBframe(0) = "<<thrustAccelerationsBframe(0)<<std::endl;
@@ -604,6 +630,32 @@ public:
 //    else {
 //        cx10x11 = cos(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11));
 //    }
+
+
+    // Determining the Thrust azimuth (psiT) and the Thrust elevation (epsilonT) angles based on the altitude
+            // Determine the proper azimuth value for the current altitude section
+            int sectionThrustAz = 0;    // Set the current azimuth value to the default first section
+            for (int i = 0; i < thrustAzimuthMatrix.rows();i++){
+                if (thrustAzimuthMatrix(i,0) <= auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31) < thrustAzimuthMatrix(i,1)){ // Test for all the sections (independent of how many sections there are)
+                    sectionThrustAz = i;
+//                    std::cout<<"sectionThrustAz = "<<sectionThrustAz+1<<std::endl;
+                }
+            }
+
+//                const double thrustAzimuth = thrustAzimuthMatrix(sectionThrustAz,2); // Set the thrust azimuth to the current azimuth corresponding to the current altitude section
+
+            // Determine the proper elevation value for the current altitude section
+            int sectionThrustEl = 0;    // Set the current elevation value to the default first section
+            for (int i = 0; i < thrustElevationMatrix.rows();i++){
+                if (thrustElevationMatrix(i,0) <= auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31) < thrustElevationMatrix(i,1)){ // Test for all the sections (independent of how many sections there are)
+                    sectionThrustEl = i;
+                }
+            }
+
+//                const double thrustElevation = thrustElevationMatrix(sectionThrustEl,2); // Set the thrust elevation to the current elevation corresponding to the current altitude section
+
+            const double thrustAzimuth = 0.0; // Test
+            const double thrustElevation = 0.0; // Test
 
 
     double cx12;
@@ -746,14 +798,16 @@ public:
        auxiliaryDerivativesVector(13) = 2.0*(rotationalVelocity/cx14)*(sx12*cx14-
                                                                                                          cx12*sx14*cx13)+
                     (rotationalVelocity*rotationalVelocity/(auxiliaryEquationsVector(15)*cx14))*auxiliaryEquationsVector(16)*cx12*sx12*sx13-
-                    (thrustAccelerationsBframe(1)/(auxiliaryEquationsVector(15)*cx14));
+//                    (thrustAccelerationsBframe(1)/(auxiliaryEquationsVector(15)*cx14));
+               ((Thrust*sin(thrustAzimuth)*cos(thrustElevation))/(auxiliaryEquationsVector(15)*auxiliaryEquationsVector(7)*cx14));
     }
     else {
     auxiliaryDerivativesVector(13) = 2.0*(rotationalVelocity/cx14)*(sx12*cx14-
                                                                                                  cx12*sx14*cx13)+
             (auxiliaryEquationsVector(15)/auxiliaryEquationsVector(16))*cx14*tan(auxiliaryEquationsVector(12))*sx13+
             (rotationalVelocity*rotationalVelocity/(auxiliaryEquationsVector(15)*cx14))*auxiliaryEquationsVector(16)*cx12*sx12*sx13-
-            (thrustAccelerationsBframe(1)/(auxiliaryEquationsVector(15)*cx14));                // u13
+//            (thrustAccelerationsBframe(1)/(auxiliaryEquationsVector(15)*cx14));                // u13
+            ((Thrust*sin(thrustAzimuth)*cos(thrustElevation))/(auxiliaryEquationsVector(15)*auxiliaryEquationsVector(7)*cx14));               // u13
 }
 
     // Account for singularities at zero velocity
@@ -768,8 +822,9 @@ public:
 //            -thrustAccelerationsBframe(2)/auxiliaryEquationsVector(15)-standardGravitationalParameter*cx14/(auxiliaryEquationsVector(15)*auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16));                // u14
 
     auxiliaryDerivativesVector(14) = 2.0*rotationalVelocity*cx12*sx13+(auxiliaryEquationsVector(15)/auxiliaryEquationsVector(16))*cx14+
-            ((rotationalVelocity*rotationalVelocity)*auxiliaryEquationsVector(16)*cx12*(cx12*cx14+sx14*sx12*cx13)
-            -thrustAccelerationsBframe(2)-standardGravitationalParameter*cx14/(auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16)))/auxiliaryEquationsVector(15);                // u14
+            ((rotationalVelocity*rotationalVelocity)*auxiliaryEquationsVector(16)*cx12*(cx12*cx14+sx14*sx12*cx13)+
+//            -thrustAccelerationsBframe(2)-standardGravitationalParameter*cx14/(auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16)))/auxiliaryEquationsVector(15);                // u14
+             (Thrust*sin(thrustElevation))/(auxiliaryEquationsVector(7))-standardGravitationalParameter*cx14/(auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16)))/auxiliaryEquationsVector(15);                // u14
 
 //    auxiliaryDerivativesVector(14) = 2.0*rotationalVelocity*cx12*sx13+(auxiliaryEquationsVector(15)/auxiliaryEquationsVector(16))*cx14+
 //            ((-standardGravitationalParameter*cx14)/(auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16))-thrustAccelerationsBframe(2)+
@@ -979,6 +1034,33 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
 //        cx10x11 = cos(auxiliaryEquationsVector(10)+auxiliaryEquationsVector(11));
 //    }
 
+
+    // Determining the Thrust azimuth (psiT) and the Thrust elevation (epsilonT) angles based on the altitude
+            // Determine the proper azimuth value for the current altitude section
+            int sectionThrustAz = 0;    // Set the current azimuth value to the default first section
+            for (int i = 0; i < thrustAzimuthMatrix.rows();i++){
+                if (thrustAzimuthMatrix(i,0) <= auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31) < thrustAzimuthMatrix(i,1)){ // Test for all the sections (independent of how many sections there are)
+                    sectionThrustAz = i;
+//                    std::cout<<"sectionThrustAz = "<<sectionThrustAz+1<<std::endl;
+                }
+            }
+
+//                const double thrustAzimuth = thrustAzimuthMatrix(sectionThrustAz,2); // Set the thrust azimuth to the current azimuth corresponding to the current altitude section
+
+            // Determine the proper elevation value for the current altitude section
+            int sectionThrustEl = 0;    // Set the current elevation value to the default first section
+            for (int i = 0; i < thrustElevationMatrix.rows();i++){
+                if (thrustElevationMatrix(i,0) <= auxiliaryEquationsVector(31) && auxiliaryEquationsVector(31) < thrustElevationMatrix(i,1)){ // Test for all the sections (independent of how many sections there are)
+                    sectionThrustEl = i;
+                }
+            }
+
+//                const double thrustElevation = thrustElevationMatrix(sectionThrustEl,2); // Set the thrust elevation to the current elevation corresponding to the current altitude section
+
+            const double thrustAzimuth = 0.0; // Test
+            const double thrustElevation = 0.0; // Test
+
+
     double cx12;
 
     if (abs(cos(auxiliaryEquationsVector(12)))<6.2e-17){
@@ -1049,9 +1131,9 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     }
 
     // w4
-    auxiliaryFunctionsMatrix(4,0) = auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7);   // Added because of the mistake found in the recurrence relation of W4,2
+//    auxiliaryFunctionsMatrix(4,0) = auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7);   // Added because of the mistake found in the recurrence relation of W4,2
 //    auxiliaryFunctionsMatrix(4,1) = auxiliaryEquationsVector(1)/auxiliaryEquationsVector(9);
-    auxiliaryFunctionsMatrix(4,2) = auxiliaryEquationsVector(0);
+//    auxiliaryFunctionsMatrix(4,2) = auxiliaryEquationsVector(0);
 //    auxiliaryFunctionsMatrix(4,3) = cx10x11;
 //    auxiliaryFunctionsMatrix(4,3) = cos(auxiliaryEquationsVector(49));
     // Avoid cosine rounding errors
@@ -1111,20 +1193,20 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(4,24) = auxiliaryFunctionsMatrix(4,2)*(auxiliaryFunctionsMatrix(4,22)-auxiliaryFunctionsMatrix(4,18));
 
     auxiliaryFunctionsMatrix(4,25) = Thrust/auxiliaryEquationsVector(7);
-    auxiliaryFunctionsMatrix(4,26) = cos(thrustAzimuthMatrix(0,2));
+    auxiliaryFunctionsMatrix(4,26) = cos(thrustAzimuth);
     // Avoid cosine rounding errors
             if (abs(auxiliaryFunctionsMatrix(4,26))<6.2e-17){
               auxiliaryFunctionsMatrix(4,26) = 0;
             }
 
-    auxiliaryFunctionsMatrix(4,27) = cos(thrustElevationMatrix(0,2));
+    auxiliaryFunctionsMatrix(4,27) = cos(thrustElevation);
     // Avoid cosine rounding errors
             if (abs(auxiliaryFunctionsMatrix(4,27))<6.2e-17){
               auxiliaryFunctionsMatrix(4,27) = 0;
             }
 
-    auxiliaryFunctionsMatrix(4,28) = sin(thrustAzimuthMatrix(0,2));
-    auxiliaryFunctionsMatrix(4,29) = sin(thrustElevationMatrix(0,2));
+    auxiliaryFunctionsMatrix(4,28) = sin(thrustAzimuth);
+    auxiliaryFunctionsMatrix(4,29) = sin(thrustElevation);
     auxiliaryFunctionsMatrix(4,30) = auxiliaryFunctionsMatrix(4,26)*auxiliaryFunctionsMatrix(4,27);
     auxiliaryFunctionsMatrix(4,31) = auxiliaryFunctionsMatrix(4,28)*auxiliaryFunctionsMatrix(4,27);
     auxiliaryFunctionsMatrix(4,32) = auxiliaryFunctionsMatrix(4,25)*auxiliaryFunctionsMatrix(4,30);

@@ -491,19 +491,9 @@ public:
      //std::cout<<"Surely this works 8..."<<std::endl;
     /// Debug ///
 
-    auxiliaryFunctionsMatrixDummy(4,26) = cos(thrustAzimuthMatrix(0,2));
-    auxiliaryFunctionsMatrixDummy(4,27) = cos(thrustElevationMatrix(0,2));
-    auxiliaryFunctionsMatrixDummy(4,28) = sin(thrustAzimuthMatrix(0,2));
-    auxiliaryFunctionsMatrixDummy(4,29) = sin(thrustElevationMatrix(0,2));
-    auxiliaryFunctionsMatrixDummy(4,30) = auxiliaryFunctionsMatrixDummy(4,26)*auxiliaryFunctionsMatrixDummy(4,27);
-    auxiliaryFunctionsMatrixDummy(4,31) = auxiliaryFunctionsMatrixDummy(4,27)*auxiliaryFunctionsMatrixDummy(4,28);
-    auxiliaryFunctionsMatrixDummy(4,32) = 1/auxiliaryEquationsVector(7);
-    auxiliaryFunctionsMatrixDummy(4,33) = Thrust*auxiliaryFunctionsMatrixDummy(4,32);
-    auxiliaryFunctionsMatrixDummy(4,34) = auxiliaryFunctionsMatrixDummy(4,33)*auxiliaryFunctionsMatrixDummy(4,30);
 
 
-
-    auxiliaryFunctionsMatrixDummy(27,1) = auxiliaryFunctionsMatrixDummy(4,3) - bodyReferenceRadius;
+    auxiliaryFunctionsMatrixDummy(27,1) = auxiliaryFunctionsMatrixDummy(4,3) - bodyReferenceRadius; // h
     auxiliaryFunctionsMatrixDummy(27,2) = auxiliaryFunctionsMatrixDummy(27,1)*auxiliaryFunctionsMatrixDummy(27,1);
     auxiliaryFunctionsMatrixDummy(27,3) = pow(auxiliaryFunctionsMatrixDummy(27,1),3);
     auxiliaryFunctionsMatrixDummy(27,4) = pow(auxiliaryFunctionsMatrixDummy(27,1),4);
@@ -615,6 +605,42 @@ public:
     auxiliaryFunctionsMatrixDummy(27,17) = auxiliaryFunctionsMatrixDummy(4,12)*auxiliaryFunctionsMatrixDummy(4,12);
     auxiliaryFunctionsMatrixDummy(27,18) = auxiliaryFunctionsMatrixDummy(27,17)*auxiliaryFunctionsMatrixDummy(27,16);
     auxiliaryFunctionsMatrixDummy(27,19) = 0.5*referenceArea*auxiliaryFunctionsMatrixDummy(27,18)*auxiliaryFunctionsMatrixDummy(27,12);    // Drag
+
+    // Determining the Thrust azimuth (psiT) and the Thrust elevation (epsilonT) angles based on the altitude
+            // Determine the proper azimuth value for the current altitude section
+            int sectionThrustAz = 0;    // Set the current azimuth value to the default first section
+            for (int i = 0; i < thrustAzimuthMatrix.rows();i++){
+                if (thrustAzimuthMatrix(i,0) <= auxiliaryFunctionsMatrixDummy(27,1) && auxiliaryFunctionsMatrixDummy(27,1) < thrustAzimuthMatrix(i,1)){ // Test for all the sections (independent of how many sections there are)
+                    sectionThrustAz = i;
+//                        std::cout<<"sectionThrustAz = "<<sectionThrustAz+1<<std::endl;
+                }
+            }
+
+//                const double thrustAzimuth = thrustAzimuthMatrix(sectionThrustAz,2); // Set the thrust azimuth to the current azimuth corresponding to the current altitude section
+
+            // Determine the proper elevation value for the current altitude section
+            int sectionThrustEl = 0;    // Set the current elevation value to the default first section
+            for (int i = 0; i < thrustElevationMatrix.rows();i++){
+                if (thrustElevationMatrix(i,0) <= auxiliaryFunctionsMatrixDummy(27,1) && auxiliaryFunctionsMatrixDummy(27,1) < thrustElevationMatrix(i,1)){ // Test for all the sections (independent of how many sections there are)
+                    sectionThrustEl = i;
+                }
+            }
+
+//                const double thrustElevation = thrustElevationMatrix(sectionThrustEl,2); // Set the thrust elevation to the current elevation corresponding to the current altitude section
+
+            const double thrustAzimuth = 0.0; // Test
+            const double thrustElevation = 0.0; // Test
+
+
+            auxiliaryFunctionsMatrixDummy(4,26) = cos(thrustAzimuth);
+            auxiliaryFunctionsMatrixDummy(4,27) = cos(thrustElevation);
+            auxiliaryFunctionsMatrixDummy(4,28) = sin(thrustAzimuth);
+            auxiliaryFunctionsMatrixDummy(4,29) = sin(thrustElevation);
+            auxiliaryFunctionsMatrixDummy(4,30) = auxiliaryFunctionsMatrixDummy(4,26)*auxiliaryFunctionsMatrixDummy(4,27);
+            auxiliaryFunctionsMatrixDummy(4,31) = auxiliaryFunctionsMatrixDummy(4,27)*auxiliaryFunctionsMatrixDummy(4,28);
+            auxiliaryFunctionsMatrixDummy(4,32) = 1/auxiliaryEquationsVector(7);
+            auxiliaryFunctionsMatrixDummy(4,33) = Thrust*auxiliaryFunctionsMatrixDummy(4,32);
+            auxiliaryFunctionsMatrixDummy(4,34) = auxiliaryFunctionsMatrixDummy(4,33)*auxiliaryFunctionsMatrixDummy(4,30);
 
     auxiliaryFunctionsMatrixDummy(4,35) = auxiliaryFunctionsMatrixDummy(27,19)/auxiliaryEquationsVector(7);
     auxiliaryFunctionsMatrixDummy(4,36) = auxiliaryFunctionsMatrixDummy(4,34)-auxiliaryFunctionsMatrixDummy(4,35); //
@@ -860,15 +886,7 @@ Eigen::MatrixXd getCartesianAuxiliaryFunctions( const tudat::basic_mathematics::
 //    std::cout<<"sin(gamma) = tan(gamma)*cos(gamma) = "<<(-auxiliaryFunctionsMatrix(4,19)/auxiliaryFunctionsMatrix(4,21))*auxiliaryFunctionsMatrix(4,25)<<std::endl;
 //    /// Debug ///
 
-    auxiliaryFunctionsMatrix(4,26) = cos(thrustAzimuthMatrix(0,2));
-    auxiliaryFunctionsMatrix(4,27) = cos(thrustElevationMatrix(0,2));
-    auxiliaryFunctionsMatrix(4,28) = sin(thrustAzimuthMatrix(0,2));
-    auxiliaryFunctionsMatrix(4,29) = sin(thrustElevationMatrix(0,2));
-    auxiliaryFunctionsMatrix(4,30) = auxiliaryFunctionsMatrix(4,26)*auxiliaryFunctionsMatrix(4,27);
-    auxiliaryFunctionsMatrix(4,31) = auxiliaryFunctionsMatrix(4,27)*auxiliaryFunctionsMatrix(4,28);
-    auxiliaryFunctionsMatrix(4,32) = 1/auxiliaryEquationsVector(7);
-    auxiliaryFunctionsMatrix(4,33) = Thrust*auxiliaryFunctionsMatrix(4,32);
-    auxiliaryFunctionsMatrix(4,34) = auxiliaryFunctionsMatrix(4,33)*auxiliaryFunctionsMatrix(4,30);
+
 
     auxiliaryFunctionsMatrix(27,1) = auxiliaryFunctionsMatrix(4,3) - bodyReferenceRadius;
     auxiliaryFunctionsMatrix(27,2) = auxiliaryFunctionsMatrix(27,1)*auxiliaryFunctionsMatrix(27,1);
@@ -975,6 +993,41 @@ Eigen::MatrixXd getCartesianAuxiliaryFunctions( const tudat::basic_mathematics::
     auxiliaryFunctionsMatrix(27,18) = auxiliaryFunctionsMatrix(27,17)*auxiliaryFunctionsMatrix(27,16);
     auxiliaryFunctionsMatrix(27,19) = 0.5*referenceArea*auxiliaryFunctionsMatrix(27,18)*auxiliaryFunctionsMatrix(27,12);    // Drag
 
+
+    // Determining the Thrust azimuth (psiT) and the Thrust elevation (epsilonT) angles based on the altitude
+            // Determine the proper azimuth value for the current altitude section
+            int sectionThrustAz = 0;    // Set the current azimuth value to the default first section
+            for (int i = 0; i < thrustAzimuthMatrix.rows();i++){
+                if (thrustAzimuthMatrix(i,0) <= auxiliaryFunctionsMatrix(27,1) && auxiliaryFunctionsMatrix(27,1) < thrustAzimuthMatrix(i,1)){ // Test for all the sections (independent of how many sections there are)
+                    sectionThrustAz = i;
+//                        std::cout<<"sectionThrustAz = "<<sectionThrustAz+1<<std::endl;
+                }
+            }
+
+//                const double thrustAzimuth = thrustAzimuthMatrix(sectionThrustAz,2); // Set the thrust azimuth to the current azimuth corresponding to the current altitude section
+
+            // Determine the proper elevation value for the current altitude section
+            int sectionThrustEl = 0;    // Set the current elevation value to the default first section
+            for (int i = 0; i < thrustElevationMatrix.rows();i++){
+                if (thrustElevationMatrix(i,0) <= auxiliaryFunctionsMatrix(27,1) && auxiliaryFunctionsMatrix(27,1) < thrustElevationMatrix(i,1)){ // Test for all the sections (independent of how many sections there are)
+                    sectionThrustEl = i;
+                }
+            }
+
+//                const double thrustElevation = thrustElevationMatrix(sectionThrustEl,2); // Set the thrust elevation to the current elevation corresponding to the current altitude section
+
+            const double thrustAzimuth = 0.0; // Test
+            const double thrustElevation = 0.0; // Test
+
+            auxiliaryFunctionsMatrix(4,26) = cos(thrustAzimuth);
+            auxiliaryFunctionsMatrix(4,27) = cos(thrustElevation);
+            auxiliaryFunctionsMatrix(4,28) = sin(thrustAzimuth);
+            auxiliaryFunctionsMatrix(4,29) = sin(thrustElevation);
+            auxiliaryFunctionsMatrix(4,30) = auxiliaryFunctionsMatrix(4,26)*auxiliaryFunctionsMatrix(4,27);
+            auxiliaryFunctionsMatrix(4,31) = auxiliaryFunctionsMatrix(4,27)*auxiliaryFunctionsMatrix(4,28);
+            auxiliaryFunctionsMatrix(4,32) = 1/auxiliaryEquationsVector(7);
+            auxiliaryFunctionsMatrix(4,33) = Thrust*auxiliaryFunctionsMatrix(4,32);
+            auxiliaryFunctionsMatrix(4,34) = auxiliaryFunctionsMatrix(4,33)*auxiliaryFunctionsMatrix(4,30);
     auxiliaryFunctionsMatrix(4,35) = auxiliaryFunctionsMatrix(27,19)/auxiliaryEquationsVector(7);
 
     /// Debug ///

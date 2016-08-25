@@ -25,6 +25,7 @@
  *    Changelog
  *      YYMMDD    Author            Comment
  *      160411    S.D. Petrovic     File created
+ *      160824    S.D. Petrovic     Changed thrust angle dependency from time to altitude
  *
  *    References
  *
@@ -39,6 +40,7 @@
 #include <iostream>
 #include <Eigen/Core>
 #include <string>
+#include <thesisProject/projectLibraries/otherRequiredFunctions.h>
 
 
 // Author: Stacha Petrovic
@@ -176,83 +178,83 @@ public:
         /// Both thrust angles and the corresponding times will be optimised using the optimiser but can be set for validation purposes. Default = zeros ///
 
     // Thrust Azimuth-Gimbal Angles
-        thrustAzimuth_ = Eigen::MatrixXd::Zero(6,3); // psiT   these are the thrust azimuth-gimbal angles in radians! as a function of time (including the time ranges)
+        thrustAzimuth_ = Eigen::MatrixXd::Zero(6,3); // psiT   these are the thrust azimuth-gimbal angles in radians! as a function of altitude (including the altitude ranges)
 
         // Section 1
-        thrustAzimuth_(0,0) = 0.0;   // Lower bound time
-        thrustAzimuth_(0,1) = 0.0;   // Upper bound time
+        thrustAzimuth_(0,0) = -0.6;   // Lower bound altitude
+        thrustAzimuth_(0,1) = 1.0;   // Upper bound altitude
 
-        thrustAzimuth_(0,2) = 0.0;   // Thrust azimuth angle
+        thrustAzimuth_(0,2) = deg2rad(0.0);   // Thrust azimuth angle
 
         // Section 2
-        thrustAzimuth_(1,0) = 0.0;   // Lower bound time
-        thrustAzimuth_(1,1) = 0.0;   // Upper bound time
+        thrustAzimuth_(1,0) = 1.0;   // Lower bound altitude
+        thrustAzimuth_(1,1) = 5.0;   // Upper bound altitude
 
-        thrustAzimuth_(1,2) = 0.0;   // Thrust azimuth angle
+        thrustAzimuth_(1,2) = deg2rad(2.0);   // Thrust azimuth angle
 
         // Section 3
-        thrustAzimuth_(2,0) = 0.0;   // Lower bound time
-        thrustAzimuth_(2,1) = 0.0;   // Upper bound time
+        thrustAzimuth_(2,0) = 5.0;   // Lower bound altitude
+        thrustAzimuth_(2,1) = 15.0;   // Upper bound altitude
 
-        thrustAzimuth_(2,2) = 0.0;   // Thrust azimuth angle
+        thrustAzimuth_(2,2) = deg2rad(5.0);   // Thrust azimuth angle
 
         // Section 4
-        thrustAzimuth_(3,0) = 0.0;   // Lower bound time
-        thrustAzimuth_(3,1) = 0.0;   // Upper bound time
+        thrustAzimuth_(3,0) = 15.0;   // Lower bound altitude
+        thrustAzimuth_(3,1) = 35.0;   // Upper bound altitude
 
-        thrustAzimuth_(3,2) = 0.0;   // Thrust azimuth angle
+        thrustAzimuth_(3,2) = deg2rad(2.0);   // Thrust azimuth angle
 
         // Section 5
-        thrustAzimuth_(4,0) = 0.0;   // Lower bound time
-        thrustAzimuth_(4,1) = 0.0;   // Upper bound time
+        thrustAzimuth_(4,0) = 35.0;   // Lower bound altitude
+        thrustAzimuth_(4,1) = 100.0;   // Upper bound altitude
 
-        thrustAzimuth_(4,2) = 0.0;   // Thrust azimuth angle
+        thrustAzimuth_(4,2) = deg2rad(1.0);   // Thrust azimuth angle
 
         // Section 6
-        thrustAzimuth_(5,0) = 0.0;   // Lower bound time
-        thrustAzimuth_(5,1) = 0.0;   // Upper bound time
+        thrustAzimuth_(5,0) = 100.0;   // Lower bound altitude
+        thrustAzimuth_(5,1) = 320.0;   // Upper bound altitude
 
-        thrustAzimuth_(5,2) = 0.0;   // Thrust azimuth angle
+        thrustAzimuth_(5,2) = deg2rad(0.0);   // Thrust azimuth angle
 
 
         // Thrust Elevation-Gimbal Angles
-            thrustElevation_ = Eigen::MatrixXd::Zero(6,3); // epsilonT   these are the thrust elevation-gimbal angles in radians! as a function of time (including the time ranges)
+            thrustElevation_ = Eigen::MatrixXd::Zero(6,3); // epsilonT   these are the thrust elevation-gimbal angles in radians! as a function of altitude (including the altitude ranges)
 
             // Section 1
-            thrustElevation_(0,0) = 0.0;   // Lower bound time
-            thrustElevation_(0,1) = 0.0;   // Upper bound time
+            thrustElevation_(0,0) = -0.6;   // Lower bound altitude
+            thrustElevation_(0,1) = 1.0;   // Upper bound altitude
 
-            thrustElevation_(0,2) = 0.0;   // Thrust elevation angle
+            thrustElevation_(0,2) = deg2rad(0.0);   // Thrust elevation angle
 
             // Section 2
-            thrustElevation_(1,0) = 0.0;   // Lower bound time
-            thrustElevation_(1,1) = 0.0;   // Upper bound time
+            thrustElevation_(1,0) = 1.0;   // Lower bound altitude
+            thrustElevation_(1,1) = 5.0;   // Upper bound altitude
 
-            thrustElevation_(1,2) = 0.0;   // Thrust elevation angle
+            thrustElevation_(1,2) = deg2rad(2.0);   // Thrust elevation angle
 
             // Section 3
-            thrustElevation_(2,0) = 0.0;   // Lower bound time
-            thrustElevation_(2,1) = 0.0;   // Upper bound time
+            thrustElevation_(2,0) = 5.0;   // Lower bound altitude
+            thrustElevation_(2,1) = 15.0;   // Upper bound altitude
 
-            thrustElevation_(2,2) = 0.0;   // Thrust elevation angle
+            thrustElevation_(2,2) = deg2rad(5.0);   // Thrust elevation angle
 
             // Section 4
-            thrustElevation_(3,0) = 0.0;   // Lower bound time
-            thrustElevation_(3,1) = 0.0;   // Upper bound time
+            thrustElevation_(3,0) = 15.0;   // Lower bound altitude
+            thrustElevation_(3,1) = 35.0;   // Upper bound altitude
 
-            thrustElevation_(3,2) = 0.0;   // Thrust elevation angle
+            thrustElevation_(3,2) = deg2rad(2.0);   // Thrust elevation angle
 
             // Section 5
-            thrustElevation_(4,0) = 0.0;   // Lower bound time
-            thrustElevation_(4,1) = 0.0;   // Upper bound time
+            thrustElevation_(4,0) = 35.0;   // Lower bound altitude
+            thrustElevation_(4,1) = 100.0;   // Upper bound altitude
 
-            thrustElevation_(4,2) = 0.0;   // Thrust elevation angle
+            thrustElevation_(4,2) = deg2rad(1.0);   // Thrust elevation angle
 
             // Section 6
-            thrustElevation_(5,0) = 0.0;   // Lower bound time
-            thrustElevation_(5,1) = 0.0;   // Upper bound time
+            thrustElevation_(5,0) = 100.0;   // Lower bound altitude
+            thrustElevation_(5,1) = 320.0;   // Upper bound altitude
 
-            thrustElevation_(5,2) = 0.0;   // Thrust elevation angle
+            thrustElevation_(5,2) = deg2rad(0.0);   // Thrust elevation angle
 
                                                     } // End of constructor
 
@@ -324,8 +326,8 @@ private:
 
     // Creating the thrust angles as a function of time
 
-    Eigen::MatrixXd thrustAzimuth_;                                 // psiT   these are the thrust azimuth-gimbal angles as a function of time (including the time ranges)
-    Eigen::MatrixXd thrustElevation_;                               // epsilonT   these are the thrust elevation-gimbal angles as a function of time (including the time ranges)
+    Eigen::MatrixXd thrustAzimuth_;                                 // psiT   these are the thrust azimuth-gimbal angles as a function of altitude (including the altitude ranges)
+    Eigen::MatrixXd thrustElevation_;                               // epsilonT   these are the thrust elevation-gimbal angles as a function of altitude (including the altitude ranges)
 
 
 

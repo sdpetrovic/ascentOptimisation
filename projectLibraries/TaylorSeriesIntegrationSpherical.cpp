@@ -142,8 +142,8 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
     const double referenceArea = MAV.referenceArea();                                             // S   vehicle reference area
     const Eigen::MatrixXd dragCoefficientPolyCoefficients = MAV.dragCoefficientPolyCoefficients();            // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
     const Eigen::MatrixXd dragCoefficientMachRanges = MAV.dragCoefficientMachRanges();                       // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
-    const Eigen::MatrixXd thrustAzimuth = MAV.thrustAzimuth();                                // psiT   these are the thrust azimuth-gimbal angles as a function of time (including the time ranges)
-    const Eigen::MatrixXd thrustElevation = MAV.thrustElevation();                                // epsilonT   these are the thrust elevation-gimbal angles as a function of time (including the time ranges)
+    const Eigen::MatrixXd thrustAzimuth = MAV.thrustAzimuth();                                // psiT   these are the thrust azimuth-gimbal angles as a function of altitude (including the altitude ranges)
+    const Eigen::MatrixXd thrustElevation = MAV.thrustElevation();                                // epsilonT   these are the thrust elevation-gimbal angles as a function of altitude (including the altitude ranges)
 
     // StateAndTime
 
@@ -171,8 +171,8 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
     const Eigen::Vector3d thrustAccelerationsPframe = Eigen::Vector3d((Thrust/currentMass),0,0);            // THIS HAS TO BE CHANGED IN THE FUTURE TO INCLUDE A WIDE RANGE OF THRUST AZIMUTH AND ELEVATION ANGLES!!!
 
-    Eigen::MatrixXd thrustAzimuthMatrix = MAV.thrustAzimuth();
-    Eigen::MatrixXd thrustElevationMatrix = MAV.thrustElevation();
+//    Eigen::MatrixXd thrustAzimuthMatrix = MAV.thrustAzimuth();
+//    Eigen::MatrixXd thrustElevationMatrix = MAV.thrustElevation();
 
 //    const double thrustAzimuthTestDeg = 0;             // thrust azimuth gimbal angle [Deg] 10 for testing
 //    const double thrustElevationTestDeg = 0;            // thrust elevation gimbal angle [Deg] 5 for testing
@@ -180,8 +180,8 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 //    const double thrustAzimuthTest = deg2rad(thrustAzimuthTestDeg);     // thrust azimuth gimbal angle [rad]
 //    const double thrustElevationTest = deg2rad(thrustElevationTestDeg); // thrust elevation gimbal angle [rad]
 
-      const double thrustAzimuthTest = thrustAzimuthMatrix(0,2);             // thrust azimuth gimbal angle [rad]
-      const double thrustElevationTest = thrustElevationMatrix(0,2);            // thrust elevation gimbal angle [rad]
+      const double thrustAzimuthTest = thrustAzimuth(0,2);             // thrust azimuth gimbal angle [rad]
+      const double thrustElevationTest = thrustElevation(0,2);            // thrust elevation gimbal angle [rad]
 
 
     const Eigen::Vector3d thrustAccelerationsBframe = getPropulsionToBodyFrameTransformationMatrix(thrustAzimuthTest,thrustElevationTest)*thrustAccelerationsPframe;
@@ -194,7 +194,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
     Auxiliary Aux(adiabeticIndex, specificGasConstant,standardGravitationalParameter, rotationalVelocity, primeMeridianAngle,
               inertialFrameTime, bodyReferenceRadius, temperaturePolyCoefficients, temperatureAltitudeRanges,
-              densityPolyCoefficients, Thrust, thrustAzimuthMatrix, thrustElevationMatrix, specificImpulse,
+              densityPolyCoefficients, Thrust, thrustAzimuth, thrustElevation, specificImpulse,
               referenceArea, dragCoefficientPolyCoefficients, dragCoefficientMachRanges);
 
     //std::cout<<"This works right 3?"<<std::endl;
@@ -235,8 +235,8 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
                           densityPolyCoefficients, Thrust, specificImpulse,
                           referenceArea, dragCoefficientPolyCoefficients, dragCoefficientMachRanges,
             thrustAccelerationsBframe,
-            thrustAzimuthMatrix,
-            thrustElevationMatrix,
+            thrustAzimuth,
+            thrustElevation,
             auxiliaryEquations,
             auxiliaryDerivatives,
             auxiliaryFunctions,
@@ -447,7 +447,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
         int currentSectionT = 0; // Default value
         double originalAltitude = currentState(0)-bodyReferenceRadius;
-        double limitAltitude = temperatureAltitudeRanges(0,1); // Default value
+        double limitAltitudeTemp = temperatureAltitudeRanges(0,1); // Default value
 
                 for (int i=0; i < 4+1; i++){
 
@@ -455,7 +455,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
             currentSectionT = i;
 //            std::cout<<"It actually does go inside the limitAltitude section"<<std::endl;
-             limitAltitude = temperatureAltitudeRanges(i,1);
+             limitAltitudeTemp = temperatureAltitudeRanges(i,1);
 //             std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
 
 
@@ -463,6 +463,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
         else {
 //            std::cout<<"The originalAltitude = "<<originalAltitude<<", which is lower than the lowest altitude."<<std::endl;
         }
+
 
         /// Debug ///
 
@@ -473,7 +474,52 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
         /// Debug ///
 
-};
+}; // End of for loop for the temperature
+
+
+        // Check it for the thrust angles as well
+
+        double limitAltitudeTaz = thrustAzimuth(0,1); // Default value
+        double limitAltitudeTel = thrustElevation(0,1); // Default value
+
+        for (int i = 0; i < thrustAzimuth.rows();i++){
+        if (thrustAzimuth(i,0) <= originalAltitude && originalAltitude < thrustAzimuth(i,1)){ // Determine the altitude section in which the MAV is now
+
+
+             limitAltitudeTaz = thrustAzimuth(i,1); // Select the limit altitude of that section
+
+        }
+
+
+
+}; // End of for loop for the thrust azimuth angle
+
+        for (int i = 0; i < thrustElevation.rows();i++){
+
+        if (thrustElevation(i,0) <= originalAltitude && originalAltitude < thrustElevation(i,1)){ // Determine the altitude section in which the MAV is now
+
+
+             limitAltitudeTel = thrustElevation(i,1); // Select the limit altitude of that section
+
+        }
+
+}; // End of for loop for the thrust elevation angle
+
+//        std::cout<<"limitAltitudeTemp = "<<limitAltitudeTemp<<std::endl;
+//        std::cout<<"limitAltitudeTaz = "<<limitAltitudeTaz<<std::endl;
+//        std::cout<<"limitAltitudeTel = "<<limitAltitudeTel<<std::endl;
+
+//        std::cout<<"min(6.65,5.21) = "<<min(6.65,5.21)<<std::endl;
+//        std::cout<<"min(limitAltitudeTemp,(min(limitAltitudeTaz,limitAltitudeTel))) = "<<min(limitAltitudeTemp,(min(limitAltitudeTaz,limitAltitudeTel)))<<std::endl;
+
+
+
+        double limitAltitude = min(limitAltitudeTemp,(min(limitAltitudeTaz,limitAltitudeTel))); // The lowest value of the three limit values will be used as the actual altitude limit
+
+//        std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
+//        std::cout<<" "<<std::endl;
+
+
 
 
 
@@ -690,11 +736,11 @@ else{
 
 //                std::cout<<"limitMach = "<<limitMach<<std::endl;
 //                std::cout<<"originalMach = "<<originalMach<<std::endl;
-                std::cout<<"newMach = "<<newMach<<std::endl;
+//                std::cout<<"newMach = "<<newMach<<std::endl;
 //                std::cout<<"fFromM = "<<fFromM<<std::endl;
 //                std::cout<<"fToM = "<<fToM<<std::endl;
 //                std::cout<<"initialNewTimeM = "<<currentTime+currentStepSize<<std::endl;
-                std::cout<<"Mach Taylor Series coefficients = "<<TaylorCoefficients.row(0)<<std::endl;
+//                std::cout<<"Mach Taylor Series coefficients = "<<TaylorCoefficients.row(0)<<std::endl;
 
             /// Debug ///
 

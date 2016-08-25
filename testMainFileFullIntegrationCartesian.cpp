@@ -237,7 +237,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
   /// Initial conditions /// a.k.a. control centre
 
-    const double setEndTime = 77.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
+    const double setEndTime = 120.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
 
 //std::cout<<"pi = "<<(4*atan(1))<<std::endl;
 
@@ -1164,6 +1164,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //                        std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
 //                        std::cout<<"The current running time is "<<runningTime<<std::endl;
+//                        std::cout<<"currentState = "<<currentState<<std::endl;
 
 
 

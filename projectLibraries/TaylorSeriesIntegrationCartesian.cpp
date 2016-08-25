@@ -170,8 +170,8 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
     const Eigen::Vector3d thrustAccelerationsPframe = Eigen::Vector3d((Thrust/currentMass),0,0);            // THIS HAS TO BE CHANGED IN THE FUTURE TO INCLUDE A WIDE RANGE OF THRUST AZIMUTH AND ELEVATION ANGLES!!!
 
-    Eigen::MatrixXd thrustAzimuthMatrix = MAV.thrustAzimuth();
-    Eigen::MatrixXd thrustElevationMatrix = MAV.thrustElevation();
+//    Eigen::MatrixXd thrustAzimuthMatrix = MAV.thrustAzimuth();
+//    Eigen::MatrixXd thrustElevationMatrix = MAV.thrustElevation();
 
 //    const double thrustAzimuthTestDeg = 0;             // thrust azimuth gimbal angle [Deg] 10 for testing
 //    const double thrustElevationTestDeg = 0;            // thrust elevation gimbal angle [Deg] 5 for testing
@@ -179,8 +179,8 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 //    const double thrustAzimuthTest = deg2rad(thrustAzimuthTestDeg);     // thrust azimuth gimbal angle [rad]
 //    const double thrustElevationTest = deg2rad(thrustElevationTestDeg); // thrust elevation gimbal angle [rad]
 
-      const double thrustAzimuthTest = thrustAzimuthMatrix(0,2);             // thrust azimuth gimbal angle [rad]
-      const double thrustElevationTest = thrustElevationMatrix(0,2);            // thrust elevation gimbal angle [rad]
+      const double thrustAzimuthTest = thrustAzimuth(0,2);             // thrust azimuth gimbal angle [rad]
+      const double thrustElevationTest = thrustElevation(0,2);            // thrust elevation gimbal angle [rad]
 
 
     const Eigen::Vector3d thrustAccelerationsBframe = getPropulsionToBodyFrameTransformationMatrix(thrustAzimuthTest,thrustElevationTest)*thrustAccelerationsPframe;
@@ -193,7 +193,7 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
     AuxiliaryCartesian Aux(adiabeticIndex, specificGasConstant,standardGravitationalParameter, rotationalVelocity, primeMeridianAngle,
               inertialFrameTime, bodyReferenceRadius, temperaturePolyCoefficients, temperatureAltitudeRanges,
-              densityPolyCoefficients, Thrust, thrustAzimuthMatrix, thrustElevationMatrix, specificImpulse,
+              densityPolyCoefficients, Thrust, thrustAzimuth, thrustElevation, specificImpulse,
               referenceArea, dragCoefficientPolyCoefficients, dragCoefficientMachRanges);
 
     //std::cout<<"This works right 3?"<<std::endl;
@@ -234,8 +234,8 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
                           densityPolyCoefficients, Thrust, specificImpulse,
                           referenceArea, dragCoefficientPolyCoefficients, dragCoefficientMachRanges,
             thrustAccelerationsBframe,
-            thrustAzimuthMatrix,
-            thrustElevationMatrix,
+            thrustAzimuth,
+            thrustElevation,
             auxiliaryEquations,
             auxiliaryDerivatives,
             auxiliaryFunctions,
@@ -463,7 +463,7 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
             int currentSectionT = 0; // Default value
 //            double originalAltitude = currentState(0)-bodyReferenceRadius; // h
             double originalAltitude = sqrt(currentState(0)*currentState(0)+currentState(1)*currentState(1)+currentState(2)*currentState(2))-bodyReferenceRadius; //h
-            double limitAltitude = temperatureAltitudeRanges(0,1); // Default value
+            double limitAltitudeTemp = temperatureAltitudeRanges(0,1); // Default value
 
                     for (int i=0; i < 4+1; i++){
 
@@ -471,7 +471,7 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
                 currentSectionT = i;
     //            std::cout<<"It actually does go inside the limitAltitude section"<<std::endl;
-                 limitAltitude = temperatureAltitudeRanges(i,1);
+                 limitAltitudeTemp = temperatureAltitudeRanges(i,1);
     //             std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
 
 
@@ -490,6 +490,50 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
             /// Debug ///
 
     };
+
+                    // Check it for the thrust angles as well
+
+                    double limitAltitudeTaz = thrustAzimuth(0,1); // Default value
+                    double limitAltitudeTel = thrustElevation(0,1); // Default value
+
+                    for (int i = 0; i < thrustAzimuth.rows();i++){
+                    if (thrustAzimuth(i,0) <= originalAltitude && originalAltitude < thrustAzimuth(i,1)){ // Determine the altitude section in which the MAV is now
+
+
+                         limitAltitudeTaz = thrustAzimuth(i,1); // Select the limit altitude of that section
+
+                    }
+
+
+
+            }; // End of for loop for the thrust azimuth angle
+
+                    for (int i = 0; i < thrustElevation.rows();i++){
+
+                    if (thrustElevation(i,0) <= originalAltitude && originalAltitude < thrustElevation(i,1)){ // Determine the altitude section in which the MAV is now
+
+
+                         limitAltitudeTel = thrustElevation(i,1); // Select the limit altitude of that section
+
+                    }
+
+            }; // End of for loop for the thrust elevation angle
+
+                    std::cout<<"limitAltitudeTemp = "<<limitAltitudeTemp<<std::endl;
+                    std::cout<<"limitAltitudeTaz = "<<limitAltitudeTaz<<std::endl;
+                    std::cout<<"limitAltitudeTel = "<<limitAltitudeTel<<std::endl;
+
+            //        std::cout<<"min(6.65,5.21) = "<<min(6.65,5.21)<<std::endl;
+            //        std::cout<<"min(limitAltitudeTemp,(min(limitAltitudeTaz,limitAltitudeTel))) = "<<min(limitAltitudeTemp,(min(limitAltitudeTaz,limitAltitudeTel)))<<std::endl;
+
+
+
+                    double limitAltitude = min(limitAltitudeTemp,(min(limitAltitudeTaz,limitAltitudeTel))); // The lowest value of the three limit values will be used as the actual altitude limit
+
+//                    double limitAltitude = limitAltitudeTemp;
+
+                    std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
+                    std::cout<<" "<<std::endl;
 
 
 
@@ -510,13 +554,13 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
                     /// Debug ///
 
-                    std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
-                    std::cout<<"originalAltitude = "<<originalAltitude<<std::endl;
-                    std::cout<<"newAltitude = "<<newAltitude<<std::endl;
-                    std::cout<<"fFrom = "<<fFrom<<std::endl;
-                    std::cout<<"fTo = "<<fTo<<std::endl;
-                    std::cout<<"currentStepSize before = "<<currentStepSize<<std::endl;
-                    std::cout<<"initialNewTime = "<<currentTime+currentStepSize<<std::endl;
+//                    std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
+//                    std::cout<<"originalAltitude = "<<originalAltitude<<std::endl;
+//                    std::cout<<"newAltitude = "<<newAltitude<<std::endl;
+//                    std::cout<<"fFrom = "<<fFrom<<std::endl;
+//                    std::cout<<"fTo = "<<fTo<<std::endl;
+//                    std::cout<<"currentStepSize before = "<<currentStepSize<<std::endl;
+//                    std::cout<<"initialNewTime = "<<currentTime+currentStepSize<<std::endl;
 
                     /// Debug ///
 
@@ -536,9 +580,9 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
     }
     else{
 
-            std::cout<<"//////////////////////////////////////////////////////////////////////// Altitude do loop has been started ////////////////////////////////////////////////////////////////////////"<<std::endl;
+//            std::cout<<"//////////////////////////////////////////////////////////////////////// Altitude do loop has been started ////////////////////////////////////////////////////////////////////////"<<std::endl;
 
-            std::cout<<"InitialNewAltitude = "<<newAltitude<<std::endl;
+//            std::cout<<"InitialNewAltitude = "<<newAltitude<<std::endl;
 
             do{ // If the altitude has gone beyond the limit altitude, this do loop will determine a new "currentStepSize"
 
@@ -679,10 +723,10 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
     }while(altitudeAccept == false);
 
-            std::cout<<"OriginalAltitude = "<<originalAltitude<<std::endl;
-            std::cout<<"NewAltitude = "<<newAltitude<<std::endl;
-            std::cout<<"currentStepSize after = "<<currentStepSize<<std::endl;
-            std::cout<<"//////////////////////////////////////////////////////////////////////// Altitude do loop has ended ////////////////////////////////////////////////////////////////////////"<<std::endl;
+//            std::cout<<"OriginalAltitude = "<<originalAltitude<<std::endl;
+//            std::cout<<"NewAltitude = "<<newAltitude<<std::endl;
+//            std::cout<<"currentStepSize after = "<<currentStepSize<<std::endl;
+//            std::cout<<"//////////////////////////////////////////////////////////////////////// Altitude do loop has ended ////////////////////////////////////////////////////////////////////////"<<std::endl;
 
     } // end of else
 
@@ -868,9 +912,9 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
     }
     else{
 
-        std::cout<<"////////////////////////////////////////////////////////////////////////////////// Beginning of Mach do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
+//        std::cout<<"////////////////////////////////////////////////////////////////////////////////// Beginning of Mach do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
 
-         std::cout<<"InitialNewMachNumber = "<<newMach<<std::endl;
+//         std::cout<<"InitialNewMachNumber = "<<newMach<<std::endl;
 
         do{ // If the Mach number has gone beyond the limit Mach number, this do loop will determine a new "currentStepSize"
 
@@ -983,11 +1027,11 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
 
 
-        std::cout<<"OriginalMachNumber = "<<originalMach<<std::endl;
-        std::cout<<"NewMachNumber = "<<newMach<<std::endl;
-        std::cout<<"currentStepSize after = "<<currentStepSize<<std::endl;
+//        std::cout<<"OriginalMachNumber = "<<originalMach<<std::endl;
+//        std::cout<<"NewMachNumber = "<<newMach<<std::endl;
+//        std::cout<<"currentStepSize after = "<<currentStepSize<<std::endl;
 
-        std::cout<<"////////////////////////////////////////////////////////////////////////////////// End of Mach do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
+//        std::cout<<"////////////////////////////////////////////////////////////////////////////////// End of Mach do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
 
     } // else get new step-size
 

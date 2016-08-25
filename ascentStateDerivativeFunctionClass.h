@@ -91,6 +91,10 @@ public:
             primeMeridianAngle = Mars.primeMeridianAngle();
             inertialFrameTime = Mars.inertialFrameTime();
 
+            thrustAzimuth = MAV.thrustAzimuth();
+            thrustElevation = MAV.thrustElevation();
+
+
             FlightPathAngle = 1000;
             HeadingAngle = 1000;
 
@@ -519,6 +523,43 @@ public:
         const double thrustElevationTest = deg2rad(thrustElevationTestDeg); // thrust elevation gimbal angle [rad]
 
 
+
+//        // Determine the proper azimuth value for the current altitude section
+//        int sectionThrustAz = 0;    // Set the current azimuth value to the default first section
+//        for (int i = 0; i < thrustAzimuth.rows();i++){
+//            if (thrustAzimuth(i,0) <= currentAltitude && currentAltitude < thrustAzimuth(i,1)){ // Test for all the sections (independent of how many sections there are)
+//                sectionThrustAz = i;
+//                std::cout<<"sectionThrustAz = "<<sectionThrustAz+1<<std::endl;
+//            }
+//        }
+
+//        const double thrustAzimuthTest = thrustAzimuth(sectionThrustAz,2); // Set the thrust azimuth to the current azimuth corresponding to the current altitude section
+
+//        // Determine the proper elevation value for the current altitude section
+//        int sectionThrustEl = 0;    // Set the current elevation value to the default first section
+//        for (int i = 0; i < thrustElevation.rows();i++){
+//            if (thrustElevation(i,0) <= currentAltitude && currentAltitude < thrustElevation(i,1)){ // Test for all the sections (independent of how many sections there are)
+//                sectionThrustEl = i;
+//            }
+//        }
+
+//        const double thrustElevationTest = thrustElevation(sectionThrustEl,2); // Set the thrust elevation to the current elevation corresponding to the current altitude section
+
+
+        /// Debug ///
+//        std::cout<<"/// Debug ///"<<std::endl;
+//        std::cout<<"thrustAzimuth.cols() = "<<thrustAzimuth.cols()<<std::endl;
+//        std::cout<<"thrustAzimuth.rows() = "<<thrustAzimuth.rows()<<std::endl;
+//        std::cout<<"currentAltitude = "<<currentAltitude<<std::endl;
+//        std::cout<<"thrustAzimuthTest = "<<thrustAzimuthTest<<std::endl;
+//        std::cout<<"thrustElevationTest = "<<thrustElevationTest<<std::endl;
+
+//        std::cout<<"/// Debug ///"<<std::endl;
+//        std::cout<<" "<<std::endl;
+        /// Debug ///
+
+
+
         const Eigen::Vector3d thrustAccelerationsBframe = getPropulsionToBodyFrameTransformationMatrix(thrustAzimuthTest,thrustElevationTest)*thrustAccelerationsPframe;
 
 //        std::cout<<"The thrust accelerations in the B-frame are "<<thrustAccelerationsBframe<<std::endl;
@@ -636,6 +677,10 @@ private:
         double rotationalVelocityMars;                  // The rotational velocity of Mars [rad/s]
         double primeMeridianAngle;                      // The angle of the prime Meridian of Mars at time of inertial frame set [rad]
         double inertialFrameTime;                       // The time at inertial frame set [s]
+
+        Eigen::MatrixXd thrustAzimuth;                  // The thrust azimuth angle values and the altitude boundary values [rad] and [km]
+        Eigen::MatrixXd thrustElevation;                // The thrust elevation angle values and the altitude boundary values [rad] and [km]
+
 
         // Set functions
 
