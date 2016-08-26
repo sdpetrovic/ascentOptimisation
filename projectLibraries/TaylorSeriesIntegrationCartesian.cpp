@@ -519,9 +519,9 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
             }; // End of for loop for the thrust elevation angle
 
-                    std::cout<<"limitAltitudeTemp = "<<limitAltitudeTemp<<std::endl;
-                    std::cout<<"limitAltitudeTaz = "<<limitAltitudeTaz<<std::endl;
-                    std::cout<<"limitAltitudeTel = "<<limitAltitudeTel<<std::endl;
+//                    std::cout<<"limitAltitudeTemp = "<<limitAltitudeTemp<<std::endl;
+//                    std::cout<<"limitAltitudeTaz = "<<limitAltitudeTaz<<std::endl;
+//                    std::cout<<"limitAltitudeTel = "<<limitAltitudeTel<<std::endl;
 
             //        std::cout<<"min(6.65,5.21) = "<<min(6.65,5.21)<<std::endl;
             //        std::cout<<"min(limitAltitudeTemp,(min(limitAltitudeTaz,limitAltitudeTel))) = "<<min(limitAltitudeTemp,(min(limitAltitudeTaz,limitAltitudeTel)))<<std::endl;
@@ -532,8 +532,8 @@ Eigen::VectorXd performCartesianTaylorSeriesIntegrationStep(const celestialBody&
 
 //                    double limitAltitude = limitAltitudeTemp;
 
-                    std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
-                    std::cout<<" "<<std::endl;
+//                    std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
+//                    std::cout<<" "<<std::endl;
 
 
 

@@ -452,7 +452,7 @@ public:
                     }
                 }
 
-//                const double thrustAzimuth = thrustAzimuthMatrix(sectionThrustAz,2); // Set the thrust azimuth to the current azimuth corresponding to the current altitude section
+                const double thrustAzimuth = -thrustAzimuthMatrix(sectionThrustAz,2); // Set the thrust azimuth to the current azimuth corresponding to the current altitude section
 
                 // Determine the proper elevation value for the current altitude section
                 int sectionThrustEl = 0;    // Set the current elevation value to the default first section
@@ -462,10 +462,10 @@ public:
                     }
                 }
 
-//                const double thrustElevation = thrustElevationMatrix(sectionThrustEl,2); // Set the thrust elevation to the current elevation corresponding to the current altitude section
+                const double thrustElevation = thrustElevationMatrix(sectionThrustEl,2); // Set the thrust elevation to the current elevation corresponding to the current altitude section
 
-                const double thrustAzimuth = 0.0; // Test
-                const double thrustElevation = 0.0; // Test
+//                const double thrustAzimuth = 0.0; // Test
+//                const double thrustElevation = 0.0; // Test
 
 
         // Computing the polynomial fit using the altitude and fit parameters for density
@@ -642,7 +642,7 @@ public:
                 }
             }
 
-//                const double thrustAzimuth = thrustAzimuthMatrix(sectionThrustAz,2); // Set the thrust azimuth to the current azimuth corresponding to the current altitude section
+                const double thrustAzimuth = -thrustAzimuthMatrix(sectionThrustAz,2); // Set the thrust azimuth to the current azimuth corresponding to the current altitude section
 
             // Determine the proper elevation value for the current altitude section
             int sectionThrustEl = 0;    // Set the current elevation value to the default first section
@@ -652,10 +652,10 @@ public:
                 }
             }
 
-//                const double thrustElevation = thrustElevationMatrix(sectionThrustEl,2); // Set the thrust elevation to the current elevation corresponding to the current altitude section
+                const double thrustElevation = thrustElevationMatrix(sectionThrustEl,2); // Set the thrust elevation to the current elevation corresponding to the current altitude section
 
-            const double thrustAzimuth = 0.0; // Test
-            const double thrustElevation = 0.0; // Test
+//            const double thrustAzimuth = 0.0; // Test
+//            const double thrustElevation = 0.0; // Test
 
 
     double cx12;
@@ -1045,7 +1045,7 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
                 }
             }
 
-//                const double thrustAzimuth = thrustAzimuthMatrix(sectionThrustAz,2); // Set the thrust azimuth to the current azimuth corresponding to the current altitude section
+                const double thrustAzimuth = -thrustAzimuthMatrix(sectionThrustAz,2); // Set the thrust azimuth to the current azimuth corresponding to the current altitude section
 
             // Determine the proper elevation value for the current altitude section
             int sectionThrustEl = 0;    // Set the current elevation value to the default first section
@@ -1055,10 +1055,10 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
                 }
             }
 
-//                const double thrustElevation = thrustElevationMatrix(sectionThrustEl,2); // Set the thrust elevation to the current elevation corresponding to the current altitude section
+                const double thrustElevation = thrustElevationMatrix(sectionThrustEl,2); // Set the thrust elevation to the current elevation corresponding to the current altitude section
 
-            const double thrustAzimuth = 0.0; // Test
-            const double thrustElevation = 0.0; // Test
+//            const double thrustAzimuth = 0.0; // Test
+//            const double thrustElevation = 0.0; // Test
 
 
     double cx12;

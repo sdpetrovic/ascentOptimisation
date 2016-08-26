@@ -235,7 +235,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
   /// Initial conditions /// a.k.a. control centre
 
-    const double setEndTime = 120.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
+    const double setEndTime = 0.2;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
 
 //std::cout<<"pi = "<<(4*atan(1))<<std::endl;
 

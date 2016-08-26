@@ -532,6 +532,7 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
          WVector4_40(k) = getMultiplicationRecurrenceRelation(WVector4_13,WVector4_22,k)-getMultiplicationRecurrenceRelation(WVector4_14,WVector4_21,k); // Z3
 
 
+
 //        WVector4_13(k) = -getMultiplicationRecurrenceRelation(WVector4_6,WVector4_7,k);
 //        WVector4_14(k) = -getMultiplicationRecurrenceRelation(WVector4_7,WVector4_5,k);
 //        WVector4_15(k) = -getMultiplicationRecurrenceRelation(WVector4_8,WVector4_6,k);
@@ -596,7 +597,8 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
         WVector4_31(k) = getMultiplicationRecurrenceRelation(WVector4_27,WVector4_28,k);
         WVector4_32(k) = getPowerRecurrenceRelation(XMatrix.row(7),WVector4_32,-1.0,k);
         WVector4_33(k) = Thrust_*WVector4_32(k);
-        WVector4_34(k) = getMultiplicationRecurrenceRelation(WVector4_33,WVector4_30,k);
+//        WVector4_34(k) = getMultiplicationRecurrenceRelation(WVector4_33,WVector4_30,k);
+        WVector4_34(k) = WVector4_33(k)*WVector4_27(0)*WVector4_26(0);
 
         WVector27_1(k) = WVector4_3(k); // Height derivative is just radius
         WVector27_2(k) = getMultiplicationRecurrenceRelation(WVector27_1,WVector27_1,k);
@@ -686,8 +688,10 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
 
         WVector4_35(k) = getDivisionRecurrenceRelation(WVector27_19,XMatrix.row(7),WVector4_35,k);
         WVector4_36(k) = WVector4_34(k)-WVector4_35(k);
-        WVector4_37(k) = getMultiplicationRecurrenceRelation(WVector4_32,WVector4_31,k);
-        WVector4_38(k) = getMultiplicationRecurrenceRelation(WVector4_33,WVector4_29,k);
+//        WVector4_37(k) = getMultiplicationRecurrenceRelation(WVector4_32,WVector4_31,k);
+        WVector4_37(k) = WVector4_32(k)*WVector4_27(0)*WVector4_28(0);
+//        WVector4_38(k) = getMultiplicationRecurrenceRelation(WVector4_33,WVector4_29,k);
+        WVector4_38(k) = WVector4_32(k)*WVector4_29(0);
         WVector4_39(k) = getDivisionRecurrenceRelation((-standardGravitationalParameter*XMatrix.row(1)),XMatrix.row(9),WVector4_39,k);
 //        WVector4_40(k) = -getMultiplicationRecurrenceRelation(WVector4_7,WVector4_23,k);
 
@@ -895,23 +899,23 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
 //    std::cout<<"WVector4_6 = "<<WVector4_6<<std::endl;     // W4,6
 //    std::cout<<"WVector4_7 = "<<WVector4_7<<std::endl;     // W4,7
 //    std::cout<<"WVector4_8 = "<<WVector4_8<<std::endl;     // W4,8
-//    std::cout<<"WVector4_9 = "<<WVector4_9<<std::endl;     // W4,9
-//    std::cout<<"WVector4_10 = "<<WVector4_10<<std::endl;     // W4,10
+    std::cout<<"WVector4_9 = "<<WVector4_9<<std::endl;     // W4,9
+    std::cout<<"WVector4_10 = "<<WVector4_10<<std::endl;     // W4,10
 
 //    std::cout<<"WVector4_11 = "<<WVector4_11<<std::endl;     // W4,11
 //    std::cout<<"WVector4_12 = "<<WVector4_12<<std::endl;     // W4,12
 //    std::cout<<"WVector4_13 = "<<WVector4_13<<std::endl;     // W4,13
 //    std::cout<<"WVector4_14 = "<<WVector4_14<<std::endl;     // W4,14
 //    std::cout<<"WVector4_15 = "<<WVector4_15<<std::endl;     // W4,15
-//    std::cout<<"WVector4_16 = "<<WVector4_16<<std::endl;     // W4,16
-//    std::cout<<"WVector4_17 = "<<WVector4_17<<std::endl;     // W4,17
-//    std::cout<<"WVector4_18 = "<<WVector4_18<<std::endl;     // W4,18
+    std::cout<<"WVector4_16 = "<<WVector4_16<<std::endl;     // W4,16
+    std::cout<<"WVector4_17 = "<<WVector4_17<<std::endl;     // W4,17
+    std::cout<<"WVector4_18 = "<<WVector4_18<<std::endl;     // W4,18
 //    std::cout<<"WVector4_19 = "<<WVector4_19<<std::endl;     // W4,19
-//    std::cout<<"WVector4_20 = "<<WVector4_20<<std::endl;     // W4,20
+    std::cout<<"WVector4_20 = "<<WVector4_20<<std::endl;     // W4,20
 
-//    std::cout<<"WVector4_21 = "<<WVector4_21<<std::endl;     // W4,21
-//    std::cout<<"WVector4_22 = "<<WVector4_22<<std::endl;     // W4,22
-//    std::cout<<"WVector4_23 = "<<WVector4_23<<std::endl;     // W4,23
+    std::cout<<"WVector4_21 = "<<WVector4_21<<std::endl;     // W4,21
+    std::cout<<"WVector4_22 = "<<WVector4_22<<std::endl;     // W4,22
+    std::cout<<"WVector4_23 = "<<WVector4_23<<std::endl;     // W4,23
 //    std::cout<<"WVector4_24 = "<<WVector4_24<<std::endl;     // W4,24
 //    std::cout<<"WVector4_25 = "<<WVector4_25<<std::endl;     // W4,25
 //    std::cout<<"WVector4_26 = "<<WVector4_26<<std::endl;     // W4,26
@@ -1003,7 +1007,7 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
 //std::cout<<"x3/w4,3-1 = "<<fraction<<std::endl;
 
 
-//    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
+    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
 //    std::cout<<"UMatrix = "<<UMatrix<<std::endl;
 
 

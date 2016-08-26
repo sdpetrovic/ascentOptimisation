@@ -516,34 +516,34 @@ public:
 
         const Eigen::Vector3d thrustAccelerationsPframe = Eigen::Vector3d((MAV.Thrust()/massMAV),0,0);            // THIS HAS TO BE CHANGED IN THE FUTURE TO INCLUDE A WIDE RANGE OF THRUST AZIMUTH AND ELEVATION ANGLES!!!
 
-        const double thrustAzimuthTestDeg = 0.0;             // thrust azimuth gimbal angle [Deg] 10 for testing
-        const double thrustElevationTestDeg = 0.0;            // thrust elevation gimbal angle [Deg] 5 for testing
+//        const double thrustAzimuthTestDeg = 0.0;             // thrust azimuth gimbal angle [Deg] 10 for testing
+//        const double thrustElevationTestDeg = 0.0;            // thrust elevation gimbal angle [Deg] 5 for testing
 
-        const double thrustAzimuthTest = deg2rad(thrustAzimuthTestDeg);     // thrust azimuth gimbal angle [rad]
-        const double thrustElevationTest = deg2rad(thrustElevationTestDeg); // thrust elevation gimbal angle [rad]
+//        const double thrustAzimuthTest = deg2rad(thrustAzimuthTestDeg);     // thrust azimuth gimbal angle [rad]
+//        const double thrustElevationTest = deg2rad(thrustElevationTestDeg); // thrust elevation gimbal angle [rad]
 
 
 
-//        // Determine the proper azimuth value for the current altitude section
-//        int sectionThrustAz = 0;    // Set the current azimuth value to the default first section
-//        for (int i = 0; i < thrustAzimuth.rows();i++){
-//            if (thrustAzimuth(i,0) <= currentAltitude && currentAltitude < thrustAzimuth(i,1)){ // Test for all the sections (independent of how many sections there are)
-//                sectionThrustAz = i;
+        // Determine the proper azimuth value for the current altitude section
+        int sectionThrustAz = 0;    // Set the current azimuth value to the default first section
+        for (int i = 0; i < thrustAzimuth.rows();i++){
+            if (thrustAzimuth(i,0) <= currentAltitude && currentAltitude < thrustAzimuth(i,1)){ // Test for all the sections (independent of how many sections there are)
+                sectionThrustAz = i;
 //                std::cout<<"sectionThrustAz = "<<sectionThrustAz+1<<std::endl;
-//            }
-//        }
+            }
+        }
 
-//        const double thrustAzimuthTest = thrustAzimuth(sectionThrustAz,2); // Set the thrust azimuth to the current azimuth corresponding to the current altitude section
+        const double thrustAzimuthTest = thrustAzimuth(sectionThrustAz,2); // Set the thrust azimuth to the current azimuth corresponding to the current altitude section
 
-//        // Determine the proper elevation value for the current altitude section
-//        int sectionThrustEl = 0;    // Set the current elevation value to the default first section
-//        for (int i = 0; i < thrustElevation.rows();i++){
-//            if (thrustElevation(i,0) <= currentAltitude && currentAltitude < thrustElevation(i,1)){ // Test for all the sections (independent of how many sections there are)
-//                sectionThrustEl = i;
-//            }
-//        }
+        // Determine the proper elevation value for the current altitude section
+        int sectionThrustEl = 0;    // Set the current elevation value to the default first section
+        for (int i = 0; i < thrustElevation.rows();i++){
+            if (thrustElevation(i,0) <= currentAltitude && currentAltitude < thrustElevation(i,1)){ // Test for all the sections (independent of how many sections there are)
+                sectionThrustEl = i;
+            }
+        }
 
-//        const double thrustElevationTest = thrustElevation(sectionThrustEl,2); // Set the thrust elevation to the current elevation corresponding to the current altitude section
+        const double thrustElevationTest = thrustElevation(sectionThrustEl,2); // Set the thrust elevation to the current elevation corresponding to the current altitude section
 
 
         /// Debug ///
