@@ -224,37 +224,37 @@ public:
             thrustElevation_(0,0) = -0.6;   // Lower bound altitude
             thrustElevation_(0,1) = 1.0;   // Upper bound altitude
 
-            thrustElevation_(0,2) = deg2rad(0.0);   // Thrust elevation angle
+            thrustElevation_(0,2) = deg2rad(-1.0);   // Thrust elevation angle
 
             // Section 2
             thrustElevation_(1,0) = 1.0;   // Lower bound altitude
             thrustElevation_(1,1) = 5.0;   // Upper bound altitude
 
-            thrustElevation_(1,2) = deg2rad(0.0);   // Thrust elevation angle
+            thrustElevation_(1,2) = deg2rad(-1.0);   // Thrust elevation angle
 
             // Section 3
             thrustElevation_(2,0) = 5.0;   // Lower bound altitude
             thrustElevation_(2,1) = 15.0;   // Upper bound altitude
 
-            thrustElevation_(2,2) = deg2rad(0.0);   // Thrust elevation angle
+            thrustElevation_(2,2) = deg2rad(-1.0);   // Thrust elevation angle
 
             // Section 4
             thrustElevation_(3,0) = 15.0;   // Lower bound altitude
             thrustElevation_(3,1) = 35.0;   // Upper bound altitude
 
-            thrustElevation_(3,2) = deg2rad(0.0);   // Thrust elevation angle
+            thrustElevation_(3,2) = deg2rad(-1.0);   // Thrust elevation angle
 
             // Section 5
             thrustElevation_(4,0) = 35.0;   // Lower bound altitude
             thrustElevation_(4,1) = 100.0;   // Upper bound altitude
 
-            thrustElevation_(4,2) = deg2rad(0.0);   // Thrust elevation angle
+            thrustElevation_(4,2) = deg2rad(-1.0);   // Thrust elevation angle
 
             // Section 6
             thrustElevation_(5,0) = 100.0;   // Lower bound altitude
             thrustElevation_(5,1) = 320.0;   // Upper bound altitude
 
-            thrustElevation_(5,2) = deg2rad(0.0);   // Thrust elevation angle
+            thrustElevation_(5,2) = deg2rad(-1.0);   // Thrust elevation angle
 
                                                     } // End of constructor
 

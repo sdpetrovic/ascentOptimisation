@@ -682,7 +682,7 @@ Eigen::MatrixXd getTaylorCoefficients(const double adiabeticIndex_, const double
         WVector13_1(k) = getMultiplicationRecurrenceRelation(WVector4_7,WVector4_5,k);
         WVector13_2(k) = rotationalVelocity*rotationalVelocity*getMultiplicationRecurrenceRelation(XMatrix.row(16),WVector4_6,k);
         WVector13_3(k) = getMultiplicationRecurrenceRelation(WVector13_2,WVector4_4,k);
-        WVector13_4(k) = -Thrust_*getMultiplicationRecurrenceRelation(WVector13_0,WVector4_37,k);
+        WVector13_4(k) = Thrust_*getMultiplicationRecurrenceRelation(WVector13_0,WVector4_37,k);
         WVector13_5(k) = getMultiplicationRecurrenceRelation(WVector13_3,WVector4_9,k)+WVector13_4(k);
         WVector13_6(k) = getDivisionRecurrenceRelation(WVector13_5,XMatrix.row(15),WVector13_6,k);
         WVector13_7(k) = -2.0*rotationalVelocity*getMultiplicationRecurrenceRelation(WVector4_6,WVector13_1,k)+WVector13_6(k);

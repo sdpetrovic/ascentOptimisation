@@ -478,8 +478,8 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
         WVector4_6(k) = getDivisionRecurrenceRelation(XMatrix.row(1),WVector4_4,WVector4_6,k);  // cos(lambda)
         WVector4_7(k) = getDivisionRecurrenceRelation(XMatrix.row(3),WVector4_3,WVector4_7,k);  // sin(delta)
         WVector4_8(k) = getDivisionRecurrenceRelation(WVector4_4,WVector4_3,WVector4_8,k);      // cos(delta)
-        WVector4_9(k) = XMatrix(4,k)+rotationalVelocity*XMatrix(2,k);
-        WVector4_10(k) = XMatrix(5,k)-rotationalVelocity*XMatrix(1,k);
+        WVector4_9(k) = (XMatrix(4,k)+rotationalVelocity*XMatrix(2,k));
+        WVector4_10(k) = (XMatrix(5,k)-rotationalVelocity*XMatrix(1,k));
 
         WVector4_11(k) = getMultiplicationRecurrenceRelation(WVector4_9,WVector4_9,k)+getMultiplicationRecurrenceRelation(WVector4_10,WVector4_10,k)+getMultiplicationRecurrenceRelation(XMatrix.row(6),XMatrix.row(6),k);
 
@@ -514,9 +514,24 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
          WVector4_14(k) = getDivisionRecurrenceRelation(WVector4_10,WVector4_12,WVector4_14,k);  //X2
          WVector4_15(k) = getDivisionRecurrenceRelation(XMatrix.row(6),WVector4_12,WVector4_15,k);  //X3
 
-         WVector4_16(k) = getMultiplicationRecurrenceRelation(WVector4_10,XMatrix.row(3),k)-getMultiplicationRecurrenceRelation(XMatrix.row(6),XMatrix.row(2),k);
-         WVector4_17(k) = getMultiplicationRecurrenceRelation(XMatrix.row(6),XMatrix.row(1),k)-getMultiplicationRecurrenceRelation(WVector4_9,XMatrix.row(3),k);
-         WVector4_18(k) = getMultiplicationRecurrenceRelation(WVector4_9,XMatrix.row(2),k)-getMultiplicationRecurrenceRelation(WVector4_10,XMatrix.row(1),k);
+//         WVector4_16(k) = getMultiplicationRecurrenceRelation(WVector4_10,XMatrix.row(3),k)-getMultiplicationRecurrenceRelation(XMatrix.row(6),XMatrix.row(2),k); // Bergsma
+//         WVector4_17(k) = getMultiplicationRecurrenceRelation(XMatrix.row(6),XMatrix.row(1),k)-getMultiplicationRecurrenceRelation(WVector4_9,XMatrix.row(3),k);
+//         WVector4_18(k) = getMultiplicationRecurrenceRelation(WVector4_9,XMatrix.row(2),k)-getMultiplicationRecurrenceRelation(WVector4_10,XMatrix.row(1),k);
+
+         WVector4_16(k) = getMultiplicationRecurrenceRelation(XMatrix.row(6),XMatrix.row(2),k)-getMultiplicationRecurrenceRelation(WVector4_10,XMatrix.row(3),k);
+         WVector4_17(k) = getMultiplicationRecurrenceRelation(WVector4_9,XMatrix.row(3),k)-getMultiplicationRecurrenceRelation(XMatrix.row(6),XMatrix.row(1),k);
+         WVector4_18(k) = getMultiplicationRecurrenceRelation(WVector4_10,XMatrix.row(1),k)-getMultiplicationRecurrenceRelation(WVector4_9,XMatrix.row(2),k);
+
+//         std::cout<<"getMultiplicationRecurrenceRelation(XMatrix.row(6),XMatrix.row(2),k) = "<<getMultiplicationRecurrenceRelation(XMatrix.row(6),XMatrix.row(2),k)<<std::endl;
+//         std::cout<<"-getMultiplicationRecurrenceRelation(WVector4_10,XMatrix.row(3),k) = "<<-getMultiplicationRecurrenceRelation(WVector4_10,XMatrix.row(3),k)<<std::endl;
+//         std::cout<<"---"<<std::endl;
+//         std::cout<<"getMultiplicationRecurrenceRelation(WVector4_9,XMatrix.row(3),k) = "<<getMultiplicationRecurrenceRelation(WVector4_9,XMatrix.row(3),k)<<std::endl;
+//         std::cout<<"-getMultiplicationRecurrenceRelation(XMatrix.row(6),XMatrix.row(1),k) = "<<-getMultiplicationRecurrenceRelation(XMatrix.row(6),XMatrix.row(1),k)<<std::endl;
+//         std::cout<<"---"<<std::endl;
+//         std::cout<<"getMultiplicationRecurrenceRelation(WVector4_10,XMatrix.row(1),k) = "<<getMultiplicationRecurrenceRelation(WVector4_10,XMatrix.row(1),k)<<std::endl;
+//         std::cout<<"-getMultiplicationRecurrenceRelation(WVector4_9,XMatrix.row(2),k) = "<<-getMultiplicationRecurrenceRelation(WVector4_9,XMatrix.row(2),k)<<std::endl;
+//         std::cout<<" "<<std::endl;
+
 
 
          WVector4_19(k) = getMultiplicationRecurrenceRelation(WVector4_16,WVector4_16,k)+getMultiplicationRecurrenceRelation(WVector4_17,WVector4_17,k)+getMultiplicationRecurrenceRelation(WVector4_18,WVector4_18,k);
@@ -688,10 +703,15 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
 
         WVector4_35(k) = getDivisionRecurrenceRelation(WVector27_19,XMatrix.row(7),WVector4_35,k);
         WVector4_36(k) = WVector4_34(k)-WVector4_35(k);
-//        WVector4_37(k) = getMultiplicationRecurrenceRelation(WVector4_32,WVector4_31,k);
-        WVector4_37(k) = WVector4_32(k)*WVector4_27(0)*WVector4_28(0);
-//        WVector4_38(k) = getMultiplicationRecurrenceRelation(WVector4_33,WVector4_29,k);
-        WVector4_38(k) = WVector4_32(k)*WVector4_29(0);
+//        WVector4_36(k) = 0.0; // Test
+
+//        WVector4_37(k) = getMultiplicationRecurrenceRelation(WVector4_33,WVector4_31,k); // Old
+        WVector4_37(k) = WVector4_33(k)*WVector4_27(0)*WVector4_28(0); // New
+//        WVector4_37(k) = 0.0; // Test
+//        WVector4_38(k) = getMultiplicationRecurrenceRelation(WVector4_33,WVector4_29,k); // Old
+        WVector4_38(k) = WVector4_33(k)*WVector4_29(0); // New
+//        WVector4_38(k) = 0.0; // Test
+
         WVector4_39(k) = getDivisionRecurrenceRelation((-standardGravitationalParameter*XMatrix.row(1)),XMatrix.row(9),WVector4_39,k);
 //        WVector4_40(k) = -getMultiplicationRecurrenceRelation(WVector4_7,WVector4_23,k);
 
@@ -808,6 +828,10 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
 
         UMatrix(5,k) = WVector5_1(k)+getMultiplicationRecurrenceRelation(WVector4_36,WVector4_14,k)+getMultiplicationRecurrenceRelation(WVector4_37,WVector4_22,k)-getMultiplicationRecurrenceRelation(WVector4_38,WVector4_25,k); // U5
 
+//        std::cout<<"getMultiplicationRecurrenceRelation(WVector4_36,WVector4_14,k) = "<<getMultiplicationRecurrenceRelation(WVector4_36,WVector4_14,k)<<std::endl;
+//        std::cout<<"getMultiplicationRecurrenceRelation(WVector4_37,WVector4_22,k) = "<<getMultiplicationRecurrenceRelation(WVector4_37,WVector4_22,k)<<std::endl;
+//        std::cout<<"-getMultiplicationRecurrenceRelation(WVector4_38,WVector4_25,k) = "<<-getMultiplicationRecurrenceRelation(WVector4_38,WVector4_25,k)<<std::endl;
+
 
 
         // 6
@@ -823,6 +847,21 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
 
 //        UMatrix(6,k) = WVector6_7(k);
         UMatrix(6,k) = WVector6_1(k)+getMultiplicationRecurrenceRelation(WVector4_36,WVector4_15,k)+getMultiplicationRecurrenceRelation(WVector4_37,WVector4_23,k)-getMultiplicationRecurrenceRelation(WVector4_38,WVector4_40,k);
+
+//        std::cout<<"getMultiplicationRecurrenceRelation(WVector4_36,WVector4_15,k) = "<<getMultiplicationRecurrenceRelation(WVector4_36,WVector4_15,k)<<std::endl;
+//        std::cout<<"getMultiplicationRecurrenceRelation(WVector4_37,WVector4_23,k) = "<<getMultiplicationRecurrenceRelation(WVector4_37,WVector4_23,k)<<std::endl;
+//        std::cout<<"-getMultiplicationRecurrenceRelation(WVector4_38,WVector4_40,k) = "<<-getMultiplicationRecurrenceRelation(WVector4_38,WVector4_40,k)<<std::endl;
+//        std::cout<<" WVector4_36(k) = "<<WVector4_36(k)<<std::endl;
+//        std::cout<<" WVector4_15(k) = "<<WVector4_15(k)<<std::endl;
+//        std::cout<<" WVector4_37(k) = "<<WVector4_37(k)<<std::endl;
+//        std::cout<<" WVector4_23(k) = "<<WVector4_23(k)<<std::endl;
+//        std::cout<<" WVector4_38(k) = "<<WVector4_38(k)<<std::endl;
+//        std::cout<<" WVector4_40(k) = "<<WVector4_40(k)<<std::endl;
+
+//        std::cout<<" "<<std::endl;
+//        std::cout<<" "<<std::endl;
+
+
 
 
         // 7
@@ -899,23 +938,23 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
 //    std::cout<<"WVector4_6 = "<<WVector4_6<<std::endl;     // W4,6
 //    std::cout<<"WVector4_7 = "<<WVector4_7<<std::endl;     // W4,7
 //    std::cout<<"WVector4_8 = "<<WVector4_8<<std::endl;     // W4,8
-    std::cout<<"WVector4_9 = "<<WVector4_9<<std::endl;     // W4,9
-    std::cout<<"WVector4_10 = "<<WVector4_10<<std::endl;     // W4,10
+//    std::cout<<"WVector4_9 = "<<WVector4_9<<std::endl;     // W4,9
+//    std::cout<<"WVector4_10 = "<<WVector4_10<<std::endl;     // W4,10
 
 //    std::cout<<"WVector4_11 = "<<WVector4_11<<std::endl;     // W4,11
 //    std::cout<<"WVector4_12 = "<<WVector4_12<<std::endl;     // W4,12
 //    std::cout<<"WVector4_13 = "<<WVector4_13<<std::endl;     // W4,13
 //    std::cout<<"WVector4_14 = "<<WVector4_14<<std::endl;     // W4,14
 //    std::cout<<"WVector4_15 = "<<WVector4_15<<std::endl;     // W4,15
-    std::cout<<"WVector4_16 = "<<WVector4_16<<std::endl;     // W4,16
-    std::cout<<"WVector4_17 = "<<WVector4_17<<std::endl;     // W4,17
-    std::cout<<"WVector4_18 = "<<WVector4_18<<std::endl;     // W4,18
+//    std::cout<<"WVector4_16 = "<<WVector4_16<<std::endl;     // W4,16
+//    std::cout<<"WVector4_17 = "<<WVector4_17<<std::endl;     // W4,17
+//    std::cout<<"WVector4_18 = "<<WVector4_18<<std::endl;     // W4,18
 //    std::cout<<"WVector4_19 = "<<WVector4_19<<std::endl;     // W4,19
-    std::cout<<"WVector4_20 = "<<WVector4_20<<std::endl;     // W4,20
+//    std::cout<<"WVector4_20 = "<<WVector4_20<<std::endl;     // W4,20
 
-    std::cout<<"WVector4_21 = "<<WVector4_21<<std::endl;     // W4,21
-    std::cout<<"WVector4_22 = "<<WVector4_22<<std::endl;     // W4,22
-    std::cout<<"WVector4_23 = "<<WVector4_23<<std::endl;     // W4,23
+//    std::cout<<"WVector4_21 = "<<WVector4_21<<std::endl;     // W4,21
+//    std::cout<<"WVector4_22 = "<<WVector4_22<<std::endl;     // W4,22
+//    std::cout<<"WVector4_23 = "<<WVector4_23<<std::endl;     // W4,23
 //    std::cout<<"WVector4_24 = "<<WVector4_24<<std::endl;     // W4,24
 //    std::cout<<"WVector4_25 = "<<WVector4_25<<std::endl;     // W4,25
 //    std::cout<<"WVector4_26 = "<<WVector4_26<<std::endl;     // W4,26
@@ -1006,8 +1045,10 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
 //std::cout<<"x3-w4,3 = "<<diff<<std::endl;
 //std::cout<<"x3/w4,3-1 = "<<fraction<<std::endl;
 
+//    std::cout<<"XMatrix.row(6) = "<<XMatrix.row(6)<<std::endl;
 
-    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
+
+//    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
 //    std::cout<<"UMatrix = "<<UMatrix<<std::endl;
 
 

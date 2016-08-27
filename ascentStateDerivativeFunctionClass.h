@@ -560,7 +560,16 @@ public:
 
 
 
-        const Eigen::Vector3d thrustAccelerationsBframe = getPropulsionToBodyFrameTransformationMatrix(thrustAzimuthTest,thrustElevationTest)*thrustAccelerationsPframe;
+//        const Eigen::Vector3d thrustAccelerationsBframe = getPropulsionToBodyFrameTransformationMatrix(thrustAzimuthTest,thrustElevationTest)*thrustAccelerationsPframe;
+
+        // Test
+        Eigen::Vector3d thrustAccelerationsBframe = getPropulsionToBodyFrameTransformationMatrix(thrustAzimuthTest,thrustElevationTest)*thrustAccelerationsPframe;
+
+//        thrustAccelerationsBframe(0) = 0.0;
+//        thrustAccelerationsBframe(1) = 0.0;
+//        thrustAccelerationsBframe(2) = 0.0;
+       // Test
+
 
 //        std::cout<<"The thrust accelerations in the B-frame are "<<thrustAccelerationsBframe<<std::endl;
 

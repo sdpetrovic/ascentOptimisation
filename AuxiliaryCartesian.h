@@ -417,9 +417,15 @@ public:
     auxiliaryFunctionsMatrixDummy(4,15) = auxiliaryEquationsVector(6)/auxiliaryFunctionsMatrixDummy(4,12);  // X3
 }
 
-    auxiliaryFunctionsMatrixDummy(4,16) = auxiliaryFunctionsMatrixDummy(4,10)*auxiliaryEquationsVector(3)-auxiliaryEquationsVector(6)*auxiliaryEquationsVector(2);
-    auxiliaryFunctionsMatrixDummy(4,17) = auxiliaryEquationsVector(6)*auxiliaryEquationsVector(1)-auxiliaryFunctionsMatrixDummy(4,9)*auxiliaryEquationsVector(3);
-    auxiliaryFunctionsMatrixDummy(4,18) = auxiliaryFunctionsMatrixDummy(4,9)*auxiliaryEquationsVector(2)-auxiliaryFunctionsMatrixDummy(4,10)*auxiliaryEquationsVector(1);
+//    auxiliaryFunctionsMatrixDummy(4,16) = auxiliaryFunctionsMatrixDummy(4,10)*auxiliaryEquationsVector(3)-auxiliaryEquationsVector(6)*auxiliaryEquationsVector(2); // Bergsma
+//    auxiliaryFunctionsMatrixDummy(4,17) = auxiliaryEquationsVector(6)*auxiliaryEquationsVector(1)-auxiliaryFunctionsMatrixDummy(4,9)*auxiliaryEquationsVector(3);
+//    auxiliaryFunctionsMatrixDummy(4,18) = auxiliaryFunctionsMatrixDummy(4,9)*auxiliaryEquationsVector(2)-auxiliaryFunctionsMatrixDummy(4,10)*auxiliaryEquationsVector(1);
+
+    auxiliaryFunctionsMatrixDummy(4,16) = auxiliaryEquationsVector(6)*auxiliaryEquationsVector(2)-auxiliaryFunctionsMatrixDummy(4,10)*auxiliaryEquationsVector(3);
+    auxiliaryFunctionsMatrixDummy(4,17) = auxiliaryFunctionsMatrixDummy(4,9)*auxiliaryEquationsVector(3)-auxiliaryEquationsVector(6)*auxiliaryEquationsVector(1);
+    auxiliaryFunctionsMatrixDummy(4,18) = auxiliaryFunctionsMatrixDummy(4,10)*auxiliaryEquationsVector(1)-auxiliaryFunctionsMatrixDummy(4,9)*auxiliaryEquationsVector(2);
+
+
     auxiliaryFunctionsMatrixDummy(4,19) = auxiliaryFunctionsMatrixDummy(4,16)*auxiliaryFunctionsMatrixDummy(4,16)+auxiliaryFunctionsMatrixDummy(4,17)*auxiliaryFunctionsMatrixDummy(4,17)+auxiliaryFunctionsMatrixDummy(4,18)*auxiliaryFunctionsMatrixDummy(4,18);
     auxiliaryFunctionsMatrixDummy(4,20) = sqrt(auxiliaryFunctionsMatrixDummy(4,19));
 
@@ -644,8 +650,12 @@ public:
 
     auxiliaryFunctionsMatrixDummy(4,35) = auxiliaryFunctionsMatrixDummy(27,19)/auxiliaryEquationsVector(7);
     auxiliaryFunctionsMatrixDummy(4,36) = auxiliaryFunctionsMatrixDummy(4,34)-auxiliaryFunctionsMatrixDummy(4,35); //
+//    auxiliaryFunctionsMatrixDummy(4,36) = 0.0; // Test
     auxiliaryFunctionsMatrixDummy(4,37) = auxiliaryFunctionsMatrixDummy(4,33)*auxiliaryFunctionsMatrixDummy(4,31); //
+//    auxiliaryFunctionsMatrixDummy(4,37) = 0.0; // Test
     auxiliaryFunctionsMatrixDummy(4,38) = auxiliaryFunctionsMatrixDummy(4,33)*auxiliaryFunctionsMatrixDummy(4,29); //
+//    auxiliaryFunctionsMatrixDummy(4,38) = 0.0; // Test
+
     auxiliaryFunctionsMatrixDummy(4,39) = -standardGravitationalParameter*auxiliaryEquationsVector(1)/auxiliaryEquationsVector(9);    //
 //    auxiliaryFunctionsMatrixDummy(4,40) = -auxiliaryFunctionsMatrixDummy(4,7)*auxiliaryFunctionsMatrixDummy(4,23);
 //    auxiliaryFunctionsMatrixDummy(4,41) = auxiliaryFunctionsMatrixDummy(4,8)*auxiliaryFunctionsMatrixDummy(4,24);
@@ -664,17 +674,23 @@ public:
 //    auxiliaryDerivativesVector(4) = auxiliaryFunctionsMatrixDummy(4,52); // u4
     auxiliaryDerivativesVector(4) = auxiliaryFunctionsMatrixDummy(4,39)+auxiliaryFunctionsMatrixDummy(4,36)*auxiliaryFunctionsMatrixDummy(4,13)+auxiliaryFunctionsMatrixDummy(4,37)*auxiliaryFunctionsMatrixDummy(4,21)-auxiliaryFunctionsMatrixDummy(4,38)*auxiliaryFunctionsMatrixDummy(4,24); // u4
 
-    std::cout<<"u4 = "<<auxiliaryDerivativesVector(4)<<std::endl;
-    std::cout<<"auxiliaryFunctionsMatrixDummy(4,39) = "<<auxiliaryFunctionsMatrixDummy(4,39)<<std::endl;
-    std::cout<<"auxiliaryFunctionsMatrixDummy(4,36)*auxiliaryFunctionsMatrixDummy(4,13) = "<<auxiliaryFunctionsMatrixDummy(4,36)*auxiliaryFunctionsMatrixDummy(4,13)<<std::endl;
-    std::cout<<"auxiliaryFunctionsMatrixDummy(4,37)*auxiliaryFunctionsMatrixDummy(4,21) = "<<auxiliaryFunctionsMatrixDummy(4,37)*auxiliaryFunctionsMatrixDummy(4,21)<<std::endl;
-    std::cout<<"-auxiliaryFunctionsMatrixDummy(4,38)*auxiliaryFunctionsMatrixDummy(4,24) = "<<-auxiliaryFunctionsMatrixDummy(4,38)*auxiliaryFunctionsMatrixDummy(4,24)<<std::endl;
+//    std::cout<<"u4 = "<<auxiliaryDerivativesVector(4)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrixDummy(4,33) = "<<auxiliaryFunctionsMatrixDummy(4,33)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrixDummy(4,31) = "<<auxiliaryFunctionsMatrixDummy(4,31)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrixDummy(4,27) = "<<auxiliaryFunctionsMatrixDummy(4,27)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrixDummy(4,28) = "<<auxiliaryFunctionsMatrixDummy(4,28)<<std::endl;
 
-    std::cout<<"auxiliaryFunctionsMatrixDummy(4,37) = "<<auxiliaryFunctionsMatrixDummy(4,37)<<std::endl;
-    std::cout<<"auxiliaryFunctionsMatrixDummy(4,21) = "<<auxiliaryFunctionsMatrixDummy(4,21)<<std::endl;
-    std::cout<<"auxiliaryFunctionsMatrixDummy(4,32) = "<<auxiliaryFunctionsMatrixDummy(4,32)<<std::endl;
-    std::cout<<"auxiliaryFunctionsMatrixDummy(4,31) = "<<auxiliaryFunctionsMatrixDummy(4,31)<<std::endl;
-    std::cout<<"auxiliaryFunctionsMatrixDummy(4,33) = "<<auxiliaryFunctionsMatrixDummy(4,33)<<std::endl;
+
+//    std::cout<<"auxiliaryFunctionsMatrixDummy(4,39) = "<<auxiliaryFunctionsMatrixDummy(4,39)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrixDummy(4,36)*auxiliaryFunctionsMatrixDummy(4,13) = "<<auxiliaryFunctionsMatrixDummy(4,36)*auxiliaryFunctionsMatrixDummy(4,13)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrixDummy(4,37)*auxiliaryFunctionsMatrixDummy(4,21) = "<<auxiliaryFunctionsMatrixDummy(4,37)*auxiliaryFunctionsMatrixDummy(4,21)<<std::endl;
+//    std::cout<<"-auxiliaryFunctionsMatrixDummy(4,38)*auxiliaryFunctionsMatrixDummy(4,24) = "<<-auxiliaryFunctionsMatrixDummy(4,38)*auxiliaryFunctionsMatrixDummy(4,24)<<std::endl;
+
+//    std::cout<<"auxiliaryFunctionsMatrixDummy(4,37) = "<<auxiliaryFunctionsMatrixDummy(4,37)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrixDummy(4,21) = "<<auxiliaryFunctionsMatrixDummy(4,21)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrixDummy(4,32) = "<<auxiliaryFunctionsMatrixDummy(4,32)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrixDummy(4,31) = "<<auxiliaryFunctionsMatrixDummy(4,31)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrixDummy(4,33) = "<<auxiliaryFunctionsMatrixDummy(4,33)<<std::endl;
 
 
 
@@ -702,11 +718,11 @@ public:
 //    auxiliaryDerivativesVector(5) = auxiliaryFunctionsMatrixDummy(5,6);  // u5
     auxiliaryDerivativesVector(5) = auxiliaryFunctionsMatrixDummy(5,1)+auxiliaryFunctionsMatrixDummy(4,36)*auxiliaryFunctionsMatrixDummy(4,14)+auxiliaryFunctionsMatrixDummy(4,37)*auxiliaryFunctionsMatrixDummy(4,22)-auxiliaryFunctionsMatrixDummy(4,38)*auxiliaryFunctionsMatrixDummy(4,25); // u5
 
-    std::cout<<"u5 = "<<auxiliaryDerivativesVector(5)<<std::endl;
-    std::cout<<"auxiliaryFunctionsMatrixDummy(5,1) = "<<auxiliaryFunctionsMatrixDummy(5,1)<<std::endl;
-    std::cout<<"auxiliaryFunctionsMatrixDummy(4,36)*auxiliaryFunctionsMatrixDummy(4,14) = "<<auxiliaryFunctionsMatrixDummy(4,36)*auxiliaryFunctionsMatrixDummy(4,14)<<std::endl;
-    std::cout<<"auxiliaryFunctionsMatrixDummy(4,37)*auxiliaryFunctionsMatrixDummy(4,22) = "<<auxiliaryFunctionsMatrixDummy(4,37)*auxiliaryFunctionsMatrixDummy(4,22)<<std::endl;
-    std::cout<<"-auxiliaryFunctionsMatrixDummy(4,38)*auxiliaryFunctionsMatrixDummy(4,25) = "<<-auxiliaryFunctionsMatrixDummy(4,38)*auxiliaryFunctionsMatrixDummy(4,25)<<std::endl;
+//    std::cout<<"u5 = "<<auxiliaryDerivativesVector(5)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrixDummy(5,1) = "<<auxiliaryFunctionsMatrixDummy(5,1)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrixDummy(4,36)*auxiliaryFunctionsMatrixDummy(4,14) = "<<auxiliaryFunctionsMatrixDummy(4,36)*auxiliaryFunctionsMatrixDummy(4,14)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrixDummy(4,37)*auxiliaryFunctionsMatrixDummy(4,22) = "<<auxiliaryFunctionsMatrixDummy(4,37)*auxiliaryFunctionsMatrixDummy(4,22)<<std::endl;
+//    std::cout<<"-auxiliaryFunctionsMatrixDummy(4,38)*auxiliaryFunctionsMatrixDummy(4,25) = "<<-auxiliaryFunctionsMatrixDummy(4,38)*auxiliaryFunctionsMatrixDummy(4,25)<<std::endl;
 
 
 
@@ -732,11 +748,11 @@ public:
     auxiliaryDerivativesVector(6) = auxiliaryFunctionsMatrixDummy(6,1)+auxiliaryFunctionsMatrixDummy(4,36)*auxiliaryFunctionsMatrixDummy(4,15)+auxiliaryFunctionsMatrixDummy(4,37)*auxiliaryFunctionsMatrixDummy(4,23)-auxiliaryFunctionsMatrixDummy(4,38)*auxiliaryFunctionsMatrixDummy(4,40); // u6
 
 
-    std::cout<<"u6 = "<<auxiliaryDerivativesVector(6)<<std::endl;
-    std::cout<<"auxiliaryFunctionsMatrixDummy(6,1) = "<<auxiliaryFunctionsMatrixDummy(6,1)<<std::endl;
-    std::cout<<"auxiliaryFunctionsMatrixDummy(4,36)*auxiliaryFunctionsMatrixDummy(4,15) = "<<auxiliaryFunctionsMatrixDummy(4,36)*auxiliaryFunctionsMatrixDummy(4,15)<<std::endl;
-    std::cout<<"auxiliaryFunctionsMatrixDummy(4,37)*auxiliaryFunctionsMatrixDummy(4,23) = "<<auxiliaryFunctionsMatrixDummy(4,37)*auxiliaryFunctionsMatrixDummy(4,23)<<std::endl;
-    std::cout<<"-auxiliaryFunctionsMatrixDummy(4,38)*auxiliaryFunctionsMatrixDummy(4,40) = "<<-auxiliaryFunctionsMatrixDummy(4,38)*auxiliaryFunctionsMatrixDummy(4,40)<<std::endl;
+//    std::cout<<"u6 = "<<auxiliaryDerivativesVector(6)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrixDummy(6,1) = "<<auxiliaryFunctionsMatrixDummy(6,1)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrixDummy(4,36)*auxiliaryFunctionsMatrixDummy(4,15) = "<<auxiliaryFunctionsMatrixDummy(4,36)*auxiliaryFunctionsMatrixDummy(4,15)<<std::endl;
+//    std::cout<<"auxiliaryFunctionsMatrixDummy(4,37)*auxiliaryFunctionsMatrixDummy(4,23) = "<<auxiliaryFunctionsMatrixDummy(4,37)*auxiliaryFunctionsMatrixDummy(4,23)<<std::endl;
+//    std::cout<<"-auxiliaryFunctionsMatrixDummy(4,38)*auxiliaryFunctionsMatrixDummy(4,40) = "<<-auxiliaryFunctionsMatrixDummy(4,38)*auxiliaryFunctionsMatrixDummy(4,40)<<std::endl;
 
 //    auxiliaryDerivativesVector(6) = -standardGravitationalParameter*(auxiliaryEquationsVector(3)/auxiliaryEquationsVector(9))+auxiliaryEquationsVector(0)*
 //            (cx12*cx13*cx14+sx12*sx14)-
@@ -827,9 +843,14 @@ Eigen::MatrixXd getCartesianAuxiliaryFunctions( const tudat::basic_mathematics::
 
 }
 
-        auxiliaryFunctionsMatrix(4,16) = auxiliaryFunctionsMatrix(4,10)*auxiliaryEquationsVector(3)-auxiliaryEquationsVector(6)*auxiliaryEquationsVector(2);
-        auxiliaryFunctionsMatrix(4,17) = auxiliaryEquationsVector(6)*auxiliaryEquationsVector(1)-auxiliaryFunctionsMatrix(4,9)*auxiliaryEquationsVector(3);
-        auxiliaryFunctionsMatrix(4,18) = auxiliaryFunctionsMatrix(4,9)*auxiliaryEquationsVector(2)-auxiliaryFunctionsMatrix(4,10)*auxiliaryEquationsVector(1);
+//        auxiliaryFunctionsMatrix(4,16) = auxiliaryFunctionsMatrix(4,10)*auxiliaryEquationsVector(3)-auxiliaryEquationsVector(6)*auxiliaryEquationsVector(2); // Bergsma
+//        auxiliaryFunctionsMatrix(4,17) = auxiliaryEquationsVector(6)*auxiliaryEquationsVector(1)-auxiliaryFunctionsMatrix(4,9)*auxiliaryEquationsVector(3);
+//        auxiliaryFunctionsMatrix(4,18) = auxiliaryFunctionsMatrix(4,9)*auxiliaryEquationsVector(2)-auxiliaryFunctionsMatrix(4,10)*auxiliaryEquationsVector(1);
+        auxiliaryFunctionsMatrix(4,16) = auxiliaryEquationsVector(6)*auxiliaryEquationsVector(2)-auxiliaryFunctionsMatrix(4,10)*auxiliaryEquationsVector(3);
+        auxiliaryFunctionsMatrix(4,17) = auxiliaryFunctionsMatrix(4,9)*auxiliaryEquationsVector(3)-auxiliaryEquationsVector(6)*auxiliaryEquationsVector(1);
+        auxiliaryFunctionsMatrix(4,18) = auxiliaryFunctionsMatrix(4,10)*auxiliaryEquationsVector(1)-auxiliaryFunctionsMatrix(4,9)*auxiliaryEquationsVector(2);
+
+
         auxiliaryFunctionsMatrix(4,19) = auxiliaryFunctionsMatrix(4,16)*auxiliaryFunctionsMatrix(4,16)+auxiliaryFunctionsMatrix(4,17)*auxiliaryFunctionsMatrix(4,17)+auxiliaryFunctionsMatrix(4,18)*auxiliaryFunctionsMatrix(4,18);
         auxiliaryFunctionsMatrix(4,20) = sqrt(auxiliaryFunctionsMatrix(4,19));
 
@@ -849,6 +870,22 @@ Eigen::MatrixXd getCartesianAuxiliaryFunctions( const tudat::basic_mathematics::
         auxiliaryFunctionsMatrix(4,40) = auxiliaryFunctionsMatrix(4,13)*auxiliaryFunctionsMatrix(4,22)-auxiliaryFunctionsMatrix(4,14)*auxiliaryFunctionsMatrix(4,21); // Z3
 
     /// Debug ///
+//        std::cout<<"auxiliaryFunctionsMatrix(4,16) = "<<auxiliaryFunctionsMatrix(4,16)<<std::endl;
+//        std::cout<<"auxiliaryFunctionsMatrix(4,17) = "<<auxiliaryFunctionsMatrix(4,17)<<std::endl;
+//        std::cout<<"auxiliaryFunctionsMatrix(4,18) = "<<auxiliaryFunctionsMatrix(4,18)<<std::endl;
+//        std::cout<<"auxiliaryFunctionsMatrix(4,19) = "<<auxiliaryFunctionsMatrix(4,19)<<std::endl;
+//        std::cout<<"auxiliaryFunctionsMatrix(4,20) = "<<auxiliaryFunctionsMatrix(4,20)<<std::endl;
+//        std::cout<<"auxiliaryFunctionsMatrix(4,13) = "<<auxiliaryFunctionsMatrix(4,13)<<std::endl;
+//        std::cout<<"auxiliaryFunctionsMatrix(4,14) = "<<auxiliaryFunctionsMatrix(4,14)<<std::endl;
+//        std::cout<<"auxiliaryFunctionsMatrix(4,15) = "<<auxiliaryFunctionsMatrix(4,15)<<std::endl;
+//        std::cout<<"auxiliaryFunctionsMatrix(4,21) = "<<auxiliaryFunctionsMatrix(4,21)<<std::endl;
+//        std::cout<<"auxiliaryFunctionsMatrix(4,22) = "<<auxiliaryFunctionsMatrix(4,22)<<std::endl;
+//        std::cout<<"auxiliaryFunctionsMatrix(4,23) = "<<auxiliaryFunctionsMatrix(4,23)<<std::endl;
+//        std::cout<<"auxiliaryFunctionsMatrix(4,24) = "<<auxiliaryFunctionsMatrix(4,24)<<std::endl;
+//        std::cout<<"auxiliaryFunctionsMatrix(4,25) = "<<auxiliaryFunctionsMatrix(4,25)<<std::endl;
+//        std::cout<<"auxiliaryFunctionsMatrix(4,40) = "<<auxiliaryFunctionsMatrix(4,40)<<std::endl;
+
+
 //    std::cout<<"x1-x2 = "<<auxiliaryEquationsVector(1)-auxiliaryEquationsVector(2)<<std::endl;
 //        std::cout<<"w4,4 = "<<auxiliaryFunctionsMatrix(4,4)<<std::endl;
 //    std::cout<<"w4,5 = "<<auxiliaryFunctionsMatrix(4,5)<<std::endl;
@@ -1067,8 +1104,14 @@ Eigen::MatrixXd getCartesianAuxiliaryFunctions( const tudat::basic_mathematics::
     /// Debug ///
 
     auxiliaryFunctionsMatrix(4,36) = auxiliaryFunctionsMatrix(4,34)-auxiliaryFunctionsMatrix(4,35); //
+//    auxiliaryFunctionsMatrix(4,36) = 0.0; // Test
+
     auxiliaryFunctionsMatrix(4,37) = auxiliaryFunctionsMatrix(4,33)*auxiliaryFunctionsMatrix(4,31); //
+//    auxiliaryFunctionsMatrix(4,37) = 0.0; // Test
+
     auxiliaryFunctionsMatrix(4,38) = auxiliaryFunctionsMatrix(4,33)*auxiliaryFunctionsMatrix(4,29); //
+//    auxiliaryFunctionsMatrix(4,38) = 0.0; // Test
+
     auxiliaryFunctionsMatrix(4,39) = -standardGravitationalParameter*auxiliaryEquationsVector(1)/auxiliaryEquationsVector(9);    //
 //    auxiliaryFunctionsMatrix(4,40) = -auxiliaryFunctionsMatrix(4,7)*auxiliaryFunctionsMatrix(4,23);
 //    auxiliaryFunctionsMatrix(4,41) = auxiliaryFunctionsMatrix(4,8)*auxiliaryFunctionsMatrix(4,24);

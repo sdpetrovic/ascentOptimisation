@@ -174,7 +174,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     celestialBody Mars;
 
-    Mars.setRotationalVelocity(0); // Set Mars as a non-rotating planet for verification
+//    Mars.setRotationalVelocity(0); // Set Mars as a non-rotating planet for verification
 
 
 //    const double adiabeticIndex = Mars.adiabeticIndex();
@@ -201,7 +201,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // No Gravity
 
-    Mars.setStandardGravitationalParameter(0);
+//    Mars.setStandardGravitationalParameter(0);
 //    std::cout<<"mu_M = "<<Mars.standardGravitationalParameter()<<std::endl;
 
     if (Mars.standardGravitationalParameter() == 0){
@@ -210,7 +210,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // No Drag
 
-    MAV.setReferenceArea(0);
+//    MAV.setReferenceArea(0);
 
     if (MAV.referenceArea() == 0){
         std::cout<<"NO DRAG"<<std::endl;
@@ -237,7 +237,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
   /// Initial conditions /// a.k.a. control centre
 
-    const double setEndTime = 0.2;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
+    const double setEndTime = 120.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
 
 //std::cout<<"pi = "<<(4*atan(1))<<std::endl;
 
@@ -247,7 +247,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     /// Integration settings ///
     const double chosenLocalErrorTolerance = 1e-15;      // The chosen local error tolerance for TSI
-    const double chosenStepSize = 0.2; // The chosen initial step-size for TSI
+    const double chosenStepSize = 0.01; // The chosen initial step-size for TSI
 
     std::cout<<"The chosen local error tolerance = "<<chosenLocalErrorTolerance<<std::endl;
     std::cout<<"The chosen initial step-size = "<<chosenStepSize<<std::endl;
@@ -353,8 +353,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //        aState(1) = 0;
 //        aState(2) = 1224.18491564675;
 //        aState(3) = 0.0001;
-//        aState(4) = 0.0001;
-//        aState(5) = 0.0001;
+//        aState(4) = 0.0;
+//        aState(5) = 0.0;
 //        aState(6) = 227;  // Mass [kg] from literature study
 
 //            aState(0) = 2400.91068937552;

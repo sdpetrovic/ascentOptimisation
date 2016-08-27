@@ -235,7 +235,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
   /// Initial conditions /// a.k.a. control centre
 
-    const double setEndTime = 0.2;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
+    const double setEndTime = 120.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
 
 //std::cout<<"pi = "<<(4*atan(1))<<std::endl;
 
@@ -245,7 +245,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     /// Integration settings ///
     const double chosenLocalErrorTolerance = 1e-15;      // The chosen local error tolerance for TSI
-    const double chosenStepSize = 0.2; // The chosen initial step-size for TSI
+    const double chosenStepSize = 0.01; // The chosen initial step-size for TSI
 
     std::cout<<"The chosen local error tolerance = "<<chosenLocalErrorTolerance<<std::endl;
     std::cout<<"The chosen initial step-size = "<<chosenStepSize<<std::endl;
@@ -265,7 +265,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
     const double initialLatitudeDeg = 21.0;               // Starting latitude [deg] initial condition is 21 deg
     const double initialLongitudeDeg = 74.5;            // Starting longitude [deg] initial condition is 74.5 deg
-    const double initialGroundVelocity = 0.01;          // Starting velocity in km/s (is suppose to be 0.0...)
+    const double initialGroundVelocity = 0.03;          // Starting velocity in km/s (is suppose to be 0.0...) 0.001 default at initial step-size of 0.01 sec
     std::cout<<"The initial ground velocity = "<<initialGroundVelocity<<" km/s"<<std::endl;
     std::cout<<"The initial latitude = "<<initialLatitudeDeg<<" deg"<<std::endl;
     std::cout<<"The initial longitude = "<<initialLongitudeDeg<<" deg"<<std::endl;
