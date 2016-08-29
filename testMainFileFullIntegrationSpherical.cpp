@@ -265,10 +265,11 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
     const double initialLatitudeDeg = 21.0;               // Starting latitude [deg] initial condition is 21 deg
     const double initialLongitudeDeg = 74.5;            // Starting longitude [deg] initial condition is 74.5 deg
-    const double initialGroundVelocity = 0.03;          // Starting velocity in km/s (is suppose to be 0.0...) 0.001 default at initial step-size of 0.01 sec
+    const double initialGroundVelocity = 0.00001;          // Starting velocity in km/s (is suppose to be 0.0...) 0.001 default at initial step-size of 0.01 sec
     std::cout<<"The initial ground velocity = "<<initialGroundVelocity<<" km/s"<<std::endl;
     std::cout<<"The initial latitude = "<<initialLatitudeDeg<<" deg"<<std::endl;
     std::cout<<"The initial longitude = "<<initialLongitudeDeg<<" deg"<<std::endl;
+    std::cout<<"The order of TSI = "<<maxOrder<<std::endl;
 
 
 
@@ -355,6 +356,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     StateAndTime currentStateAndTime(aState);        // Creating the current state class using the namespace and class directly (Cartesian)
 
     std::cout<<"aState = "<<aState<<std::endl;
+
+    const tudat::basic_mathematics::Vector7d initialState = aState; // Used for the RKF integrator
 
 
     /// Spherical state (in rotating frame) ///
@@ -670,16 +673,295 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     };
 
 
+    // Define storing matrix for the intermediate values
+    Eigen::MatrixXd dataStoringMatrixTSI(1,8); // The size of this matrix will change in the do-loop
+    tudat::basic_mathematics::Vector7d stateAtPoint2SecTSI; // Storing the 0.2 seconds value specifically for comparison
+
+
+    ///// First steps by RKF integrator /////
+
+
+    /// Testing with the state derivative function class
+
+
+    // Full complete test
+
+    ascentStateDerivativeFunctionClass stateDerivativeFunctionClassTSI(Mars,MAV);     // Initialize the class
+
+    // Set the initial values for the flight-path angle and heading angle
+    stateDerivativeFunctionClassTSI.setFlightPathAngleAndHeadingAngle(FlightPathAngle,HeadingAngle);
+
+    // Just using boost::bind
+
+    boost::function< tudat::basic_mathematics::Vector7d( const double, const tudat::basic_mathematics::Vector7d ) > stateDerivativeFunctionTSI // Using boost::function to create the passing function
+            =boost::bind( &ascentStateDerivativeFunctionClass::ascentStateDerivativeFunction, &stateDerivativeFunctionClassTSI, _1, _2);       // Then using boost::bind to bind the function as per class stateDerivativeFunctionClass which requires two inputs:
+                                                                                                                                            // _1 which is the current time and _2 which is the current state
+
+
+ ///// Testing the implementation in the integrator ///
+
+    // Initial conditions.
+//                    const double initialTime = currentStateAndTime.getCurrentTime();                            // Time.
+    const double initialTimeTSI = 0;                            // Time. set for verification
+//    Eigen::VectorXd initialState = currentStateAndTime.getCurrentState(); // State: start with zero velocity at the origin.
+
+    const double endTimeTSIRKF = 1.0;     // Using the same initial step-size as defined for TSI RKF
+
+    // Step-size settings.
+    // The minimum and maximum step-size are set such that the input data is fully accepted by the
+    // integrator, to determine the steps to be taken.
+    const double zeroMinimumStepSizeTSI = std::numeric_limits< double >::epsilon( );
+    const double infiniteMaximumStepSizeTSI = std::numeric_limits< double >::infinity( );
+    double stepSizeRKFTSI = chosenStepSize;          // Using the same initial step-size as defined for TSI
+
+    // Tolerances.
+    const double relativeToleranceTSI = chosenLocalErrorTolerance;     //
+    const double absoluteToleranceTSI = chosenLocalErrorTolerance;     //
+
+
+
+
+
+////////////////////////// RKF 7(8) integrator is used in this case///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+    /// Runge-Kutta-Fehlberg 7(8) integrator.
+       tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integratorTSI(
+                   tudat::numerical_integrators::RungeKuttaCoefficients::get(
+                       tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg78),
+                   stateDerivativeFunctionTSI, initialTimeTSI, initialState, zeroMinimumStepSizeTSI,
+                   infiniteMaximumStepSizeTSI, relativeToleranceTSI, absoluteToleranceTSI );
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      // Set initial running time. This is updated after each step that the numerical integrator takes.
+    double runningTimeTSI = 0.0;
+    int countRKFTSI = 0;
+
+
+    // Define storing matrix for the intermediate values
+//    Eigen::MatrixXd dataStoringMatrix(1,8); // The size of this matrix will change in the do-loop
+
+
+    do
+    {
+        // Make sure the integrator does not integrate beyond the end time.
+
+
+
+        if ( std::fabs( endTimeTSIRKF - runningTimeTSI )
+             <= std::fabs( stepSizeRKFTSI ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) )
+        {
+            stepSizeRKFTSI = endTimeTSIRKF - integratorTSI.getCurrentIndependentVariable( );
+        }
+
+//        double prevStepSizeTSI = stepSizeRKFTSI;
+
+//                         std::cout<<"The current stepSize is "<<prevStepSizeTSI<<" s"<<std::endl;
+
+        // Perform a single integration step. Then update the step-size and running time.
+        integratorTSI.performIntegrationStep( stepSizeRKFTSI );
+        stepSizeRKFTSI = integratorTSI.getNextStepSize( );
+        runningTimeTSI = integratorTSI.getCurrentIndependentVariable( );
+
+        Eigen::VectorXd currentStateRKFTSI = integratorTSI.getCurrentState();
+
+//        std::cout<<"currentStateRKFTSI = "<<currentStateRKFTSI<<std::endl;
+
+
+        /// Get the spherical state from the initial few seconds of RKF
+
+        const double angleItoR_1 = rotationalVelocityMars*(inertialFrameTime+runningTimeTSI)-primeMeridianAngle;
+
+
+
+
+
+        // Position
+
+        Eigen::Vector3d CartesianPositionInertialFrameRKF = Eigen::Vector3d::Zero(1,3); // Define the cartesian position inertial frame
+        CartesianPositionInertialFrameRKF(0) = currentStateRKFTSI(0); // x
+        CartesianPositionInertialFrameRKF(1) = currentStateRKFTSI(1); // y
+        CartesianPositionInertialFrameRKF(2) = currentStateRKFTSI(2); // z
+
+
+        const Eigen::Vector3d CartesianPositionRotationalFrameRKF = tudat::reference_frames::getInertialToPlanetocentricFrameTransformationMatrix(angleItoR_1)*CartesianPositionInertialFrameRKF;
+
+
+
+        Eigen::MatrixXd updatedStateAndTimeVectorRKFTSI = Eigen::MatrixXd::Zero(1,8); // Creating a temporary vector to hold the converted state
+
+        updatedStateAndTimeVectorRKFTSI(0) = sqrt(currentStateRKFTSI(0)*currentStateRKFTSI(0)+currentStateRKFTSI(1)*currentStateRKFTSI(1)+currentStateRKFTSI(2)*currentStateRKFTSI(2)); // Radius
+
+        updatedStateAndTimeVectorRKFTSI(1) = asin(currentStateRKFTSI(2)/updatedStateAndTimeVectorRKFTSI(0)) ; // latitude (delta)
+
+        updatedStateAndTimeVectorRKFTSI(2) = atan2(CartesianPositionRotationalFrameRKF(1),CartesianPositionRotationalFrameRKF(0)); // longitude (tau)
+
+
+
+
+        /// Debug ///
+
+//        std::cout<<"/// Debug ///"<<std::endl;
+//        std::cout<<"CartesianPositionInertialFrameRKF = "<<CartesianPositionInertialFrameRKF<<std::endl;
+//        std::cout<<"CartesianPositionRotationalFrameRKF = "<<CartesianPositionRotationalFrameRKF<<std::endl;
+//        std::cout<<"angleItoR_1 = "<<angleItoR_1<<std::endl;
+//        std::cout<<"atan2(currentStateRKFTSI(1),currentStateRKFTSI(0))-updatedStateAndTimeVectorRKFTSI(2) = "<<atan2(currentStateRKFTSI(1),currentStateRKFTSI(0))-updatedStateAndTimeVectorRKFTSI(2)<<std::endl;
+//        std::cout<<"atan2(currentStateRKFTSI(1),currentStateRKFTSI(0)) = "<<atan2(currentStateRKFTSI(1),currentStateRKFTSI(0))<<std::endl;
+////        std::cout<<"-rotationalVelocityMars*(runningTimeTSI+prevStepSizeTSI) = "<<-rotationalVelocityMars*(runningTimeTSI+prevStepSizeTSI)<<std::endl;
+////        std::cout<<"primeMeridianAngle = "<<primeMeridianAngle<<std::endl;
+
+
+
+//        std::cout<<"/// Debug ///"<<std::endl;
+//        std::cout<<" "<<std::endl;
+
+        /// Debug ///
+
+
+
+        // Velocity
+
+        Eigen::Vector3d CartesianVelocityInertialFrameRKF = Eigen::Vector3d::Zero(1,3); // Define the cartesian velocity inertial frame
+        CartesianVelocityInertialFrameRKF(0) = currentStateRKFTSI(3); // Vx
+        CartesianVelocityInertialFrameRKF(1) = currentStateRKFTSI(4); // Vy
+        CartesianVelocityInertialFrameRKF(2) = currentStateRKFTSI(5); // Vz
+
+        Eigen::Vector3d rotatingPlanetCorrection = Eigen::Vector3d::Zero(3);
+
+        rotatingPlanetCorrection(0) = -rotationalVelocityMars*currentStateRKFTSI(1);
+        rotatingPlanetCorrection(1) = rotationalVelocityMars*currentStateRKFTSI(0);
+        rotatingPlanetCorrection(2) = 0.0;
+
+
+        const Eigen::Vector3d CartesianVelocityRotationalFrameRKF = tudat::reference_frames::getInertialToPlanetocentricFrameTransformationMatrix(angleItoR_1)*(CartesianVelocityInertialFrameRKF-rotatingPlanetCorrection); // Cartesian velocity in the rotational frame
+
+        const Eigen::Vector3d CartesianVelocityVerticalFrameRKF = tudat::reference_frames::getRotatingPlanetocentricToLocalVerticalFrameTransformationMatrix(updatedStateAndTimeVectorRKFTSI(2),updatedStateAndTimeVectorRKFTSI(1))*CartesianVelocityRotationalFrameRKF; // Cartesian velocity in the local vertical frame
+
+
+        updatedStateAndTimeVectorRKFTSI(3) = sqrt((currentStateRKFTSI(3)+rotationalVelocityMars*currentStateRKFTSI(1))*(currentStateRKFTSI(3)+rotationalVelocityMars*currentStateRKFTSI(1))+(currentStateRKFTSI(4)-rotationalVelocityMars*currentStateRKFTSI(0))*(currentStateRKFTSI(4)-rotationalVelocityMars*currentStateRKFTSI(0))+currentStateRKFTSI(5)*currentStateRKFTSI(5)); // Ground velocity scalar
+
+
+//        const double V_x_V_RKFTSI = -(currentStateRKFTSI(3)+rotationalVelocityMars*currentStateRKFTSI(1))*sin(updatedStateAndTimeVectorRKFTSI(1))*cos(atan2(currentStateRKFTSI(1),currentStateRKFTSI(0)))-
+//                (currentStateRKFTSI(4)-rotationalVelocityMars*currentStateRKFTSI(0))*sin(updatedStateAndTimeVectorRKFTSI(1))*sin(atan2(currentStateRKFTSI(1),currentStateRKFTSI(0)))+
+//                currentStateRKFTSI(5)*cos(updatedStateAndTimeVectorRKFTSI(1)); // Vxv
+
+//        const double V_y_V_RKFTSI = (currentStateRKFTSI(4)-rotationalVelocityMars*currentStateRKFTSI(0))*cos(atan2(currentStateRKFTSI(1),currentStateRKFTSI(0)))
+//                -(currentStateRKFTSI(3)+rotationalVelocityMars*currentStateRKFTSI(1))*sin(atan2(currentStateRKFTSI(1),currentStateRKFTSI(0))); // Vyv
+
+//        const double V_z_V_RKFTSI = -(currentStateRKFTSI(3)+rotationalVelocityMars*currentStateRKFTSI(1))*cos(updatedStateAndTimeVectorRKFTSI(1))*cos(atan2(currentStateRKFTSI(1),currentStateRKFTSI(0)))-
+//                (currentStateRKFTSI(4)-rotationalVelocityMars*currentStateRKFTSI(0))*cos(updatedStateAndTimeVectorRKFTSI(1))*sin(atan2(currentStateRKFTSI(1),currentStateRKFTSI(0)))-
+//                currentStateRKFTSI(5)*sin(updatedStateAndTimeVectorRKFTSI(1)); // Vzv
+
+
+        /// Debug ///
+//        std::cout<<"/// Debug ///"<<std::endl;
+//        std::cout<<"CartesianVelocityVerticalFrameRKF = "<<CartesianVelocityVerticalFrameRKF<<std::endl;
+//        std::cout<<"V_x_V_RKFTSI = "<<V_x_V_RKFTSI<<std::endl;
+//        std::cout<<"V_y_V_RKFTSI = "<<V_y_V_RKFTSI<<std::endl;
+//        std::cout<<"V_z_V_RKFTSI = "<<V_z_V_RKFTSI<<std::endl;
+//        std::cout<<"Lambda = "<<updatedStateAndTimeVectorRKFTSI(2)+rotationalVelocityMars*((runningTimeTSI+prevStepSizeTSI))<<std::endl;
+//        std::cout<<"Lambda (from equation) = "<<
+//        std::cout<<"/// Debug ///"<<std::endl;
+//        std::cout<<" "<<std::endl;
+
+        /// Debug ///
+
+
+//        updatedStateAndTimeVectorRKFTSI(4) = -asin(V_z_V_RKFTSI/updatedStateAndTimeVectorRKFTSI(3)); // flight-path angle
+
+//        std::cout<<"flight-path angle = "<<updatedStateAndTimeVectorRKFTSI(4)<<std::endl;
+
+
+//        updatedStateAndTimeVectorRKFTSI(5) = atan2(V_y_V_RKFTSI,V_x_V_RKFTSI); // azimuth angle
+
+//        std::cout<<"azimuth angle = "<<updatedStateAndTimeVectorRKFTSI(5)<<std::endl;
+
+        updatedStateAndTimeVectorRKFTSI(4) = -asin(CartesianVelocityVerticalFrameRKF(2)/updatedStateAndTimeVectorRKFTSI(3)); // flight-path angle
+
+//        std::cout<<"flight-path angle = "<<updatedStateAndTimeVectorRKFTSI(4)<<std::endl;
+
+
+        updatedStateAndTimeVectorRKFTSI(5) = atan2(CartesianVelocityVerticalFrameRKF(1),CartesianVelocityVerticalFrameRKF(0)); // azimuth angle
+
+//        std::cout<<"azimuth angle = "<<updatedStateAndTimeVectorRKFTSI(5)<<std::endl;
+
+//        std::cout<<" "<<std::endl;
+
+
+        updatedStateAndTimeVectorRKFTSI(6) = currentStateRKFTSI(6); // MAV mass
+
+//        std::cout<<"updatedStateAndTimeVectorRKFTSI = "<<updatedStateAndTimeVectorRKFTSI<<std::endl;
+
+        outputVectorTSI = Eigen::MatrixXd::Zero(1,8); // Setting the output vector to zero again to be sure.
+
+        // Filling the output vector
+        outputVectorTSI(0,0) = runningTimeTSI;   // Storing the updated time
+        outputVectorTSI(0,1) = updatedStateAndTimeVectorRKFTSI(0);   // Storing the updated radius
+        outputVectorTSI(0,2) = updatedStateAndTimeVectorRKFTSI(1);   // Storing the updated latitude
+        outputVectorTSI(0,3) = updatedStateAndTimeVectorRKFTSI(2);   // Storing the updated longitude
+        outputVectorTSI(0,4) = updatedStateAndTimeVectorRKFTSI(3);   // Storing the updated ground velocity
+        outputVectorTSI(0,5) = updatedStateAndTimeVectorRKFTSI(4);   // Storing the updated flight-path angle
+        outputVectorTSI(0,6) = updatedStateAndTimeVectorRKFTSI(5);   // Storing the updated azimuth angle
+        outputVectorTSI(0,7) = updatedStateAndTimeVectorRKFTSI(6);   // Storing the updated MAV mass
+
+        // Store the new values in the data storage matrix
+
+        if (countRKFTSI == 0){
+
+          dataStoringMatrixTSI.row(countRKFTSI) = outputVectorTSI.row(0); // Filling the matrix
+        }
+        else{
+            dataStoringMatrixTSI.conservativeResize(countRKFTSI+1,8); // Making the matrix bigger in order to store more values
+
+            dataStoringMatrixTSI.row(countRKFTSI) = outputVectorTSI.row(0); // Filling the matrix
+        }
+
+        // Updating the current state and time class!!!
+        tudat::basic_mathematics::Vector7d currentSphericalStateVector; // Create the current state and time vector
+
+        // Fill the curent state and time vector
+        currentSphericalStateVector(0) = updatedStateAndTimeVectorRKFTSI(0);  // Updated radius
+        currentSphericalStateVector(1) = updatedStateAndTimeVectorRKFTSI(1);  // Updated latitude
+        currentSphericalStateVector(2) = updatedStateAndTimeVectorRKFTSI(2);  // Updated longitude
+        currentSphericalStateVector(3) = updatedStateAndTimeVectorRKFTSI(3);  // Updated ground velocity
+        currentSphericalStateVector(4) = updatedStateAndTimeVectorRKFTSI(4);  // Updated flight-path angle
+        currentSphericalStateVector(5) = updatedStateAndTimeVectorRKFTSI(5);  // Updated azimuth angle
+        currentSphericalStateVector(6) = updatedStateAndTimeVectorRKFTSI(6);  // Updated MAV mass
+
+//        runningTimeTSI = updatedStateAndTimeVector(7);             // Updated time
+
+
+
+
+        currentSphericalStateAndTime.setCurrentStateAndTime(currentSphericalStateVector,runningTimeTSI); // Update the current state and time class!
+
+        countRKFTSI++;
+
+        }while( !( endTimeTSIRKF - runningTimeTSI <= std::numeric_limits< double >::epsilon( ) ) );
+
+        ///// First steps by RKF integrator /////
+
+
+
+
+
+
+
 
 /// Defining the order and initializing the StepSize class ///
 
 
-    std::cout<<"The order of TSI = "<<maxOrder<<std::endl;
+
 
         StepSize stepSize; // Initializing the stepSize class. THIS SHOULD BE DONE BEFORE THE START OF THE INTEGRATION!!!!!
 
         stepSize.setLocalErrorTolerance(chosenLocalErrorTolerance);  // Setting the local error tolerance to the lowest possible value in order to compare to RKF7(8) and the others
-        stepSize.setCurrentStepSize(chosenStepSize); // Setting the step-size to the chosen step-size
+//        stepSize.setCurrentStepSize(chosenStepSize); // Setting the step-size to the chosen step-size
+        stepSize.setCurrentStepSize(stepSizeRKFTSI); // Setting the step-size to the chosen step-size
+
 
 //        /// Debug ///
 
@@ -697,9 +979,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 /// Performing the actual TSI integration ///
 
-        // Define storing matrix for the intermediate values
-        Eigen::MatrixXd dataStoringMatrixTSI(1,8); // The size of this matrix will change in the do-loop
-        tudat::basic_mathematics::Vector7d stateAtPoint2SecTSI; // Storing the 0.2 seconds value specifically for comparison
+
 
         // Set the end time
         const double endTimeTSI = setEndTime; // sec
@@ -710,7 +990,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 /// The integeration do-loop ///
 
         // Set initial running time. This is updated after each step that the numerical integrator takes.
-     double runningTimeTSI = 0.0;
+//     double runningTimeTSI = 0.0;
      int countTSI = 0;
 
     do
@@ -762,14 +1042,14 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
         // Store the new values in the data storage matrix
 
-        if (countTSI == 0){
+        if (countTSI+countRKFTSI == 0){
 
-          dataStoringMatrixTSI.row(countTSI) = outputVectorTSI.row(0); // Filling the matrix
+          dataStoringMatrixTSI.row(countTSI+countRKFTSI) = outputVectorTSI.row(0); // Filling the matrix
         }
         else{
-            dataStoringMatrixTSI.conservativeResize(countTSI+1,8); // Making the matrix bigger in order to store more values
+            dataStoringMatrixTSI.conservativeResize(countTSI+countRKFTSI+1,8); // Making the matrix bigger in order to store more values
 
-            dataStoringMatrixTSI.row(countTSI) = outputVectorTSI.row(0); // Filling the matrix
+            dataStoringMatrixTSI.row(countTSI+countRKFTSI) = outputVectorTSI.row(0); // Filling the matrix
         }
 
         // Updating the current state and time class!!!
@@ -947,7 +1227,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
                         // Getting the initial conditions for storage
 //                        const tudat::basic_mathematics::Vector7d initialState = currentStateAndTime.getCurrentState();
-                        const tudat::basic_mathematics::Vector7d initialState = aState;
+//                        const tudat::basic_mathematics::Vector7d initialState = aState;
 
                         std::cout<<"initialState = "<<initialState<<std::endl;
 
@@ -1196,7 +1476,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                             stepSizeRKF = endTime - integrator.getCurrentIndependentVariable( );
                         }
 
-                        double prevStepSize = stepSizeRKF;
+//                        double prevStepSize = stepSizeRKF;
 
 //                         std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
 
@@ -1209,6 +1489,10 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //                        std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
 //                        std::cout<<"The current running time is "<<runningTime<<std::endl;
+                        if (runningTime <= 1.0 ){
+//                            std::cout<<"CurrentStateRKF = "<<currentState<<std::endl;
+
+                        }
 
 
 
@@ -1220,6 +1504,75 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //                                                                   (sqrt(currentState(3)*currentState(3)+currentState(4)*currentState(4)+currentState(5)*currentState(5))))<<std::endl;
 
                         }
+
+//                        // Position
+
+//                        Eigen::Vector3d CartesianPositionInertialFrameRKF = Eigen::Vector3d::Zero(1,3); // Define the cartesian position inertial frame
+//                        CartesianPositionInertialFrameRKF(0) = currentStateRKF(0); // x
+//                        CartesianPositionInertialFrameRKF(1) = currentStateRKF(1); // y
+//                        CartesianPositionInertialFrameRKF(2) = currentStateRKF(2); // z
+
+
+//                        const Eigen::Vector3d CartesianPositionRotationalFrameRKF = tudat::reference_frames::getInertialToPlanetocentricFrameTransformationMatrix(rotationalVelocityMars*inertialFrameTime-primeMeridianAngle)*CartesianPositionInertialFrameRKF;
+
+
+
+//                        Eigen::MatrixXd updatedStateAndTimeVectorRKFTSI = Eigen::MatrixXd::Zero(1,8); // Creating a temporary vector to hold the converted state
+
+//                        updatedStateAndTimeVectorRKFTSI(0) = sqrt(currentStateRKFTSI(0)*currentStateRKFTSI(0)+currentStateRKFTSI(1)*currentStateRKFTSI(1)+currentStateRKFTSI(2)*currentStateRKFTSI(2)); // Radius
+
+//                        updatedStateAndTimeVectorRKFTSI(1) = asin(currentStateRKFTSI(2)/updatedStateAndTimeVectorRKFTSI(0)) ; // latitude (delta)
+
+//                        updatedStateAndTimeVectorRKFTSI(2) = atan2(CartesianPositionRotationalFrameRKF(1),CartesianPositionRotationalFrameRKF(0)); // longitude (tau)
+
+
+
+
+
+//                        // Velocity
+
+//                        Eigen::Vector3d CartesianVelocityInertialFrameRKF = Eigen::Vector3d::Zero(1,3); // Define the cartesian velocity inertial frame
+//                        CartesianVelocityInertialFrameRKF(0) = currentStateRKFTSI(3); // Vx
+//                        CartesianVelocityInertialFrameRKF(1) = currentStateRKFTSI(4); // Vy
+//                        CartesianVelocityInertialFrameRKF(2) = currentStateRKFTSI(5); // Vz
+
+//                        Eigen::Vector3d rotatingPlanetCorrection = Eigen::Vector3d::Zero(3);
+
+//                        rotatingPlanetCorrection(0) = -rotationalVelocityMars*currentStateRKFTSI(1);
+//                        rotatingPlanetCorrection(1) = rotationalVelocityMars*currentStateRKFTSI(0);
+//                        rotatingPlanetCorrection(2) = 0.0;
+
+
+//                        const Eigen::Vector3d CartesianVelocityRotationalFrameRKF = tudat::reference_frames::getInertialToPlanetocentricFrameTransformationMatrix(rotationalVelocityMars*inertialFrameTime-primeMeridianAngle)*CartesianVelocityInertialFrameRKF-rotatingPlanetCorrection; // Cartesian velocity in the rotational frame
+
+//                        const Eigen::Vector3d CartesianVelocityVerticalFrameRKF = tudat::reference_frames::getRotatingPlanetocentricToLocalVerticalFrameTransformationMatrix(updatedStateAndTimeVectorRKFTSI(2),updatedStateAndTimeVectorRKFTSI(1))*CartesianVelocityRotationalFrameRKF; // Cartesian velocity in the local vertical frame
+
+//                        updatedStateAndTimeVectorRKFTSI(3) = sqrt((currentStateRKFTSI(3)+rotationalVelocityMars*currentStateRKFTSI(1))*(currentStateRKFTSI(3)+rotationalVelocityMars*currentStateRKFTSI(1))+(currentStateRKFTSI(4)-rotationalVelocityMars*currentStateRKFTSI(0))*(currentStateRKFTSI(4)-rotationalVelocityMars*currentStateRKFTSI(0))+currentStateRKFTSI(5)*currentStateRKFTSI(5)); // Ground velocity scalar
+
+
+
+
+
+//                        updatedStateAndTimeVectorRKFTSI(4) = -asin(V_z_V_RKFTSI/updatedStateAndTimeVectorRKFTSI(3)); // flight-path angle
+
+//                        std::cout<<"flight-path angle = "<<updatedStateAndTimeVectorRKFTSI(4)<<std::endl;
+
+
+//                        updatedStateAndTimeVectorRKFTSI(5) = atan2(V_y_V_RKFTSI,V_x_V_RKFTSI); // azimuth angle
+
+//                        std::cout<<"azimuth angle = "<<updatedStateAndTimeVectorRKFTSI(5)<<std::endl;
+
+//                        updatedStateAndTimeVectorRKFTSI(4) = -asin(CartesianVelocityVerticalFrameRKF(2)/updatedStateAndTimeVectorRKFTSI(3)); // flight-path angle
+
+
+
+//                        updatedStateAndTimeVectorRKFTSI(5) = atan2(CartesianVelocityVerticalFrameRKF(1),CartesianVelocityVerticalFrameRKF(0)); // azimuth angle
+
+
+//                        std::cout<<" "<<std::endl;
+
+
+//                        updatedStateAndTimeVectorRKFTSI(6) = currentStateRKFTSI(6); // MAV mass
 
 
                         /// Storing the values ///
@@ -1301,7 +1654,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                     // The result of the integration.
                     Eigen::VectorXd endState = integrator.getCurrentState( );
 
-                    std::cout<<"Final number of integration steps is "<<count<<std::endl;
+                    std::cout<<"Final number of integration steps is "<<count-countRKFTSI<<std::endl;
                     std::cout<<"The end state is "<<endState<<std::endl;
 
                     /// Determine the CPU time taken ///

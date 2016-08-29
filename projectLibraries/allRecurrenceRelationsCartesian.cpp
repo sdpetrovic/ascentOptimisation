@@ -1048,7 +1048,7 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
 //    std::cout<<"XMatrix.row(6) = "<<XMatrix.row(6)<<std::endl;
 
 
-//    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
+    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
 //    std::cout<<"UMatrix = "<<UMatrix<<std::endl;
 
 

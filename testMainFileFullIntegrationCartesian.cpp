@@ -268,7 +268,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
     const double initialLatitudeDeg = 21.0;               // Starting latitude [deg] initial condition is 21 deg
     const double initialLongitudeDeg = 74.5;            // Starting longitude [deg] initial condition is 74.5 deg
-    const double initialGroundVelocity = 0.01;          // Starting ground velocity in km/s
+    const double initialGroundVelocity = 0.03;          // Starting ground velocity in km/s
     std::cout<<"The initial ground velocity = "<<initialGroundVelocity<<" km/s"<<std::endl;
     std::cout<<"The initial latitude = "<<initialLatitudeDeg<<" deg"<<std::endl;
     std::cout<<"The initial longitude = "<<initialLongitudeDeg<<" deg"<<std::endl;
@@ -727,8 +727,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //     for (int i = 0; i<4; i++){
          /// Debug ///
-//    std::cout<<"The current step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
-//    std::cout<<"The current runningTime = "<<runningTimeTSI<<std::endl;
+    std::cout<<"The current step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
+    std::cout<<"The current runningTime = "<<runningTimeTSI<<std::endl;
 //    std::cout<<"std::fabs(endTime-runningTime) = "<<std::fabs(endTimeTSI-runningTimeTSI)<<std::endl;
 //    std::cout<<"std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) = "<<std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) )<<std::endl;
          /// Debug ///
