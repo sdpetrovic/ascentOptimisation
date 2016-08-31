@@ -138,6 +138,28 @@ public:
      */
     double getCurrentTime( ) { return currentTime; }
 
+
+    //! Get current spherical radius.
+    /*!
+     * Returns the internally stored current spherical radius.
+     * \return Current time.
+     */
+    double getCurrentSphericalRadius( ) { return currentPosition(0); }
+
+
+    //! Get current cartesian radius.
+    /*!
+     * Returns the internally stored current cartesian radius.
+     * \return Current time.
+     */
+    double getCurrentCartesianRadius( )
+    { const double radius = sqrt(currentPosition(0)*currentPosition(0)+currentPosition(1)*currentPosition(1)+currentPosition(2)*currentPosition(2));
+        return radius; }
+
+
+
+
+
 protected:
 
 private:

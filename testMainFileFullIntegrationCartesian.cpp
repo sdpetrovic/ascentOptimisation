@@ -268,10 +268,11 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
     const double initialLatitudeDeg = 21.0;               // Starting latitude [deg] initial condition is 21 deg
     const double initialLongitudeDeg = 74.5;            // Starting longitude [deg] initial condition is 74.5 deg
-    const double initialGroundVelocity = 0.03;          // Starting ground velocity in km/s
+    const double initialGroundVelocity = 0.00001;          // Starting ground velocity in km/s
     std::cout<<"The initial ground velocity = "<<initialGroundVelocity<<" km/s"<<std::endl;
     std::cout<<"The initial latitude = "<<initialLatitudeDeg<<" deg"<<std::endl;
     std::cout<<"The initial longitude = "<<initialLongitudeDeg<<" deg"<<std::endl;
+    std::cout<<"The order of TSI = "<<maxOrder<<std::endl;
 
 
 
@@ -676,17 +677,190 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         exportFile1.close( );   // Close the file
     };
 
+    // Define storing matrix for the intermediate values
+    Eigen::MatrixXd dataStoringMatrixTSI(1,8); // The size of this matrix will change in the do-loop
+
+
+    ///// First steps by RKF integrator /////
+
+
+    /// Testing with the state derivative function class
+
+
+    // Full complete test
+
+    ascentStateDerivativeFunctionClass stateDerivativeFunctionClassTSI(Mars,MAV);     // Initialize the class
+
+    // Set the initial values for the flight-path angle and heading angle
+    stateDerivativeFunctionClassTSI.setFlightPathAngleAndHeadingAngle(FlightPathAngle,HeadingAngle);
+
+    // Just using boost::bind
+
+    boost::function< tudat::basic_mathematics::Vector7d( const double, const tudat::basic_mathematics::Vector7d ) > stateDerivativeFunctionTSI // Using boost::function to create the passing function
+            =boost::bind( &ascentStateDerivativeFunctionClass::ascentStateDerivativeFunction, &stateDerivativeFunctionClassTSI, _1, _2);       // Then using boost::bind to bind the function as per class stateDerivativeFunctionClass which requires two inputs:
+                                                                                                                                            // _1 which is the current time and _2 which is the current state
+
+
+ ///// Testing the implementation in the integrator ///
+
+    // Initial conditions.
+//                    const double initialTime = currentStateAndTime.getCurrentTime();                            // Time.
+    const double initialTimeTSI = 0;                            // Time. set for verification
+//    Eigen::VectorXd initialState = currentStateAndTime.getCurrentState(); // State: start with zero velocity at the origin.
+
+    const double endTimeTSIRKF = setEndTime;     // Using the same initial step-size as defined for TSI RKF
+
+    // Step-size settings.
+    // The minimum and maximum step-size are set such that the input data is fully accepted by the
+    // integrator, to determine the steps to be taken.
+    const double zeroMinimumStepSizeTSI = std::numeric_limits< double >::epsilon( );
+    const double infiniteMaximumStepSizeTSI = std::numeric_limits< double >::infinity( );
+    double stepSizeRKFTSI = chosenStepSize;          // Using the same initial step-size as defined for TSI
+
+    // Tolerances.
+    const double relativeToleranceTSI = chosenLocalErrorTolerance;     //
+    const double absoluteToleranceTSI = chosenLocalErrorTolerance;     //
+
+
+
+
+
+////////////////////////// RKF 7(8) integrator is used in this case///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+    /// Runge-Kutta-Fehlberg 7(8) integrator.
+       tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integratorTSI(
+                   tudat::numerical_integrators::RungeKuttaCoefficients::get(
+                       tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg78),
+                   stateDerivativeFunctionTSI, initialTimeTSI, initialStateTSI, zeroMinimumStepSizeTSI,
+                   infiniteMaximumStepSizeTSI, relativeToleranceTSI, absoluteToleranceTSI );
+
+
+
+//       /// Runge-Kutta-Fehlberg 4(5) integrator.
+//           tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integratorTSI(
+//                       tudat::numerical_integrators::RungeKuttaCoefficients::get(
+//                           tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg45),
+//                       stateDerivativeFunctionTSI, initialTimeTSI, initialStateTSI, zeroMinimumStepSizeTSI,
+//                       infiniteMaximumStepSizeTSI, relativeToleranceTSI, absoluteToleranceTSI );
+
+//                          /// Dormand-Prince 8(7) integrator.
+//           tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integratorTSI(
+//                       tudat::numerical_integrators::RungeKuttaCoefficients::get(
+//                           tudat::numerical_integrators::RungeKuttaCoefficients::rungeKutta87DormandPrince),
+//                       stateDerivativeFunctionTSI, initialTimeTSI, initialStateTSI, zeroMinimumStepSizeTSI,
+//                       infiniteMaximumStepSizeTSI, relativeToleranceTSI, absoluteToleranceTSI );
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      // Set initial running time. This is updated after each step that the numerical integrator takes.
+    double runningTimeTSI = 0.0;
+    int countRKFTSI = 0;
+
+
+    // Define storing matrix for the intermediate values
+//    Eigen::MatrixXd dataStoringMatrix(1,8); // The size of this matrix will change in the do-loop
+
+
+    do
+    {
+        // Make sure the integrator does not integrate beyond the end time.
+
+
+
+        if ( std::fabs( endTimeTSIRKF - runningTimeTSI )
+             <= std::fabs( stepSizeRKFTSI ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) )
+        {
+            stepSizeRKFTSI = endTimeTSIRKF - integratorTSI.getCurrentIndependentVariable( );
+        }
+
+        double prevStepSizeTSI = stepSizeRKFTSI;
+
+//                         std::cout<<"The current stepSize is "<<prevStepSizeTSI<<" s"<<std::endl;
+
+        // Perform a single integration step. Then update the step-size and running time.
+        integratorTSI.performIntegrationStep( stepSizeRKFTSI );
+        stepSizeRKFTSI = integratorTSI.getNextStepSize( );
+        runningTimeTSI = integratorTSI.getCurrentIndependentVariable( );
+
+        Eigen::VectorXd currentStateRKFTSI = integratorTSI.getCurrentState();
+
+//        std::cout<<"currentStateRKFTSI = "<<currentStateRKFTSI<<std::endl;
+//        std::cout<<"runningTimeTSI = "<<runningTimeTSI<<std::endl;
+
+
+
+
+        outputVectorTSI = Eigen::MatrixXd::Zero(1,8); // Setting the output vector to zero again to be sure.
+
+        // Filling the output vector
+        outputVectorTSI(0,0) = runningTimeTSI;   // Storing the updated time
+        outputVectorTSI(0,1) = currentStateRKFTSI(0);   // Storing the updated x-position
+        outputVectorTSI(0,2) = currentStateRKFTSI(1);   // Storing the updated y-position
+        outputVectorTSI(0,3) = currentStateRKFTSI(2);   // Storing the updated z-position
+        outputVectorTSI(0,4) = currentStateRKFTSI(3);   // Storing the updated x-velocity
+        outputVectorTSI(0,5) = currentStateRKFTSI(4);   // Storing the updated y-velocity
+        outputVectorTSI(0,6) = currentStateRKFTSI(5);   // Storing the updated z-velocity
+        outputVectorTSI(0,7) = currentStateRKFTSI(6);   // Storing the updated MAV mass
+
+        // Store the new values in the data storage matrix
+
+        if (countRKFTSI == 0){
+
+          dataStoringMatrixTSI.row(countRKFTSI) = outputVectorTSI.row(0); // Filling the matrix
+        }
+        else{
+            dataStoringMatrixTSI.conservativeResize(countRKFTSI+1,8); // Making the matrix bigger in order to store more values
+
+            dataStoringMatrixTSI.row(countRKFTSI) = outputVectorTSI.row(0); // Filling the matrix
+        }
+
+        // Updating the current state and time class!!!
+        tudat::basic_mathematics::Vector7d currentStateVector; // Create the current state and time vector
+
+        // Fill the curent state and time vector
+        currentStateVector(0) = currentStateRKFTSI(0);  // Updated x-position
+        currentStateVector(1) = currentStateRKFTSI(1);  // Updated y-position
+        currentStateVector(2) = currentStateRKFTSI(2);  // Updated z-position
+        currentStateVector(3) = currentStateRKFTSI(3);  // Updated x-velocity
+        currentStateVector(4) = currentStateRKFTSI(4);  // Updated y-velocity
+        currentStateVector(5) = currentStateRKFTSI(5);  // Updated z-velocity
+        currentStateVector(6) = currentStateRKFTSI(6);  // Updated MAV mass
+
+//        runningTimeTSI = updatedStateAndTimeVector(7);             // Updated time
+
+//        std::cout<<"V_G = "<<sqrt((currentStateVector(3)+rotationalVelocityMars*currentStateVector(1))*(currentStateVector(3)+rotationalVelocityMars*currentStateVector(1))+
+//                                  (currentStateVector(4)-rotationalVelocityMars*currentStateVector(0))*(currentStateVector(4)-rotationalVelocityMars*currentStateVector(0))+
+//                                  currentStateVector(5)*currentStateVector(5))<<std::endl;
+
+
+
+
+        currentStateAndTime.setCurrentStateAndTime(currentStateVector,runningTimeTSI); // Update the current state and time class!
+
+        countRKFTSI++;
+
+//        }while( !( endTimeTSIRKF - runningTimeTSI <= std::numeric_limits< double >::epsilon( ) ) );
+        }while( ( runningTimeTSI <= 1.0) );
+
+        ///// First steps by RKF integrator /////
 
 
 /// Defining the order and initializing the StepSize class ///
 
 
-    std::cout<<"The order of TSI = "<<maxOrder<<std::endl;
+
 
         StepSize stepSize; // Initializing the stepSize class. THIS SHOULD BE DONE BEFORE THE START OF THE INTEGRATION!!!!!
 
         stepSize.setLocalErrorTolerance(chosenLocalErrorTolerance);  // Setting the local error tolerance to the lowest possible value in order to compare to RKF7(8) and the others
-        stepSize.setCurrentStepSize(chosenStepSize); // Setting the step-size to the chosen step-size
+//        stepSize.setCurrentStepSize(chosenStepSize); // Setting the step-size to the chosen step-size
+        stepSize.setCurrentStepSize(stepSizeRKFTSI); // Setting the step-size to the chosen step-size
+
 
 //        /// Debug ///
 
@@ -705,7 +879,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 /// Performing the actual TSI integration ///
 
         // Define storing matrix for the intermediate values
-        Eigen::MatrixXd dataStoringMatrixTSI(1,8); // The size of this matrix will change in the do-loop
+//        Eigen::MatrixXd dataStoringMatrixTSI(1,8); // The size of this matrix will change in the do-loop
         tudat::basic_mathematics::Vector7d stateAtPoint2SecTSI; // Storing the 0.2 seconds value specifically for comparison
 
         // Set the end time
@@ -717,7 +891,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 /// The integeration do-loop ///
 
         // Set initial running time. This is updated after each step that the numerical integrator takes.
-     double runningTimeTSI = 0.0;
+//     double runningTimeTSI = 0.0;
+        std::cout<<"currentStateAndTime = "<<currentStateAndTime.getCurrentState()<<std::endl;
      int countTSI = 0;
 
     do
@@ -727,8 +902,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //     for (int i = 0; i<4; i++){
          /// Debug ///
-    std::cout<<"The current step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
-    std::cout<<"The current runningTime = "<<runningTimeTSI<<std::endl;
+//    std::cout<<"The current step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
+//    std::cout<<"The current runningTime = "<<runningTimeTSI<<std::endl;
 //    std::cout<<"std::fabs(endTime-runningTime) = "<<std::fabs(endTimeTSI-runningTimeTSI)<<std::endl;
 //    std::cout<<"std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) = "<<std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) )<<std::endl;
          /// Debug ///
@@ -772,14 +947,14 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
         // Store the new values in the data storage matrix
 
-        if (countTSI == 0){
+        if (countTSI+countRKFTSI == 0){
 
-          dataStoringMatrixTSI.row(countTSI) = outputVectorTSI.row(0); // Filling the matrix
+          dataStoringMatrixTSI.row(countTSI+countRKFTSI) = outputVectorTSI.row(0); // Filling the matrix
         }
         else{
-            dataStoringMatrixTSI.conservativeResize(countTSI+1,8); // Making the matrix bigger in order to store more values
+            dataStoringMatrixTSI.conservativeResize(countTSI+countRKFTSI+1,8); // Making the matrix bigger in order to store more values
 
-            dataStoringMatrixTSI.row(countTSI) = outputVectorTSI.row(0); // Filling the matrix
+            dataStoringMatrixTSI.row(countTSI+countRKFTSI) = outputVectorTSI.row(0); // Filling the matrix
         }
 
         // Updating the current state and time class!!!
@@ -801,6 +976,10 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
                 stateAtPoint2SecTSI = currentStateVector;
                 std::cout<<"The TSI state at 0.2 sec = "<<stateAtPoint2SecTSI<<std::endl;
         }
+
+//        std::cout<<"V_G = "<<sqrt((currentStateVector(3)+rotationalVelocityMars*currentStateVector(1))*(currentStateVector(3)+rotationalVelocityMars*currentStateVector(1))+
+//                                  (currentStateVector(4)-rotationalVelocityMars*currentStateVector(0))*(currentStateVector(4)-rotationalVelocityMars*currentStateVector(0))+
+//                                  currentStateVector(5)*currentStateVector(5))<<std::endl;
 
         currentStateAndTime.setCurrentStateAndTime(currentStateVector,runningTimeTSI); // Update the current state and time class!
 
@@ -1204,6 +1383,11 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
                             dataStoringMatrix.row(count) = outputVector.row(0); // Filling the matrix
                         }
+
+
+//                        std::cout<<"V_G = "<<sqrt((currentState(3)+rotationalVelocityMars*currentState(1))*(currentState(3)+rotationalVelocityMars*currentState(1))+
+//                                                  (currentState(4)-rotationalVelocityMars*currentState(0))*(currentState(4)-rotationalVelocityMars*currentState(0))+
+//                                                  currentState(5)*currentState(5))<<std::endl;
 
 
                         count++;

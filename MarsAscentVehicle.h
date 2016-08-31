@@ -302,9 +302,16 @@ public:
         referenceArea_ = updatedReferenceArea;
     }
 
-    void setThrust(const double updatedThrust)                      // This funciton can be used to change the thrust value. If set to 0 the thrust can be neglected in all equations
+    void setThrust(const double updatedThrust)                      // This function can be used to change the thrust value. If set to 0 the thrust can be neglected in all equations
     {
         Thrust_ = updatedThrust;
+    }
+
+    //// Reset functions ////
+
+    void resetThrust()
+    {
+        Thrust_ = 5.3 ; // kN                                   // This function is used to reset the thrust (theoretically)
     }
 
 

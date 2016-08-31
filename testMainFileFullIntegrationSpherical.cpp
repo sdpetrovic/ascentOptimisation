@@ -143,6 +143,9 @@
 /// Testing the ascentStateDerivativeFunctionClass ///
 #include <thesisProject/ascentStateDerivativeFunctionClass.h>       // Adapted file from thesisProject/projectLibraries/ascentStateDerivativeFunction.h
 
+// Circularisation
+#include <tudat/Tudat/Astrodynamics/BasicAstrodynamics/orbitalElementConversions.h>
+
 
 // testing
 
@@ -232,7 +235,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
   /// Initial conditions /// a.k.a. control centre
 
-    const double setEndTime = 120.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
+    const double setEndTime = 800.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
+    const double EndAltitude = 320.0; // Integration end altitude
+    const double coastStartTime = 68.63; // Integration coast start time [sec]
 
 //std::cout<<"pi = "<<(4*atan(1))<<std::endl;
 
@@ -784,6 +789,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         Eigen::VectorXd currentStateRKFTSI = integratorTSI.getCurrentState();
 
 //        std::cout<<"currentStateRKFTSI = "<<currentStateRKFTSI<<std::endl;
+//        std::cout<<"r = "<<sqrt(currentStateRKFTSI(0)*currentStateRKFTSI(0)+currentStateRKFTSI(1)*currentStateRKFTSI(1)+currentStateRKFTSI(2)*currentStateRKFTSI(2))<<std::endl;
 
 
         /// Get the spherical state from the initial few seconds of RKF
@@ -948,6 +954,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //        runningTimeTSI = updatedStateAndTimeVector(7);             // Updated time
 
+//        std::cout<<"currentSphericalStateVector = "<<currentSphericalStateVector<<std::endl;
+
 
 
 
@@ -1013,6 +1021,13 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
         // Set initial running time. This is updated after each step that the numerical integrator takes.
 //     double runningTimeTSI = 0.0;
      int countTSI = 0;
+     bool coast = false;    // to determine if there is going to be a coasting phase
+
+     if (coastStartTime<endTimeTSI){
+         coast = true;
+     }
+
+//     std::cout<<"coast = "<<coast<<std::endl;
 
     do
     {
@@ -1029,17 +1044,39 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 
 //    stepSize.setCurrentStepSize(25); // Specifying a constant step-size for verification
 
+         if (coast == true || runningTimeTSI < coastStartTime){
+             if ( std::fabs( coastStartTime - runningTimeTSI )
+                                      <= std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) )
+                                 {
+//                                        std::cout<<"Current stepSize = "<<stepSize.getCurrentStepSize()<<std::endl;
+                                     stepSize.setCurrentStepSize(coastStartTime - runningTimeTSI);
+                                     coast = false;
+                                     std::cout<<"This should only happen once! And the stepSize = "<<stepSize.getCurrentStepSize()<<std::endl;
+
+                                 }
+//             std::cout<<"This should be happening all the time!"<<std::endl;
+
+         } // if coast
+         else {
+
+//              std::cout<<"Current stepSize = "<<stepSize.getCurrentStepSize()<<std::endl;
+
     if ( std::fabs( endTimeTSI - runningTimeTSI )
                              <= std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) )
                         {
-//        std::cout<<"It is indeed smaller than the step-size"<<std::endl;
+
                             stepSize.setCurrentStepSize(endTimeTSI - runningTimeTSI);
                         }
-//        std::cout<<"The new step-size = "<<stepSize.getCurrentStepSize()<<std::endl;
+
+} // if not coast
+
+//          std::cout<<"Current stepSize = "<<stepSize.getCurrentStepSize()<<std::endl;
+//          std::cout<<"Updated time = "<<runningTimeTSI+stepSize.getCurrentStepSize()<<std::endl;
+
         Eigen::VectorXd updatedStateAndTimeVector = performTaylorSeriesIntegrationStep(Mars, MAV, currentSphericalStateAndTime, stepSize, maxOrder, FlightPathAngle, HeadingAngle); /// The actual integration step
         // This function has the output: updated position, updated velocity, updated mass and updated time
 
-//        std::cout<<"updatedStateAndTimeVector = "<<updatedStateAndTimeVector<<std::endl;
+//        std::cout<<"updatedSphericalStateAndTimeVector = "<<updatedStateAndTimeVector<<std::endl;
 
 
         // Check to see if the class has been updated from within the TSI function
@@ -1151,12 +1188,16 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 
         currentStateAndTime.setCurrentStateAndTime(currentCartesianState,runningTimeTSI); // Update the current Cartesian state and time class!
 
+        if (runningTimeTSI == coastStartTime){ // used to start the coasting phase
+            MAV.setThrust(0); // Set the thrust equal to zero
+        }
+
      countTSI++;
 
 //     std::cout<<"countTSI = "<<countTSI<<std::endl;
 //     }; // end of for-loop
 
-    }while( !( endTimeTSI - runningTimeTSI <= std::numeric_limits< double >::epsilon( ) ) );
+    }while( !( endTimeTSI - runningTimeTSI <= std::numeric_limits< double >::epsilon( ) ) &&  !((currentSphericalStateAndTime.getCurrentSphericalRadius()-bodyReferenceRadius) >= EndAltitude));
 
         /// Adding the values to the file ///
 
@@ -1225,6 +1266,16 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 
         std::cout<<"////////////////////////////////////////////////////////////////// End of TSI //////////////////////////////////////////////////////////////////"<<std::endl;
 //*/
+
+
+
+        //// Reset the values ////
+        MAV.resetThrust();
+//        std::cout<<"Thrust has been reset"<<std::endl;
+//        std::cout<<"MAV.Thrust() = "<<MAV.Thrust()<<std::endl;
+//        std::cout<<"runningTimeTSI = "<<runningTimeTSI<<std::endl;
+        //// Reset the values ////
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1440,7 +1491,21 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
                     const double initialTime = 0;                            // Time. set for verification
                 //    Eigen::VectorXd initialState = currentStateAndTime.getCurrentState(); // State: start with zero velocity at the origin.
 
-                    const double endTime = setEndTime;     // Using the same initial step-size as defined for TSI
+//                    const double endTime = setEndTime;     // Using the same time as defined for TSI
+                    const double endTime = runningTimeTSI;     // Using the same time as defined for TSI
+
+                    double coastStartTimeRKF; // used for the initial RKF loop
+
+                    if (coastStartTime>=setEndTime){
+                        coastStartTimeRKF = endTime;
+
+                    }
+                    else {
+                        coastStartTimeRKF = coastStartTime;
+                        coast = true;
+                    }
+
+
 
                     // Step-size settings.
                     // The minimum and maximum step-size are set such that the input data is fully accepted by the
@@ -1534,10 +1599,10 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
                         // Determine the CPU time
 
 
-                        if ( std::fabs( endTime - runningTime )
+                        if ( std::fabs( coastStartTimeRKF - runningTime )
                              <= std::fabs( stepSizeRKF ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) )
                         {
-                            stepSizeRKF = endTime - integrator.getCurrentIndependentVariable( );
+                            stepSizeRKF = coastStartTimeRKF - integrator.getCurrentIndependentVariable( );
                         }
 
 //                        double prevStepSize = stepSizeRKF;
@@ -1702,9 +1767,292 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 
                         count++;
 
-                    }while( !( endTime - runningTime <= std::numeric_limits< double >::epsilon( ) ) );
+
+                    }while( !( coastStartTimeRKF - runningTime <= std::numeric_limits< double >::epsilon( ) ) &&  !((outputVectorSpherical(1)-bodyReferenceRadius) >= EndAltitude) );
+
+ /// Coasting loop
+
+ if (coast == true){
+     MAV.setThrust(0); // Set the thrust zero for the coasting phase
+
+
+
+
+     /// Testing with the state derivative function class
+
+
+     // Full complete test
+
+     ascentStateDerivativeFunctionClass stateDerivativeFunctionClassCoast(Mars,MAV);     // Initialize the class
+
+
+     // Just using boost::bind
+
+     boost::function< tudat::basic_mathematics::Vector7d( const double, const tudat::basic_mathematics::Vector7d ) > stateDerivativeFunctionCoast // Using boost::function to create the passing function
+             =boost::bind( &ascentStateDerivativeFunctionClass::ascentStateDerivativeFunction, &stateDerivativeFunctionClassCoast, _1, _2);       // Then using boost::bind to bind the function as per class stateDerivativeFunctionClass which requires two inputs:
+                                                                                                                                             // _1 which is the current time and _2 which is the current state
+
+
+
+
+
+     tudat::basic_mathematics::Vector7d newInitialState;
+
+     newInitialState(0) = outputVector(1); // x-position
+     newInitialState(1) = outputVector(2); // y-position
+     newInitialState(2) = outputVector(3); // z-position
+     newInitialState(3) = outputVector(4); // x-velocity
+     newInitialState(4) = outputVector(5); // y-velocity
+     newInitialState(5) = outputVector(6); // z-velocity
+     newInitialState(6) = outputVector(7); // MAV mass
+
+     runningTime = outputVector(0); // current time
+
+
+
+                    ////////////////////////// Choose your coasting weapon! I mean integrator... ///////////////////////////////////////////////////////////////////////////////////////////////////////
+                    ////////////////////////// Simply uncomment the integrator you want and make sure the others are commented away ///////////////////////////////////////////////////////////
+
+                    //                    /// RungeKutta4 numerical integrator.
+                    //                    std::cout<<"You have chosen RK4 as your integration method"<<std::endl;
+                    //                    tudat::numerical_integrators::RungeKutta4IntegratorXd RK4integrator(
+                    //                        stateDerivativeFunction, initialTime, initialState );
+
+                    //                    // Integrate to the specified end time.
+                    //                    Eigen::VectorXd RK4endState = RK4integrator.integrateTo( endTime, stepSizeRKF );
+
+                    //                    std::cout<<"Count = "<<endTime/stepSizeRKF<<std::endl;
+                    //                    std::cout<<"The RK4 end state is "<<RK4endState<<std::endl;
+                    //                    /// End of RungeKutta4 numerical integrator
+                    ///*                    // Is needed to comment the rest of the code since that is only used for the variable step-size methods
+
+
+
+                                        /// Runge-Kutta-Fehlberg 7(8) integrator.
+                                        std::cout<<"You have chosen RKF7(8) as your integration method"<<std::endl;
+                                        method = "RKF7(8)";
+                                           tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integratorCoast(
+                                                       tudat::numerical_integrators::RungeKuttaCoefficients::get(
+                                                           tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg78),
+                                                       stateDerivativeFunctionCoast, runningTime, newInitialState, zeroMinimumStepSize,
+                                                       infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
+
+                    //                       /// Runge-Kutta-Fehlberg 4(5) integrator.
+                    //                       std::cout<<"You have chosen RKF4(5) as your integration method"<<std::endl;
+                    //                       method = "RKF4(5)";
+                    //                          tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
+                    //                                      tudat::numerical_integrators::RungeKuttaCoefficients::get(
+                    //                                          tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg45),
+                    //                                      stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
+                    //                                      infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
+
+                    //                          /// Dormand-Prince 8(7) integrator.
+                    //                          std::cout<<"You have chosen DOPRIN8(7) as your integration method"<<std::endl;
+                    //                          method = "DOPRIN8(7)";
+                    //                             tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
+                    //                                         tudat::numerical_integrators::RungeKuttaCoefficients::get(
+                    //                                             tudat::numerical_integrators::RungeKuttaCoefficients::rungeKutta87DormandPrince),
+                    //                                         stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
+                    //                                         infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
+
+                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+                                        do
+                                        {
+                                            // Make sure the integrator does not integrate beyond the end time.
+
+                                            // Determine the CPU time
+                                            if (runningTime > 1.0 && RKFtimeCPUset == false){
+                                            initialCPUTimeRKF = clock();
+                                                RKFtimeCPUset = true;
+                    }
+                                            // Determine the CPU time
+
+
+                                            if ( std::fabs( endTime - runningTime )
+                                                 <= std::fabs( stepSizeRKF ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) )
+                                            {
+                                                stepSizeRKF = endTime - integratorCoast.getCurrentIndependentVariable( );
+                                            }
+
+                    //                        double prevStepSize = stepSizeRKF;
+
+                    //                         std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
+
+                                            // Perform a single integration step. Then update the step-size and running time.
+                                            integratorCoast.performIntegrationStep( stepSizeRKF );
+                                            stepSizeRKF = integratorCoast.getNextStepSize( );
+                                            runningTime = integratorCoast.getCurrentIndependentVariable( );
+
+                                            Eigen::VectorXd currentState = integratorCoast.getCurrentState();
+
+                    //                        std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
+                    //                        std::cout<<"The current running time is "<<runningTime<<std::endl;
+                    //                        if (runningTime <= 1.0 ){
+                    ////                            std::cout<<"CurrentState = "<<currentState<<std::endl;
+
+                    //                        }
+
+
+
+                                            if (runningTime == 0.2){
+                                                std::cout<<"State at time 0.2 = "<<currentState<<std::endl;
+                                                stateAtPoint2SecRKF = currentState;
+                    //                            std::cout<<"Latitude = "<<atan2(currentState(1),currentState(0))<<std::endl;
+                    //                            std::cout<<"FlightPathAngle = "<<-asin((currentState(3)*(-cos(atan2(currentState(1),currentState(0))))+currentState(4)*(-sin(atan2(currentState(1),currentState(0)))))/
+                    //                                                                   (sqrt(currentState(3)*currentState(3)+currentState(4)*currentState(4)+currentState(5)*currentState(5))))<<std::endl;
+
+                                            }
+
+                                            /// Get the spherical state from the initial few seconds of RKF
+
+                                            const double angleItoR_2 = rotationalVelocityMars*(inertialFrameTime+runningTime)-primeMeridianAngle;
+
+
+
+
+
+                                            // Position
+
+                                            Eigen::Vector3d CartesianPositionInertialFrame = Eigen::Vector3d::Zero(1,3); // Define the cartesian position inertial frame
+                                            CartesianPositionInertialFrame(0) = currentState(0); // x
+                                            CartesianPositionInertialFrame(1) = currentState(1); // y
+                                            CartesianPositionInertialFrame(2) = currentState(2); // z
+
+
+                                            const Eigen::Vector3d CartesianPositionRotationalFrame = tudat::reference_frames::getInertialToPlanetocentricFrameTransformationMatrix(angleItoR_2)*CartesianPositionInertialFrame;
+
+
+
+                                            Eigen::MatrixXd updatedStateAndTimeVector = Eigen::MatrixXd::Zero(1,8); // Creating a temporary vector to hold the converted state
+
+                                            updatedStateAndTimeVector(0) = sqrt(currentState(0)*currentState(0)+currentState(1)*currentState(1)+currentState(2)*currentState(2)); // Radius
+
+                                            updatedStateAndTimeVector(1) = asin(CartesianPositionRotationalFrame(2)/updatedStateAndTimeVector(0)) ; // latitude (delta)
+
+                                            updatedStateAndTimeVector(2) = atan2(CartesianPositionRotationalFrame(1),CartesianPositionRotationalFrame(0)); // longitude (tau)
+
+
+
+
+                                            /// Debug ///
+
+                                            /// Debug ///
+
+
+
+                                            // Velocity
+
+                                            Eigen::Vector3d CartesianVelocityInertialFrame = Eigen::Vector3d::Zero(1,3); // Define the cartesian velocity inertial frame
+                                            CartesianVelocityInertialFrame(0) = currentState(3); // Vx
+                                            CartesianVelocityInertialFrame(1) = currentState(4); // Vy
+                                            CartesianVelocityInertialFrame(2) = currentState(5); // Vz
+
+                                            Eigen::Vector3d rotatingPlanetCorrection = Eigen::Vector3d::Zero(3);
+
+                                            rotatingPlanetCorrection(0) = -rotationalVelocityMars*currentState(1);
+                                            rotatingPlanetCorrection(1) = rotationalVelocityMars*currentState(0);
+                                            rotatingPlanetCorrection(2) = 0.0;
+
+
+                                            const Eigen::Vector3d CartesianVelocityRotationalFrame = tudat::reference_frames::getInertialToPlanetocentricFrameTransformationMatrix(angleItoR_2)*(CartesianVelocityInertialFrame-rotatingPlanetCorrection); // Cartesian velocity in the rotational frame
+
+                                            const Eigen::Vector3d CartesianVelocityVerticalFrame = tudat::reference_frames::getRotatingPlanetocentricToLocalVerticalFrameTransformationMatrix(updatedStateAndTimeVector(2),updatedStateAndTimeVector(1))*CartesianVelocityRotationalFrame; // Cartesian velocity in the local vertical frame
+
+
+                                            updatedStateAndTimeVector(3) = sqrt((currentState(3)+rotationalVelocityMars*currentState(1))*(currentState(3)+rotationalVelocityMars*currentState(1))+(currentState(4)-rotationalVelocityMars*currentState(0))*(currentState(4)-rotationalVelocityMars*currentState(0))+currentState(5)*currentState(5)); // Ground velocity scalar
+
+
+
+                                            updatedStateAndTimeVector(4) = -asin(CartesianVelocityVerticalFrame(2)/updatedStateAndTimeVector(3)); // flight-path angle
+
+                                    //        std::cout<<"flight-path angle = "<<updatedStateAndTimeVectorRKFTSI(4)<<std::endl;
+
+
+                                            updatedStateAndTimeVector(5) = atan2(CartesianVelocityVerticalFrame(1),CartesianVelocityVerticalFrame(0)); // azimuth angle
+
+                                    //        std::cout<<"azimuth angle = "<<updatedStateAndTimeVectorRKFTSI(5)<<std::endl;
+
+                                    //        std::cout<<" "<<std::endl;
+
+
+                                            updatedStateAndTimeVector(6) = currentState(6); // MAV mass
+
+                                            /// Debug ///
+
+
+
+                                            /// Debug ///
+
+
+
+                                            /// Storing the values ///
+
+
+
+                                                    outputVector = Eigen::MatrixXd::Zero(1,8); // Setting the output vector to zero again to be sure.
+
+
+                                                    // Filling the output vector
+                                                    outputVector(0,0) = integratorCoast.getCurrentIndependentVariable();   // Storing the updated time
+                                                    outputVector(0,1) = currentState(0);   // Storing the updated x position
+                                                    outputVector(0,2) = currentState(1);   // Storing the updated y position
+                                                    outputVector(0,3) = currentState(2);   // Storing the updated z position
+                                                    outputVector(0,4) = currentState(3);   // Storing the updated x velocity
+                                                    outputVector(0,5) = currentState(4);   // Storing the updated y velocity
+                                                    outputVector(0,6) = currentState(5);   // Storing the updated z velocity
+                                                    outputVector(0,7) = currentState(6);   // Storing the updated MAV mass
+
+                                                    outputVectorSpherical = Eigen::MatrixXd::Zero(1,8); // Setting the output vector to zero again to be sure.
+
+
+                                                    // Filling the spherical output vector
+                                                    outputVectorSpherical(0,0) = integratorCoast.getCurrentIndependentVariable();   // Storing the updated time
+                                                    outputVectorSpherical(0,1) = updatedStateAndTimeVector(0);   // Storing the updated radius
+                                                    outputVectorSpherical(0,2) = updatedStateAndTimeVector(1);   // Storing the updated latitude
+                                                    outputVectorSpherical(0,3) = updatedStateAndTimeVector(2);   // Storing the updated longitude
+                                                    outputVectorSpherical(0,4) = updatedStateAndTimeVector(3);   // Storing the updated velocity
+                                                    outputVectorSpherical(0,5) = updatedStateAndTimeVector(4);   // Storing the updated flight-path angle
+                                                    outputVectorSpherical(0,6) = updatedStateAndTimeVector(5);   // Storing the updated azimuth angle
+                                                    outputVectorSpherical(0,7) = updatedStateAndTimeVector(6);   // Storing the updated MAV mass
+
+                                            // Store the new values in the data storage matrix
+
+                                            if (count == 0){
+
+                                              dataStoringMatrix.row(count) = outputVector.row(0); // Filling the matrix
+                                              dataStoringMatrixSpherical.row(count) = outputVectorSpherical.row(0); // Filling the matrix
+
+                                            }
+                                            else{
+                                                dataStoringMatrix.conservativeResize(count+1,8); // Making the matrix bigger in order to store more values
+
+                                                dataStoringMatrix.row(count) = outputVector.row(0); // Filling the matrix
+
+                                                dataStoringMatrixSpherical.conservativeResize(count+1,8); // Making the matrix bigger in order to store more values
+
+                                                dataStoringMatrixSpherical.row(count) = outputVectorSpherical.row(0); // Filling the matrix
+                                            }
+
+                    //                        if (currentState(6)<= EndMass){ // used to start the coasting phase
+                    //                            MAV.setThrust(0); // Set the thrust equal to zero
+                    //                        }
+
+                    //std::cout<<"Current count = "<<count<<std::endl;
+//                                            std::cout<<"(outputVectorSpherical(1)-bodyReferenceRadius) = "<<(outputVectorSpherical(1)-bodyReferenceRadius)<<std::endl;
+                                            count++;
+
+
+                                        }while( !( endTime - runningTime <= std::numeric_limits< double >::epsilon( ) ) &&  !((outputVectorSpherical(1)-bodyReferenceRadius) >= EndAltitude) );
+
+ } // End of coasting phase
 
                     /// Storing the values to the file ///
+
+//                    std::cout<<"It goes here"<<std::endl;
 
 
                     // Check if the file already exists.
@@ -1766,7 +2114,17 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 
 
                     // The result of the integration.
-                    Eigen::VectorXd endState = integrator.getCurrentState( );
+//                    Eigen::VectorXd endState = integrator.getCurrentState( );
+                    tudat::basic_mathematics::Vector7d endState;
+
+                    endState(0) = outputVector(1); // x-position
+                    endState(1) = outputVector(2); // y-position
+                    endState(2) = outputVector(3); // z-position
+                    endState(3) = outputVector(4); // x-velocity
+                    endState(4) = outputVector(5); // y-velocity
+                    endState(5) = outputVector(6); // z-velocity
+                    endState(6) = outputVector(7); // MAV mass
+
 
                     std::cout<<"Final number of integration steps is "<<count-countRKFTSI<<std::endl;
                     std::cout<<"The end state is "<<endState<<std::endl;
@@ -1837,11 +2195,82 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
                                differenceFractionEnd<<std::endl;
                     std::cout<<"The difference between TSI and "<<method<<" at the end time = "<<"\n"<<
                                differenceEnd<<std::endl;
+
+                    std::cout<<"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////"<<std::endl;
                     } // end comparison
 
 
 
 //*/
+
+///////////////////////////////////////////////////////////////////// Circularisation ///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    /// Convert the inertial Cartesian coordinates for both methods to Kepler elements ///
+//    keplerianElements( 0 ) = semiMajorAxis,                                             [km]
+//    keplerianElements( 1 ) = eccentricity,                                              [-]
+//    keplerianElements( 2 ) = inclination,                                             [rad]
+//    keplerianElements( 3 ) = argument of periapsis,                                   [rad]
+//    keplerianElements( 4 ) = longitude of ascending node,                             [rad]
+//    keplerianElements( 5 ) = true anomaly.                                            [rad]
+
+
+
+       tudat::basic_mathematics::Vector6d RKFendCartesianCoordinates; // The final conditions from the RKF integrator
+
+       RKFendCartesianCoordinates(0) = endState(0); // x-position
+       RKFendCartesianCoordinates(1) = endState(1); // y-position
+       RKFendCartesianCoordinates(2) = endState(2); // z-position
+       RKFendCartesianCoordinates(3) = endState(3); // x-velocity
+       RKFendCartesianCoordinates(4) = endState(4); // y-velocity
+       RKFendCartesianCoordinates(5) = endState(5); // z-velocity
+
+       tudat::basic_mathematics::Vector7d TSIendState = currentStateAndTime.getCurrentState(); // This TSI integrator end state includes the MAV mass (which is not required for the Kepler Elements)
+
+       tudat::basic_mathematics::Vector6d TSIendCartesianCoordinates;  // The final conditions from the TSI integrator
+
+       TSIendCartesianCoordinates(0) = TSIendState(0); // x-position
+       TSIendCartesianCoordinates(1) = TSIendState(1); // y-position
+       TSIendCartesianCoordinates(2) = TSIendState(2); // z-position
+       TSIendCartesianCoordinates(3) = TSIendState(3); // x-velocity
+       TSIendCartesianCoordinates(4) = TSIendState(4); // y-velocity
+       TSIendCartesianCoordinates(5) = TSIendState(5); // z-velocity
+
+
+//         Convert the integrator end coordinates
+        tudat::basic_mathematics::Vector6d  RKFendKeplerElements = tudat::orbital_element_conversions::convertCartesianToKeplerianElements(RKFendCartesianCoordinates,Mars.standardGravitationalParameter()); // RKF
+        tudat::basic_mathematics::Vector6d  TSIendKeplerElements = tudat::orbital_element_conversions::convertCartesianToKeplerianElements(TSIendCartesianCoordinates,Mars.standardGravitationalParameter()); // TSI
+
+        std::cout<<"RKFendKeplerElements = "<<"\n"<<RKFendKeplerElements<<std::endl;
+        std::cout<<"TSIendKeplerElements = "<<"\n"<<TSIendKeplerElements<<std::endl;
+
+        const double currentRKForbitalVelocity = sqrt(Mars.standardGravitationalParameter()*(2/(sqrt(endState(0)*endState(0)+endState(1)*endState(1)+endState(2)*endState(2)))-1/RKFendKeplerElements(0))); // V_RKF
+        const double currentTSIorbitalVelocity = sqrt(Mars.standardGravitationalParameter()*(2/(sqrt(TSIendState(0)*TSIendState(0)+TSIendState(1)*TSIendState(1)+TSIendState(2)*TSIendState(2)))-1/TSIendKeplerElements(0))); // V_TSI
+
+
+        std::cout<<"currentRKForbitalVelocity = "<<currentRKForbitalVelocity<<std::endl;
+        std::cout<<"currentTSIorbitalVelocity = "<<currentTSIorbitalVelocity<<std::endl;
+
+        const double requiredOrbitalVelocity = sqrt(Mars.standardGravitationalParameter()/(bodyReferenceRadius+EndAltitude));
+
+        std::cout<<"requiredOrbitalVelocity = "<<requiredOrbitalVelocity<<std::endl;
+
+        std::cout<<"currentRKFradius = "<<sqrt(endState(0)*endState(0)+endState(1)*endState(1)+endState(2)*endState(2))<<std::endl;
+        std::cout<<"currentTSIradius = "<<sqrt(TSIendState(0)*TSIendState(0)+TSIendState(1)*TSIendState(1)+TSIendState(2)*TSIendState(2))<<std::endl;
+        std::cout<<"requiredRadius = "<<(bodyReferenceRadius+EndAltitude)<<std::endl;
+        std::cout<<"currentRKFpericentreRadius = "<<RKFendKeplerElements(0)*(1.0-RKFendKeplerElements(1))<<std::endl;
+        std::cout<<"currentTSIpericentreRadius = "<<TSIendKeplerElements(0)*(1.0-TSIendKeplerElements(1))<<std::endl;
+        std::cout<<"currentRKFapocentreRadius = "<<RKFendKeplerElements(0)*(1.0+RKFendKeplerElements(1))<<std::endl;
+        std::cout<<"currentTSIapocentreRadius = "<<TSIendKeplerElements(0)*(1.0+TSIendKeplerElements(1))<<std::endl;
+
+
+
+
+
+
+
+
 
     return 0;
 }

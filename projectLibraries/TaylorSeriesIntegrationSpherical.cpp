@@ -162,6 +162,9 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 //    std::cout<<"Flight-path angle in integration.cpp = "<<FlightPathAngle<<std::endl;
 //    std::cout<<"Heading angle in integration.cpp = "<<HeadingAngle<<std::endl;
 
+//    std::cout<<"stepSize from the TSI = "<<currentStepSize<<std::endl;
+//    std::cout<<"currentTime from the TSI = "<<currentTime<<std::endl;
+
 
     //std::cout<<"This works right 1?"<<std::endl;
 
@@ -582,15 +585,26 @@ else{
             double alpha = (fTo+fFrom)/((tTo-tFrom)*(tTo-tFrom))-fFromDot/(tTo-tFrom);  // Basically computing fFromDoubleDot/2 (or coefficient)
 
             double tFromNew;
-            if (signIsPositive == true){    // Compute the new "from" time
+            if ((fFromDot*fFromDot+4.0*alpha*fFrom) <= 0.0){    // This is done in case the values become imaginary (close to the conversion point) which basically shifts the step a bit, and slightly resets it
+                tFromNew = tFrom + (-fFromDot+0.0)/(2.0*alpha);
+            }
+            else if (signIsPositive == true){    // Compute the new "from" time
         tFromNew = tFrom + (-fFromDot+sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))/(2.0*alpha);
 } // +
             else {
                tFromNew = tFrom + (-fFromDot-sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))/(2.0*alpha);
             } // -
 
+            /// Debug ///
+
+//            std::cout<<"/// Debug ///"<<std::endl;
+//            std::cout<<"alpha = "<<alpha<<std::endl;
+//            std::cout<<"fFromDot*fFromDot+4.0*alpha*fFrom = "<<fFromDot*fFromDot+4.0*alpha*fFrom<<std::endl;
 //            std::cout<<"fFromDot = "<<fFromDot<<std::endl;
 //            std::cout<<"tFromNew = "<<tFromNew<<std::endl;
+//            std::cout<<"/// Debug ///"<<std::endl;
+//            std::cout<<" "<<std::endl;
+            /// Debug ///
 
 
             currentStepSize = currentTime-tFromNew; // Update the new step-size to compute the new value for the altitude using the Taylor Coefficients
@@ -634,13 +648,14 @@ else{
 
 //std::cout<<"Original altitude = "<<currentState(0)-bodyReferenceRadius<<std::endl;
 //std::cout<<"Current altitude = "<<updatedState(0)-bodyReferenceRadius<<std::endl;
-////std::cout<<"Current velocity = "<<updatedState(3)<<std::endl;
+//std::cout<<"Current velocity = "<<updatedState(3)<<std::endl;
 
 //std::cout<<"////////////////////////////////////////////////////////////////////////////////// End of altitude do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
 
 } // else get new step-size
 
 //std::cout<<"Current altitude = "<<updatedState(0)-bodyReferenceRadius<<std::endl;
+//std::cout<<"currentStepSize = "<<currentStepSize<<std::endl;
 
 /////////////////////// End of temperature section checker//////////////////
 

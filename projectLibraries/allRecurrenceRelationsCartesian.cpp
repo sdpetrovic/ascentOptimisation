@@ -969,8 +969,8 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
 //    std::cout<<"WVector4_34 = "<<WVector4_34<<std::endl;     // W4,34
 //    std::cout<<"WVector4_35 = "<<WVector4_35<<std::endl;     // W4,35
 //    std::cout<<"WVector4_36 = "<<WVector4_36<<std::endl;     // W4,36
-//    std::cout<<"WVector4_37 = "<<WVector4_37<<std::endl;     // W4,37
-//    std::cout<<"WVector4_38 = "<<WVector4_38<<std::endl;     // W4,38
+    std::cout<<"WVector4_37 = "<<WVector4_37<<std::endl;     // W4,37
+    std::cout<<"WVector4_38 = "<<WVector4_38<<std::endl;     // W4,38
 //    std::cout<<"WVector4_39 = "<<WVector4_39<<std::endl;     // W4,39
 //    std::cout<<"WVector4_40 = "<<WVector4_40<<std::endl;     // W4,40
 
@@ -1048,7 +1048,7 @@ Eigen::MatrixXd getCartesianTaylorCoefficients(const double adiabeticIndex_, con
 //    std::cout<<"XMatrix.row(6) = "<<XMatrix.row(6)<<std::endl;
 
 
-    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
+//    std::cout<<"XMatrix = "<<XMatrix<<std::endl;
 //    std::cout<<"UMatrix = "<<UMatrix<<std::endl;
 
 
