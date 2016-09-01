@@ -160,6 +160,12 @@ int main()
 
 std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
+    /// Setting the desired end orbit ///
+
+    const double desiredOrbitalAltitude = 320.0; // Desired orbital altitude in kmMOLA
+    const double desiredEccentricity = 0.0; // Desired orbital eccentricity
+    const double desiredInclination = deg2rad(45.0); // Desired orbital inclination
+
     /// Setting the Celestial Body class ///
 
 
@@ -236,7 +242,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
   /// Initial conditions /// a.k.a. control centre
 
     const double setEndTime = 800.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
-    const double EndAltitude = 320.0; // Integration end altitude
+    const double EndAltitude = desiredOrbitalAltitude; // Integration end altitude
     const double coastStartTime = 68.63; // Integration coast start time [sec]
 
 //std::cout<<"pi = "<<(4*atan(1))<<std::endl;
@@ -538,22 +544,34 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     // Set absolute path to file containing the Taylor Series Coefficients.
     std::string dataAbsolutePathTSI = outputDirectoryTSI + "test6FullIntegrationTSIstateAndTime.csv";
+    std::string dataAbsolutePathTSICart = outputDirectoryTSI + "test6FullIntegrationTSIstateAndTime.csv";
 
     // Create a row vector for the storing of the data
     Eigen::MatrixXd outputVectorTSI = Eigen::MatrixXd::Zero(1,8); // Create a row vector for the storing of the data
+    Eigen::MatrixXd outputVectorTSICartesian = Eigen::MatrixXd::Zero(1,8); // Create a row vector for the storing of the cartesian data
 
     // Getting the initial conditions for storage
     const tudat::basic_mathematics::Vector7d initialStateTSI = currentSphericalStateAndTime.getCurrentState();
+    const tudat::basic_mathematics::Vector7d initialStateTSICartesian = currentStateAndTime.getCurrentState();
 
     // Filling the output vector
     outputVectorTSI(0,0) = currentSphericalStateAndTime.getCurrentTime();   // Storing the initial time
-    outputVectorTSI(0,1) = initialStateTSI(0);   // Storing the initial x position
-    outputVectorTSI(0,2) = initialStateTSI(1);   // Storing the initial y position
-    outputVectorTSI(0,3) = initialStateTSI(2);   // Storing the initial z position
-    outputVectorTSI(0,4) = initialStateTSI(3);   // Storing the initial x velocity
-    outputVectorTSI(0,5) = initialStateTSI(4);   // Storing the initial y velocity
-    outputVectorTSI(0,6) = initialStateTSI(5);   // Storing the initial z velocity
+    outputVectorTSI(0,1) = initialStateTSI(0);   // Storing the initial radius
+    outputVectorTSI(0,2) = initialStateTSI(1);   // Storing the initial latitude
+    outputVectorTSI(0,3) = initialStateTSI(2);   // Storing the initial longitude
+    outputVectorTSI(0,4) = initialStateTSI(3);   // Storing the initial ground velocity
+    outputVectorTSI(0,5) = initialStateTSI(4);   // Storing the initial flight-path angle
+    outputVectorTSI(0,6) = initialStateTSI(5);   // Storing the initial azimuth angle
     outputVectorTSI(0,7) = initialStateTSI(6);   // Storing the initial MAV mass
+
+    outputVectorTSICartesian(0,0) = currentStateAndTime.getCurrentTime();   // Storing the initial time
+    outputVectorTSICartesian(0,1) = initialStateTSICartesian(0);   // Storing the initial x position
+    outputVectorTSICartesian(0,2) = initialStateTSICartesian(1);   // Storing the initial y position
+    outputVectorTSICartesian(0,3) = initialStateTSICartesian(2);   // Storing the initial z position
+    outputVectorTSICartesian(0,4) = initialStateTSICartesian(3);   // Storing the initial x velocity
+    outputVectorTSICartesian(0,5) = initialStateTSICartesian(4);   // Storing the initial y velocity
+    outputVectorTSICartesian(0,6) = initialStateTSICartesian(5);   // Storing the initial z velocity
+    outputVectorTSICartesian(0,7) = initialStateTSICartesian(6);   // Storing the initial MAV mass
 
     // Storing the data
 
@@ -651,17 +669,25 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         std::string ComputerTimeString = currentYear + "-" + currentMonth + "-" + currentDay + "_" + currentHour + ":" + currentMin + ":" + currentSec;  // Convert to string and store
 
         std::string newFileName = "backupSphericalTSIFileAtDateAndTime_" + ComputerTimeString + ".csv";
+        std::string newFileNameCart = "backupSpherical(Cart)TSIFileAtDateAndTime_" + ComputerTimeString + ".csv";
 
     std::cerr<<"The file name that you have chosen already exists, a new file with name "<<newFileName<<" will be created to store the data for now"<<std::endl;
+    std::cerr<<"The file name that you have chosen already exists, a new file with name "<<newFileNameCart<<" will be created to store the data for now"<<std::endl;
 
     // Set new absolute path to file containing the data.
     dataAbsolutePathTSI = outputDirectoryTSI + newFileName;
+    dataAbsolutePathTSICart = outputDirectoryTSI + newFileNameCart;
 
     // Export the data.
     std::ofstream exportFile1( dataAbsolutePathTSI.c_str( ) ); // Make the new file
     std::cout<<"New file called "<<dataAbsolutePathTSI<<" has been created"<<std::endl;
     exportFile1 << outputVectorTSI.format( csvFormatTSI );          // Store the new values
     exportFile1.close( );   // Close the file
+
+    std::ofstream exportFile1Cart( dataAbsolutePathTSICart.c_str( ) ); // Make the new file
+    std::cout<<"New file called "<<dataAbsolutePathTSICart<<" has been created"<<std::endl;
+    exportFile1Cart << outputVectorTSICartesian.format( csvFormatTSI );          // Store the new values
+    exportFile1Cart.close( );   // Close the file
 
 
 }
@@ -672,11 +698,17 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         std::cout<<"New file called "<<dataAbsolutePathTSI<<" has been created"<<std::endl;
         exportFile1 << outputVectorTSI.format( csvFormatTSI );          // Store the new values
         exportFile1.close( );   // Close the file
+
+        std::ofstream exportFile1Cart( dataAbsolutePathTSICart.c_str( ) ); // Make the new file
+        std::cout<<"New file called "<<dataAbsolutePathTSICart<<" has been created"<<std::endl;
+        exportFile1Cart << outputVectorTSICartesian.format( csvFormatTSI );          // Store the new values
+        exportFile1Cart.close( );   // Close the file
     };
 
 
     // Define storing matrix for the intermediate values
     Eigen::MatrixXd dataStoringMatrixTSI(1,8); // The size of this matrix will change in the do-loop
+    Eigen::MatrixXd dataStoringMatrixTSICartesian(1,8); // The size of this matrix will change in the do-loop
     tudat::basic_mathematics::Vector7d stateAtPoint2SecTSI; // Storing the 0.2 seconds value specifically for comparison
 
 
@@ -928,16 +960,32 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         outputVectorTSI(0,6) = updatedStateAndTimeVectorRKFTSI(5);   // Storing the updated azimuth angle
         outputVectorTSI(0,7) = updatedStateAndTimeVectorRKFTSI(6);   // Storing the updated MAV mass
 
+        outputVectorTSICartesian = Eigen::MatrixXd::Zero(1,8); // Setting the output vector to zero again to be sure.
+
+        // Filling the output vector
+        outputVectorTSICartesian(0,0) = runningTimeTSI;   // Storing the updated time
+        outputVectorTSICartesian(0,1) = currentStateRKFTSI(0);   // Storing the updated x-position
+        outputVectorTSICartesian(0,2) = currentStateRKFTSI(1);   // Storing the updated y-position
+        outputVectorTSICartesian(0,3) = currentStateRKFTSI(2);   // Storing the updated z-position
+        outputVectorTSICartesian(0,4) = currentStateRKFTSI(3);   // Storing the updated x-velocity
+        outputVectorTSICartesian(0,5) = currentStateRKFTSI(4);   // Storing the updated y-velocity
+        outputVectorTSICartesian(0,6) = currentStateRKFTSI(5);   // Storing the updated z-velocity
+        outputVectorTSICartesian(0,7) = currentStateRKFTSI(6);   // Storing the updated MAV mass
+
         // Store the new values in the data storage matrix
 
         if (countRKFTSI == 0){
 
           dataStoringMatrixTSI.row(countRKFTSI) = outputVectorTSI.row(0); // Filling the matrix
+          dataStoringMatrixTSICartesian.row(countRKFTSI) = outputVectorTSICartesian.row(0); // Filling the matrix
+
         }
         else{
             dataStoringMatrixTSI.conservativeResize(countRKFTSI+1,8); // Making the matrix bigger in order to store more values
+            dataStoringMatrixTSICartesian.conservativeResize(countRKFTSI+1,8); // Making the matrix bigger in order to store more values
 
             dataStoringMatrixTSI.row(countRKFTSI) = outputVectorTSI.row(0); // Filling the matrix
+            dataStoringMatrixTSICartesian.row(countRKFTSI) = outputVectorTSICartesian.row(0); // Filling the matrix
         }
 
         // Updating the current state and time class!!!
@@ -1051,7 +1099,7 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 //                                        std::cout<<"Current stepSize = "<<stepSize.getCurrentStepSize()<<std::endl;
                                      stepSize.setCurrentStepSize(coastStartTime - runningTimeTSI);
                                      coast = false;
-                                     std::cout<<"This should only happen once! And the stepSize = "<<stepSize.getCurrentStepSize()<<std::endl;
+//                                     std::cout<<"This should only happen once! And the stepSize = "<<stepSize.getCurrentStepSize()<<std::endl;
 
                                  }
 //             std::cout<<"This should be happening all the time!"<<std::endl;
@@ -1097,6 +1145,9 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
         outputVectorTSI(0,5) = updatedStateAndTimeVector(4);   // Storing the updated flight-path angle
         outputVectorTSI(0,6) = updatedStateAndTimeVector(5);   // Storing the updated azimuth angle
         outputVectorTSI(0,7) = updatedStateAndTimeVector(6);   // Storing the updated MAV mass
+
+
+
 
         // Store the new values in the data storage matrix
 
@@ -1179,6 +1230,32 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
         currentCartesianState(5) = velocityInertialFrame(2); // z-velocity
         currentCartesianState(6) = currentSphericalStateVector(6); // Mass
 
+
+        outputVectorTSICartesian = Eigen::MatrixXd::Zero(1,8); // Setting the output vector to zero again to be sure.
+
+        // Filling the output vector
+        outputVectorTSICartesian(0,0) = updatedStateAndTimeVector(7);   // Storing the updated time
+        outputVectorTSICartesian(0,1) = currentCartesianState(0);   // Storing the updated x-position
+        outputVectorTSICartesian(0,2) = currentCartesianState(1);   // Storing the updated y-position
+        outputVectorTSICartesian(0,3) = currentCartesianState(2);   // Storing the updated z-position
+        outputVectorTSICartesian(0,4) = currentCartesianState(3);   // Storing the updated x-velocity
+        outputVectorTSICartesian(0,5) = currentCartesianState(4);   // Storing the updated y-velocity
+        outputVectorTSICartesian(0,6) = currentCartesianState(5);   // Storing the updated z-velocity
+        outputVectorTSICartesian(0,7) = currentCartesianState(6);   // Storing the updated MAV mass
+
+        // Store the new cartesian values in the data storage matrix
+
+        if (countTSI+countRKFTSI == 0){
+
+          dataStoringMatrixTSICartesian.row(countTSI+countRKFTSI) = outputVectorTSICartesian.row(0); // Filling the matrix
+        }
+        else{
+            dataStoringMatrixTSICartesian.conservativeResize(countTSI+countRKFTSI+1,8); // Making the matrix bigger in order to store more values
+
+            dataStoringMatrixTSICartesian.row(countTSI+countRKFTSI) = outputVectorTSICartesian.row(0); // Filling the matrix
+        }
+
+
 //        std::cout<<"Current Cartesian State = "<<currentCartesianState<<std::endl;
 
         if (runningTimeTSI == 0.2){
@@ -1222,7 +1299,7 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 
         if (fexistsTSI == true){
 
-            // Export the Taylor Series Coefficients matrix.
+            // Export the Taylor Series data matrix.
             std::ofstream exportFile1;                          // Define the file as an output file
 
 
@@ -1236,6 +1313,21 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 
 
             exportFile1.close( );   // Close the file
+
+            // Export the Taylor Series "Spherical" Cartesian data matrix.
+            std::ofstream exportFile1Cart;                          // Define the file as an output file
+
+
+            exportFile1Cart.open(dataAbsolutePathTSICart.c_str(),std::ios_base::app);      // Open the file in append mode
+
+            exportFile1Cart << "\n";                                            // Make sure the new matrix start on a new line
+
+            exportFile1Cart << dataStoringMatrixTSICartesian.format( csvFormatTSI ); // Add the new values
+
+            std::cout<<"The file called "<<dataAbsolutePathTSICart<<" has been appended"<<std::endl;
+
+
+            exportFile1Cart.close( );   // Close the file
 }
             else{
 
@@ -2242,33 +2334,100 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
         tudat::basic_mathematics::Vector6d  RKFendKeplerElements = tudat::orbital_element_conversions::convertCartesianToKeplerianElements(RKFendCartesianCoordinates,Mars.standardGravitationalParameter()); // RKF
         tudat::basic_mathematics::Vector6d  TSIendKeplerElements = tudat::orbital_element_conversions::convertCartesianToKeplerianElements(TSIendCartesianCoordinates,Mars.standardGravitationalParameter()); // TSI
 
-        std::cout<<"RKFendKeplerElements = "<<"\n"<<RKFendKeplerElements<<std::endl;
-        std::cout<<"TSIendKeplerElements = "<<"\n"<<TSIendKeplerElements<<std::endl;
+//        std::cout<<"RKFendKeplerElements = "<<"\n"<<RKFendKeplerElements<<std::endl;
+//        std::cout<<"TSIendKeplerElements = "<<"\n"<<TSIendKeplerElements<<std::endl;
+
+        // Orbital velocities
 
         const double currentRKForbitalVelocity = sqrt(Mars.standardGravitationalParameter()*(2/(sqrt(endState(0)*endState(0)+endState(1)*endState(1)+endState(2)*endState(2)))-1/RKFendKeplerElements(0))); // V_RKF
         const double currentTSIorbitalVelocity = sqrt(Mars.standardGravitationalParameter()*(2/(sqrt(TSIendState(0)*TSIendState(0)+TSIendState(1)*TSIendState(1)+TSIendState(2)*TSIendState(2)))-1/TSIendKeplerElements(0))); // V_TSI
 
 
-        std::cout<<"currentRKForbitalVelocity = "<<currentRKForbitalVelocity<<std::endl;
-        std::cout<<"currentTSIorbitalVelocity = "<<currentTSIorbitalVelocity<<std::endl;
+//        std::cout<<"currentRKForbitalVelocity = "<<currentRKForbitalVelocity<<std::endl;
+//        std::cout<<"currentTSIorbitalVelocity = "<<currentTSIorbitalVelocity<<std::endl;
 
         const double requiredOrbitalVelocity = sqrt(Mars.standardGravitationalParameter()/(bodyReferenceRadius+EndAltitude));
 
-        std::cout<<"requiredOrbitalVelocity = "<<requiredOrbitalVelocity<<std::endl;
+//        std::cout<<"requiredOrbitalVelocity = "<<requiredOrbitalVelocity<<std::endl;
 
-        std::cout<<"currentRKFradius = "<<sqrt(endState(0)*endState(0)+endState(1)*endState(1)+endState(2)*endState(2))<<std::endl;
-        std::cout<<"currentTSIradius = "<<sqrt(TSIendState(0)*TSIendState(0)+TSIendState(1)*TSIendState(1)+TSIendState(2)*TSIendState(2))<<std::endl;
-        std::cout<<"requiredRadius = "<<(bodyReferenceRadius+EndAltitude)<<std::endl;
-        std::cout<<"currentRKFpericentreRadius = "<<RKFendKeplerElements(0)*(1.0-RKFendKeplerElements(1))<<std::endl;
-        std::cout<<"currentTSIpericentreRadius = "<<TSIendKeplerElements(0)*(1.0-TSIendKeplerElements(1))<<std::endl;
-        std::cout<<"currentRKFapocentreRadius = "<<RKFendKeplerElements(0)*(1.0+RKFendKeplerElements(1))<<std::endl;
-        std::cout<<"currentTSIapocentreRadius = "<<TSIendKeplerElements(0)*(1.0+TSIendKeplerElements(1))<<std::endl;
+//        std::cout<<"currentRKFradius = "<<sqrt(endState(0)*endState(0)+endState(1)*endState(1)+endState(2)*endState(2))<<std::endl;
+//        std::cout<<"currentTSIradius = "<<sqrt(TSIendState(0)*TSIendState(0)+TSIendState(1)*TSIendState(1)+TSIendState(2)*TSIendState(2))<<std::endl;
+//        std::cout<<"requiredRadius = "<<(bodyReferenceRadius+EndAltitude)<<std::endl;
+//        std::cout<<"currentRKFpericentreRadius = "<<RKFendKeplerElements(0)*(1.0-RKFendKeplerElements(1))<<std::endl;
+//        std::cout<<"currentTSIpericentreRadius = "<<TSIendKeplerElements(0)*(1.0-TSIendKeplerElements(1))<<std::endl;
+//        std::cout<<"currentRKFapocentreRadius = "<<RKFendKeplerElements(0)*(1.0+RKFendKeplerElements(1))<<std::endl;
+//        std::cout<<"currentTSIapocentreRadius = "<<TSIendKeplerElements(0)*(1.0+TSIendKeplerElements(1))<<std::endl;
 
-
-
-
+//        std::cout<<"currentInertialVelocity = "<<sqrt(endState(3)*endState(3)+endState(4)*endState(4)+endState(5)*endState(5))<<std::endl;
 
 
+
+
+        // Flight path angles
+
+        const double pRKF = RKFendKeplerElements(0)*(1.0-RKFendKeplerElements(1)*RKFendKeplerElements(1)); // Semi-latus rectum for RKF
+        const double cosRKFflightPathAngle = (pRKF/sqrt(endState(0)*endState(0)+endState(1)*endState(1)+endState(2)*endState(2)))/
+                (sqrt(2*(pRKF/sqrt(endState(0)*endState(0)+endState(1)*endState(1)+endState(2)*endState(2)))-
+                      (1.0-RKFendKeplerElements(1)*RKFendKeplerElements(1)))); // Cosine of the orbital flight-path angle for RKF
+//        const double RKFflightPathAngle = acos(cosRKFflightPathAngle); // Orbital flight-path angle for RKF
+
+
+        const double pTSI = TSIendKeplerElements(0)*(1.0-TSIendKeplerElements(1)*TSIendKeplerElements(1)); // Semi-latus rectum for TSI
+        const double cosTSIflightPathAngle = (pTSI/sqrt(TSIendState(0)*TSIendState(0)+TSIendState(1)*TSIendState(1)+TSIendState(2)*TSIendState(2)))/
+                (sqrt(2*(pTSI/sqrt(TSIendState(0)*TSIendState(0)+TSIendState(1)*TSIendState(1)+TSIendState(2)*TSIendState(2)))-
+                      (1.0-TSIendKeplerElements(1)*TSIendKeplerElements(1)))); // Cosine of the orbital flight-path angle for TSI
+//        const double TSIflightPathAngle = acos(cosTSIflightPathAngle); // Orbital flight-path angle for TSI
+
+//        std::cout<<"RKFflightPathAngle = "<<RKFflightPathAngle<<std::endl;
+//        std::cout<<"TSIflightPathAngle = "<<TSIflightPathAngle<<std::endl;
+
+//        std::cout<<"testRKFVelocity = "<<sqrt(requiredOrbitalVelocity*requiredOrbitalVelocity*(2.0-(sqrt(endState(0)*endState(0)+endState(1)*endState(1)+endState(2)*endState(2))/pRKF)*
+//                                                                                               (1.0-RKFendKeplerElements(1)*RKFendKeplerElements(1))))<<std::endl;
+
+        // Delta-V's
+
+//        const double deltaVforRKF = sqrt(requiredOrbitalVelocity*requiredOrbitalVelocity+currentRKForbitalVelocity*currentRKForbitalVelocity-
+//                                         2*requiredOrbitalVelocity*currentRKForbitalVelocity*cosRKFflightPathAngle); // Delta-V required for the RKF change into the circular orbit
+
+        const double deltaVforRKF = sqrt(requiredOrbitalVelocity*requiredOrbitalVelocity+currentRKForbitalVelocity*currentRKForbitalVelocity-
+                                         2*requiredOrbitalVelocity*currentRKForbitalVelocity*cosRKFflightPathAngle*cos(desiredInclination-RKFendKeplerElements(2))); // Delta-V required for the RKF change into the circular orbit including inclination change
+
+//        const double deltaVforTSI = sqrt(requiredOrbitalVelocity*requiredOrbitalVelocity+currentTSIorbitalVelocity*currentTSIorbitalVelocity-
+//                                         2*requiredOrbitalVelocity*currentTSIorbitalVelocity*cosTSIflightPathAngle); // Delta-V required for the TSI change into the circular orbit
+
+        const double deltaVforTSI = sqrt(requiredOrbitalVelocity*requiredOrbitalVelocity+currentTSIorbitalVelocity*currentTSIorbitalVelocity-
+                                         2*requiredOrbitalVelocity*currentTSIorbitalVelocity*cosTSIflightPathAngle*cos(desiredInclination-TSIendKeplerElements(2))); // Delta-V required for the TSI change into the circular orbit including inclination change
+
+//        std::cout<<"deltaVforRKF = "<<deltaVforRKF<<std::endl;
+//        std::cout<<"deltaVforTSI = "<<deltaVforTSI<<std::endl;
+
+//        std::cout<<"desiredInclination-RKFendKeplerElements(2) = "<<desiredInclination-RKFendKeplerElements(2)<<std::endl;
+//        std::cout<<"desiredInclination-TSIendKeplerElements(2) = "<<desiredInclination-TSIendKeplerElements(2)<<std::endl;
+
+//        std::cout<<"desiredInclination = "<<rad2deg(desiredInclination)<<std::endl;
+//        std::cout<<"RKFInclination = "<<rad2deg(RKFendKeplerElements(2))<<std::endl;
+//        std::cout<<"TSIInclination = "<<rad2deg(TSIendKeplerElements(2))<<std::endl;
+
+
+
+
+        // Required propellant mass
+
+        const double propMassRKF = endState(6)-endState(6)/(exp(deltaVforRKF/(MAV.specificImpulse()*tudat::physical_constants::STANDARD_EARTH_GRAVITATIONAL_ACCELERATION))); // RKF propellant mass required (minimum)
+        const double propMassTSI = TSIendState(6)-TSIendState(6)/(exp(deltaVforTSI/(MAV.specificImpulse()*tudat::physical_constants::STANDARD_EARTH_GRAVITATIONAL_ACCELERATION))); // TSI propellant mass required (minimum)
+
+
+        std::cout<<"propMassRKF = "<<propMassRKF<<std::endl;
+        std::cout<<"propMassTSI = "<<propMassTSI<<std::endl;
+
+
+        // Final MAV mass
+
+        const double finalMassRKF = endState(6)-propMassRKF; // RKF final MAV mass
+        const double finalMassTSI = TSIendState(6)-propMassTSI; // TSI final MAV mass
+
+        std::cout<<"finalMassRKF = "<<finalMassRKF<<std::endl;
+        std::cout<<"finalMassTSI = "<<finalMassTSI<<std::endl;
 
 
 
