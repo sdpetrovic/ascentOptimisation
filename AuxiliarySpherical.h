@@ -474,6 +474,20 @@ public:
         auxiliaryEquationsVector(30) += pow(auxiliaryEquationsVector(31),i)*densityPolyCoefficients(i);              // x30
 };
 
+        /// Debug ///
+
+//        double testLNrho = 0.0;
+
+//        for (int i = 0; i < 10+1;i++) {
+
+//        testLNrho += pow(380.0,i)*densityPolyCoefficients(i);              // test
+//};
+
+//        std::cout<<"auxiliaryEquationsVector(30) (LNrho) = "<<auxiliaryEquationsVector(30)<<std::endl;
+//        std::cout<<"testLNrho = "<<testLNrho<<std::endl;
+
+        /// Debug ///
+
         // Determine which section of the temperature curve needs to be used and what the corresponding order is
         // Also, because a computer is less than perfect, a small correction is made to the lower bound of the first section to make sure that the initial altitude is still valid
 
@@ -525,6 +539,7 @@ public:
 
 };
 
+
         auxiliaryEquationsVector(28) = exp(auxiliaryEquationsVector(30));              // x28
 
         auxiliaryEquationsVector(33) = sqrt(adiabeticIndex*specificGasConstant*auxiliaryEquationsVector(34));              // x33
@@ -567,12 +582,31 @@ public:
 
         auxiliaryEquationsVector(27) = 0.5*referenceArea*auxiliaryEquationsVector(28)*auxiliaryEquationsVector(15)*auxiliaryEquationsVector(15)*auxiliaryEquationsVector(29);              // x27
 
+//        // Accounting for altitude higher than 320 km MOLA: assumption, density can be neglected
+//        if (auxiliaryEquationsVector(31)>=320.0){
+//            auxiliaryEquationsVector(27) = 0.0;
+//            std::cout<<"It's done, it's gone!"<<std::endl;
+//        }
+
 //std::cout<<"Surely this works 8..."<<std::endl;
 
 //        auxiliaryEquationsVector(0) = thrustAccelerationsBframe(0)-(auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7));              // w4,2
         auxiliaryEquationsVector(0) = (Thrust*cos(thrustAzimuth)*cos(thrustElevation)/auxiliaryEquationsVector(7))-(auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7));              // w4,2
 
 //        /// Debug ///
+//        std::cout<<"auxiliaryEquationsVector(0) = "<<auxiliaryEquationsVector(0)<<std::endl;
+//        std::cout<<"Thrust*cos(thrustAzimuth)*cos(thrustElevation)/auxiliaryEquationsVector(7) = "<<Thrust*cos(thrustAzimuth)*cos(thrustElevation)/auxiliaryEquationsVector(7)<<std::endl;
+//        std::cout<<"-(auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7)) = "<<-(auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7))<<std::endl;
+//        std::cout<<"auxiliaryEquationsVector(27) (D) = "<<auxiliaryEquationsVector(27)<<std::endl;
+//        std::cout<<"referenceArea = "<<referenceArea<<std::endl;
+//        std::cout<<"auxiliaryEquationsVector(28) (rho) = "<<auxiliaryEquationsVector(28)<<std::endl;
+//        std::cout<<"auxiliaryEquationsVector(15) (V_G) = "<<auxiliaryEquationsVector(15)<<std::endl;
+//        std::cout<<"auxiliaryEquationsVector(29) (C_D) = "<<auxiliaryEquationsVector(29)<<std::endl;
+//        std::cout<<"auxiliaryEquationsVector(31) (h) = "<<auxiliaryEquationsVector(31)<<std::endl;
+
+
+//        std::cout<<"auxiliaryEquationsVector(7) = "<<auxiliaryEquationsVector(7)<<std::endl;
+
 //        std::cout<<"thrustAccelerationsBframe(0) = "<<thrustAccelerationsBframe(0)<<std::endl;
 //        std::cout<<"(auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7)) = "<<(auxiliaryEquationsVector(27)/auxiliaryEquationsVector(7))<<std::endl;
 //        /// Debug ///
@@ -862,7 +896,7 @@ public:
             (sx14*cx12-cx14*sx12*cx13)+
             auxiliaryEquationsVector(0)-standardGravitationalParameter*sx14/(auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16));                // u15
 
-    /// Debug ///
+    /// Debug ///            
 //    std::cout<<"u14 part 1 = "<<2.0*rotationalVelocity*cx12*sx13<<std::endl;
 //    std::cout<<"u14 part 2 = "<<(auxiliaryEquationsVector(15)/auxiliaryEquationsVector(16))*cx14<<std::endl;
 //    std::cout<<"u14 part 3 = "<<(rotationalVelocity*rotationalVelocity/auxiliaryEquationsVector(15))*auxiliaryEquationsVector(16)*cx12*(cx12*cx14+
@@ -995,6 +1029,12 @@ public:
 
     auxiliaryDerivativesVector(27) = 0.5*referenceArea*auxiliaryEquationsVector(15)*(auxiliaryEquationsVector(15)*(auxiliaryEquationsVector(29)*auxiliaryDerivativesVector(28)+auxiliaryEquationsVector(28)*auxiliaryDerivativesVector(29))+
                                                                                      2.0*auxiliaryEquationsVector(28)*auxiliaryEquationsVector(29)*auxiliaryDerivativesVector(15));                // u27
+
+//    // Accounting for altitude higher than 320 km MOLA: assumption, density can be neglected
+//    if (auxiliaryEquationsVector(31)>=320.0){
+//        auxiliaryDerivativesVector(27) = 0.0;
+//        std::cout<<"It's done, it's gone!"<<std::endl;
+//    }
 
 
 // auxiliaryDerivativesVector() = ;                // u
@@ -1355,6 +1395,12 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
     auxiliaryFunctionsMatrix(27,4) = auxiliaryEquationsVector(15)*(auxiliaryFunctionsMatrix(27,1)+auxiliaryFunctionsMatrix(27,2));
     auxiliaryFunctionsMatrix(27,5) = auxiliaryFunctionsMatrix(27,3)*auxiliaryDerivativesVector(15);
     auxiliaryFunctionsMatrix(27,6) = auxiliaryEquationsVector(15)*(auxiliaryFunctionsMatrix(27,4)+auxiliaryFunctionsMatrix(27,5));
+
+//    // Accounting for altitude higher than 320 km MOLA: assumption, density can be neglected
+//    if (auxiliaryEquationsVector(31)>=320.0){
+//        auxiliaryDerivativesVector(27) = 0.0;
+//        std::cout<<"It's done, it's gone!"<<std::endl;
+//    }
 
 
 

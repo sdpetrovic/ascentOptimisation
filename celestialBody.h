@@ -252,6 +252,11 @@ public:
         rotationalVelocity_ = rotationalVelocity;
     }
 
+    void setUpperAltitudeBound(const double upperAltitudeBound)         // This function can be used to adjust the final altitude
+    {
+        temperatureAltitudeRanges_(4,1) = upperAltitudeBound;
+    }
+
 
     // Returning the different constant parameters
 

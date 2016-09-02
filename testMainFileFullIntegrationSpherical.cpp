@@ -162,9 +162,9 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     /// Setting the desired end orbit ///
 
-    const double desiredOrbitalAltitude = 320.0; // Desired orbital altitude in kmMOLA
-    const double desiredEccentricity = 0.0; // Desired orbital eccentricity
-    const double desiredInclination = deg2rad(45.0); // Desired orbital inclination
+    double desiredOrbitalAltitude = 320.0; // Desired orbital altitude in kmMOLA (320 km is default)
+//    const double desiredEccentricity = 0.0; // Desired orbital eccentricity
+    double desiredInclination = deg2rad(45.0); // Desired orbital inclination (45 is default)
 
     /// Setting the Celestial Body class ///
 
@@ -231,19 +231,48 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         std::cout<<"NO THRUST"<<std::endl;
     }
 
+
+    //////////////////////////////////////////////////////// Test Cases ////////////////////////////////////////////////////////
+
+    // Test case from Woolley 2015 (case 10 SSTO)
+    desiredOrbitalAltitude = 390.0; // Desired orbital altitude in kmMOLA (320 km is default)
+    desiredInclination = deg2rad(45.0); // Desired orbital inclination (45 is default)
+
+    MAV.setMAVmass(267.4);                      // Set the MAV GLOM in [kg]
+    MAV.setThrust(3.56);                        // Set the MAV thrust in [kN]
+    MAV.setThrustResetValue(MAV.Thrust());      // Set the reset value equal to the original given thrust
+    MAV.setSpecificImpulse(256);                // Set the MAV specific impulse [s]
+    const double initialBurnTime = 142.5;       // Set the burn time from launch till coast [s]
+//    const double burnOutAngle = deg2rad(6.0);  // Set the burn out angle (flight-path angle at end of first burn) [rad]
+//    const double finalBurnOutMass = 60.7;       // Set the final burn out mass (empty mass + OS mass + excess propellant mass) [kg]
+    const double initialLongitudeDeg = 0.0;     // Set the launch latitude in [deg] (tau)
+    const double HeadingAngle = deg2rad(90.0);  // Set the launch azimuth [rad] (psi)
+    Mars.setUpperAltitudeBound(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the temperature
+    MAV.setUpdatedFinalAltitude(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the thrust angles
+
+
+
+//    std::cout<<"Mars.temperatureAltitudeRanges() = "<<Mars.temperatureAltitudeRanges()<<std::endl;
+//    std::cout<<"MAV.thrustAzimuth() = "<<MAV.thrustAzimuth()<<std::endl;
+
+
+
+    //////////////////////////////////////////////////////// Test Cases ////////////////////////////////////////////////////////
+
     /// Comparison?
     const bool comparison = true;
 
     /// Set initial flight path angle and heading angle
     const double FlightPathAngle = deg2rad(89.0);     // Set flight-path angle in rad --> Default = 90.0 deg
-    const double HeadingAngle = deg2rad(90.0);           // Set heading angle in rad --> Default = 0.0 deg
+//    const double HeadingAngle = deg2rad(90.0);           // Set heading angle in rad --> Default = 0.0 deg
 
 
   /// Initial conditions /// a.k.a. control centre
 
-    const double setEndTime = 800.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
+//    const double initialBurnTime = 68.63; // Burn time from launch till coast
+    const double setEndTime = 2000.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
     const double EndAltitude = desiredOrbitalAltitude; // Integration end altitude
-    const double coastStartTime = 68.63; // Integration coast start time [sec]
+    const double coastStartTime = initialBurnTime; // Integration coast start time [sec] // test 68.63
 
 //std::cout<<"pi = "<<(4*atan(1))<<std::endl;
 
@@ -272,7 +301,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     const double initialAltitude = -0.6;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
     const double initialLatitudeDeg = 21.0;               // Starting latitude [deg] initial condition is 21 deg (delta)
-    const double initialLongitudeDeg = 74.5;            // Starting longitude [deg] initial condition is 74.5 deg (tau)
+//    const double initialLongitudeDeg = 74.5;            // Starting longitude [deg] initial condition is 74.5 deg (tau)
     const double initialGroundVelocity = 0.00001;          // Starting velocity in km/s (is suppose to be 0.0...) 0.00001 default at initial step-size of 0.01 sec
     std::cout<<"The initial ground velocity = "<<initialGroundVelocity<<" km/s"<<std::endl;
     std::cout<<"The initial latitude = "<<initialLatitudeDeg<<" deg"<<std::endl;
@@ -340,7 +369,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     aState(3) = initialVelocityInertialFrame(0);
     aState(4) = initialVelocityInertialFrame(1);
     aState(5) = initialVelocityInertialFrame(2);
-    aState(6) = 227;  // Mass [kg] from literature study
+    aState(6) = MAV.MAVmass();  // Mass [kg] from literature study
 
 
 
@@ -378,7 +407,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     sphericalState(3) = initialGroundVelocity;   // Ground velocity (V_G)
     sphericalState(4) = FlightPathAngle;   // Flight-path angle (gamma_G)  [rad]
     sphericalState(5) = HeadingAngle;   // Azimuth angle (chi_G)    [rad]
-    sphericalState(6) = 227;    // Mass [kg] from literature study
+    sphericalState(6) = MAV.MAVmass();    // Mass [kg] from literature study
 
     StateAndTime currentSphericalStateAndTime(sphericalState);  // Creating the current state class using the namespace and class directly (Spherical)
 
@@ -1020,7 +1049,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 
 
-
+//        std::cout<<"dataStoringMatrixTSI = "<<dataStoringMatrixTSI<<std::endl;
 
 
 /// Defining the order and initializing the StepSize class ///
@@ -1123,6 +1152,10 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 
         Eigen::VectorXd updatedStateAndTimeVector = performTaylorSeriesIntegrationStep(Mars, MAV, currentSphericalStateAndTime, stepSize, maxOrder, FlightPathAngle, HeadingAngle); /// The actual integration step
         // This function has the output: updated position, updated velocity, updated mass and updated time
+
+        if (updatedStateAndTimeVector(0)-bodyReferenceRadius>=320.0){ // Accounting for the case where the altitude goes above 320.0 km MOLA, then assume drag == 0.0 N (density curve was fitted till 320.0 km MOLA)
+            MAV.setReferenceArea(0.0);
+        }
 
 //        std::cout<<"updatedSphericalStateAndTimeVector = "<<updatedStateAndTimeVector<<std::endl;
 
@@ -1363,6 +1396,7 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 
         //// Reset the values ////
         MAV.resetThrust();
+        MAV.resetReferenceArea();
 //        std::cout<<"Thrust has been reset"<<std::endl;
 //        std::cout<<"MAV.Thrust() = "<<MAV.Thrust()<<std::endl;
 //        std::cout<<"runningTimeTSI = "<<runningTimeTSI<<std::endl;
@@ -1855,6 +1889,8 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 
                             dataStoringMatrixSpherical.row(count) = outputVectorSpherical.row(0); // Filling the matrix
                         }
+
+//                        std::cout<<"outputVectorSphericalRKF = "<<outputVectorSpherical<<std::endl;
 
 
                         count++;
@@ -2398,15 +2434,15 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
         const double deltaVforTSI = sqrt(requiredOrbitalVelocity*requiredOrbitalVelocity+currentTSIorbitalVelocity*currentTSIorbitalVelocity-
                                          2*requiredOrbitalVelocity*currentTSIorbitalVelocity*cosTSIflightPathAngle*cos(desiredInclination-TSIendKeplerElements(2))); // Delta-V required for the TSI change into the circular orbit including inclination change
 
-//        std::cout<<"deltaVforRKF = "<<deltaVforRKF<<std::endl;
-//        std::cout<<"deltaVforTSI = "<<deltaVforTSI<<std::endl;
+        std::cout<<"deltaVforRKF = "<<deltaVforRKF<<std::endl;
+        std::cout<<"deltaVforTSI = "<<deltaVforTSI<<std::endl;
 
-//        std::cout<<"desiredInclination-RKFendKeplerElements(2) = "<<desiredInclination-RKFendKeplerElements(2)<<std::endl;
-//        std::cout<<"desiredInclination-TSIendKeplerElements(2) = "<<desiredInclination-TSIendKeplerElements(2)<<std::endl;
+        std::cout<<"desiredInclination-RKFendKeplerElements(2) = "<<desiredInclination-RKFendKeplerElements(2)<<std::endl;
+        std::cout<<"desiredInclination-TSIendKeplerElements(2) = "<<desiredInclination-TSIendKeplerElements(2)<<std::endl;
 
-//        std::cout<<"desiredInclination = "<<rad2deg(desiredInclination)<<std::endl;
-//        std::cout<<"RKFInclination = "<<rad2deg(RKFendKeplerElements(2))<<std::endl;
-//        std::cout<<"TSIInclination = "<<rad2deg(TSIendKeplerElements(2))<<std::endl;
+        std::cout<<"desiredInclination = "<<rad2deg(desiredInclination)<<std::endl;
+        std::cout<<"RKFInclination = "<<rad2deg(RKFendKeplerElements(2))<<std::endl;
+        std::cout<<"TSIInclination = "<<rad2deg(TSIendKeplerElements(2))<<std::endl;
 
 
 

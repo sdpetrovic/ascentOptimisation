@@ -85,6 +85,7 @@ public:
             // Thrust
 //            Thrust_ = 5300.0;             //[N]           Taken from Trinidad et al. 2012
             Thrust_ = 5.3;             //[kN]           Taken from Trinidad et al. 2012
+            thrustResetValue_ = Thrust_; // [kN]
 
             // Specific Impulse
             specificImpulse_ = 328.6;        //[s]       Taken from Trinidad et al. 2012
@@ -92,6 +93,12 @@ public:
             // Reference Area
 //            referenceArea_ = 0.091;          // [m^2]    Taken from Trinidad et al. 2012
             referenceArea_ = 9.1e-8;          // [km^2]    Taken from Trinidad et al. 2012
+
+            // MAV GLOM
+            MAVmass_ = 227.0;               // [kg]     Taken from Trinidad et al. 2012
+
+            // Final altitude
+            finalAltitude_ = 320.0;         // [km]     Taken from Trinidad et al. 2012
 
 
             // Drag Coefficient Polynomial Coefficients
@@ -163,6 +170,9 @@ public:
             Thrust_ = 0.0;                                                    // T     engine nominal thrust
             specificImpulse_ = 0.0;                                           // Isp     engine nominal specific impulse
             referenceArea_ = 0.0;                                             // S   vehicle reference area
+            MAVmass_ = 0.0;                                                   // m  vehicle GLOM
+            finalAltitude_ = 0.0;                                             // h  final MAV altitude
+            thrustResetValue_ = 0.0;                                          // Thrust reset value
             dragCoefficientPolyCoefficients_ = Eigen::MatrixXd::Zero(1,1);  // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
             dragCoefficientMachRanges_ = Eigen::MatrixXd::Zero(1,1);        // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
 //            thrustAzimuth_ = Eigen::MatrixXd::Zero(1,1);                    // psiT   these are the thrust azimuth-gimbal angles as a function of time (including the time ranges)
@@ -180,81 +190,86 @@ public:
     // Thrust Azimuth-Gimbal Angles
         thrustAzimuth_ = Eigen::MatrixXd::Zero(6,3); // psiT   these are the thrust azimuth-gimbal angles in radians! as a function of altitude (including the altitude ranges)
 
+
+        double allTheSameAngleAzimuth = -0.293; // used in case they should all be the same
+
         // Section 1
         thrustAzimuth_(0,0) = -0.6;   // Lower bound altitude
         thrustAzimuth_(0,1) = 1.0;   // Upper bound altitude
 
-        thrustAzimuth_(0,2) = deg2rad(-0.43);   // Thrust azimuth angle
+        thrustAzimuth_(0,2) = deg2rad(allTheSameAngleAzimuth);   // Thrust azimuth angle
 
         // Section 2
         thrustAzimuth_(1,0) = 1.0;   // Lower bound altitude
         thrustAzimuth_(1,1) = 5.0;   // Upper bound altitude
 
-        thrustAzimuth_(1,2) = deg2rad(-0.43);   // Thrust azimuth angle
+        thrustAzimuth_(1,2) = deg2rad(allTheSameAngleAzimuth);   // Thrust azimuth angle
 
         // Section 3
         thrustAzimuth_(2,0) = 5.0;   // Lower bound altitude
         thrustAzimuth_(2,1) = 15.0;   // Upper bound altitude
 
-        thrustAzimuth_(2,2) = deg2rad(-0.43);   // Thrust azimuth angle
+        thrustAzimuth_(2,2) = deg2rad(allTheSameAngleAzimuth);   // Thrust azimuth angle
 
         // Section 4
         thrustAzimuth_(3,0) = 15.0;   // Lower bound altitude
         thrustAzimuth_(3,1) = 35.0;   // Upper bound altitude
 
-        thrustAzimuth_(3,2) = deg2rad(-0.43);   // Thrust azimuth angle
+        thrustAzimuth_(3,2) = deg2rad(allTheSameAngleAzimuth);   // Thrust azimuth angle
 
         // Section 5
         thrustAzimuth_(4,0) = 35.0;   // Lower bound altitude
         thrustAzimuth_(4,1) = 100.0;   // Upper bound altitude
 
-        thrustAzimuth_(4,2) = deg2rad(-0.43);   // Thrust azimuth angle
+        thrustAzimuth_(4,2) = deg2rad(allTheSameAngleAzimuth);   // Thrust azimuth angle
 
         // Section 6
         thrustAzimuth_(5,0) = 100.0;   // Lower bound altitude
-        thrustAzimuth_(5,1) = 320.0;   // Upper bound altitude
+        thrustAzimuth_(5,1) = finalAltitude_;   // Upper bound altitude
 
-        thrustAzimuth_(5,2) = deg2rad(-0.43);   // Thrust azimuth angle
+        thrustAzimuth_(5,2) = deg2rad(allTheSameAngleAzimuth);   // Thrust azimuth angle
 
 
         // Thrust Elevation-Gimbal Angles
             thrustElevation_ = Eigen::MatrixXd::Zero(6,3); // epsilonT   these are the thrust elevation-gimbal angles in radians! as a function of altitude (including the altitude ranges)
 
+            double allTheSameAngleElevation = -0.191; // used in case they should all be the same
+
             // Section 1
             thrustElevation_(0,0) = -0.6;   // Lower bound altitude
             thrustElevation_(0,1) = 1.0;   // Upper bound altitude
 
-            thrustElevation_(0,2) = deg2rad(-1.0);   // Thrust elevation angle
+            thrustElevation_(0,2) = deg2rad(allTheSameAngleElevation);   // Thrust elevation angle
 
             // Section 2
             thrustElevation_(1,0) = 1.0;   // Lower bound altitude
             thrustElevation_(1,1) = 5.0;   // Upper bound altitude
 
-            thrustElevation_(1,2) = deg2rad(-1.0);   // Thrust elevation angle
+            thrustElevation_(1,2) = deg2rad(allTheSameAngleElevation);   // Thrust elevation angle
 
             // Section 3
             thrustElevation_(2,0) = 5.0;   // Lower bound altitude
             thrustElevation_(2,1) = 15.0;   // Upper bound altitude
 
-            thrustElevation_(2,2) = deg2rad(-1.0);   // Thrust elevation angle
+            thrustElevation_(2,2) = deg2rad(allTheSameAngleElevation);   // Thrust elevation angle
 
             // Section 4
             thrustElevation_(3,0) = 15.0;   // Lower bound altitude
             thrustElevation_(3,1) = 35.0;   // Upper bound altitude
 
-            thrustElevation_(3,2) = deg2rad(-1.0);   // Thrust elevation angle
+            thrustElevation_(3,2) = deg2rad(allTheSameAngleElevation);   // Thrust elevation angle
 
             // Section 5
             thrustElevation_(4,0) = 35.0;   // Lower bound altitude
             thrustElevation_(4,1) = 100.0;   // Upper bound altitude
 
-            thrustElevation_(4,2) = deg2rad(-1.0);   // Thrust elevation angle
+            thrustElevation_(4,2) = deg2rad(allTheSameAngleElevation);   // Thrust elevation angle
 
             // Section 6
             thrustElevation_(5,0) = 100.0;   // Lower bound altitude
-            thrustElevation_(5,1) = 320.0;   // Upper bound altitude
+            thrustElevation_(5,1) = finalAltitude_;   // Upper bound altitude
 
-            thrustElevation_(5,2) = deg2rad(-1.0);   // Thrust elevation angle
+            thrustElevation_(5,2) = deg2rad(allTheSameAngleElevation);   // Thrust elevation angle
 
                                                     } // End of constructor
 
@@ -270,6 +285,7 @@ public:
     const double Thrust() { return Thrust_; }                                                           // T     engine nominal thrust
     const double specificImpulse() { return specificImpulse_; }                                         // Isp     engine nominal specific impulse
     const double referenceArea() { return referenceArea_; }                                             // S   vehicle reference area
+    const double MAVmass(){ return MAVmass_; }                                                          // m    vehicle GLOM
 
     // Returning the different polynomial coefficient parameter matrices
 
@@ -307,11 +323,40 @@ public:
         Thrust_ = updatedThrust;
     }
 
+    void setSpecificImpulse(const double updatedSpecificImpulse)        // This function can be used to change the specific impulse valuse.
+    {
+        specificImpulse_ = updatedSpecificImpulse;
+    }
+
+    void setMAVmass(const double updatedMass)               // This function can be used to change the MAV GLOM mass
+    {
+        MAVmass_ = updatedMass;
+    }
+
+    void setUpdatedFinalAltitude(const double updatedFinalAltitude)     // This function can be used to change the final altitude for the thrust elevation and azimuth ranges
+    {
+        int thrustAzimuthRow = thrustAzimuth_.rows()-1;
+        int thrustElevationRow = thrustElevation_.rows()-1;
+
+        thrustAzimuth_(thrustAzimuthRow,1) = updatedFinalAltitude;
+        thrustElevation_(thrustElevationRow,1) = updatedFinalAltitude;
+
+    }
+
+    void setThrustResetValue(const double thrustResetValue){    // This function is used to make sure that then the thrust is reset, it is reset to the proper value!
+        thrustResetValue_ = thrustResetValue;
+    }
+
     //// Reset functions ////
 
     void resetThrust()
     {
-        Thrust_ = 5.3 ; // kN                                   // This function is used to reset the thrust (theoretically)
+        Thrust_ = thrustResetValue_ ; // kN                                   // This function is used to reset the thrust (theoretically)
+    }
+
+    void resetReferenceArea()
+    {
+        referenceArea_ = 9.1e-8; // [km^2]                                   // This function is used to reset the reference area, and thus drag (theoretically)
     }
 
 
@@ -325,6 +370,9 @@ private:
     double Thrust_;                                                 // T     engine nominal thrust
     double specificImpulse_;                                        // Isp     engine nominal specific impulse
     double referenceArea_;                                          // S   vehicle reference area
+    double MAVmass_;                                                // m    vehicle GLOM
+    double finalAltitude_;                                          // h    final altitude of the MAV (pre-set)
+    double thrustResetValue_;                                       // Thrust reset value
 
     // Creating the different polynomial coefficient parameter matrices
 

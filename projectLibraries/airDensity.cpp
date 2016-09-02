@@ -50,7 +50,11 @@ for (int i = 0; i<11; i++){ // Compute the complete polynomial
 
 }
 
-const double currentDensity = exp(currentDensity_); // Taking the exponential of the polynomial
+double currentDensity = exp(currentDensity_); // Taking the exponential of the polynomial
+
+if (altitude >= 320.0){ // If the altitude goes above 320.0 km MOLA assume no air density (the air density curve was fitted untill 320.0 km MOLA)
+    currentDensity = 0.0;
+}
 
 return currentDensity;
 

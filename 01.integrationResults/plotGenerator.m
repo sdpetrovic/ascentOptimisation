@@ -32,6 +32,9 @@ desiredRAAN = 0.911129025690403-deg2rad(0.01); % Omega [rad]
 desiredArgumentOfPerigee = 0.0; % omega [rad] (3.92078961310322 could be used)
 desiredTrueAnomaly = 0.0; % theta [rad]
 
+
+%% Create the plot data for the desired orbit
+
 stepSizeTheta = 0.1; % Resolution [deg]
 
 % Generate empty vectors
@@ -97,7 +100,7 @@ TSIyVelocity = CartesianTSIdata_spher(:,6); % TSI y-velocity
 TSIzVelocity = CartesianTSIdata_spher(:,7); % TSI z-velocity
 
 
-%% Plot
+%% Plots
 
 [xMars, yMars, zMars] = sphere; % Generating a unit sphere
 

@@ -445,6 +445,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
 }   // All variables
 
+//        std::cout<<"MAV.thrustAzimuth()"<<MAV.thrustAzimuth()<<std::endl;
 
     /// Determine if a new section has been reached for the temperature and correct timestep accordingly ///
 
@@ -786,7 +787,7 @@ else{
 //         std::cout<<"limitMach = "<<limitMach<<std::endl;
 
 
-    if (newMach - limitMach <= 1e-6 && newMach - limitMach >= 0.0){   // Checking if the convergence condition has been met and an answer has been found
+    if (newMach - limitMach <= 1e-6 && newMach - limitMach >= -1e-15){   // Checking if the convergence condition has been met and an answer has been found
 
         MachAccept = true;
 }

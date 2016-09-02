@@ -98,6 +98,7 @@ public:
             FlightPathAngle = 1000;
             HeadingAngle = 1000;
 
+
     }         // NOTE TO SELF: WHEN INITIALIZING A NEW CLASS WITHOUT ANY PRESETS, MAKE SURE TO INCLUDE {} BEHIND (). IN THIS CASE THAT WOULD LOOK LIKE THIS: ascentStateDerivativeFunctionClass(){}
 
     /// Debug ///
