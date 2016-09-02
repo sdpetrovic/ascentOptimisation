@@ -540,9 +540,9 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
                 /// Debug ///
 
-//                std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
-//                std::cout<<"originalAltitude = "<<originalAltitude<<std::endl;
-//                std::cout<<"newAltitude = "<<newAltitude<<std::endl;
+                std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
+                std::cout<<"originalAltitude = "<<originalAltitude<<std::endl;
+                std::cout<<"newAltitude = "<<newAltitude<<std::endl;
 //                std::cout<<"fFrom = "<<fFrom<<std::endl;
 //                std::cout<<"fTo = "<<fTo<<std::endl;
 //                std::cout<<"initialNewTime = "<<currentTime+currentStepSize<<std::endl;
@@ -565,7 +565,7 @@ if (fTo <0){    // If the newAltitude is below the limitAltitude (so fTo<0) then
 }
 else{
 
-//std::cout<<"////////////////////////////////////////////////////////////////////////////////// Beginning of altitude do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
+std::cout<<"////////////////////////////////////////////////////////////////////////////////// Beginning of altitude do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
 
 //std::cout<<"Initial new altitude = "<<newAltitude<<std::endl;
 
@@ -651,7 +651,7 @@ else{
 //std::cout<<"Current altitude = "<<updatedState(0)-bodyReferenceRadius<<std::endl;
 //std::cout<<"Current velocity = "<<updatedState(3)<<std::endl;
 
-//std::cout<<"////////////////////////////////////////////////////////////////////////////////// End of altitude do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
+std::cout<<"////////////////////////////////////////////////////////////////////////////////// End of altitude do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
 
 } // else get new step-size
 

@@ -191,7 +191,7 @@ public:
         thrustAzimuth_ = Eigen::MatrixXd::Zero(6,3); // psiT   these are the thrust azimuth-gimbal angles in radians! as a function of altitude (including the altitude ranges)
 
 
-        double allTheSameAngleAzimuth = -0.293; // used in case they should all be the same
+        double allTheSameAngleAzimuth = -0.05; // used in case they should all be the same
 
         // Section 1
         thrustAzimuth_(0,0) = -0.6;   // Lower bound altitude
@@ -233,7 +233,7 @@ public:
         // Thrust Elevation-Gimbal Angles
             thrustElevation_ = Eigen::MatrixXd::Zero(6,3); // epsilonT   these are the thrust elevation-gimbal angles in radians! as a function of altitude (including the altitude ranges)
 
-            double allTheSameAngleElevation = -0.191; // used in case they should all be the same
+            double allTheSameAngleElevation = -0.68; // used in case they should all be the same
 
             // Section 1
             thrustElevation_(0,0) = -0.6;   // Lower bound altitude

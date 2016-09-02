@@ -234,26 +234,47 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     //////////////////////////////////////////////////////// Test Cases ////////////////////////////////////////////////////////
 
-    // Test case from Woolley 2015 (case 10 SSTO)
-    desiredOrbitalAltitude = 390.0; // Desired orbital altitude in kmMOLA (320 km is default)
-    desiredInclination = deg2rad(45.0); // Desired orbital inclination (45 is default)
+////    Test case from Woolley 2015 (case 10 SSTO)
+//    desiredOrbitalAltitude = 390.0; // Desired orbital altitude in kmMOLA (320 km is default)
+//    desiredInclination = deg2rad(45.0); // Desired orbital inclination (45 is default)
 
-    MAV.setMAVmass(267.4);                      // Set the MAV GLOM in [kg]
-    MAV.setThrust(3.56);                        // Set the MAV thrust in [kN]
-    MAV.setThrustResetValue(MAV.Thrust());      // Set the reset value equal to the original given thrust
-    MAV.setSpecificImpulse(256);                // Set the MAV specific impulse [s]
-    const double initialBurnTime = 142.5;       // Set the burn time from launch till coast [s]
-//    const double burnOutAngle = deg2rad(6.0);  // Set the burn out angle (flight-path angle at end of first burn) [rad]
-//    const double finalBurnOutMass = 60.7;       // Set the final burn out mass (empty mass + OS mass + excess propellant mass) [kg]
-    const double initialLongitudeDeg = 0.0;     // Set the launch latitude in [deg] (tau)
-    const double HeadingAngle = deg2rad(90.0);  // Set the launch azimuth [rad] (psi)
-    Mars.setUpperAltitudeBound(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the temperature
-    MAV.setUpdatedFinalAltitude(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the thrust angles
+//    MAV.setMAVmass(267.4);                      // Set the MAV GLOM in [kg]
+//    MAV.setThrust(3.56);                        // Set the MAV thrust in [kN]
+//    MAV.setThrustResetValue(MAV.Thrust());      // Set the reset value equal to the original given thrust
+//    MAV.setSpecificImpulse(256);                // Set the MAV specific impulse [s]
+//    const double initialBurnTime = 142.5;       // Set the burn time from launch till coast [s]
+////    const double burnOutAngle = deg2rad(6.0);  // Set the burn out angle (flight-path angle at end of first burn) [rad]
+////    const double finalBurnOutMass = 60.7;       // Set the final burn out mass (empty mass + OS mass + excess propellant mass) [kg]
+////    const double initialLongitudeDeg = 0.0;     // Set the launch latitude in [deg] (tau)
+//    const double initialLatitudeDeg = 0.0;        // Starting latitude [deg] initial condition in (delta)
+//    const double HeadingAngle = deg2rad(90.0);  // Set the launch azimuth [rad] (psi)
+//    Mars.setUpperAltitudeBound(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the temperature
+//    MAV.setUpdatedFinalAltitude(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the thrust angles
 
 
 
 //    std::cout<<"Mars.temperatureAltitudeRanges() = "<<Mars.temperatureAltitudeRanges()<<std::endl;
 //    std::cout<<"MAV.thrustAzimuth() = "<<MAV.thrustAzimuth()<<std::endl;
+
+    // Test case from Joel (hybrid) case7_3_2016_v33
+    desiredOrbitalAltitude = 3875.19000000064-bodyReferenceRadius; // Desired orbital altitude in kmMOLA (320 km is default)
+    desiredInclination = deg2rad(92.6899999999988); // Desired orbital inclination (45 is default)
+
+    MAV.setMAVmass(288.95985303149);                      // Set the MAV GLOM in [kg]
+    MAV.setThrust(6.01868886452604);                        // Set the MAV thrust in [kN]
+    MAV.setThrustResetValue(MAV.Thrust());      // Set the reset value equal to the original given thrust
+    MAV.setSpecificImpulse(315.9);                // Set the MAV specific impulse [s]
+    const double initialBurnTime = 99.361911852794;       // Set the burn time from launch till coast [s]
+//    const double burnOutAngle = deg2rad(6.0);  // Set the burn out angle (flight-path angle at end of first burn) [rad]
+//    const double finalBurnOutMass = 60.7;       // Set the final burn out mass (empty mass + OS mass + excess propellant mass) [kg]
+    const double initialLongitudeDeg = 0.0;     // Set the launch latitude in [deg] (tau)
+    const double initialLatitudeDeg = 0.0;        // Starting latitude [deg] initial condition in (delta)
+    const double HeadingAngle = deg2rad(0.0);  // Set the launch azimuth [rad] (psi)
+    Mars.setUpperAltitudeBound(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the temperature
+    MAV.setUpdatedFinalAltitude(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the thrust angles
+    const double initialAltitude = -0.6;          // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
+    const double initialGroundVelocity = 0.000001;          // Starting velocity in km/s (is suppose to be 0.0...) 0.00001 default at initial step-size of 0.01 sec
+
 
 
 
@@ -298,11 +319,11 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     // Launch site characteristics
 
 
-    const double initialAltitude = -0.6;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
+//    const double initialAltitude = -0.6;                 // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
     std::cout<<"The initial altitude = "<<initialAltitude<<std::endl;
-    const double initialLatitudeDeg = 21.0;               // Starting latitude [deg] initial condition is 21 deg (delta)
+//    const double initialLatitudeDeg = 21.0;               // Starting latitude [deg] initial condition is 21 deg (delta)
 //    const double initialLongitudeDeg = 74.5;            // Starting longitude [deg] initial condition is 74.5 deg (tau)
-    const double initialGroundVelocity = 0.00001;          // Starting velocity in km/s (is suppose to be 0.0...) 0.00001 default at initial step-size of 0.01 sec
+//    const double initialGroundVelocity = 0.00001;          // Starting velocity in km/s (is suppose to be 0.0...) 0.00001 default at initial step-size of 0.01 sec
     std::cout<<"The initial ground velocity = "<<initialGroundVelocity<<" km/s"<<std::endl;
     std::cout<<"The initial latitude = "<<initialLatitudeDeg<<" deg"<<std::endl;
     std::cout<<"The initial longitude = "<<initialLongitudeDeg<<" deg"<<std::endl;
@@ -2017,8 +2038,8 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 
                                             Eigen::VectorXd currentState = integratorCoast.getCurrentState();
 
-                    //                        std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
-                    //                        std::cout<<"The current running time is "<<runningTime<<std::endl;
+//                                            std::cout<<"The current stepSize is "<<prevStepSize<<" s"<<std::endl;
+//                                            std::cout<<"The current running time is "<<runningTime<<std::endl;
                     //                        if (runningTime <= 1.0 ){
                     ////                            std::cout<<"CurrentState = "<<currentState<<std::endl;
 
@@ -2370,8 +2391,8 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
         tudat::basic_mathematics::Vector6d  RKFendKeplerElements = tudat::orbital_element_conversions::convertCartesianToKeplerianElements(RKFendCartesianCoordinates,Mars.standardGravitationalParameter()); // RKF
         tudat::basic_mathematics::Vector6d  TSIendKeplerElements = tudat::orbital_element_conversions::convertCartesianToKeplerianElements(TSIendCartesianCoordinates,Mars.standardGravitationalParameter()); // TSI
 
-//        std::cout<<"RKFendKeplerElements = "<<"\n"<<RKFendKeplerElements<<std::endl;
-//        std::cout<<"TSIendKeplerElements = "<<"\n"<<TSIendKeplerElements<<std::endl;
+        std::cout<<"RKFendKeplerElements = "<<"\n"<<RKFendKeplerElements<<std::endl;
+        std::cout<<"TSIendKeplerElements = "<<"\n"<<TSIendKeplerElements<<std::endl;
 
         // Orbital velocities
 

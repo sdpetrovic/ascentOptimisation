@@ -542,6 +542,10 @@ public:
 
         auxiliaryEquationsVector(28) = exp(auxiliaryEquationsVector(30));              // x28
 
+        if (referenceArea == 0.0){ // In case the density equation does weird things
+            auxiliaryEquationsVector(28) = 0.0;
+        }
+
         auxiliaryEquationsVector(33) = sqrt(adiabeticIndex*specificGasConstant*auxiliaryEquationsVector(34));              // x33
 
 //std::cout<<"Surely this works 5..."<<std::endl;
@@ -582,6 +586,10 @@ public:
 
         auxiliaryEquationsVector(27) = 0.5*referenceArea*auxiliaryEquationsVector(28)*auxiliaryEquationsVector(15)*auxiliaryEquationsVector(15)*auxiliaryEquationsVector(29);              // x27
 
+        if (referenceArea == 0.0){ // In case the density equation does weird things
+            auxiliaryEquationsVector(27) = 0.0;
+        }
+
 //        // Accounting for altitude higher than 320 km MOLA: assumption, density can be neglected
 //        if (auxiliaryEquationsVector(31)>=320.0){
 //            auxiliaryEquationsVector(27) = 0.0;
@@ -603,8 +611,6 @@ public:
 //        std::cout<<"auxiliaryEquationsVector(15) (V_G) = "<<auxiliaryEquationsVector(15)<<std::endl;
 //        std::cout<<"auxiliaryEquationsVector(29) (C_D) = "<<auxiliaryEquationsVector(29)<<std::endl;
 //        std::cout<<"auxiliaryEquationsVector(31) (h) = "<<auxiliaryEquationsVector(31)<<std::endl;
-
-
 //        std::cout<<"auxiliaryEquationsVector(7) = "<<auxiliaryEquationsVector(7)<<std::endl;
 
 //        std::cout<<"thrustAccelerationsBframe(0) = "<<thrustAccelerationsBframe(0)<<std::endl;
@@ -896,8 +902,11 @@ public:
             (sx14*cx12-cx14*sx12*cx13)+
             auxiliaryEquationsVector(0)-standardGravitationalParameter*sx14/(auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16));                // u15
 
-    /// Debug ///            
-//    std::cout<<"u14 part 1 = "<<2.0*rotationalVelocity*cx12*sx13<<std::endl;
+    /// Debug ///
+//    std::cout<<"u15 = "<<auxiliaryDerivativesVector(15)<<std::endl;
+//    std::cout<<"auxiliaryEquationsVector(0)-standardGravitationalParameter*sx14/(auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16)) = "<<auxiliaryEquationsVector(0)-standardGravitationalParameter*sx14/(auxiliaryEquationsVector(16)*auxiliaryEquationsVector(16))<<std::endl;
+//    std::cout<<"auxiliaryEquationsVector(0) = "<<auxiliaryEquationsVector(0)<<std::endl;
+    //    std::cout<<"u14 part 1 = "<<2.0*rotationalVelocity*cx12*sx13<<std::endl;
 //    std::cout<<"u14 part 2 = "<<(auxiliaryEquationsVector(15)/auxiliaryEquationsVector(16))*cx14<<std::endl;
 //    std::cout<<"u14 part 3 = "<<(rotationalVelocity*rotationalVelocity/auxiliaryEquationsVector(15))*auxiliaryEquationsVector(16)*cx12*(cx12*cx14+
 //                                                                                                                                                                     sx14*sx12*cx13)<<std::endl;
@@ -1004,6 +1013,11 @@ public:
 
 
     auxiliaryDerivativesVector(28) = auxiliaryDerivativesVector(30)*exp(auxiliaryEquationsVector(30)) ;                // u28
+
+    if (referenceArea == 0.0){ // In case the density equation does weird things
+        auxiliaryDerivativesVector(28) = 0.0;
+    }
+
 
     auxiliaryDerivativesVector(33) = ((adiabeticIndex*specificGasConstant)/(2.0*auxiliaryEquationsVector(33)))*auxiliaryDerivativesVector(34);                // u33
 
@@ -1401,6 +1415,8 @@ Eigen::MatrixXd getAuxiliaryFunctions( const tudat::basic_mathematics::Vector7d&
 //        auxiliaryDerivativesVector(27) = 0.0;
 //        std::cout<<"It's done, it's gone!"<<std::endl;
 //    }
+
+
 
 
 

@@ -616,6 +616,7 @@ public:
         const Eigen::Vector3d dragAccelerationsIframe = tudat::reference_frames::getRotatingPlanetocentricToInertialFrameTransformationMatrix(angleItoR)*dragAccelerationsRframe;
 
 //        std::cout<<"The thrust accelerations in the I-frame are "<<thrustAccelerationsIframe<<std::endl;
+//        std::cout<<thrustAccelerationsIframe(0)<<", "<<thrustAccelerationsIframe(1)<<", "<<thrustAccelerationsIframe(2)<<", "<<std::endl;
     //    std::cout<<"The drag accelerations in the I-frame are "<<dragAccelerationsIframe<<std::endl;
 
     //    std::cout<<"The thrust+drag accelerations in the I-frame are "<<thrustAccelerationsIframe+dragAccelerationsIframe<<std::endl;
