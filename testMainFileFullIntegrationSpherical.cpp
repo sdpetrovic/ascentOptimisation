@@ -245,18 +245,19 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 //    const double initialBurnTime = 142.5;       // Set the burn time from launch till coast [s]
 ////    const double burnOutAngle = deg2rad(6.0);  // Set the burn out angle (flight-path angle at end of first burn) [rad]
 ////    const double finalBurnOutMass = 60.7;       // Set the final burn out mass (empty mass + OS mass + excess propellant mass) [kg]
-////    const double initialLongitudeDeg = 0.0;     // Set the launch latitude in [deg] (tau)
+//    const double initialLongitudeDeg = 74.5;     // Set the launch latitude in [deg] (tau)
 //    const double initialLatitudeDeg = 0.0;        // Starting latitude [deg] initial condition in (delta)
 //    const double HeadingAngle = deg2rad(90.0);  // Set the launch azimuth [rad] (psi)
 //    Mars.setUpperAltitudeBound(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the temperature
 //    MAV.setUpdatedFinalAltitude(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the thrust angles
-
+//    const double initialAltitude = -0.6;          // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
+//    const double initialGroundVelocity = 0.00001;          // Starting velocity in km/s (is suppose to be 0.0...) 0.00001 default at initial step-size of 0.01 sec
 
 
 //    std::cout<<"Mars.temperatureAltitudeRanges() = "<<Mars.temperatureAltitudeRanges()<<std::endl;
 //    std::cout<<"MAV.thrustAzimuth() = "<<MAV.thrustAzimuth()<<std::endl;
 
-    // Test case from Joel (hybrid) case7_3_2016_v33
+// Test case from Joel (hybrid) case7_3_2016_v33
     desiredOrbitalAltitude = 3875.19000000064-bodyReferenceRadius; // Desired orbital altitude in kmMOLA (320 km is default)
     desiredInclination = deg2rad(92.6899999999988); // Desired orbital inclination (45 is default)
 
@@ -267,14 +268,33 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     const double initialBurnTime = 99.361911852794;       // Set the burn time from launch till coast [s]
 //    const double burnOutAngle = deg2rad(6.0);  // Set the burn out angle (flight-path angle at end of first burn) [rad]
 //    const double finalBurnOutMass = 60.7;       // Set the final burn out mass (empty mass + OS mass + excess propellant mass) [kg]
-    const double initialLongitudeDeg = 0.0;     // Set the launch latitude in [deg] (tau)
+    const double initialLongitudeDeg = 90.0;     // Set the launch latitude in [deg] (tau)
     const double initialLatitudeDeg = 0.0;        // Starting latitude [deg] initial condition in (delta)
-    const double HeadingAngle = deg2rad(0.0);  // Set the launch azimuth [rad] (psi)
+    const double HeadingAngle = deg2rad(90.0);  // Set the launch azimuth [rad] (psi)
     Mars.setUpperAltitudeBound(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the temperature
     MAV.setUpdatedFinalAltitude(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the thrust angles
     const double initialAltitude = -0.6;          // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
     const double initialGroundVelocity = 0.000001;          // Starting velocity in km/s (is suppose to be 0.0...) 0.00001 default at initial step-size of 0.01 sec
 
+
+//// Test case old verification
+//    desiredOrbitalAltitude = 320.0; // Desired orbital altitude in kmMOLA (320 km is default)
+//    desiredInclination = deg2rad(45.0); // Desired orbital inclination (45 is default)
+
+////    MAV.setMAVmass(267.4);                      // Set the MAV GLOM in [kg]
+////    MAV.setThrust(3.56);                        // Set the MAV thrust in [kN]
+////    MAV.setThrustResetValue(MAV.Thrust());      // Set the reset value equal to the original given thrust
+////    MAV.setSpecificImpulse(256);                // Set the MAV specific impulse [s]
+//    const double initialBurnTime = 142.5;       // Set the burn time from launch till coast [s]
+////    const double burnOutAngle = deg2rad(6.0);  // Set the burn out angle (flight-path angle at end of first burn) [rad]
+////    const double finalBurnOutMass = 60.7;       // Set the final burn out mass (empty mass + OS mass + excess propellant mass) [kg]
+//    const double initialLongitudeDeg = 0.0;     // Set the launch latitude in [deg] (tau)
+//    const double initialLatitudeDeg = 0.0;        // Starting latitude [deg] initial condition in (delta)
+//    const double HeadingAngle = deg2rad(90.0);  // Set the launch azimuth [rad] (psi)
+////    Mars.setUpperAltitudeBound(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the temperature
+////    MAV.setUpdatedFinalAltitude(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the thrust angles
+//    const double initialAltitude = -0.6;          // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
+//    const double initialGroundVelocity = 0.0;          // Starting velocity in km/s (is suppose to be 0.0...) 0.00001 default at initial step-size of 0.01 sec
 
 
 
@@ -291,7 +311,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
   /// Initial conditions /// a.k.a. control centre
 
 //    const double initialBurnTime = 68.63; // Burn time from launch till coast
-    const double setEndTime = 2000.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall
+    const double setEndTime = 598.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall // 2000 for test cases
+    const double RKFinitiaterTime = 1.0;    // Time that the RKF integrator is used for TSI initially
     const double EndAltitude = desiredOrbitalAltitude; // Integration end altitude
     const double coastStartTime = initialBurnTime; // Integration coast start time [sec] // test 68.63
 
@@ -1062,7 +1083,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
         countRKFTSI++;
 
 //        }while( !( endTimeTSIRKF - runningTimeTSI <= std::numeric_limits< double >::epsilon( ) ) );
-        }while( ( runningTimeTSI <= 1.0) );
+        }while( ( runningTimeTSI <= RKFinitiaterTime) );
 
         ///// First steps by RKF integrator /////
 
@@ -1142,13 +1163,13 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 
 //    stepSize.setCurrentStepSize(25); // Specifying a constant step-size for verification
 
-         if (coast == true || runningTimeTSI < coastStartTime){
+         if (coast == true && runningTimeTSI < coastStartTime){
              if ( std::fabs( coastStartTime - runningTimeTSI )
                                       <= std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) )
                                  {
 //                                        std::cout<<"Current stepSize = "<<stepSize.getCurrentStepSize()<<std::endl;
                                      stepSize.setCurrentStepSize(coastStartTime - runningTimeTSI);
-                                     coast = false;
+//                                     coast = false;
 //                                     std::cout<<"This should only happen once! And the stepSize = "<<stepSize.getCurrentStepSize()<<std::endl;
 
                                  }
@@ -1162,7 +1183,7 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
     if ( std::fabs( endTimeTSI - runningTimeTSI )
                              <= std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) )
                         {
-
+//                            std::cout<<"Why does it not go here?"<<std::endl;
                             stepSize.setCurrentStepSize(endTimeTSI - runningTimeTSI);
                         }
 
@@ -1327,6 +1348,8 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 
 //     std::cout<<"countTSI = "<<countTSI<<std::endl;
 //     }; // end of for-loop
+//     std::cout<<"runningTimeTSI = "<<runningTimeTSI<<std::endl;
+//     std::cout<<"endTimeTSI = "<<endTimeTSI<<std::endl;
 
     }while( !( endTimeTSI - runningTimeTSI <= std::numeric_limits< double >::epsilon( ) ) &&  !((currentSphericalStateAndTime.getCurrentSphericalRadius()-bodyReferenceRadius) >= EndAltitude));
 
@@ -2391,8 +2414,8 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
         tudat::basic_mathematics::Vector6d  RKFendKeplerElements = tudat::orbital_element_conversions::convertCartesianToKeplerianElements(RKFendCartesianCoordinates,Mars.standardGravitationalParameter()); // RKF
         tudat::basic_mathematics::Vector6d  TSIendKeplerElements = tudat::orbital_element_conversions::convertCartesianToKeplerianElements(TSIendCartesianCoordinates,Mars.standardGravitationalParameter()); // TSI
 
-        std::cout<<"RKFendKeplerElements = "<<"\n"<<RKFendKeplerElements<<std::endl;
-        std::cout<<"TSIendKeplerElements = "<<"\n"<<TSIendKeplerElements<<std::endl;
+//        std::cout<<"RKFendKeplerElements = "<<"\n"<<RKFendKeplerElements<<std::endl;
+//        std::cout<<"TSIendKeplerElements = "<<"\n"<<TSIendKeplerElements<<std::endl;
 
         // Orbital velocities
 

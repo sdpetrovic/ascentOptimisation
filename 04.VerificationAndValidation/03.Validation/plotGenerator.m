@@ -69,8 +69,8 @@ end
 
 % Specify the paths
 
-RKFpath = fullfile('02.Version1SecondValidationTest','backupRKFFileAtDateAndTime_2016-09-02_15:10:11.csv'); % Create the path for the RKF file
-TSIpath = fullfile('02.Version1SecondValidationTest','backupSpherical(Cart)TSIFileAtDateAndTime_2016-09-02_15:10:10.csv'); % Create the path for the TSI file
+RKFpath = fullfile('02.Version2SecondValidationTest','backupRKFFileAtDateAndTime_2016-09-06_11:19:12.csv'); % Create the path for the RKF file
+TSIpath = fullfile('02.Version2SecondValidationTest','backupSpherical(Cart)TSIFileAtDateAndTime_2016-09-06_11:19:12.csv'); % Create the path for the TSI file
 referenceDataPath = fullfile('02.Version1SecondValidationTest','trajectoryOutputDataCase7_3_2016_v33.txt'); % Create the path for the reference trajectory
 % RKFThrustPath = fullfile('01.Version2.0FirstValidationTest','Thrust.csv'); % Create the path for the RKF thrust file
 
@@ -151,15 +151,16 @@ plot3(RefxPosition,RefyPosition,RefzPosition,'r--'); % Plot the reference trajec
 % view(74.5,0); % see the trajectory from the side
 % view(74.5,90);  % see the trajectory from the top
 % view(90,0); % as seen from the x-axis
-view(180,0); % as seen from the y-axis
-% view(0,90); % as seen from the z-axis
+% view(180,0); % as seen from the y-axis
+view(0,90); % as seen from the z-axis
+% view(0,-90); % as seen from the negative z-axis
 
 
 title('3-D trajectory plot over Mars'); % Give the figure a title
 xlabel('x-position [km]'); % Label the different axes
 ylabel('y-position [km]');
 zlabel('z-position [km]');
-legend('Mars','RKF','TSI','Desired orbit','Location','NorthEastOutside'); % Add a legend in the top right corner
+legend('Mars','RKF','TSI','Desired orbit','Actual trajectory','Location','NorthEastOutside'); % Add a legend in the top right corner
 
 
 figure(2) % Just the trajectories
@@ -168,6 +169,8 @@ hold on
 plot3(TSIxPosition,TSIyPosition,TSIzPosition,'b'); % Plot the TSI trajectory
 hold on
 plot3(desiredOrbitXposition,desiredOrbitYposition,desiredOrbitZposition,'k--'); % Plot the desired orbit
+hold on
+plot3(RefxPosition,RefyPosition,RefzPosition,'r--'); % Plot the reference trajectory 
 
 axis([-4000 4000 -4000 4000 -4000 4000]); % Set specific axes
 
@@ -175,7 +178,7 @@ title('3-D trajectory plot (trajectories only)'); % Give the figure a title
 xlabel('x-position [km]'); % Label the different axes
 ylabel('y-position [km]');
 zlabel('z-position [km]');
-legend('RKF','TSI','Desired orbit','Location','NorthEastOutside'); % Add a legend in the top right corner
+legend('RKF','TSI','Desired orbit','Actual trajectory','Location','NorthEastOutside'); % Add a legend in the top right corner
 
 % Create the same plots including the velocity 
 figure(3)

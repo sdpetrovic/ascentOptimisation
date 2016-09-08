@@ -28,7 +28,7 @@ marsStandardGravitationalParameter = 4.2828314e4;  % mu_M [km^3/s^2]
 desiredOrbitSemiMajorAxis = 3875.19000000064;       %marsRadius+390.0; % a [kmMOLA]
 desiredOrbitEccentricity = 0.0; % e [-]
 desiredOrbitInclination = deg2rad(92.6899999999988); % i [rad]
-desiredRAAN = 270.816445254247; % Omega [rad]
+desiredRAAN = deg2rad(270.816445254247); % Omega [rad]
 desiredArgumentOfPerigee = 0.0; % omega [rad] (3.92078961310322 could be used)
 desiredTrueAnomaly = 0.0; % theta [rad]
 
@@ -69,8 +69,8 @@ end
 
 % Specify the paths
 
-RKFpath = fullfile('02.Version1SecondValidationTest','backupRKFFileAtDateAndTime_2016-09-02_15:10:11.csv'); % Create the path for the RKF file
-TSIpath = fullfile('02.Version1SecondValidationTest','backupSpherical(Cart)TSIFileAtDateAndTime_2016-09-02_15:10:10.csv'); % Create the path for the TSI file
+RKFpath = fullfile('02.Version2SecondValidationTest','backupRKFFileAtDateAndTime_2016-09-06_10:43:27.csv'); % Create the path for the RKF file
+TSIpath = fullfile('02.Version2SecondValidationTest','backupSpherical(Cart)TSIFileAtDateAndTime_2016-09-06_10:34:18.csv'); % Create the path for the TSI file
 referenceDataPath = fullfile('02.Version1SecondValidationTest','trajectoryOutputDataCase7_3_2016_v33.txt'); % Create the path for the reference trajectory
 % RKFThrustPath = fullfile('01.Version2.0FirstValidationTest','Thrust.csv'); % Create the path for the RKF thrust file
 
@@ -81,7 +81,7 @@ referenceDataPath = fullfile('02.Version1SecondValidationTest','trajectoryOutput
 
 CartesianRKFdata = csvread(RKFpath); % Read the file
 CartesianTSIdata_spher = csvread(TSIpath); % Read the file
-ReferenceData = dlmread(referenceDataPath,' ', % Read the file
+ReferenceData = dlmread(referenceDataPath); % Read the file
 % ThrustData = csvread(RKFThrustPath); % Read the file
 
 
@@ -104,12 +104,12 @@ TSIyVelocity = CartesianTSIdata_spher(:,6); % TSI y-velocity
 TSIzVelocity = CartesianTSIdata_spher(:,7); % TSI z-velocity
 
 % Reference trajectory
-RefxPosition = ReferenceData(:,2); % Ref x-position
-RefyPosition = ReferenceData(:,3); % Ref y-position
-RefzPosition = ReferenceData(:,4); % Ref z-position
-RefxVelocity = ReferenceData(:,5); % Ref x-velocity
-RefyVelocity = ReferenceData(:,6); % Ref y-velocity
-RefzVelocity = ReferenceData(:,7); % Ref z-velocity
+RefxPosition = ReferenceData(:,2)*1e-3; % Ref x-position
+RefyPosition = ReferenceData(:,3)*1e-3; % Ref y-position
+RefzPosition = ReferenceData(:,4)*1e-3; % Ref z-position
+RefxVelocity = ReferenceData(:,5)*1e-3; % Ref x-velocity
+RefyVelocity = ReferenceData(:,6)*1e-3; % Ref y-velocity
+RefzVelocity = ReferenceData(:,7)*1e-3; % Ref z-velocity
 
 % % RKF Thrust
 % k = 1;
@@ -151,8 +151,8 @@ plot3(RefxPosition,RefyPosition,RefzPosition,'r--'); % Plot the reference trajec
 % view(74.5,0); % see the trajectory from the side
 % view(74.5,90);  % see the trajectory from the top
 % view(90,0); % as seen from the x-axis
-% view(180,0); % as seen from the y-axis
-view(0,90); % as seen from the z-axis
+view(180,0); % as seen from the y-axis
+% view(0,90); % as seen from the z-axis
 
 
 title('3-D trajectory plot over Mars'); % Give the figure a title

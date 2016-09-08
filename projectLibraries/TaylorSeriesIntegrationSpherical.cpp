@@ -492,6 +492,10 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
              limitAltitudeTaz = thrustAzimuth(i,1); // Select the limit altitude of that section
 
+             if (thrustAzimuth(i,2) == thrustAzimuth(i+1,2)){   // If the current and the next section have the same angle values then obviously this boundary can be ignored and the boundary altitude is set to be equal
+                 limitAltitudeTaz = thrustAzimuth(i+1,1);       // to the next sections upper boundary
+             }
+
         }
 
 
@@ -504,6 +508,10 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
 
              limitAltitudeTel = thrustElevation(i,1); // Select the limit altitude of that section
+
+             if (thrustElevation(i,2) == thrustElevation(i+1,2)){   // If the current and the next section have the same angle values then obviously this boundary can be ignored and the boundary altitude is set to be equal
+                 limitAltitudeTel = thrustElevation(i+1,1);       // to the next sections upper boundary
+             }
 
         }
 
@@ -540,9 +548,9 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
                 /// Debug ///
 
-                std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
-                std::cout<<"originalAltitude = "<<originalAltitude<<std::endl;
-                std::cout<<"newAltitude = "<<newAltitude<<std::endl;
+//                std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
+//                std::cout<<"originalAltitude = "<<originalAltitude<<std::endl;
+//                std::cout<<"newAltitude = "<<newAltitude<<std::endl;
 //                std::cout<<"fFrom = "<<fFrom<<std::endl;
 //                std::cout<<"fTo = "<<fTo<<std::endl;
 //                std::cout<<"initialNewTime = "<<currentTime+currentStepSize<<std::endl;
@@ -565,7 +573,7 @@ if (fTo <0){    // If the newAltitude is below the limitAltitude (so fTo<0) then
 }
 else{
 
-std::cout<<"////////////////////////////////////////////////////////////////////////////////// Beginning of altitude do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
+//std::cout<<"////////////////////////////////////////////////////////////////////////////////// Beginning of altitude do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
 
 //std::cout<<"Initial new altitude = "<<newAltitude<<std::endl;
 
@@ -651,7 +659,7 @@ std::cout<<"////////////////////////////////////////////////////////////////////
 //std::cout<<"Current altitude = "<<updatedState(0)-bodyReferenceRadius<<std::endl;
 //std::cout<<"Current velocity = "<<updatedState(3)<<std::endl;
 
-std::cout<<"////////////////////////////////////////////////////////////////////////////////// End of altitude do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
+//std::cout<<"////////////////////////////////////////////////////////////////////////////////// End of altitude do-loop //////////////////////////////////////////////////////////////////////////////////"<<std::endl;
 
 } // else get new step-size
 
