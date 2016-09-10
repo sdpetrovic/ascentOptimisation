@@ -234,47 +234,48 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     //////////////////////////////////////////////////////// Test Cases ////////////////////////////////////////////////////////
 
-////    Test case from Woolley 2015 (case 10 SSTO)
-//    desiredOrbitalAltitude = 390.0; // Desired orbital altitude in kmMOLA (320 km is default)
-//    desiredInclination = deg2rad(45.0); // Desired orbital inclination (45 is default)
+//    Test case from Woolley 2015 (case 10 SSTO)
+    std::cout<<"Test case 1: Woolley 2015 SSTO"<<std::endl;
+    desiredOrbitalAltitude = 390.0; // Desired orbital altitude in kmMOLA (320 km is default)
+    desiredInclination = deg2rad(45.0); // Desired orbital inclination (45 is default)
 
-//    MAV.setMAVmass(267.4);                      // Set the MAV GLOM in [kg]
-//    MAV.setThrust(3.56);                        // Set the MAV thrust in [kN]
-//    MAV.setThrustResetValue(MAV.Thrust());      // Set the reset value equal to the original given thrust
-//    MAV.setSpecificImpulse(256);                // Set the MAV specific impulse [s]
-//    const double initialBurnTime = 142.5;       // Set the burn time from launch till coast [s]
-////    const double burnOutAngle = deg2rad(6.0);  // Set the burn out angle (flight-path angle at end of first burn) [rad]
-////    const double finalBurnOutMass = 60.7;       // Set the final burn out mass (empty mass + OS mass + excess propellant mass) [kg]
-//    const double initialLongitudeDeg = 74.5;     // Set the launch latitude in [deg] (tau)
-//    const double initialLatitudeDeg = 0.0;        // Starting latitude [deg] initial condition in (delta)
-//    const double HeadingAngle = deg2rad(90.0);  // Set the launch azimuth [rad] (psi)
-//    Mars.setUpperAltitudeBound(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the temperature
-//    MAV.setUpdatedFinalAltitude(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the thrust angles
-//    const double initialAltitude = -0.6;          // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
-//    const double initialGroundVelocity = 0.00001;          // Starting velocity in km/s (is suppose to be 0.0...) 0.00001 default at initial step-size of 0.01 sec
-
-
-//    std::cout<<"Mars.temperatureAltitudeRanges() = "<<Mars.temperatureAltitudeRanges()<<std::endl;
-//    std::cout<<"MAV.thrustAzimuth() = "<<MAV.thrustAzimuth()<<std::endl;
-
-// Test case from Joel (hybrid) case7_3_2016_v33
-    desiredOrbitalAltitude = 3875.19000000064-bodyReferenceRadius; // Desired orbital altitude in kmMOLA (320 km is default)
-    desiredInclination = deg2rad(92.6899999999988); // Desired orbital inclination (45 is default)
-
-    MAV.setMAVmass(288.95985303149);                      // Set the MAV GLOM in [kg]
-    MAV.setThrust(6.01868886452604);                        // Set the MAV thrust in [kN]
+    MAV.setMAVmass(267.4);                      // Set the MAV GLOM in [kg]
+    MAV.setThrust(3.56);                        // Set the MAV thrust in [kN]
     MAV.setThrustResetValue(MAV.Thrust());      // Set the reset value equal to the original given thrust
-    MAV.setSpecificImpulse(315.9);                // Set the MAV specific impulse [s]
-    const double initialBurnTime = 99.361911852794;       // Set the burn time from launch till coast [s]
+    MAV.setSpecificImpulse(256);                // Set the MAV specific impulse [s]
+    const double initialBurnTime = 142.5;       // Set the burn time from launch till coast [s]
 //    const double burnOutAngle = deg2rad(6.0);  // Set the burn out angle (flight-path angle at end of first burn) [rad]
 //    const double finalBurnOutMass = 60.7;       // Set the final burn out mass (empty mass + OS mass + excess propellant mass) [kg]
-    const double initialLongitudeDeg = 90.0;     // Set the launch latitude in [deg] (tau)
+    const double initialLongitudeDeg = 74.5;     // Set the launch latitude in [deg] (tau)
     const double initialLatitudeDeg = 0.0;        // Starting latitude [deg] initial condition in (delta)
     const double HeadingAngle = deg2rad(90.0);  // Set the launch azimuth [rad] (psi)
     Mars.setUpperAltitudeBound(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the temperature
     MAV.setUpdatedFinalAltitude(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the thrust angles
     const double initialAltitude = -0.6;          // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
-    const double initialGroundVelocity = 0.000001;          // Starting velocity in km/s (is suppose to be 0.0...) 0.00001 default at initial step-size of 0.01 sec
+    const double initialGroundVelocity = 0.00001;          // Starting velocity in km/s (is suppose to be 0.0...) 0.00001 default at initial step-size of 0.01 sec
+
+
+
+
+//// Test case from Joel (hybrid) case7_3_2016_v33
+// std::cout<<"Test case 2: Joel (hybrid) case7_3_2016_v33"<<std::endl;
+//    desiredOrbitalAltitude = 3875.19000000064-bodyReferenceRadius; // Desired orbital altitude in kmMOLA (320 km is default)
+//    desiredInclination = deg2rad(92.6899999999988); // Desired orbital inclination (45 is default)
+
+//    MAV.setMAVmass(288.95985303149);                      // Set the MAV GLOM in [kg]
+//    MAV.setThrust(6.01868886452604);                        // Set the MAV thrust in [kN]
+//    MAV.setThrustResetValue(MAV.Thrust());      // Set the reset value equal to the original given thrust
+//    MAV.setSpecificImpulse(315.9);                // Set the MAV specific impulse [s]
+//    const double initialBurnTime = 99.361911852794;       // Set the burn time from launch till coast [s]
+////    const double burnOutAngle = deg2rad(6.0);  // Set the burn out angle (flight-path angle at end of first burn) [rad]
+////    const double finalBurnOutMass = 60.7;       // Set the final burn out mass (empty mass + OS mass + excess propellant mass) [kg]
+//    const double initialLongitudeDeg = 90.0;     // Set the launch latitude in [deg] (tau)
+//    const double initialLatitudeDeg = 0.0;        // Starting latitude [deg] initial condition in (delta)
+//    const double HeadingAngle = deg2rad(90.0);  // Set the launch azimuth [rad] (psi)
+//    Mars.setUpperAltitudeBound(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the temperature
+//    MAV.setUpdatedFinalAltitude(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the thrust angles
+//    const double initialAltitude = -0.6;          // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
+//    const double initialGroundVelocity = 0.000001;          // Starting velocity in km/s (is suppose to be 0.0...) 0.00001 default at initial step-size of 0.01 sec
 
 
 //// Test case old verification
@@ -311,7 +312,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
   /// Initial conditions /// a.k.a. control centre
 
 //    const double initialBurnTime = 68.63; // Burn time from launch till coast
-    const double setEndTime = 598.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall // 2000 for test cases
+    const double setEndTime = 2000.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall // 2000 for test cases
     const double RKFinitiaterTime = 1.0;    // Time that the RKF integrator is used for TSI initially
     const double EndAltitude = desiredOrbitalAltitude; // Integration end altitude
     const double coastStartTime = initialBurnTime; // Integration coast start time [sec] // test 68.63
@@ -323,7 +324,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     /// TSI settings ///
 
     /// Integration settings ///
-    const double chosenLocalErrorTolerance = 1e-15;      // The chosen local error tolerance for TSI
+    const double chosenLocalErrorTolerance = 1e-8;      // The chosen local error tolerance for TSI
     const double chosenStepSize = 0.01; // The chosen initial step-size for TSI
 
     std::cout<<"The chosen local error tolerance = "<<chosenLocalErrorTolerance<<std::endl;
@@ -820,8 +821,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     double stepSizeRKFTSI = chosenStepSize;          // Using the same initial step-size as defined for TSI
 
     // Tolerances.
-    const double relativeToleranceTSI = chosenLocalErrorTolerance;     //
-    const double absoluteToleranceTSI = chosenLocalErrorTolerance;     //
+    const double relativeToleranceTSI = 1e-15; /*chosenLocalErrorTolerance;     //*/
+    const double absoluteToleranceTSI = 1e-15; /*chosenLocalErrorTolerance;     //*/
 
 
 
@@ -1087,7 +1088,10 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
         ///// First steps by RKF integrator /////
 
-
+    // Input for RKF integrator (after TSI)
+  const double finalTimeFirstSecond = runningTimeTSI;
+   const tudat::basic_mathematics::Vector7d finalStateFirstSecond = integratorTSI.getCurrentState();
+   const double finalStepSizeFirstSecond = stepSizeRKFTSI;
 
 
 
@@ -1162,6 +1166,7 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
          /// Debug ///
 
 //    stepSize.setCurrentStepSize(25); // Specifying a constant step-size for verification
+//         std::cout<<"runningTimeTSI = "<<runningTimeTSI<<std::endl;
 
          if (coast == true && runningTimeTSI < coastStartTime){
              if ( std::fabs( coastStartTime - runningTimeTSI )
@@ -1179,6 +1184,7 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
          else {
 
 //              std::cout<<"Current stepSize = "<<stepSize.getCurrentStepSize()<<std::endl;
+//              std::cout<<"endTimeTSI-runningTimeTSI = "<<fabs(endTimeTSI-runningTimeTSI)<<std::endl;
 
     if ( std::fabs( endTimeTSI - runningTimeTSI )
                              <= std::fabs( stepSize.getCurrentStepSize() ) * ( 1.0 + std::numeric_limits< double >::epsilon( ) ) )
@@ -1473,19 +1479,20 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
                         // Getting the initial conditions for storage
 //                        const tudat::basic_mathematics::Vector7d initialState = currentStateAndTime.getCurrentState();
 //                        const tudat::basic_mathematics::Vector7d initialState = aState;
+                        const tudat::basic_mathematics::Vector7d initialStateRKF = finalStateFirstSecond; // Get the initial state from the first RKF integration
 
-                        std::cout<<"initialState = "<<initialState<<std::endl;
+                        std::cout<<"initialStateRKF = "<<initialStateRKF<<std::endl;
 
                         // Filling the output vector
 //                        outputVector(0,0) = currentStateAndTime.getCurrentTime();   // Storing the initial time
-                        outputVector(0,0) = 0;                 // Setting the initial time
-                        outputVector(0,1) = initialState(0);   // Storing the initial x position
-                        outputVector(0,2) = initialState(1);   // Storing the initial y position
-                        outputVector(0,3) = initialState(2);   // Storing the initial z position
-                        outputVector(0,4) = initialState(3);   // Storing the initial x velocity
-                        outputVector(0,5) = initialState(4);   // Storing the initial y velocity
-                        outputVector(0,6) = initialState(5);   // Storing the initial z velocity
-                        outputVector(0,7) = initialState(6);   // Storing the initial MAV mass
+                        outputVector(0,0) = finalTimeFirstSecond;                 // Setting the initial time
+                        outputVector(0,1) = initialStateRKF(0);   // Storing the initial x position
+                        outputVector(0,2) = initialStateRKF(1);   // Storing the initial y position
+                        outputVector(0,3) = initialStateRKF(2);   // Storing the initial z position
+                        outputVector(0,4) = initialStateRKF(3);   // Storing the initial x velocity
+                        outputVector(0,5) = initialStateRKF(4);   // Storing the initial y velocity
+                        outputVector(0,6) = initialStateRKF(5);   // Storing the initial z velocity
+                        outputVector(0,7) = initialStateRKF(6);   // Storing the initial MAV mass
 
                         // Filling the output vector
                         outputVectorSpherical(0,0) = 0;                 // Setting the initial time
@@ -1658,7 +1665,8 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 
                     // Initial conditions.
 //                    const double initialTime = currentStateAndTime.getCurrentTime();                            // Time.
-                    const double initialTime = 0;                            // Time. set for verification
+//                    const double initialTime = 0.0;                            // Time. set for verification
+                    const double initialTime = finalTimeFirstSecond; // Set initial time to be equal to the final time of the first RKF integration
                 //    Eigen::VectorXd initialState = currentStateAndTime.getCurrentState(); // State: start with zero velocity at the origin.
 
 //                    const double endTime = setEndTime;     // Using the same time as defined for TSI
@@ -1682,7 +1690,9 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
                     // integrator, to determine the steps to be taken.
                     const double zeroMinimumStepSize = std::numeric_limits< double >::epsilon( );
                     const double infiniteMaximumStepSize = std::numeric_limits< double >::infinity( );
-                    double stepSizeRKF = chosenStepSize;          // Using the same initial step-size as defined for TSI
+//                    double stepSizeRKF = chosenStepSize;          // Using the same initial step-size as defined for TSI
+                    double stepSizeRKF = finalStepSizeFirstSecond;          // Using the same initial step-size as defined for TSI
+
 
                     // Tolerances.
                     const double relativeTolerance = chosenLocalErrorTolerance;     // 1e-14 is used by TSI, original setting was 1e-15
@@ -1691,6 +1701,9 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
                     // For RKF7(8) a step-size of 0.2 is only used if the tolerances are 1e-3.... and is accepted till 1e-8
                     // For RKF4(5) a step-size of 0.2 is only used if the tolerances are 1e-7.... and is accepted till 1e-10
                     // For DP8(7) a step-size of 0.2 is only used if the tolerances are 1e-7.... and is accepted till 1e-9
+
+                    /// Set the initial state to be equal to the final time and state of the first RKF integration
+//                    initialState = finalStateFirstSecond;
 
                     // Set name for integrator
                     string method;
@@ -1719,7 +1732,7 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
                        tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
                                    tudat::numerical_integrators::RungeKuttaCoefficients::get(
                                        tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg78),
-                                   stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
+                                   stateDerivativeFunction, initialTime, initialStateRKF, zeroMinimumStepSize,
                                    infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
 //                       /// Runge-Kutta-Fehlberg 4(5) integrator.
@@ -1728,7 +1741,7 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 //                          tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
 //                                      tudat::numerical_integrators::RungeKuttaCoefficients::get(
 //                                          tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg45),
-//                                      stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
+//                                      stateDerivativeFunction, initialTime, initialStateRKF, zeroMinimumStepSize,
 //                                      infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
 //                          /// Dormand-Prince 8(7) integrator.
@@ -1737,7 +1750,7 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 //                             tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd integrator(
 //                                         tudat::numerical_integrators::RungeKuttaCoefficients::get(
 //                                             tudat::numerical_integrators::RungeKuttaCoefficients::rungeKutta87DormandPrince),
-//                                         stateDerivativeFunction, initialTime, initialState, zeroMinimumStepSize,
+//                                         stateDerivativeFunction, initialTime, initialStateRKF, zeroMinimumStepSize,
 //                                         infiniteMaximumStepSize, relativeTolerance, absoluteTolerance );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1745,7 +1758,8 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
                        std::cout<<"////////////////////////////////////////////////////////////////// Start of RKF //////////////////////////////////////////////////////////////////"<<std::endl;
 
                       // Set initial running time. This is updated after each step that the numerical integrator takes.
-                    double runningTime = 0.0;
+//                    double runningTime = 0.0;
+                       double runningTime = initialTime; // Used to indicate that it has to start after the first RKF integration
                     int count = 0;
 
 
@@ -2298,7 +2312,8 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
                     endState(6) = outputVector(7); // MAV mass
 
 
-                    std::cout<<"Final number of integration steps is "<<count-countRKFTSI<<std::endl;
+//                    std::cout<<"Final number of integration steps is "<<count-countRKFTSI<<std::endl;
+                    std::cout<<"Final number of integration steps is "<<count<<std::endl;
                     std::cout<<"The end state is "<<endState<<std::endl;
 
                     /// Determine the CPU time taken ///

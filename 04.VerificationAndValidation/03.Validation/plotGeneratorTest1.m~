@@ -25,45 +25,45 @@ marsRadius = 3396; % [km]
 marsStandardGravitationalParameter = 4.2828314e4;  % mu_M [km^3/s^2]
 
 % Desired orbit parameters
-desiredOrbitSemiMajorAxis = 3875.19000000064;       %marsRadius+390.0; % a [kmMOLA]
+desiredOrbitSemiMajorAxis = marsRadius+390.0; % a [kmMOLA]
 desiredOrbitEccentricity = 0.0; % e [-]
-desiredOrbitInclination = deg2rad(92.6899999999988); % i [rad]
-desiredRAAN = deg2rad(270.816445254247); % Omega [rad]
+desiredOrbitInclination = deg2rad(45); % i [rad]
+desiredRAAN = 1.30693423357019; % Omega [rad]
 desiredArgumentOfPerigee = 0.0; % omega [rad] (3.92078961310322 could be used)
 desiredTrueAnomaly = 0.0; % theta [rad]
 
 
-%% Create the plot data for the desired orbit
-
-stepSizeTheta = 0.1; % Resolution [deg]
-
-% Generate empty vectors
-desiredOrbitXposition = zeros(360/stepSizeTheta,1); % x-position vector
-desiredOrbitYposition = zeros(360/stepSizeTheta,1); % y-position vector
-desiredOrbitZposition = zeros(360/stepSizeTheta,1); % z-position vector
-
-desiredOrbitXvelocity = zeros(360/stepSizeTheta,1); % x-position vector
-desiredOrbitYvelocity = zeros(360/stepSizeTheta,1); % y-velocity vector
-desiredOrbitZvelocity = zeros(360/stepSizeTheta,1); % z-velocity vector
-
-
-
-j = 1; %Counter used for the vectors
-
-% i = 0;
-
-for i=0:stepSizeTheta:(360.0-stepSizeTheta)
-    
-    [R,V] = randv(desiredOrbitSemiMajorAxis,desiredOrbitEccentricity,desiredOrbitInclination,desiredRAAN,desiredArgumentOfPerigee,deg2rad(i),marsStandardGravitationalParameter); % Convert kepler elements to cartesian coordinates
-    
-    
-    desiredOrbitXposition(j,1) = R(1); % store the x-position
-    desiredOrbitYposition(j,1) = R(2); % store the y-position
-    desiredOrbitZposition(j,1) = R(3); % store the z-position
-    
-    j = j+1;
-    
-end
+% %% Create the plot data for the desired orbit
+% 
+% stepSizeTheta = 0.1; % Resolution [deg]
+% 
+% % Generate empty vectors
+% desiredOrbitXposition = zeros(360/stepSizeTheta,1); % x-position vector
+% desiredOrbitYposition = zeros(360/stepSizeTheta,1); % y-position vector
+% desiredOrbitZposition = zeros(360/stepSizeTheta,1); % z-position vector
+% 
+% desiredOrbitXvelocity = zeros(360/stepSizeTheta,1); % x-position vector
+% desiredOrbitYvelocity = zeros(360/stepSizeTheta,1); % y-velocity vector
+% desiredOrbitZvelocity = zeros(360/stepSizeTheta,1); % z-velocity vector
+% 
+% 
+% 
+% j = 1; %Counter used for the vectors
+% 
+% % i = 0;
+% 
+% for i=0:stepSizeTheta:(360.0-stepSizeTheta)
+%     
+%     [R,V] = randv(desiredOrbitSemiMajorAxis,desiredOrbitEccentricity,desiredOrbitInclination,desiredRAAN,desiredArgumentOfPerigee,deg2rad(i),marsStandardGravitationalParameter); % Convert kepler elements to cartesian coordinates
+%     
+%     
+%     desiredOrbitXposition(j,1) = R(1); % store the x-position
+%     desiredOrbitYposition(j,1) = R(2); % store the y-position
+%     desiredOrbitZposition(j,1) = R(3); % store the z-position
+%     
+%     j = j+1;
+%     
+% end
 
 %% Get the data
 
@@ -71,7 +71,7 @@ end
 
 RKFpath = fullfile('02.Version2SecondValidationTest','backupRKFFileAtDateAndTime_2016-09-06_11:19:12.csv'); % Create the path for the RKF file
 TSIpath = fullfile('02.Version2SecondValidationTest','backupSpherical(Cart)TSIFileAtDateAndTime_2016-09-06_11:19:12.csv'); % Create the path for the TSI file
-referenceDataPath = fullfile('02.Version1SecondValidationTest','trajectoryOutputDataCase7_3_2016_v33.txt'); % Create the path for the reference trajectory
+% referenceDataPath = fullfile('02.Version1SecondValidationTest','trajectoryOutputDataCase7_3_2016_v33.txt'); % Create the path for the reference trajectory
 % RKFThrustPath = fullfile('01.Version2.0FirstValidationTest','Thrust.csv'); % Create the path for the RKF thrust file
 
 

@@ -153,6 +153,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
 //    const double currentStepSize = stepSize.getCurrentStepSize();                      // The current step-size
     double currentStepSize = stepSize.getCurrentStepSize();                      // The current step-size
+//    std::cout<<"StepSizeStartLoop = "<<currentStepSize<<std::endl;
 
     // Specified initial conditions
 
@@ -276,7 +277,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
  //*/       /// End debug ///
 
-        // Set directory where output files will be stored. THIS REQUIRES THE COMPLETE PATH IN ORDER TO WORK!!
+///*        // Set directory where output files will be stored. THIS REQUIRES THE COMPLETE PATH IN ORDER TO WORK!!
         const std::string outputDirectory = "/home/stachap/Documents/Thesis/03. Tudat/tudatBundle/tudatApplications/thesisProject/02.taylorSeriesCoefficientsOutputFolder/";
 
 
@@ -419,6 +420,8 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
             exportFile1.close( );   // Close the file
         };
 
+        //*/
+
 //std::cout<<"Does this even work3?"<<std::endl;
 
 
@@ -492,8 +495,12 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
              limitAltitudeTaz = thrustAzimuth(i,1); // Select the limit altitude of that section
 
-             if (thrustAzimuth(i,2) == thrustAzimuth(i+1,2)){   // If the current and the next section have the same angle values then obviously this boundary can be ignored and the boundary altitude is set to be equal
+
+
+
+             if (thrustAzimuth(i,2) == thrustAzimuth(i+1,2) && i !=(thrustAzimuth.rows()-1)){   // If the current and the next section have the same angle values then obviously this boundary can be ignored and the boundary altitude is set to be equal
                  limitAltitudeTaz = thrustAzimuth(i+1,1);       // to the next sections upper boundary
+
              }
 
         }
@@ -509,8 +516,11 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 
              limitAltitudeTel = thrustElevation(i,1); // Select the limit altitude of that section
 
-             if (thrustElevation(i,2) == thrustElevation(i+1,2)){   // If the current and the next section have the same angle values then obviously this boundary can be ignored and the boundary altitude is set to be equal
+
+
+             if (thrustElevation(i,2) == thrustElevation(i+1,2) && i !=(thrustElevation.rows()-1)){   // If the current and the next section have the same angle values then obviously this boundary can be ignored and the boundary altitude is set to be equal
                  limitAltitudeTel = thrustElevation(i+1,1);       // to the next sections upper boundary
+
              }
 
         }
@@ -542,6 +552,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
                 double fFromDot;        // fdot(t0,0)
                 double tTo = currentTime+currentStepSize;  // t1,0
                 double newAltitude = updatedState(0)-bodyReferenceRadius;
+                const double oldStepSize = currentStepSize; // Just in case the function goes the wrong way
 
 
                 double fTo = newAltitude-limitAltitude; // f(t1,0)
@@ -553,7 +564,9 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
 //                std::cout<<"newAltitude = "<<newAltitude<<std::endl;
 //                std::cout<<"fFrom = "<<fFrom<<std::endl;
 //                std::cout<<"fTo = "<<fTo<<std::endl;
+//                std::cout<<"tTo = "<<tTo<<std::endl;
 //                std::cout<<"initialNewTime = "<<currentTime+currentStepSize<<std::endl;
+//                std::cout<<"currentStepSize before everything = "<<currentStepSize<<std::endl;
 
                 /// Debug ///
 
@@ -579,6 +592,11 @@ else{
 
         do{ // If the altitude has gone beyond the limit altitude, this do loop will determine a new "currentStepSize"
 
+//    std::cout<<"Original Altitude = "<<originalAltitude<<std::endl;
+//    std::cout<<"limitAltitude = "<<limitAltitude<<std::endl;
+//    std::cout<<"newAltitude = "<<newAltitude<<std::endl;
+//    std::cout<<"currentStepSize in altitude loop = "<<currentStepSize<<std::endl;
+
 
         if (newAltitude - limitAltitude <= 1e-6 && newAltitude - limitAltitude >= 0.0){   // Checking if the convergence condition has been met and an answer has been found
 
@@ -591,11 +609,14 @@ else{
             for (int k = 1; k < maxOrder+1; k++){
             fFromDot += k*TaylorCoefficients(1,k)*pow(currentStepSize,(k-1)) ;      // Compute tFromDot
 }
-            double alpha = (fTo+fFrom)/((tTo-tFrom)*(tTo-tFrom))-fFromDot/(tTo-tFrom);  // Basically computing fFromDoubleDot/2 (or coefficient)
+            double alpha = (fTo-fFrom)/((tTo-tFrom)*(tTo-tFrom))-fFromDot/(tTo-tFrom);  // Basically computing fFromDoubleDot/2 (or coefficient)
 
             double tFromNew;
             if ((fFromDot*fFromDot+4.0*alpha*fFrom) <= 0.0){    // This is done in case the values become imaginary (close to the conversion point) which basically shifts the step a bit, and slightly resets it
                 tFromNew = tFrom + (-fFromDot+0.0)/(2.0*alpha);
+//                std::cout<<"Random step"<<std::endl;
+//                std::cout<<"tFrom = "<<tFrom<<std::endl;
+//                std::cout<<"(-fFromDot+0.0)/(2.0*alpha) = "<<(-fFromDot+0.0)/(2.0*alpha)<<std::endl;
             }
             else if (signIsPositive == true){    // Compute the new "from" time
         tFromNew = tFrom + (-fFromDot+sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))/(2.0*alpha);
@@ -605,18 +626,35 @@ else{
             } // -
 
             /// Debug ///
+//            std::cout<<"signIsPositive = "<<signIsPositive<<std::endl;
 
 //            std::cout<<"/// Debug ///"<<std::endl;
 //            std::cout<<"alpha = "<<alpha<<std::endl;
 //            std::cout<<"fFromDot*fFromDot+4.0*alpha*fFrom = "<<fFromDot*fFromDot+4.0*alpha*fFrom<<std::endl;
+//            std::cout<<"sqrt(fFromDot*fFromDot+4.0*alpha*fFrom) = "<<sqrt(fFromDot*fFromDot+4.0*alpha*fFrom)<<std::endl;
+//            std::cout<<"(-fFromDot+sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))= "<<(-fFromDot+sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))<<std::endl;
+//            std::cout<<"(-fFromDot+sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))/(2.0*alpha) = "<<(-fFromDot+sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))/(2.0*alpha)<<std::endl;
+//            std::cout<<"tFrom + (-fFromDot-sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))/(2.0*alpha) = "<<tFrom + (-fFromDot-sqrt(fFromDot*fFromDot+4.0*alpha*fFrom))/(2.0*alpha)<<std::endl;
 //            std::cout<<"fFromDot = "<<fFromDot<<std::endl;
+//            std::cout<<"tFrom = "<<tFrom<<std::endl;
 //            std::cout<<"tFromNew = "<<tFromNew<<std::endl;
 //            std::cout<<"/// Debug ///"<<std::endl;
 //            std::cout<<" "<<std::endl;
-            /// Debug ///
+//            /// Debug ///
 
 
             currentStepSize = currentTime-tFromNew; // Update the new step-size to compute the new value for the altitude using the Taylor Coefficients
+
+//            std::cout<<"New step-size = "<<currentStepSize<<std::endl;
+//            std::cout<<"currentTime-tFrom = "<<currentTime-tFrom<<std::endl;
+//            std::cout<<"currentTime-tTo = "<<currentTime-tTo<<std::endl;
+
+            if (currentStepSize >= oldStepSize){
+//                std::cout<<"tTo before updated = "<<currentStepSize+currentTime<<std::endl;
+                currentStepSize = oldStepSize-10.0; // Just in case the function goes the wrong way (not very neat but will fix it later
+
+//                std::cout<<"It has gone wrong, the stepSize updater updated to a higher stepSize!"<<std::endl;
+            }
 
         tudat::basic_mathematics::Vector7d updatedStateNew = tudat::basic_mathematics::Vector7d::Zero();        // Create a vector for the updatedState and setting it to zero
 
@@ -634,18 +672,30 @@ else{
             updatedState = updatedStateNew; // update the updated state
 
             newAltitude = updatedState(0)-bodyReferenceRadius;  // Determine the new final altitude at the end of the integration step (if this step-size would be the actual step-size for this integration step)
+//            std::cout<<"newAltitude = "<<newAltitude<<std::endl;
+//            std::cout<<"UsedStepSize = "<<currentStepSize<<std::endl;
 
             double fFromNew = newAltitude-limitAltitude; // Determine the new "from" function value
 
             if ((fFrom/(fabs(fFrom))) != (fFromNew/(fabs(fFromNew)))){  // If the function value of the new "from" value is on the other side of the root, then the old "from" values are now the new "to" values (evaluate back to the beginning). Otherwise the "to" values don't change.
                 fTo = fFrom;
                 tTo = tFrom;
+
+//                std::cout<<"fFrom = "<<fFrom<<std::endl;
+//                std::cout<<"tFrom = "<<tFrom<<std::endl;
+//                std::cout<<"fTo = "<<fTo<<std::endl;
+//                std::cout<<"tTo = "<<tTo<<std::endl;
+//                std::cout<<"To has been updated"<<std::endl;
+
             }
 
             fFrom = fFromNew;   // Update the new "from" values
             tFrom = tFromNew;
 
-
+//            std::cout<<"fFrom = "<<fFrom<<std::endl;
+//            std::cout<<"tFrom = "<<tFrom<<std::endl;
+//            std::cout<<"fTo = "<<fTo<<std::endl;
+//            std::cout<<"tTo = "<<tTo<<std::endl;
 
 
 
@@ -665,6 +715,36 @@ else{
 
 //std::cout<<"Current altitude = "<<updatedState(0)-bodyReferenceRadius<<std::endl;
 //std::cout<<"currentStepSize = "<<currentStepSize<<std::endl;
+
+
+/// Debug ///
+//std::cout<<"/// Debug the altitude ///"<<std::endl;
+//double firstRadius = 0.0;
+//double secondRadius = 0.0;
+
+
+//for (int k = 0; k<maxOrder+1;k++){                      // Taylor series summation
+
+//    firstRadius += TaylorCoefficients((1),k)*pow(492.494503211432,k);      // Perform one step of the taylor series expansion and then add it to the previous step 492.494503211432
+
+
+//} // Taylor series summation
+
+//for (int k = 0; k<maxOrder+1;k++){                      // Taylor series summation
+
+//    secondRadius += TaylorCoefficients((1),k)*pow(400,k);      // Perform one step of the taylor series expansion and then add it to the previous step 518.513550613385
+
+
+//} // Taylor series summation
+
+//std::cout<<"firstAlitude = "<<firstRadius-bodyReferenceRadius<<std::endl;
+//std::cout<<"secondAlitude = "<<secondRadius-bodyReferenceRadius<<std::endl;
+
+
+//std::cout<<"/// Debug the altitude ///"<<std::endl;
+//std::cout<<" "<<std::endl;
+
+/// Debug ///
 
 /////////////////////// End of temperature section checker//////////////////
 
@@ -809,7 +889,10 @@ else{
         double alphaM = (fToM+fFromM)/((tToM-tFromM)*(tToM-tFromM))-fFromDotM/(tToM-tFromM);  // Basically computing fFromDoubleDotM/2 (or coefficient)
 
         double tFromNewM;
-        if (signIsPositiveMach == true){    // Compute the new "from" time
+        if (fFromDotM*fFromDotM+4.0*alphaM*fFromM<=0.0){ // Force a step in case of imaginary numbers
+            tFromNewM = tFromM + (-fFromDotM+0.0)/(2.0*alphaM);
+        } // i
+        else if (signIsPositiveMach == true){    // Compute the new "from" time
     tFromNewM = tFromM + (-fFromDotM+sqrt(fFromDotM*fFromDotM+4.0*alphaM*fFromM))/(2.0*alphaM);
 } // +
         else {
@@ -912,6 +995,7 @@ else{
 
 //std::cout<<"It works till the end of the drag-coefficient section checker"<<std::endl;
 //std::cout<<" "<<std::endl;
+//std::cout<<"FinalStepSizeLoop = "<<currentStepSize<<std::endl;
 
 
 
