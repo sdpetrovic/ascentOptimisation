@@ -191,6 +191,7 @@ set(PROJECTLIBRARIES_SOURCES
     "${SRCROOT}/projectLibraries/airDensity.cpp"
     "${SRCROOT}/projectLibraries/ascentDragForce.cpp"
     "${SRCROOT}/projectLibraries/dragCoefficient.cpp"
+    "${SRCROOT}/projectLibraries/trajectoryIntegration.cpp"
 #    "${SRCROOT}/projectLibraries/ascentStateDerivativeFunction.cpp"
 #    "${SRCROOT}/projectLibraries/referenceFrameTransformationsUpdated.cpp"  # Does not quite work yet, so leaving it out for now
 )
@@ -210,6 +211,7 @@ set(PROJECTLIBRARIES_HEADERS
     "${SRCROOT}/projectLibraries/airDensity.h"
     "${SRCROOT}/projectLibraries/ascentDragForce.h"
     "${SRCROOT}/projectLibraries/dragCoefficient.h"
+    "${SRCROOT}/projectLibraries/trajectoryIntegration.h"
 #    "${SRCROOT}/projectLibraries/ascentStateDerivativeFunction.h"
 #    "${SRCROOT}/projectLibraries/referenceFrameTransformationsUpdated.h"   # Does not quite work yet, so leaving it out for now
 )
@@ -252,3 +254,9 @@ target_link_libraries(simple_verification_testMainFileFullIntegrationSpherical p
 add_executable(simple_verification_testMainFileFullIntegrationCartesian "${SRCROOT}/testMainFileFullIntegrationCartesian.cpp")
 setup_executable_target(simple_verification_testMainFileFullIntegrationCartesian "${SRCROOT}")
 target_link_libraries(simple_verification_testMainFileFullIntegrationCartesian project_libraries tudat_numerical_integrators tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
+
+
+add_executable(propagation_tool "${SRCROOT}/propagationTool.cpp")
+setup_executable_target(propagation_tool "${SRCROOT}")
+target_link_libraries(propagation_tool project_libraries tudat_numerical_integrators tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
+
