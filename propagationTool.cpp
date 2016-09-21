@@ -144,116 +144,95 @@ int main()
 
 {
 
+    /// Input file ///
+
+//    std::string nameOfFile = "test.txt"; // Test file
+    std::string nameOfFile = "test1Ryan.txt"; // Test file from Ryan
+//    std::string nameOfFile = "test2Joel.txt"; // Test file from Joel
 
 
 
+/// Read the input file ///
 
-    //// Old stuff ////
+    // This requires the complete path in order to work!
+    std::string pathToWorkingFile = "/home/stachap/Documents/Thesis/03. Tudat/tudatBundle/tudatApplications/thesisProject/07.InputFiles/";
 
+    std::string completePathToInput = pathToWorkingFile+nameOfFile;
 
+//    std::cout<<"completePathToInput = "<<completePathToInput<<std::endl;
 
-    /// Setting the desired end orbit ///
-
-    double desiredOrbitalAltitude = 320.0; // Desired orbital altitude in kmMOLA (320 km is default)
-//    const double desiredEccentricity = 0.0; // Desired orbital eccentricity
-    double desiredInclinationDeg = 45.0; // Desired orbital inclination [deg] (45 is default)
-
-
-
-
-
-    //////////////////////////////////////////////////////// Test Cases ////////////////////////////////////////////////////////
-
-//    Test case from Woolley 2015 (case 10 SSTO)
-    std::cout<<"Test case 1: Woolley 2015 SSTO"<<std::endl;
-    desiredOrbitalAltitude = 390.0; // Desired orbital altitude in kmMOLA (320 km is default)
-    desiredInclinationDeg = 45.0; // Desired orbital inclination [deg] (45 is default)
-
-    const double massMAV = 267.4;                      // Set the MAV GLOM in [kg]
-    const double thrust = 3.56;                        // Set the MAV thrust in [kN]
-    const double specificImpulse = 256;                // Set the MAV specific impulse [s]
-    const double initialBurnTime = 142.5;       // Set the burn time from launch till coast [s]
-//    const double burnOutAngle = deg2rad(6.0);  // Set the burn out angle (flight-path angle at end of first burn) [rad]
-//    const double finalBurnOutMass = 60.7;       // Set the final burn out mass (empty mass + OS mass + excess propellant mass) [kg]
-    const double initialLongitudeDeg = 74.5;     // Set the launch latitude in [deg] (tau)
-    const double initialLatitudeDeg = 0.0;        // Starting latitude [deg] initial condition in (delta)
-    const double HeadingAngleDeg = 90.0;  // Set the launch azimuth [deg] (psi)
-    const double initialAltitude = -0.6;          // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
-    const double initialGroundVelocity = 0.00001;          // Starting velocity in km/s (is suppose to be 0.0...) 0.00001 default at initial step-size of 0.01 sec
+    // This requires the complete path in order to work!
+//    std::ifstream inputFile("/home/stachap/Documents/Thesis/03. Tudat/tudatBundle/tudatApplications/thesisProject/07.InputFiles/test.txt");
+    std::ifstream inputFile(completePathToInput);
 
 
+    // Read the first line
+    std::string firstLine, variable, equalSign;
+    std::getline(inputFile,firstLine);
+    std::cout<<firstLine<<std::endl;
+
+    double number;
+
+    Eigen::VectorXd inputVectorValues = Eigen::VectorXd::Zero(1); // Create the first vector of the input matrix with all the values
 
 
-//// Test case from Joel (hybrid) case7_3_2016_v33
-// std::cout<<"Test case 2: Joel (hybrid) case7_3_2016_v33"<<std::endl;
-//    desiredOrbitalAltitude = 3875.19000000064-bodyReferenceRadius; // Desired orbital altitude in kmMOLA (320 km is default)
-//    desiredInclination = deg2rad(92.6899999999988); // Desired orbital inclination (45 is default)
+    if (inputFile.is_open())
+    {
 
-//    MAV.setMAVmass(288.95985303149);                      // Set the MAV GLOM in [kg]
-//    MAV.setThrust(6.01868886452604);                        // Set the MAV thrust in [kN]
-//    MAV.setThrustResetValue(MAV.Thrust());      // Set the reset value equal to the original given thrust
-//    MAV.setSpecificImpulse(315.9);                // Set the MAV specific impulse [s]
-//    const double initialBurnTime = 99.361911852794;       // Set the burn time from launch till coast [s]
-////    const double burnOutAngle = deg2rad(6.0);  // Set the burn out angle (flight-path angle at end of first burn) [rad]
-////    const double finalBurnOutMass = 60.7;       // Set the final burn out mass (empty mass + OS mass + excess propellant mass) [kg]
-//    const double initialLongitudeDeg = 90.0;     // Set the launch latitude in [deg] (tau)
-//    const double initialLatitudeDeg = 0.0;        // Starting latitude [deg] initial condition in (delta)
-//    const double HeadingAngle = deg2rad(90.0);  // Set the launch azimuth [rad] (psi)
-//    Mars.setUpperAltitudeBound(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the temperature
-//    MAV.setUpdatedFinalAltitude(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the thrust angles
-//    const double initialAltitude = -0.6;          // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
-//    const double initialGroundVelocity = 0.000001;          // Starting velocity in km/s (is suppose to be 0.0...) 0.00001 default at initial step-size of 0.01 sec
+        int line = 0; // Line to print in vector
+        while(inputFile >> variable >> equalSign >> number){
+            std::cout<<variable<<" "<<equalSign<<" "<<number<<std::endl;
 
+            inputVectorValues.conservativeResize(line+1); // This resizes the vector and makes it bigger to include all the values in the input file
 
-//// Test case old verification
-//    desiredOrbitalAltitude = 320.0; // Desired orbital altitude in kmMOLA (320 km is default)
-//    desiredInclination = deg2rad(45.0); // Desired orbital inclination (45 is default)
+            inputVectorValues(line) = number;
 
-////    MAV.setMAVmass(267.4);                      // Set the MAV GLOM in [kg]
-////    MAV.setThrust(3.56);                        // Set the MAV thrust in [kN]
-////    MAV.setThrustResetValue(MAV.Thrust());      // Set the reset value equal to the original given thrust
-////    MAV.setSpecificImpulse(256);                // Set the MAV specific impulse [s]
-//    const double initialBurnTime = 142.5;       // Set the burn time from launch till coast [s]
-////    const double burnOutAngle = deg2rad(6.0);  // Set the burn out angle (flight-path angle at end of first burn) [rad]
-////    const double finalBurnOutMass = 60.7;       // Set the final burn out mass (empty mass + OS mass + excess propellant mass) [kg]
-//    const double initialLongitudeDeg = 0.0;     // Set the launch latitude in [deg] (tau)
-//    const double initialLatitudeDeg = 0.0;        // Starting latitude [deg] initial condition in (delta)
-//    const double HeadingAngle = deg2rad(90.0);  // Set the launch azimuth [rad] (psi)
-////    Mars.setUpperAltitudeBound(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the temperature
-////    MAV.setUpdatedFinalAltitude(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the thrust angles
-//    const double initialAltitude = -0.6;          // Starting altitude [km MOLA] initial condition is -0.6 km MOLA
-//    const double initialGroundVelocity = 0.0;          // Starting velocity in km/s (is suppose to be 0.0...) 0.00001 default at initial step-size of 0.01 sec
+            line++;
+        }
 
 
 
-    //////////////////////////////////////////////////////// Test Cases ////////////////////////////////////////////////////////
+        std::cout<<"inputVectorValues"<<'\n'<<inputVectorValues<<std::endl;
 
-    /// Comparison?
-//    const bool comparison = true;
+        inputFile.close();
+    }
+    else {std::cout<<"It didn't open..."<<std::endl;}
 
-    /// Set initial flight path angle and heading angle
-    const double FlightPathAngleDeg = 89.0;     // Set flight-path angle in deg --> Default = 90.0 deg
+/// Set input values ///
 
+    const double desiredOrbitalAltitude =   inputVectorValues(0);
+    const double desiredInclinationDeg =    inputVectorValues(1);
+    const double initialAltitude =          inputVectorValues(2);
+    const double initialLatitudeDeg =       inputVectorValues(3);
+    const double initialLongitudeDeg =      inputVectorValues(4);
+    const double FlightPathAngleDeg =       inputVectorValues(5);
+    const double HeadingAngleDeg =          inputVectorValues(6);
+    const double initialGroundVelocity =    inputVectorValues(7);
+    const double massMAV =                  inputVectorValues(8);
+    const double thrust =                   inputVectorValues(9);
+    const double specificImpulse =          inputVectorValues(10);
+    const double initialBurnTime =          inputVectorValues(11);
+    const double constantThrustElevationAngle = inputVectorValues(12);
+    const double constantThrustAzimuthAngle = inputVectorValues(13);
+    const int maxOrder =                    inputVectorValues(14);
+    const double chosenLocalErrorTolerance = inputVectorValues(15);
+    const double chosenStepSize =           inputVectorValues(16);
+    const double setEndTime =               inputVectorValues(17);
+    const double RKFinitiaterTime =         inputVectorValues(18);
+    const bool rotatingPlanet =             inputVectorValues(19);
+    const bool GravityAcc =                 inputVectorValues(20);
+    const bool ThrustAcc =                  inputVectorValues(21);
+    const bool DragAcc =                    inputVectorValues(22);
+    const bool comparison =                 inputVectorValues(23);
 
-  /// Initial conditions /// a.k.a. control centre
+/////////////////////////////////////////////////////////////////////// Actual propagation ///////////////////////////////////////////////////////////////////////
 
-//    const double initialBurnTime = 68.63; // Burn time from launch till coast
-    const double setEndTime = 2000.0;  // Integration end time  // 77 sec for a remainder mass of about 100 kg  // 200 sec for free fall // 2000 for test cases
-    const double RKFinitiaterTime = 1.0;    // Time that the RKF integrator is used for TSI initially
+/// Perform the integration ///
 
-    /// TSI settings ///
-    const int maxOrder = 20; // Eventually want order 20 (testing is 8)
-    /// TSI settings ///
-
-    /// Integration settings ///
-    const double chosenLocalErrorTolerance = 1e-8;      // The chosen local error tolerance for TSI
-    const double chosenStepSize = 0.01; // The chosen initial step-size for TSI
-
-
-
-    Eigen::MatrixXd outputMatrix = performIntegration(desiredOrbitalAltitude,desiredInclinationDeg,initialAltitude,initialLatitudeDeg,initialLongitudeDeg,
-                                                      FlightPathAngleDeg,HeadingAngleDeg,initialGroundVelocity,massMAV,thrust,specificImpulse,initialBurnTime,maxOrder,
-                                                      chosenLocalErrorTolerance,chosenStepSize,setEndTime,RKFinitiaterTime);
+        Eigen::MatrixXd outputMatrix = performIntegration(desiredOrbitalAltitude,desiredInclinationDeg,initialAltitude,initialLatitudeDeg,initialLongitudeDeg,
+                                                          FlightPathAngleDeg,HeadingAngleDeg,initialGroundVelocity,massMAV,thrust,specificImpulse,initialBurnTime,
+                                                          constantThrustElevationAngle,constantThrustAzimuthAngle,maxOrder,
+                                                          chosenLocalErrorTolerance,chosenStepSize,setEndTime,RKFinitiaterTime,rotatingPlanet,GravityAcc,ThrustAcc,DragAcc,comparison);
 
     std::cout<<"outputMatrix = "<<outputMatrix<<std::endl;
 

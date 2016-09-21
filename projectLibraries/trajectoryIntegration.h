@@ -104,18 +104,41 @@
 
 
 
- /// Main function
-
-
-
+/// Main function ///
+/// \brief performIntegration
+/// \param desiredOrbitalAltitude
+/// \param desiredInclinationDeg
+/// \param initialAltitude
+/// \param initialLatitudeDeg
+/// \param initialLongitudeDeg
+/// \param FlightPathAngleDeg
+/// \param HeadingAngleDeg
+/// \param initialGroundVelocity
+/// \param massMAV
+/// \param thrust
+/// \param specificImpulse
+/// \param initialBurnTime
+/// \param constantThrustElevationAngle
+/// \param constantThrustAzimuthAngle
+/// \param maxOrder
+/// \param chosenLocalErrorTolerance
+/// \param chosenStepSize
+/// \param setEndTime
+/// \param RKFinitiaterTime
+/// \param rotatingPlanet
+/// \param Gravity
+/// \param Thrust
+/// \param Drag
+/// \param comparison
+/// \return
+///
 Eigen::MatrixXd performIntegration(const double desiredOrbitalAltitude, const double desiredInclinationDeg, // Desired orbit parameters
                                    const double initialAltitude, const double initialLatitudeDeg, const double initialLongitudeDeg, const double FlightPathAngleDeg, const double HeadingAngleDeg, const double initialGroundVelocity, // Launch conditions
-                                   const double massMAV, const double thrust, const double specificImpulse, const double initialBurnTime, // MAV specifications
+                                   const double massMAV, const double thrust, const double specificImpulse, const double initialBurnTime, const double constantThrustElevationAngle, const double constantThrustAzimuthAngle, // MAV specifications
                                    const int maxOrder = 20, const double chosenLocalErrorTolerance = 1e-15, // Setting the order for TSI and the tolerance used for the step-size determination in the integrators
                                    const double chosenStepSize = 0.01, const double setEndTime = 2000.0, const double RKFinitiaterTime = 1.0, // Set the integration time values: initial step-size, end time in case condition not found and time that should be spend integrating the first second by RKF
                                    const bool rotatingPlanet = true, const bool Gravity = true, const bool Thrust = true, const bool Drag = true, // Rotation and the different accelerations on or off
                                    const bool comparison = true); // Comparison between TSI and RKF printed in output
-
 
 
 

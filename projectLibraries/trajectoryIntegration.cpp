@@ -1,8 +1,36 @@
 #include "trajectoryIntegration.h"
 
+/// Main function ///
+/// \brief performIntegration
+/// \param desiredOrbitalAltitude
+/// \param desiredInclinationDeg
+/// \param initialAltitude
+/// \param initialLatitudeDeg
+/// \param initialLongitudeDeg
+/// \param FlightPathAngleDeg
+/// \param HeadingAngleDeg
+/// \param initialGroundVelocity
+/// \param massMAV
+/// \param thrust
+/// \param specificImpulse
+/// \param initialBurnTime
+/// \param constantThrustElevationAngle
+/// \param constantThrustAzimuthAngle
+/// \param maxOrder
+/// \param chosenLocalErrorTolerance
+/// \param chosenStepSize
+/// \param setEndTime
+/// \param RKFinitiaterTime
+/// \param rotatingPlanet
+/// \param Gravity
+/// \param Thrust
+/// \param Drag
+/// \param comparison
+/// \return
+///
 Eigen::MatrixXd performIntegration(const double desiredOrbitalAltitude, const double desiredInclinationDeg, // Desired orbit parameters
                                    const double initialAltitude, const double initialLatitudeDeg, const double initialLongitudeDeg, const double FlightPathAngleDeg, const double HeadingAngleDeg, const double initialGroundVelocity, // Launch conditions
-                                   const double massMAV, const double thrust, const double specificImpulse, const double initialBurnTime, // MAV specifications
+                                   const double massMAV, const double thrust, const double specificImpulse, const double initialBurnTime, const double constantThrustElevationAngle, const double constantThrustAzimuthAngle, // MAV specifications
                                    const int maxOrder, const double chosenLocalErrorTolerance, // Setting the order for TSI and the tolerance used for the step-size determination in the integrators
                                    const double chosenStepSize, const double setEndTime, const double RKFinitiaterTime, // Set the integration time values: initial step-size, end time in case condition not found and time that should be spend integrating the first second by RKF
                                    const bool rotatingPlanet, const bool Gravity, const bool Thrust, const bool Drag, // Rotation and the different accelerations on or off
@@ -76,6 +104,14 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
     Mars.setUpperAltitudeBound(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the temperature
     MAV.setUpdatedFinalAltitude(desiredOrbitalAltitude); // Set the upper bound of the altitude [km] for the thrust angles
+
+    MAV.setConstantThrustAzimuthAngle(constantThrustAzimuthAngle); // Set the constant thrust azimuth angle
+    MAV.setConstantThrustElevationAngle(constantThrustElevationAngle); // Set the constant thrust elevation angle
+
+    std::cout<<"Azimuth = "<<MAV.thrustAzimuth()<<std::endl;
+    std::cout<<"Elevation = "<<MAV.thrustElevation()<<std::endl;
+
+
 
     const double FlightPathAngle = deg2rad(FlightPathAngleDeg);     // Set flight-path angle in rad --> Default = 90.0 deg
     const double HeadingAngle = deg2rad(HeadingAngleDeg);  // Set the launch azimuth [rad] (psi)
@@ -2128,18 +2164,41 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
         std::cout<<"finalMassTSI = "<<finalMassTSI<<std::endl;
 
 
-
-
-
-
-
-
-
-
-
+///////////////////////////// Output /////////////////////////////
 // Test the output
 
     Eigen::MatrixXd integrationEndStatesAndInfo = Eigen::MatrixXd::Zero(3,8); // Create an empty matrix
+
+    // TSI cartesian end state
+    integrationEndStatesAndInfo(0,0) = currentStateAndTime.getCurrentTime();    // end time
+    integrationEndStatesAndInfo(0,1) = TSIendState(0);      // x-position
+    integrationEndStatesAndInfo(0,2) = TSIendState(1);      // y-position
+    integrationEndStatesAndInfo(0,3) = TSIendState(2);      // z-position
+    integrationEndStatesAndInfo(0,4) = TSIendState(3);      // x-velocity
+    integrationEndStatesAndInfo(0,5) = TSIendState(4);      // y-velocity
+    integrationEndStatesAndInfo(0,6) = TSIendState(5);      // z-velocity
+    integrationEndStatesAndInfo(0,7) = TSIendState(6);      // MAV mass
+
+    // RKF cartesian end state
+    integrationEndStatesAndInfo(1,0) = currentStateAndTime.getCurrentTime();    // end time
+    integrationEndStatesAndInfo(1,1) = endState(0);      // x-position
+    integrationEndStatesAndInfo(1,2) = endState(1);      // y-position
+    integrationEndStatesAndInfo(1,3) = endState(2);      // z-position
+    integrationEndStatesAndInfo(1,4) = endState(3);      // x-velocity
+    integrationEndStatesAndInfo(1,5) = endState(4);      // y-velocity
+    integrationEndStatesAndInfo(1,6) = endState(5);      // z-velocity
+    integrationEndStatesAndInfo(1,7) = endState(6);      // MAV mass
+
+
+    // Final circularisation information
+    integrationEndStatesAndInfo(2,0) = deltaVforTSI;    // Delta V required for the circularisation of TSI
+    integrationEndStatesAndInfo(2,1) = deltaVforRKF;    // Delta V required for the circularisation of RKF
+    integrationEndStatesAndInfo(2,2) = rad2deg(TSIendKeplerElements(2));    // The final inclination of TSI
+    integrationEndStatesAndInfo(2,3) = rad2deg(RKFendKeplerElements(2));    // The final inclination of RKF
+    integrationEndStatesAndInfo(2,4) = propMassTSI; // The propellant mass used for the circularisation burn of TSI
+    integrationEndStatesAndInfo(2,5) = propMassRKF; // The propellant mass used for the circularisation burn of RKF
+    integrationEndStatesAndInfo(2,6) = finalMassTSI; // The final total system mass of TSI
+    integrationEndStatesAndInfo(2,7) = finalMassRKF; // The final total system mass of RKF
 
 //    integrationEndStatesAndInfo(0,0) = desiredOrbitalAltitude;
 //    integrationEndStatesAndInfo(0,1) = desiredInclination;

@@ -191,85 +191,85 @@ public:
         thrustAzimuth_ = Eigen::MatrixXd::Zero(6,3); // psiT   these are the thrust azimuth-gimbal angles in radians! as a function of altitude (including the altitude ranges)
 
 
-        double allTheSameAngleAzimuth = -0.299; /*0.7273;*/ // used in case they should all be the same
+        allTheSameAngleAzimuth_ = -0.299; /*0.7273;*/ // used in case they should all be the same
 
         // Section 1
         thrustAzimuth_(0,0) = -0.6;   // Lower bound altitude
         thrustAzimuth_(0,1) = 1.0;   // Upper bound altitude
 
-        thrustAzimuth_(0,2) = deg2rad(allTheSameAngleAzimuth);   // Thrust azimuth angle
+        thrustAzimuth_(0,2) = deg2rad(allTheSameAngleAzimuth_);   // Thrust azimuth angle
 
         // Section 2
         thrustAzimuth_(1,0) = thrustAzimuth_(1,0);   // Lower bound altitude
         thrustAzimuth_(1,1) = 5.0;   // Upper bound altitude
 
-        thrustAzimuth_(1,2) = deg2rad(allTheSameAngleAzimuth);   // Thrust azimuth angle
+        thrustAzimuth_(1,2) = deg2rad(allTheSameAngleAzimuth_);   // Thrust azimuth angle
 
         // Section 3
         thrustAzimuth_(2,0) = 5.0;   // Lower bound altitude
         thrustAzimuth_(2,1) = 15.0;   // Upper bound altitude
 
-        thrustAzimuth_(2,2) = deg2rad(allTheSameAngleAzimuth);   // Thrust azimuth angle
+        thrustAzimuth_(2,2) = deg2rad(allTheSameAngleAzimuth_);   // Thrust azimuth angle
 
         // Section 4
         thrustAzimuth_(3,0) = 15.0;   // Lower bound altitude
         thrustAzimuth_(3,1) = 35.0;   // Upper bound altitude
 
-        thrustAzimuth_(3,2) = deg2rad(allTheSameAngleAzimuth);   // Thrust azimuth angle
+        thrustAzimuth_(3,2) = deg2rad(allTheSameAngleAzimuth_);   // Thrust azimuth angle
 
         // Section 5
         thrustAzimuth_(4,0) = 35.0;   // Lower bound altitude
         thrustAzimuth_(4,1) = 100.0;   // Upper bound altitude
 
-        thrustAzimuth_(4,2) = deg2rad(allTheSameAngleAzimuth);   // Thrust azimuth angle
+        thrustAzimuth_(4,2) = deg2rad(allTheSameAngleAzimuth_);   // Thrust azimuth angle
 
         // Section 6
         thrustAzimuth_(5,0) = 100.0;   // Lower bound altitude
         thrustAzimuth_(5,1) = finalAltitude_;   // Upper bound altitude
 
-        thrustAzimuth_(5,2) = deg2rad(allTheSameAngleAzimuth);   // Thrust azimuth angle
+        thrustAzimuth_(5,2) = deg2rad(allTheSameAngleAzimuth_);   // Thrust azimuth angle
 
 
         // Thrust Elevation-Gimbal Angles
             thrustElevation_ = Eigen::MatrixXd::Zero(6,3); // epsilonT   these are the thrust elevation-gimbal angles in radians! as a function of altitude (including the altitude ranges)
 
-            double allTheSameAngleElevation = -0.184; /*-0.674;*/ // used in case they should all be the same
+            allTheSameAngleElevation_ = -0.184; /*-0.674;*/ // used in case they should all be the same
 
             // Section 1
             thrustElevation_(0,0) = -0.6;   // Lower bound altitude
             thrustElevation_(0,1) = 0.007;   // Upper bound altitude
 
-            thrustElevation_(0,2) = deg2rad(allTheSameAngleElevation);   // Thrust elevation angle
+            thrustElevation_(0,2) = deg2rad(allTheSameAngleElevation_);   // Thrust elevation angle
 
             // Section 2
             thrustElevation_(1,0) = thrustElevation_(0,1);   // Lower bound altitude
             thrustElevation_(1,1) = 5.0;   // Upper bound altitude
 
-            thrustElevation_(1,2) = deg2rad(allTheSameAngleElevation);   // Thrust elevation angle
+            thrustElevation_(1,2) = deg2rad(allTheSameAngleElevation_);   // Thrust elevation angle
 
             // Section 3
             thrustElevation_(2,0) = 5.0;   // Lower bound altitude
             thrustElevation_(2,1) = 15.0;   // Upper bound altitude
 
-            thrustElevation_(2,2) = deg2rad(allTheSameAngleElevation);   // Thrust elevation angle
+            thrustElevation_(2,2) = deg2rad(allTheSameAngleElevation_);   // Thrust elevation angle
 
             // Section 4
             thrustElevation_(3,0) = 15.0;   // Lower bound altitude
             thrustElevation_(3,1) = 35.0;   // Upper bound altitude
 
-            thrustElevation_(3,2) = deg2rad(allTheSameAngleElevation);   // Thrust elevation angle
+            thrustElevation_(3,2) = deg2rad(allTheSameAngleElevation_);   // Thrust elevation angle
 
             // Section 5
             thrustElevation_(4,0) = 35.0;   // Lower bound altitude
             thrustElevation_(4,1) = 100.0;   // Upper bound altitude
 
-            thrustElevation_(4,2) = deg2rad(allTheSameAngleElevation);   // Thrust elevation angle
+            thrustElevation_(4,2) = deg2rad(allTheSameAngleElevation_);   // Thrust elevation angle
 
             // Section 6
             thrustElevation_(5,0) = 100.0;   // Lower bound altitude
             thrustElevation_(5,1) = finalAltitude_;   // Upper bound altitude
 
-            thrustElevation_(5,2) = deg2rad(allTheSameAngleElevation);   // Thrust elevation angle
+            thrustElevation_(5,2) = deg2rad(allTheSameAngleElevation_);   // Thrust elevation angle
 
                                                     } // End of constructor
 
@@ -301,17 +301,115 @@ public:
 
 
 
-    //// Set functions ////
+//// Set functions ////
 
-    void setThrustAzimuth(const Eigen::MatrixXd updatedThrustAzimuthSet)            // This function lets you provide the class with your own thrust azimuth angle set
+
+    /// Thrust angles start ///
+    void setThrustAzimuthSet(const Eigen::MatrixXd updatedThrustAzimuthSet)            // This function lets you provide the class with your own thrust azimuth angle set including altitude ranges
     {
         thrustAzimuth_ = updatedThrustAzimuthSet;
     }
 
-    void setThrustElevation(const Eigen::MatrixXd updatedThrustElevationSet)            // This function lets you provide the class with your own thrust elevation angle set
+    void setThrustElevationSet(const Eigen::MatrixXd updatedThrustElevationSet)            // This function lets you provide the class with your own thrust elevation angle set including altitude ranges
     {
         thrustElevation_ = updatedThrustElevationSet;
     }
+
+    void setConstantThrustAzimuthAngle(const double updatedConstantThrustAzimuthAngle)      // This function lets you provide the class with your own constant thrust azimuth angle
+    {
+        allTheSameAngleAzimuth_ = updatedConstantThrustAzimuthAngle; // Update the constant angle and the values in the matrix
+
+        // Section 1
+        thrustAzimuth_(0,2) = deg2rad(allTheSameAngleAzimuth_);   // Thrust azimuth angle
+
+        // Section 2
+        thrustAzimuth_(1,2) = deg2rad(allTheSameAngleAzimuth_);   // Thrust azimuth angle
+
+        // Section 3
+        thrustAzimuth_(2,2) = deg2rad(allTheSameAngleAzimuth_);   // Thrust azimuth angle
+
+        // Section 4
+        thrustAzimuth_(3,2) = deg2rad(allTheSameAngleAzimuth_);   // Thrust azimuth angle
+
+        // Section 5
+        thrustAzimuth_(4,2) = deg2rad(allTheSameAngleAzimuth_);   // Thrust azimuth angle
+
+        // Section 6
+        thrustAzimuth_(5,2) = deg2rad(allTheSameAngleAzimuth_);   // Thrust azimuth angle
+    }
+
+
+    void setConstantThrustElevationAngle(const double updatedConstantThrustElevationAngle)  // This function lets you provide the class with your own constan thrust elevation angle
+    {
+        allTheSameAngleElevation_ = updatedConstantThrustElevationAngle; // Update the constant angle and the values in the matrix
+
+        // Section 1
+        thrustElevation_(0,2) = deg2rad(allTheSameAngleElevation_);   // Thrust Elevation angle
+
+        // Section 2
+        thrustElevation_(1,2) = deg2rad(allTheSameAngleElevation_);   // Thrust Elevation angle
+
+        // Section 3
+        thrustElevation_(2,2) = deg2rad(allTheSameAngleElevation_);   // Thrust Elevation angle
+
+        // Section 4
+        thrustElevation_(3,2) = deg2rad(allTheSameAngleElevation_);   // Thrust Elevation angle
+
+        // Section 5
+        thrustElevation_(4,2) = deg2rad(allTheSameAngleElevation_);   // Thrust Elevation angle
+
+        // Section 6
+        thrustElevation_(5,2) = deg2rad(allTheSameAngleElevation_);   // Thrust Elevation angle
+    }
+
+    void setThrustAzimuthAngleValues(const Eigen::VectorXd updatedThrustAzimuthAngleVector)      // This function lets you provide the class with your own thrust azimuth angle values
+    {
+
+        // Section 1
+        thrustAzimuth_(0,2) = deg2rad(updatedThrustAzimuthAngleVector(0));   // Thrust azimuth angle
+
+        // Section 2
+        thrustAzimuth_(1,2) = deg2rad(updatedThrustAzimuthAngleVector(1));   // Thrust azimuth angle
+
+        // Section 3
+        thrustAzimuth_(2,2) = deg2rad(updatedThrustAzimuthAngleVector(2));   // Thrust azimuth angle
+
+        // Section 4
+        thrustAzimuth_(3,2) = deg2rad(updatedThrustAzimuthAngleVector(3));   // Thrust azimuth angle
+
+        // Section 5
+        thrustAzimuth_(4,2) = deg2rad(updatedThrustAzimuthAngleVector(4));   // Thrust azimuth angle
+
+        // Section 6
+        thrustAzimuth_(5,2) = deg2rad(updatedThrustAzimuthAngleVector(5));   // Thrust azimuth angle
+    }
+
+
+    void setThrustElevationAngleValues(const Eigen::VectorXd updatedThrustElevationAngleVector)      // This function lets you provide the class with your own thrust Elevation angle values
+    {
+
+        // Section 1
+        thrustElevation_(0,2) = deg2rad(updatedThrustElevationAngleVector(0));   // Thrust Elevation angle
+
+        // Section 2
+        thrustElevation_(1,2) = deg2rad(updatedThrustElevationAngleVector(1));   // Thrust Elevation angle
+
+        // Section 3
+        thrustElevation_(2,2) = deg2rad(updatedThrustElevationAngleVector(2));   // Thrust Elevation angle
+
+        // Section 4
+        thrustElevation_(3,2) = deg2rad(updatedThrustElevationAngleVector(3));   // Thrust Elevation angle
+
+        // Section 5
+        thrustElevation_(4,2) = deg2rad(updatedThrustElevationAngleVector(4));   // Thrust Elevation angle
+
+        // Section 6
+        thrustElevation_(5,2) = deg2rad(updatedThrustElevationAngleVector(5));   // Thrust Elevation angle
+    }
+
+
+
+    /// Thrust angles end set ///
 
     void setReferenceArea(const double updatedReferenceArea)                // This function can be used to change the reference area of the MAV. If set to 0 the drag can be neglected in all equations
     {
@@ -373,6 +471,8 @@ private:
     double MAVmass_;                                                // m    vehicle GLOM
     double finalAltitude_;                                          // h    final altitude of the MAV (pre-set)
     double thrustResetValue_;                                       // Thrust reset value
+    double allTheSameAngleAzimuth_;                                 // psi  Set a constant thrust angle
+    double allTheSameAngleElevation_;                               // epsilon    Set a constant thrust angle
 
     // Creating the different polynomial coefficient parameter matrices
 
