@@ -24,7 +24,7 @@
  *
  *    Changelog
  *      YYMMDD    Author            Comment
- *      160919    S.D. Petrovic     File created
+ *      160921    S.D. Petrovic     File created
  *
  *    References
  *
@@ -32,12 +32,7 @@
  *
  */
 
-
-
-
-#ifndef TRAJECTORYINTEGRATION_H
-#define TRAJECTORYINTEGRATION_H
-
+// This is a test main file to test the different class files, header/source files to see if any output is produced (verification)
 
 #include <iostream>
 #include <fstream>
@@ -140,43 +135,37 @@
 #include <tudat/Tudat/Astrodynamics/BasicAstrodynamics/orbitalElementConversions.h>
 
 
+// testing
+#include <thesisProject/projectLibraries/trajectoryIntegration.h>  // Test the trajectory integration file
 
-/// Main function ///
-/// \brief performIntegration
-/// \param desiredOrbitalAltitude
-/// \param desiredInclinationDeg
-/// \param initialAltitude
-/// \param initialLatitudeDeg
-/// \param initialLongitudeDeg
-/// \param FlightPathAngleDeg
-/// \param HeadingAngleDeg
-/// \param initialGroundVelocity
-/// \param massMAV
-/// \param thrust
-/// \param specificImpulse
-/// \param initialBurnTime
-/// \param constantThrustElevationAngle
-/// \param constantThrustAzimuthAngle
-/// \param maxOrder
-/// \param chosenLocalErrorTolerance
-/// \param chosenStepSize
-/// \param setEndTime
-/// \param RKFinitiaterTime
-/// \param rotatingPlanet
-/// \param Gravity
-/// \param Thrust
-/// \param Drag
-/// \param comparison
-/// \return
-///
-Eigen::MatrixXd performIntegration(const double desiredOrbitalAltitude, const double desiredInclinationDeg, // Desired orbit parameters
-                                   const double initialAltitude, const double initialLatitudeDeg, const double initialLongitudeDeg, const double FlightPathAngleDeg, const double HeadingAngleDeg, const double initialGroundVelocity, // Launch conditions
-                                   const double massMAV, const double thrust, const double specificImpulse, const double initialBurnTime, const double constantThrustElevationAngle, const double constantThrustAzimuthAngle, // MAV specifications
-                                   const int maxOrder = 20, const double chosenLocalErrorTolerance = 1e-15, // Setting the order for TSI and the tolerance used for the step-size determination in the integrators
-                                   const double chosenStepSize = 0.01, const double setEndTime = 2000.0, const double RKFinitiaterTime = 1.0, // Set the integration time values: initial step-size, end time in case condition not found and time that should be spend integrating the first second by RKF
-                                   const bool rotatingPlanet = true, const bool Gravity = true, const bool Thrust = true, const bool Drag = true, // Rotation and the different accelerations on or off
-                                   const bool comparison = true); // Comparison between TSI and RKF printed in output
+////////////////////////
+
+/// PaGMO includes ///
+
+#include "../pagmo/src/pagmo.h"
+
+using namespace pagmo;
 
 
+int main()
 
-#endif // TRAJECTORYINTEGRATION_H
+{
+
+    //We instantiate the problem Schwefel with dimension 50
+//	pagmo::problem::zdt prob(1,10);
+    pagmo::problem::schwefel prob(50);
+    //We instantiate the algorithm differential evolution with 500 generations
+//	pagmo::algorithm::pade algo;
+    pagmo::algorithm::de algo;
+//    pagmo::algorithm::mbh algo;
+
+    //1 - Evolution takes place on the same thread as main
+    //We instantiate a population containing 20 candidate solutions to the Schwefel problem
+    pagmo::population pop(prob,20);
+    algo.evolve(pop);
+
+
+    return 0;
+}
+
+

@@ -37,11 +37,19 @@
 
 
 #include <iostream>
+#include <iomanip> // used for setprecision
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <string>
 #include <cmath>
+#include <stack>
+#include <ctime>
+#include <chrono>
+#include <ratio>
+#include <thread>
+//#include "chrono_io"
+#include <sys/time.h>
 
 #include <tudatApplications/thesisProject/linearAlgebraTypesUpdated.h>
 #include <Tudat/Mathematics/BasicMathematics/mathematicalConstants.h>
@@ -127,7 +135,11 @@ Eigen::Quaterniond getPropulsionToBodyFrameTransformationQuaternion(
 //            thrustAzimuth, thrustElevation ).inverse( );
 //}
 
+/// Time functions
 
+void tic(); // Creating a similar function to tic toc in Matlab
+
+void toc();
 
 
 #endif // OTHERREQUIREDFUNCTIONS_H

@@ -1,3 +1,38 @@
+/*    Copyright (c) 2010-2016, Delft University of Technology
+ *    All rights reserved.
+ *
+ *    Redistribution and use in source and binary forms, with or without modification, are
+ *    permitted provided that the following conditions are met:
+ *      - Redistributions of source code must retain the above copyright notice, this list of
+ *        conditions and the following disclaimer.
+ *      - Redistributions in binary form must reproduce the above copyright notice, this list of
+ *        conditions and the following disclaimer in the documentation and/or other materials
+ *        provided with the distribution.
+ *      - Neither the name of the Delft University of Technology nor the names of its contributors
+ *        may be used to endorse or promote products derived from this software without specific
+ *        prior written permission.
+ *
+ *    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+ *    OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ *    COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ *    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+ *    GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ *    AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ *    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ *    OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *    Changelog
+ *      YYMMDD    Author            Comment
+ *      160919    S.D. Petrovic     File created
+ *
+ *    References
+ *
+ *    Notes
+ *
+ */
+
+
 #include "trajectoryIntegration.h"
 
 /// Main function ///
@@ -108,8 +143,8 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     MAV.setConstantThrustAzimuthAngle(constantThrustAzimuthAngle); // Set the constant thrust azimuth angle
     MAV.setConstantThrustElevationAngle(constantThrustElevationAngle); // Set the constant thrust elevation angle
 
-    std::cout<<"Azimuth = "<<MAV.thrustAzimuth()<<std::endl;
-    std::cout<<"Elevation = "<<MAV.thrustElevation()<<std::endl;
+//    std::cout<<"Azimuth = "<<MAV.thrustAzimuth()<<std::endl;
+//    std::cout<<"Elevation = "<<MAV.thrustElevation()<<std::endl;
 
 
 
@@ -766,10 +801,13 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 
 /// Performing the actual TSI integration ///
 
+        tic(); // Matlab tic-toc
+
         // Determine the CPU time
 
         const double initialCPUTime = clock();
         // Determine the CPU time
+//        std::cout<<"initialCPUTime = "<<initialCPUTime<<std::endl;
 
 
         // Set the end time
@@ -1062,17 +1100,20 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 
         /// Determine the CPU time taken ///
 
+        std::cout<<"TSI time:"<<std::endl;
+        toc(); // Matlab tic-toc
 
         // Determine the CPU time
         const double TSICPUTime = clock();
         // Determine the CPU time
+//        std::cout<<"TSICPUTime = "<<TSICPUTime<<std::endl;
 
         // Determine the elapsed CPU time
 
         const double elapsedTSICPUTime = TSICPUTime-initialCPUTime;
 
-        std::cout<<"The elapsed TSI CPU time = "<<elapsedTSICPUTime/CLOCKS_PER_SEC<<" sec"<<std::endl;
-                    std::cout<<"The elapsed TSI CPU time in clocks = "<<elapsedTSICPUTime<<std::endl;
+//        std::cout<<"The elapsed TSI CPU time = "<<elapsedTSICPUTime/CLOCKS_PER_SEC<<" sec"<<std::endl;
+//                    std::cout<<"The elapsed TSI CPU time in clocks = "<<elapsedTSICPUTime<<std::endl;
 //                    std::cout<<"CLOCKS_PER_SEC = "<<CLOCKS_PER_SEC<<std::endl;
 
 //                    std::cout<<"sin(pi) = "<<sin(tudat::mathematical_constants::LONG_PI)<<std::endl;
@@ -1243,7 +1284,7 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 
                             std::string ComputerTimeString = currentYear + "-" + currentMonth + "-" + currentDay + "_" + currentHour + ":" + currentMin + ":" + currentSec;  // Convert to string and store
 
-                            std::string newFileName = "backupRKFFileAtDateAndTime_" + ComputerTimeString + ".csv";
+                            std::string newFileName = "backupSpherical(Cart)RKFFileAtDateAndTime_" + ComputerTimeString + ".csv";
                             std::string newFileNameSpherical = "backupSphericalRKFFileAtDateAndTime_" + ComputerTimeString + ".csv";
 
 
@@ -1409,6 +1450,8 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 
                     bool RKFtimeCPUset = false; // Used to determine if the CPU timing cycle has begon
                     double initialCPUTimeRKF = 0.0; // Setting the default to zero
+
+                    tic();  // determine time using matlab tic-toc
 
                     do
                     {
@@ -1953,10 +1996,13 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 
 //                    std::cout<<"Final number of integration steps is "<<count-countRKFTSI<<std::endl;
                     std::cout<<"Final number of integration steps is "<<count<<std::endl;
+                    std::cout<<"Final number of function evaluations is "<<count*13<<std::endl;
                     std::cout<<"The end state is "<<endState<<std::endl;
 
                     /// Determine the CPU time taken ///
 
+                    std::cout<<"RKF time: "<<std::endl;
+                    toc();  // determine time using matlab tic-toc
 
                     // Determine the CPU time
                     const double finalCPUTime = clock();
@@ -1966,8 +2012,8 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
 
                     const double elapsedCPUTime = finalCPUTime-initialCPUTimeRKF;
 
-                    std::cout<<"The elapsed RKF CPU time = "<<elapsedCPUTime/CLOCKS_PER_SEC<<" sec"<<std::endl;
-                    std::cout<<"The elapsed RKF CPU time in clocks = "<<elapsedCPUTime<<std::endl;
+//                    std::cout<<"The elapsed RKF CPU time = "<<elapsedCPUTime/CLOCKS_PER_SEC<<" sec"<<std::endl;
+//                    std::cout<<"The elapsed RKF CPU time in clocks = "<<elapsedCPUTime<<std::endl;
 //                    std::cout<<"CLOCKS_PER_SEC = "<<CLOCKS_PER_SEC<<std::endl;
 
 //                    std::cout<<"sin(pi) = "<<sin(tudat::mathematical_constants::LONG_PI)<<std::endl;

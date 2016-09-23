@@ -108,3 +108,34 @@ Eigen::Quaterniond getPropulsionToBodyFrameTransformationQuaternion(
     return getBodyToPropulsionFrameTransformationQuaternion(
             thrustAzimuth, thrustElevation ).inverse( );
 }
+
+
+/// Time functions (from stackoverflow.com/questions/13485266/how-to-have-matlab-tic-toc-in-c and http://en.cppreference.com/w/cpp/chrono/duration/duration_cast)
+
+std::stack<clock_t> tictoc_stack;
+
+typedef std::chrono::high_resolution_clock Clock;
+double time1;
+
+auto t1 = Clock::now(); // This is set such that t1 can be changed in the tic() void without it being lost after the void ends
+
+void tic(){ // Creating a similar function to tic toc in Matlab
+    tictoc_stack.push(clock());
+    t1 = Clock::now();
+
+}
+
+
+void toc(){
+    std::cout<<"CPU time Elapsed: "
+            << ((double)(clock() - tictoc_stack.top()))/CLOCKS_PER_SEC<<" seconds"
+            << std::endl;
+    tictoc_stack.pop();
+
+    auto t2 = Clock::now();
+//    std::chrono::duration<double, std::milli> fp_ms = t2 - t1;
+    std::chrono::duration<double> fp_s = t2 - t1;
+//    std::cout<<"Time Elapsed more accurate = "<<std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()<<" milliseconds"<<std::endl;
+//    std::cout<<"Time Elapsed even more accurately "<<fp_ms.count()<<" milliseconds"<<std::endl;
+    std::cout<<"Wall time Elapsed: "<<fp_s.count()<<" seconds"<<std::endl;
+}

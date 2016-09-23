@@ -181,7 +181,7 @@ int main()
 
         int line = 0; // Line to print in vector
         while(inputFile >> variable >> equalSign >> number){
-            std::cout<<variable<<" "<<equalSign<<" "<<number<<std::endl;
+//            std::cout<<variable<<" "<<equalSign<<" "<<number<<std::endl;
 
             inputVectorValues.conservativeResize(line+1); // This resizes the vector and makes it bigger to include all the values in the input file
 
@@ -192,7 +192,7 @@ int main()
 
 
 
-        std::cout<<"inputVectorValues"<<'\n'<<inputVectorValues<<std::endl;
+//        std::cout<<"inputVectorValues"<<'\n'<<inputVectorValues<<std::endl;
 
         inputFile.close();
     }
@@ -214,10 +214,19 @@ int main()
     const double initialBurnTime =          inputVectorValues(11);
     const double constantThrustElevationAngle = inputVectorValues(12);
     const double constantThrustAzimuthAngle = inputVectorValues(13);
-    const int maxOrder =                    inputVectorValues(14);
-    const double chosenLocalErrorTolerance = inputVectorValues(15);
+
+//    const int maxOrder =                    inputVectorValues(14);
+    const int maxOrder = 20;
+
+//    const double chosenLocalErrorTolerance = inputVectorValues(15);
+    const double chosenLocalErrorTolerance = 1e-15;
+
     const double chosenStepSize =           inputVectorValues(16);
-    const double setEndTime =               inputVectorValues(17);
+
+
+//    const double setEndTime =               inputVectorValues(17);
+    const double setEndTime = 1796;
+
     const double RKFinitiaterTime =         inputVectorValues(18);
     const bool rotatingPlanet =             inputVectorValues(19);
     const bool GravityAcc =                 inputVectorValues(20);
@@ -228,6 +237,9 @@ int main()
 /////////////////////////////////////////////////////////////////////// Actual propagation ///////////////////////////////////////////////////////////////////////
 
 /// Perform the integration ///
+
+
+
 
         Eigen::MatrixXd outputMatrix = performIntegration(desiredOrbitalAltitude,desiredInclinationDeg,initialAltitude,initialLatitudeDeg,initialLongitudeDeg,
                                                           FlightPathAngleDeg,HeadingAngleDeg,initialGroundVelocity,massMAV,thrust,specificImpulse,initialBurnTime,
