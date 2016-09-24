@@ -690,3 +690,8 @@ target_link_libraries(propagation_tool project_libraries tudat_numerical_integra
 #target_link_libraries(trajectory_optimisation project_libraries tudat_numerical_integrators tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
 ##${MANDATORY_LIBRARIES} pagmo_static
 
+
+add_executable(validation_thrust_curve "${SRCROOT}/validationThrustCurve.cpp")
+setup_executable_target(validation_thrust_curve "${SRCROOT}")
+target_link_libraries(validation_thrust_curve project_libraries tudat_numerical_integrators tudat_gravitation tudat_ephemerides tudat_reference_frames tudat_basic_astrodynamics tudat_basic_mathematics tudat_spice_interface cspice ${TUDAT_CORE_LIBRARIES} ${Boost_LIBRARIES} )
+

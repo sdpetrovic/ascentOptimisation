@@ -205,7 +205,10 @@ int main()
     const double initialAltitude =          inputVectorValues(2);
     const double initialLatitudeDeg =       inputVectorValues(3);
     const double initialLongitudeDeg =      inputVectorValues(4);
+
     const double FlightPathAngleDeg =       inputVectorValues(5);
+//    const double FlightPathAngleDeg = 89;
+
     const double HeadingAngleDeg =          inputVectorValues(6);
     const double initialGroundVelocity =    inputVectorValues(7);
     const double massMAV =                  inputVectorValues(8);
