@@ -143,9 +143,109 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
     MAV.setConstantThrustAzimuthAngle(constantThrustAzimuthAngle); // Set the constant thrust azimuth angle
     MAV.setConstantThrustElevationAngle(constantThrustElevationAngle); // Set the constant thrust elevation angle
 
+/*    // In case of different angles
+    Eigen::VectorXd thrustElevationVector = Eigen::VectorXd::Zero(6); // -0.674 constant
+
+    thrustElevationVector(0) = 0.0;
+    thrustElevationVector(1) = -6.0;
+    thrustElevationVector(2) = -15.0;
+    thrustElevationVector(3) = 0.0;
+    thrustElevationVector(4) = 0.0;
+    thrustElevationVector(5) = 0.0;
+
+
+    Eigen::VectorXd thrustAzimuthVector= Eigen::VectorXd::Zero(6); // 0.7273 constant
+
+
+    thrustAzimuthVector(0) = 0.0;
+    thrustAzimuthVector(1) = 8.5;
+    thrustAzimuthVector(2) = 13.0;
+    thrustAzimuthVector(3) = 0.0;
+    thrustAzimuthVector(4) = 0.0;
+    thrustAzimuthVector(5) = 0.0;
+
+    MAV.setThrustElevationAngleValues(thrustElevationVector);
+    MAV.setThrustAzimuthAngleValues(thrustAzimuthVector);
+    std::cout<<"It has been set"<<std::endl;
+
+    // In case of variable angles
+    Eigen::MatrixXd thrustElevationMatrix = Eigen::MatrixXd::Zero(7,3);
+
+    thrustElevationMatrix(0,0) = -0.6; // Lower bound
+    thrustElevationMatrix(0,1) = -0.5278; // Upper bound
+
+    thrustElevationMatrix(0,2) = 0.0; // Value
+
+    thrustElevationMatrix(1,0) = thrustElevationMatrix(0,1); // Lower bound
+    thrustElevationMatrix(1,1) = 0.0729; // Upper bound
+
+    thrustElevationMatrix(1,2) = deg2rad(0.174); // Value
+
+    thrustElevationMatrix(2,0) = thrustElevationMatrix(1,1); // Lower bound
+    thrustElevationMatrix(2,1) = 2.176; // Upper bound
+
+    thrustElevationMatrix(2,2) = deg2rad(0.176); // Value
+
+    thrustElevationMatrix(3,0) = thrustElevationMatrix(2,1); // Lower bound
+    thrustElevationMatrix(3,1) = 18.227; // Upper bound
+
+    thrustElevationMatrix(3,2) = deg2rad(-11.137); // Value
+
+    thrustElevationMatrix(4,0) = thrustElevationMatrix(3,1); // Lower bound
+    thrustElevationMatrix(4,1) = 51.5; // Upper bound
+
+    thrustElevationMatrix(4,2) = deg2rad(-21.45); // Value
+
+    thrustElevationMatrix(5,0) = thrustElevationMatrix(4,1); // Lower bound
+    thrustElevationMatrix(5,1) = 54.046; // Upper bound
+
+    thrustElevationMatrix(5,2) = 0.0; // Value
+
+    thrustElevationMatrix(6,0) = thrustElevationMatrix(5,1); // Lower bound
+    thrustElevationMatrix(6,1) = 480.0; // Upper bound
+
+    thrustElevationMatrix(6,2) = 0.0; // Value
+
+    Eigen::MatrixXd thrustAzimuthMatrix = Eigen::MatrixXd::Zero(7,3);
+
+    thrustAzimuthMatrix(0,0) = -0.6; // Lower bound
+    thrustAzimuthMatrix(0,1) = -0.59; // Upper bound
+
+    thrustAzimuthMatrix(0,2) = 0.0; // Value
+
+    thrustAzimuthMatrix(1,0) = thrustAzimuthMatrix(0,1); // Lower bound
+    thrustAzimuthMatrix(1,1) = -0.5278; // Upper bound
+
+    thrustAzimuthMatrix(1,2) = deg2rad(4.115); // Value
+
+    thrustAzimuthMatrix(2,0) = thrustAzimuthMatrix(1,1); // Lower bound
+    thrustAzimuthMatrix(2,1) = -0.277; // Upper bound
+
+    thrustAzimuthMatrix(2,2) = deg2rad(4.154); // Value
+
+    thrustAzimuthMatrix(3,0) = thrustAzimuthMatrix(2,1); // Lower bound
+    thrustAzimuthMatrix(3,1) = 10.52; // Upper bound
+
+    thrustAzimuthMatrix(3,2) = deg2rad(5.638); // Value
+
+    thrustAzimuthMatrix(4,0) = thrustAzimuthMatrix(3,1); // Lower bound
+    thrustAzimuthMatrix(4,1) = 54.045; // Upper bound
+
+    thrustAzimuthMatrix(4,2) = deg2rad(7.0835); // Value
+
+    thrustAzimuthMatrix(5,0) = thrustAzimuthMatrix(4,1); // Lower bound
+    thrustAzimuthMatrix(5,1) = 54.046; // Upper bound
+
+    thrustAzimuthMatrix(5,2) = 0.0; // Value
+
+    thrustAzimuthMatrix(6,0) = thrustAzimuthMatrix(5,1); // Lower bound
+    thrustAzimuthMatrix(6,1) = 480.0; // Upper bound
+
+    thrustAzimuthMatrix(6,2) = 0.0; // Value
+
 //    std::cout<<"Azimuth = "<<MAV.thrustAzimuth()<<std::endl;
 //    std::cout<<"Elevation = "<<MAV.thrustElevation()<<std::endl;
-
+//*/
 
 
     const double FlightPathAngle = deg2rad(FlightPathAngleDeg);     // Set flight-path angle in rad --> Default = 90.0 deg
@@ -2181,8 +2281,8 @@ std::cout<<"////////////////////////////////////////////////////////////////// S
         std::cout<<"deltaVforRKF = "<<deltaVforRKF<<std::endl;
         std::cout<<"deltaVforTSI = "<<deltaVforTSI<<std::endl;
 
-        std::cout<<"desiredInclination-RKFendKeplerElements(2) = "<<desiredInclination-RKFendKeplerElements(2)<<std::endl;
-        std::cout<<"desiredInclination-TSIendKeplerElements(2) = "<<desiredInclination-TSIendKeplerElements(2)<<std::endl;
+        std::cout<<"desiredInclination-RKFendKeplerElements(2) = "<<rad2deg(desiredInclination-RKFendKeplerElements(2))<<std::endl;
+        std::cout<<"desiredInclination-TSIendKeplerElements(2) = "<<rad2deg(desiredInclination-TSIendKeplerElements(2))<<std::endl;
 
         std::cout<<"desiredInclination = "<<rad2deg(desiredInclination)<<std::endl;
         std::cout<<"RKFInclination = "<<rad2deg(RKFendKeplerElements(2))<<std::endl;

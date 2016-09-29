@@ -69,8 +69,8 @@ end
 
 % Specify the paths
 
-RKFpath = fullfile('02.Version2SecondValidationTest','backupRKFFileAtDateAndTime_2016-09-06_11:19:12.csv'); % Create the path for the RKF file
-TSIpath = fullfile('02.Version2SecondValidationTest','backupSpherical(Cart)TSIFileAtDateAndTime_2016-09-06_11:19:12.csv'); % Create the path for the TSI file
+% RKFpath = fullfile('02.Version2SecondValidationTest','backupRKFFileAtDateAndTime_2016-09-06_11:19:12.csv'); % Create the path for the RKF file
+TSIpath = fullfile('03.Version3SecondValidationTest','backupSpherical(Cart)TSIFileAtDateAndTime_2016-09-25_12:26:20.csv'); % Create the path for the TSI file
 referenceDataPath = fullfile('02.Version1SecondValidationTest','trajectoryOutputDataCase7_3_2016_v33.txt'); % Create the path for the reference trajectory
 % RKFThrustPath = fullfile('01.Version2.0FirstValidationTest','Thrust.csv'); % Create the path for the RKF thrust file
 
@@ -79,7 +79,7 @@ referenceDataPath = fullfile('02.Version1SecondValidationTest','trajectoryOutput
 % CartesianRKFdata = dlmread(RKFpath,',', 1, 1); % Read the file
 % CartesianTSIdata_spher = dlmread(TSIpath,',', 1, 1); % Read the file
 
-CartesianRKFdata = csvread(RKFpath); % Read the file
+% CartesianRKFdata = csvread(RKFpath); % Read the file
 CartesianTSIdata_spher = csvread(TSIpath); % Read the file
 ReferenceData = dlmread(referenceDataPath); % Read the file
 % ThrustData = csvread(RKFThrustPath); % Read the file
@@ -87,13 +87,13 @@ ReferenceData = dlmread(referenceDataPath); % Read the file
 
 %% Generate the required vectors
 
-% RKF
-RKFxPosition = CartesianRKFdata(:,2); % RKF x-position
-RKFyPosition = CartesianRKFdata(:,3); % RKF y-position
-RKFzPosition = CartesianRKFdata(:,4); % RKF z-position
-RKFxVelocity = CartesianRKFdata(:,5); % RKF x-velocity
-RKFyVelocity = CartesianRKFdata(:,6); % RKF y-velocity
-RKFzVelocity = CartesianRKFdata(:,7); % RKF z-velocity
+% % RKF
+% RKFxPosition = CartesianRKFdata(:,2); % RKF x-position
+% RKFyPosition = CartesianRKFdata(:,3); % RKF y-position
+% RKFzPosition = CartesianRKFdata(:,4); % RKF z-position
+% RKFxVelocity = CartesianRKFdata(:,5); % RKF x-velocity
+% RKFyVelocity = CartesianRKFdata(:,6); % RKF y-velocity
+% RKFzVelocity = CartesianRKFdata(:,7); % RKF z-velocity
 
 % TSI
 TSIxPosition = CartesianTSIdata_spher(:,2); % TSI x-position
@@ -138,8 +138,70 @@ hold on
 % set(Mars,'FaceColor',[0.8 0.2 0 ],'FaceAlpha',0.5); % Give Mars a nice orangy colour
 set(Mars,'FaceColor',[1 1 1 ],'FaceAlpha',0.5); % Give Mars a nice white colour
 hold on
-plot3(RKFxPosition,RKFyPosition,RKFzPosition,'g'); % Plot the RKF trajectory
+% plot3(RKFxPosition,RKFyPosition,RKFzPosition,'g'); % Plot the RKF trajectory
+% hold on
+plot3(TSIxPosition,TSIyPosition,TSIzPosition,'b'); % Plot the TSI trajectory
 hold on
+plot3(desiredOrbitXposition,desiredOrbitYposition,desiredOrbitZposition,'k--'); % Plot the desired orbit
+hold on
+plot3(RefxPosition,RefyPosition,RefzPosition,'r--'); % Plot the reference trajectory 
+% hold on
+% quiver3(RKFxPosition,RKFyPosition,RKFzPosition,ThrustXacc,ThrustYacc,ThrustZacc,'r'); % Plot the RKF thrust
+% view(180,0);
+% view(74.5,0); % see the trajectory from the side
+% view(74.5,90);  % see the trajectory from the top
+view(90,0); % as seen from the x-axis
+% view(180,0); % as seen from the y-axis
+% view(0,90); % as seen from the z-axis
+% view(0,-90); % as seen from the negative z-axis
+
+
+title('3-D trajectory plot over Mars'); % Give the figure a title
+xlabel('x-position [km]'); % Label the different axes
+ylabel('y-position [km]');
+zlabel('z-position [km]');
+legend('Mars','TSI','Desired orbit','Actual trajectory','Location','NorthEastOutside'); % Add a legend in the top right corner
+
+
+figure(2)
+Mars = surf(xMars,yMars,zMars); % Plot "Mars"
+hold on
+% set(Mars,'FaceColor',[0.8 0.2 0 ],'FaceAlpha',0.5); % Give Mars a nice orangy colour
+set(Mars,'FaceColor',[1 1 1 ],'FaceAlpha',0.5); % Give Mars a nice white colour
+hold on
+% plot3(RKFxPosition,RKFyPosition,RKFzPosition,'g'); % Plot the RKF trajectory
+% hold on
+plot3(TSIxPosition,TSIyPosition,TSIzPosition,'b'); % Plot the TSI trajectory
+hold on
+plot3(desiredOrbitXposition,desiredOrbitYposition,desiredOrbitZposition,'k--'); % Plot the desired orbit
+hold on
+plot3(RefxPosition,RefyPosition,RefzPosition,'r--'); % Plot the reference trajectory 
+% hold on
+% quiver3(RKFxPosition,RKFyPosition,RKFzPosition,ThrustXacc,ThrustYacc,ThrustZacc,'r'); % Plot the RKF thrust
+% view(180,0);
+% view(74.5,0); % see the trajectory from the side
+% view(74.5,90);  % see the trajectory from the top
+% view(90,0); % as seen from the x-axis
+view(180,0); % as seen from the y-axis
+% view(0,90); % as seen from the z-axis
+% view(0,-90); % as seen from the negative z-axis
+
+
+title('3-D trajectory plot over Mars'); % Give the figure a title
+xlabel('x-position [km]'); % Label the different axes
+ylabel('y-position [km]');
+zlabel('z-position [km]');
+legend('Mars','TSI','Desired orbit','Actual trajectory','Location','NorthEastOutside'); % Add a legend in the top right corner
+
+
+figure(3)
+Mars = surf(xMars,yMars,zMars); % Plot "Mars"
+hold on
+% set(Mars,'FaceColor',[0.8 0.2 0 ],'FaceAlpha',0.5); % Give Mars a nice orangy colour
+set(Mars,'FaceColor',[1 1 1 ],'FaceAlpha',0.5); % Give Mars a nice white colour
+hold on
+% plot3(RKFxPosition,RKFyPosition,RKFzPosition,'g'); % Plot the RKF trajectory
+% hold on
 plot3(TSIxPosition,TSIyPosition,TSIzPosition,'b'); % Plot the TSI trajectory
 hold on
 plot3(desiredOrbitXposition,desiredOrbitYposition,desiredOrbitZposition,'k--'); % Plot the desired orbit
@@ -156,91 +218,91 @@ view(0,90); % as seen from the z-axis
 % view(0,-90); % as seen from the negative z-axis
 
 
-axis([-500 2500 3000 4000 -2500 0]); % Set specific axes
-
 title('3-D trajectory plot over Mars'); % Give the figure a title
 xlabel('x-position [km]'); % Label the different axes
 ylabel('y-position [km]');
 zlabel('z-position [km]');
-legend('Mars','RKF','TSI','Desired orbit','Actual trajectory','Location','NorthEastOutside'); % Add a legend in the top right corner
+legend('Mars','TSI','Desired orbit','Actual trajectory','Location','NorthEastOutside'); % Add a legend in the top right corner
 
 
-figure(2) % Just the trajectories
-plot3(RKFxPosition,RKFyPosition,RKFzPosition,'g'); % Plot the RKF trajectory
-hold on
+figure(4) % Just the trajectories
+% plot3(RKFxPosition,RKFyPosition,RKFzPosition,'g'); % Plot the RKF trajectory
+% hold on
 plot3(TSIxPosition,TSIyPosition,TSIzPosition,'b'); % Plot the TSI trajectory
 hold on
 plot3(desiredOrbitXposition,desiredOrbitYposition,desiredOrbitZposition,'k--'); % Plot the desired orbit
 hold on
 plot3(RefxPosition,RefyPosition,RefzPosition,'r--'); % Plot the reference trajectory 
 
-axis([-500 2500 3000 4000 -2500 0]); % Set specific axes
+axis([-4000 4000 -4000 4000 -4000 4000]); % Set specific axes
 
 title('3-D trajectory plot (trajectories only)'); % Give the figure a title
 xlabel('x-position [km]'); % Label the different axes
 ylabel('y-position [km]');
 zlabel('z-position [km]');
-legend('RKF','TSI','Desired orbit','Actual trajectory','Location','NorthEastOutside'); % Add a legend in the top right corner
-
-% Create the same plots including the velocity 
-figure(3)
-Mars = surf(xMars,yMars,zMars); % Plot "Mars"
-hold on
-set(Mars,'FaceColor',[0.8 0.2 0 ],'FaceAlpha',0.5); % Give Mars a nice orangy colour
-hold on
-quiver3(RKFxPosition,RKFyPosition,RKFzPosition,RKFxVelocity,RKFyVelocity,RKFzVelocity,'g'); % Plot the RKF velocity
-hold on
-quiver3(TSIxPosition,TSIyPosition,TSIzPosition,TSIxVelocity,TSIyVelocity,TSIzVelocity,'b'); % Plot the TSI velocity
-hold on
-plot3(desiredOrbitXposition,desiredOrbitYposition,desiredOrbitZposition,'k--'); % Plot the desired orbit
-
-title('3-D velocity plot over Mars'); % Give the figure a title
-xlabel('x-position [km]'); % Label the different axes
-ylabel('y-position [km]');
-zlabel('z-position [km]');
-legend('Mars','RKF','TSI','Desired orbit','Location','NorthEastOutside'); % Add a legend in the top right corner
+legend('TSI','Desired orbit','Actual trajectory','Location','NorthEastOutside'); % Add a legend in the top right corner
 
 
-figure(4) % Just the trajectories
-% plot3(RKFxPosition,RKFyPosition,RKFzPosition,'y'); % Plot the RKF trajectory
-% hold on
-% plot3(TSIxPosition,TSIyPosition,TSIzPosition,'r'); % Plot the TSI trajectory
-% hold on
-quiver3(RKFxPosition,RKFyPosition,RKFzPosition,RKFxVelocity,RKFyVelocity,RKFzVelocity,'g'); % Plot the RKF velocity
-hold on
-quiver3(TSIxPosition,TSIyPosition,TSIzPosition,TSIxVelocity,TSIyVelocity,TSIzVelocity,'b'); % Plot the TSI velocity
-hold on
-plot3(desiredOrbitXposition,desiredOrbitYposition,desiredOrbitZposition,'k--'); % Plot the desired orbit
-
-axis([-4000 4000 -4000 4000 -4000 4000]); % Set specific axes
-
-title('3-D velocity plot (velocity only)'); % Give the figure a title
-xlabel('x-position [km]'); % Label the different axes
-ylabel('y-position [km]');
-zlabel('z-position [km]');
-legend('RKF','TSI','Desired orbit','Location','NorthEastOutside'); % Add a legend in the top right corner
-
-figure(5)
-plot3(desiredOrbitXposition,desiredOrbitYposition,desiredOrbitZposition,'k--'); % Plot the desired orbit
-
-axis([-4000 4000 -4000 4000 -4000 4000]); % Set specific axes
-
-title('3-D desired orbit plot (orbit only)'); % Give the figure a title
-xlabel('x-position [km]'); % Label the different axes
-ylabel('y-position [km]');
-zlabel('z-position [km]');
-legend('Desired orbit','Location','NorthEastOutside'); % Add a legend in the top right corner
-
-% figure(6)
-% quiver3(RKFxPosition,RKFyPosition,RKFzPosition,ThrustXacc,ThrustYacc,ThrustZacc,'r'); % Plot the RKF thrust
 % 
-% axis([-4000 4000 -4000 4000 -4000 4000]); % Set specific axes
+% % Create the same plots including the velocity 
+% figure(3)
+% Mars = surf(xMars,yMars,zMars); % Plot "Mars"
+% hold on
+% set(Mars,'FaceColor',[0.8 0.2 0 ],'FaceAlpha',0.5); % Give Mars a nice orangy colour
+% hold on
+% % quiver3(RKFxPosition,RKFyPosition,RKFzPosition,RKFxVelocity,RKFyVelocity,RKFzVelocity,'g'); % Plot the RKF velocity
+% % hold on
+% quiver3(TSIxPosition,TSIyPosition,TSIzPosition,TSIxVelocity,TSIyVelocity,TSIzVelocity,'b'); % Plot the TSI velocity
+% hold on
+% plot3(desiredOrbitXposition,desiredOrbitYposition,desiredOrbitZposition,'k--'); % Plot the desired orbit
 % 
-% title('3-D thrust plot (thrust only)'); % Give the figure a title
+% title('3-D velocity plot over Mars'); % Give the figure a title
 % xlabel('x-position [km]'); % Label the different axes
 % ylabel('y-position [km]');
 % zlabel('z-position [km]');
-% legend('Thrust','Location','NorthEastOutside'); % Add a legend in the top right corner
+% legend('Mars','TSI','Desired orbit','Location','NorthEastOutside'); % Add a legend in the top right corner
+% 
+% 
+% figure(4) % Just the trajectories
+% % plot3(RKFxPosition,RKFyPosition,RKFzPosition,'y'); % Plot the RKF trajectory
+% % hold on
+% % plot3(TSIxPosition,TSIyPosition,TSIzPosition,'r'); % Plot the TSI trajectory
+% % hold on
+% % quiver3(RKFxPosition,RKFyPosition,RKFzPosition,RKFxVelocity,RKFyVelocity,RKFzVelocity,'g'); % Plot the RKF velocity
+% % hold on
+% quiver3(TSIxPosition,TSIyPosition,TSIzPosition,TSIxVelocity,TSIyVelocity,TSIzVelocity,'b'); % Plot the TSI velocity
+% hold on
+% plot3(desiredOrbitXposition,desiredOrbitYposition,desiredOrbitZposition,'k--'); % Plot the desired orbit
+% 
+% axis([-4000 4000 -4000 4000 -4000 4000]); % Set specific axes
+% 
+% title('3-D velocity plot (velocity only)'); % Give the figure a title
+% xlabel('x-position [km]'); % Label the different axes
+% ylabel('y-position [km]');
+% zlabel('z-position [km]');
+% legend('TSI','Desired orbit','Location','NorthEastOutside'); % Add a legend in the top right corner
+% 
+% figure(5)
+% plot3(desiredOrbitXposition,desiredOrbitYposition,desiredOrbitZposition,'k--'); % Plot the desired orbit
+% 
+% axis([-4000 4000 -4000 4000 -4000 4000]); % Set specific axes
+% 
+% title('3-D desired orbit plot (orbit only)'); % Give the figure a title
+% xlabel('x-position [km]'); % Label the different axes
+% ylabel('y-position [km]');
+% zlabel('z-position [km]');
+% legend('Desired orbit','Location','NorthEastOutside'); % Add a legend in the top right corner
+% 
+% % figure(6)
+% % quiver3(RKFxPosition,RKFyPosition,RKFzPosition,ThrustXacc,ThrustYacc,ThrustZacc,'r'); % Plot the RKF thrust
+% % 
+% % axis([-4000 4000 -4000 4000 -4000 4000]); % Set specific axes
+% % 
+% % title('3-D thrust plot (thrust only)'); % Give the figure a title
+% % xlabel('x-position [km]'); % Label the different axes
+% % ylabel('y-position [km]');
+% % zlabel('z-position [km]');
+% % legend('Thrust','Location','NorthEastOutside'); % Add a legend in the top right corner
 
 toc
 

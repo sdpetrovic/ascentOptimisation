@@ -195,36 +195,36 @@ public:
 
         // Section 1
         thrustAzimuth_(0,0) = -0.6;   // Lower bound altitude
-        thrustAzimuth_(0,1) = 1.0;   // Upper bound altitude
+        thrustAzimuth_(0,1) = -0.5;   // Upper bound altitude // 1.0
 
         thrustAzimuth_(0,2) = deg2rad(allTheSameAngleAzimuth_);   // Thrust azimuth angle
 
         // Section 2
-        thrustAzimuth_(1,0) = thrustAzimuth_(1,0);   // Lower bound altitude
-        thrustAzimuth_(1,1) = 5.0;   // Upper bound altitude
+        thrustAzimuth_(1,0) = thrustAzimuth_(0,1);   // Lower bound altitude
+        thrustAzimuth_(1,1) = 53.66/2.0;   // Upper bound altitude // 5.0
 
         thrustAzimuth_(1,2) = deg2rad(allTheSameAngleAzimuth_);   // Thrust azimuth angle
 
         // Section 3
-        thrustAzimuth_(2,0) = 5.0;   // Lower bound altitude
-        thrustAzimuth_(2,1) = 15.0;   // Upper bound altitude
+        thrustAzimuth_(2,0) = thrustAzimuth_(1,1);   // Lower bound altitude
+        thrustAzimuth_(2,1) = 53.66;   // Upper bound altitude // 15.0
 
         thrustAzimuth_(2,2) = deg2rad(allTheSameAngleAzimuth_);   // Thrust azimuth angle
 
         // Section 4
-        thrustAzimuth_(3,0) = 15.0;   // Lower bound altitude
-        thrustAzimuth_(3,1) = 35.0;   // Upper bound altitude
+        thrustAzimuth_(3,0) = thrustAzimuth_(2,1);   // Lower bound altitude
+        thrustAzimuth_(3,1) = 60.0;   // Upper bound altitude // 35.0
 
         thrustAzimuth_(3,2) = deg2rad(allTheSameAngleAzimuth_);   // Thrust azimuth angle
 
         // Section 5
-        thrustAzimuth_(4,0) = 35.0;   // Lower bound altitude
+        thrustAzimuth_(4,0) = thrustAzimuth_(3,1);   // Lower bound altitude
         thrustAzimuth_(4,1) = 100.0;   // Upper bound altitude
 
         thrustAzimuth_(4,2) = deg2rad(allTheSameAngleAzimuth_);   // Thrust azimuth angle
 
         // Section 6
-        thrustAzimuth_(5,0) = 100.0;   // Lower bound altitude
+        thrustAzimuth_(5,0) = thrustAzimuth_(4,1);   // Lower bound altitude
         thrustAzimuth_(5,1) = finalAltitude_;   // Upper bound altitude
 
         thrustAzimuth_(5,2) = deg2rad(allTheSameAngleAzimuth_);   // Thrust azimuth angle
@@ -237,39 +237,120 @@ public:
 
             // Section 1
             thrustElevation_(0,0) = -0.6;   // Lower bound altitude
-            thrustElevation_(0,1) = 0.007;   // Upper bound altitude
+            thrustElevation_(0,1) = -0.5;   // Upper bound altitude // 0.007
 
             thrustElevation_(0,2) = deg2rad(allTheSameAngleElevation_);   // Thrust elevation angle
 
             // Section 2
             thrustElevation_(1,0) = thrustElevation_(0,1);   // Lower bound altitude
-            thrustElevation_(1,1) = 5.0;   // Upper bound altitude
+            thrustElevation_(1,1) = 53.66/2.0;   // Upper bound altitude // 5.0
 
             thrustElevation_(1,2) = deg2rad(allTheSameAngleElevation_);   // Thrust elevation angle
 
             // Section 3
-            thrustElevation_(2,0) = 5.0;   // Lower bound altitude
-            thrustElevation_(2,1) = 15.0;   // Upper bound altitude
+            thrustElevation_(2,0) = thrustElevation_(1,1);   // Lower bound altitude
+            thrustElevation_(2,1) = 53.66;   // Upper bound altitude // 15.0
 
             thrustElevation_(2,2) = deg2rad(allTheSameAngleElevation_);   // Thrust elevation angle
 
             // Section 4
-            thrustElevation_(3,0) = 15.0;   // Lower bound altitude
-            thrustElevation_(3,1) = 35.0;   // Upper bound altitude
+            thrustElevation_(3,0) = thrustElevation_(2,1);   // Lower bound altitude
+            thrustElevation_(3,1) = 60;   // Upper bound altitude // 35.0
 
             thrustElevation_(3,2) = deg2rad(allTheSameAngleElevation_);   // Thrust elevation angle
 
             // Section 5
-            thrustElevation_(4,0) = 35.0;   // Lower bound altitude
+            thrustElevation_(4,0) = thrustElevation_(3,1);   // Lower bound altitude
             thrustElevation_(4,1) = 100.0;   // Upper bound altitude
 
             thrustElevation_(4,2) = deg2rad(allTheSameAngleElevation_);   // Thrust elevation angle
 
             // Section 6
-            thrustElevation_(5,0) = 100.0;   // Lower bound altitude
+            thrustElevation_(5,0) = thrustElevation_(4,1);   // Lower bound altitude
             thrustElevation_(5,1) = finalAltitude_;   // Upper bound altitude
 
             thrustElevation_(5,2) = deg2rad(allTheSameAngleElevation_);   // Thrust elevation angle
+
+
+            /// Determine the thrust angle coefficients for the fit
+
+            thrustAzimuthPolyCoefficients_ = Eigen::MatrixXd::Zero(thrustAzimuth_.rows(),2); // Set all polynomial coefficients to zero
+
+            for (int l = 0;l<thrustAzimuth_.rows();l++){
+
+                // Set the variables
+
+                double x1,x2,y1,y2;
+
+
+                if (l==0){
+                    y1 = 0.0;
+                }
+                else {
+                    y1 = thrustAzimuth_(l-1,2);
+                }
+
+                x1 = thrustAzimuth_(l,0);
+                x2 = thrustAzimuth_(l,1);
+
+                y2 = thrustAzimuth_(l,2);
+
+                // Determine the coefficients (y = a*x+b)
+
+                thrustAzimuthPolyCoefficients_(l,0) = (y2-y1)/(x2-x1); // a
+                thrustAzimuthPolyCoefficients_(l,1) = (1/((1/x2)-(1/x1)))*((y2/x2)-(y1/x1)); // b
+
+                /// Debug ///
+//                std::cout<<"/// Debug Azimuth ///"<<std::endl;
+//                std::cout<<"x1 = "<<x1<<std::endl;
+//                std::cout<<"x2 = "<<x2<<std::endl;
+//                std::cout<<"y1 = "<<y1<<std::endl;
+//                std::cout<<"y2 = "<<y2<<std::endl;
+//                std::cout<<"y2-y1 = "<<y2-y1<<std::endl;
+//                std::cout<<"thrustAzimuthPolyCoefficients = "<<thrustAzimuthPolyCoefficients_<<std::endl;
+//                std::cout<<"/// Debug Azimuth ///"<<std::endl;
+                /// Debug ///
+
+            } // End of set fit
+
+            thrustElevationPolyCoefficients_ = Eigen::MatrixXd::Zero(thrustElevation_.rows(),2); // Set all polynomial coefficients to zero
+
+            for (int l = 0;l<thrustElevation_.rows();l++){
+
+                // Set the variables
+
+                double x1,x2,y1,y2;
+
+
+                if (l==0){
+                    y1 = 0.0;
+                }
+                else {
+                    y1 = thrustElevation_(l-1,2);
+                }
+
+                x1 = thrustElevation_(l,0);
+                x2 = thrustElevation_(l,1);
+
+                y2 = thrustElevation_(l,2);
+
+                // Determine the coefficients (y = a*x+b)
+
+                thrustElevationPolyCoefficients_(l,0) = (y2-y1)/(x2-x1); // a
+                thrustElevationPolyCoefficients_(l,1) = (1/((1/x2)-(1/x1)))*((y2/x2)-(y1/x1)); // b
+
+                /// Debug ///
+//                std::cout<<"/// Debug Elevation ///"<<std::endl;
+//                std::cout<<"x1 = "<<x1<<std::endl;
+//                std::cout<<"x2 = "<<x2<<std::endl;
+//                std::cout<<"y1 = "<<y1<<std::endl;
+//                std::cout<<"y2 = "<<y2<<std::endl;
+//                std::cout<<"y2-y1 = "<<y2-y1<<std::endl;
+//                std::cout<<"thrustElevationPolyCoefficients = "<<thrustElevationPolyCoefficients_<<std::endl;
+//                std::cout<<"/// Debug Elevation ///"<<std::endl;
+                /// Debug ///
+
+            } // End of set fit
 
                                                     } // End of constructor
 
@@ -298,6 +379,8 @@ public:
     const Eigen::MatrixXd thrustAzimuth() { return thrustAzimuth_; }                                    // psiT   these are the thrust azimuth-gimbal angles as a function of time (including the time ranges)
     const Eigen::MatrixXd thrustElevation() { return thrustElevation_; }                                // epsilonT   these are the thrust elevation-gimbal angles as a function of time (including the time ranges)
 
+    const Eigen::MatrixXd thrustAzimuthPolyCoefficient() { return thrustAzimuthPolyCoefficients_; }     // P_psiT   these are the polynomial coefficients for the fit for the azimuth angle curve
+    const Eigen::MatrixXd thrustElevationPolyCoefficient() { return thrustElevationPolyCoefficients_; }     // P_epsilonT   these are the polynomial coefficients for the fit for the elevation angle curve
 
 
 
@@ -308,11 +391,90 @@ public:
     void setThrustAzimuthSet(const Eigen::MatrixXd updatedThrustAzimuthSet)            // This function lets you provide the class with your own thrust azimuth angle set including altitude ranges
     {
         thrustAzimuth_ = updatedThrustAzimuthSet;
+
+        // Set the coefficients for the fit
+        thrustAzimuthPolyCoefficients_ = Eigen::MatrixXd::Zero(thrustAzimuth_.rows(),2); // Set all polynomial coefficient to zero
+
+        for (int l = 0;l<thrustAzimuth_.rows();l++){
+
+            // Set the variables
+
+            double x1,x2,y1,y2;
+
+
+            if (l==0){
+                y1 = 0.0;
+            }
+            else {
+                y1 = thrustAzimuth_(l-1,2);
+            }
+
+            x1 = thrustAzimuth_(l,0);
+            x2 = thrustAzimuth_(l,1);
+
+            y2 = thrustAzimuth_(l,2);
+
+            // Determine the coefficients (y = a*x+b)
+
+            thrustAzimuthPolyCoefficients_(l,0) = (y2-y1)/(x2-x1); // a
+            thrustAzimuthPolyCoefficients_(l,1) = (1/((1/x2)-(1/x1)))*((y2/x2)-(y1/x1)); // b
+
+            /// Debug ///
+//            std::cout<<"/// Debug Azimuth ///"<<std::endl;
+//            std::cout<<"x1 = "<<x1<<std::endl;
+//            std::cout<<"x2 = "<<x2<<std::endl;
+//            std::cout<<"y1 = "<<y1<<std::endl;
+//            std::cout<<"y2 = "<<y2<<std::endl;
+//            std::cout<<"thrustAzimuthPolyCoefficients = "<<thrustAzimuthPolyCoefficients_<<std::endl;
+//            std::cout<<"/// Debug Azimuth ///"<<std::endl;
+            /// Debug ///
+
+        } // End of set fit
     }
 
     void setThrustElevationSet(const Eigen::MatrixXd updatedThrustElevationSet)            // This function lets you provide the class with your own thrust elevation angle set including altitude ranges
     {
         thrustElevation_ = updatedThrustElevationSet;
+
+        // Set the coefficients for the fit
+        thrustElevationPolyCoefficients_ = Eigen::MatrixXd::Zero(thrustElevation_.rows(),2); // Set all polynomial coefficients to zero
+
+        for (int l = 0;l<thrustElevation_.rows();l++){
+
+            // Set the variables
+
+            double x1,x2,y1,y2;
+
+
+            if (l==0){
+                y1 = 0.0;
+            }
+            else {
+                y1 = thrustElevation_(l-1,2);
+            }
+
+            x1 = thrustElevation_(l,0);
+            x2 = thrustElevation_(l,1);
+
+            y2 = thrustElevation_(l,2);
+
+            // Determine the coefficients (y = a*x+b)
+
+            thrustElevationPolyCoefficients_(l,0) = (y2-y1)/(x2-x1); // a
+            thrustElevationPolyCoefficients_(l,1) = (1/((1/x2)-(1/x1)))*((y2/x2)-(y1/x1)); // b
+
+            /// Debug ///
+//            std::cout<<"/// Debug Elevation ///"<<std::endl;
+//            std::cout<<"x1 = "<<x1<<std::endl;
+//            std::cout<<"x2 = "<<x2<<std::endl;
+//            std::cout<<"y1 = "<<y1<<std::endl;
+//            std::cout<<"y2 = "<<y2<<std::endl;
+//            std::cout<<"thrustElevationPolyCoefficients = "<<thrustElevationPolyCoefficients_<<std::endl;
+//            std::cout<<"/// Debug Elevation ///"<<std::endl;
+            /// Debug ///
+
+
+        } // End of set fit
     }
 
     void setConstantThrustAzimuthAngle(const double updatedConstantThrustAzimuthAngle)      // This function lets you provide the class with your own constant thrust azimuth angle
@@ -336,6 +498,7 @@ public:
 
         // Section 6
         thrustAzimuth_(5,2) = deg2rad(allTheSameAngleAzimuth_);   // Thrust azimuth angle
+
     }
 
 
@@ -360,6 +523,7 @@ public:
 
         // Section 6
         thrustElevation_(5,2) = deg2rad(allTheSameAngleElevation_);   // Thrust Elevation angle
+
     }
 
     void setThrustAzimuthAngleValues(const Eigen::VectorXd updatedThrustAzimuthAngleVector)      // This function lets you provide the class with your own thrust azimuth angle values
@@ -382,6 +546,45 @@ public:
 
         // Section 6
         thrustAzimuth_(5,2) = deg2rad(updatedThrustAzimuthAngleVector(5));   // Thrust azimuth angle
+
+        // Set the coefficients for the fit
+        thrustAzimuthPolyCoefficients_ = Eigen::MatrixXd::Zero(thrustAzimuth_.rows(),2); // Set all polynomial coefficient to zero
+
+        for (int l = 0;l<thrustAzimuth_.rows();l++){
+
+            // Set the variables
+
+            double x1,x2,y1,y2;
+
+
+            if (l==0){
+                y1 = 0.0;
+            }
+            else {
+                y1 = thrustAzimuth_(l-1,2);
+            }
+
+            x1 = thrustAzimuth_(l,0);
+            x2 = thrustAzimuth_(l,1);
+
+            y2 = thrustAzimuth_(l,2);
+
+            // Determine the coefficients (y = a*x+b)
+
+            thrustAzimuthPolyCoefficients_(l,0) = (y2-y1)/(x2-x1); // a
+            thrustAzimuthPolyCoefficients_(l,1) = (1/((1/x2)-(1/x1)))*((y2/x2)-(y1/x1)); // b
+
+            /// Debug ///
+//            std::cout<<"/// Debug Azimuth ///"<<std::endl;
+//            std::cout<<"x1 = "<<x1<<std::endl;
+//            std::cout<<"x2 = "<<x2<<std::endl;
+//            std::cout<<"y1 = "<<y1<<std::endl;
+//            std::cout<<"y2 = "<<y2<<std::endl;
+//            std::cout<<"thrustAzimuthPolyCoefficients = "<<thrustAzimuthPolyCoefficients_<<std::endl;
+//            std::cout<<"/// Debug Azimuth ///"<<std::endl;
+            /// Debug ///
+
+        } // End of set fit
     }
 
 
@@ -405,6 +608,46 @@ public:
 
         // Section 6
         thrustElevation_(5,2) = deg2rad(updatedThrustElevationAngleVector(5));   // Thrust Elevation angle
+
+        // Set the coefficients for the fit
+        thrustElevationPolyCoefficients_ = Eigen::MatrixXd::Zero(thrustElevation_.rows(),2); // Set all polynomial coefficients to zero
+
+        for (int l = 0;l<thrustElevation_.rows();l++){
+
+            // Set the variables
+
+            double x1,x2,y1,y2;
+
+
+            if (l==0){
+                y1 = 0.0;
+            }
+            else {
+                y1 = thrustElevation_(l-1,2);
+            }
+
+            x1 = thrustElevation_(l,0);
+            x2 = thrustElevation_(l,1);
+
+            y2 = thrustElevation_(l,2);
+
+            // Determine the coefficients (y = a*x+b)
+
+            thrustElevationPolyCoefficients_(l,0) = (y2-y1)/(x2-x1); // a
+            thrustElevationPolyCoefficients_(l,1) = (1/((1/x2)-(1/x1)))*((y2/x2)-(y1/x1)); // b
+
+            /// Debug ///
+//            std::cout<<"/// Debug Elevation ///"<<std::endl;
+//            std::cout<<"x1 = "<<x1<<std::endl;
+//            std::cout<<"x2 = "<<x2<<std::endl;
+//            std::cout<<"y1 = "<<y1<<std::endl;
+//            std::cout<<"y2 = "<<y2<<std::endl;
+//            std::cout<<"thrustElevationPolyCoefficients = "<<thrustElevationPolyCoefficients_<<std::endl;
+//            std::cout<<"/// Debug Elevation ///"<<std::endl;
+            /// Debug ///
+
+
+        } // End of set fit
     }
 
 
@@ -483,6 +726,8 @@ private:
 
     Eigen::MatrixXd thrustAzimuth_;                                 // psiT   these are the thrust azimuth-gimbal angles as a function of altitude (including the altitude ranges)
     Eigen::MatrixXd thrustElevation_;                               // epsilonT   these are the thrust elevation-gimbal angles as a function of altitude (including the altitude ranges)
+    Eigen::MatrixXd thrustAzimuthPolyCoefficients_;                 // P_psiT   these are the polynomial coefficients for the fit for the psiT curve
+    Eigen::MatrixXd thrustElevationPolyCoefficients_;               // P_epsilonT   these are the polynomial coefficients for the fit for the epsilonT curve
 
 
 

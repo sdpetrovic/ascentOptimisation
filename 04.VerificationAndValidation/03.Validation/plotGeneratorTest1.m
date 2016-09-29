@@ -151,9 +151,11 @@ plot3(desiredOrbitXposition,desiredOrbitYposition,desiredOrbitZposition,'k--'); 
 % view(74.5,0); % see the trajectory from the side
 % view(74.5,90);  % see the trajectory from the top
 % view(90,0); % as seen from the x-axis
-view(180,0); % as seen from the y-axis
-% view(0,90); % as seen from the z-axis
+% view(180,0); % as seen from the y-axis
+view(0,90); % as seen from the z-axis
 % view(0,-90); % as seen from the negative z-axis
+
+axis([-3000 1000 500 3500 0 3000]);
 
 
 title('3-D trajectory plot over Mars'); % Give the figure a title
@@ -172,7 +174,7 @@ plot3(desiredOrbitXposition,desiredOrbitYposition,desiredOrbitZposition,'k--'); 
 % hold on
 % plot3(RefxPosition,RefyPosition,RefzPosition,'r--'); % Plot the reference trajectory 
 
-axis([-4000 4000 -4000 4000 -4000 4000]); % Set specific axes
+axis([-3000 1000 500 3500 0 3000]); % Set specific axes
 
 title('3-D trajectory plot (trajectories only)'); % Give the figure a title
 xlabel('x-position [km]'); % Label the different axes

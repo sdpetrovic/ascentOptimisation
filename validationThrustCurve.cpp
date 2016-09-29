@@ -228,7 +228,7 @@ std::cout<<setprecision(15)<<"Setting output precision to 15"<<std::endl;
 
 //    std::cout<<"rotationalVelocityMars = "<<rotationalVelocityMars<<std::endl;
 
-    Eigen::MatrixXd thrustAngleValuesMatrix = Eigen::MatrixXd::Zero(1,3); // Define an output Matrix
+    Eigen::MatrixXd thrustAngleValuesMatrix = Eigen::MatrixXd::Zero(1,4); // Define an output Matrix
 
 for (int i = 0;i < inputMatrixValues.rows();i++){
 
@@ -247,6 +247,8 @@ for (int i = 0;i < inputMatrixValues.rows();i++){
     // Computations
 
         const double Radius = sqrt(xPosition*xPosition+yPosition*yPosition+zPosition*zPosition);         // r [km]
+
+        const double currentAltitude = Radius - Mars.bodyReferenceRadius()+0.2; // h [km MOLA]
 
         const double inertialVelocity = sqrt(xVelocity*xVelocity+yVelocity*yVelocity+zVelocity*zVelocity);       // V_I [km/s]
 
@@ -453,11 +455,12 @@ for (int i = 0;i < inputMatrixValues.rows();i++){
 //    std::cout<<"propulsionThrustDirection = "<<propulsionThrustDirection<<std::endl;
 
 
-    thrustAngleValuesMatrix.conservativeResize(i+1,3); // Resize the matrix to fit all the values
+    thrustAngleValuesMatrix.conservativeResize(i+1,4); // Resize the matrix to fit all the values
 
     thrustAngleValuesMatrix(i,0) = currentTime;
-    thrustAngleValuesMatrix(i,1) = rad2deg(thrustAzimuthAngle);
-    thrustAngleValuesMatrix(i,2) = rad2deg(thrustElevationAngle);
+    thrustAngleValuesMatrix(i,1) = currentAltitude;
+    thrustAngleValuesMatrix(i,2) = rad2deg(thrustAzimuthAngle);
+    thrustAngleValuesMatrix(i,3) = rad2deg(thrustElevationAngle);
 
 /////////////////////////////////////////////////////////////////////// Take two ///////////////////////////////////////////////////////////////////////
 

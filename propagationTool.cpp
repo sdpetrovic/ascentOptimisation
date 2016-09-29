@@ -147,8 +147,8 @@ int main()
     /// Input file ///
 
 //    std::string nameOfFile = "test.txt"; // Test file
-    std::string nameOfFile = "test1Ryan.txt"; // Test file from Ryan
-//    std::string nameOfFile = "test2Joel.txt"; // Test file from Joel
+//    std::string nameOfFile = "test1Ryan.txt"; // Test file from Ryan
+    std::string nameOfFile = "test2Joel.txt"; // Test file from Joel
 
 
 
@@ -210,7 +210,10 @@ int main()
 //    const double FlightPathAngleDeg = 89;
 
     const double HeadingAngleDeg =          inputVectorValues(6);
+
     const double initialGroundVelocity =    inputVectorValues(7);
+//    const double initialGroundVelocity = 1e-6;
+
     const double massMAV =                  inputVectorValues(8);
     const double thrust =                   inputVectorValues(9);
     const double specificImpulse =          inputVectorValues(10);
@@ -218,17 +221,17 @@ int main()
     const double constantThrustElevationAngle = inputVectorValues(12);
     const double constantThrustAzimuthAngle = inputVectorValues(13);
 
-//    const int maxOrder =                    inputVectorValues(14);
-    const int maxOrder = 20;
+    const int maxOrder =                    inputVectorValues(14);
+//    const int maxOrder = 20;
 
-//    const double chosenLocalErrorTolerance = inputVectorValues(15);
-    const double chosenLocalErrorTolerance = 1e-15;
+    const double chosenLocalErrorTolerance = inputVectorValues(15);
+//    const double chosenLocalErrorTolerance = 1e-15;
 
     const double chosenStepSize =           inputVectorValues(16);
 
 
-//    const double setEndTime =               inputVectorValues(17);
-    const double setEndTime = 1796;
+    const double setEndTime =               inputVectorValues(17);
+//    const double setEndTime = 876;
 
     const double RKFinitiaterTime =         inputVectorValues(18);
     const bool rotatingPlanet =             inputVectorValues(19);

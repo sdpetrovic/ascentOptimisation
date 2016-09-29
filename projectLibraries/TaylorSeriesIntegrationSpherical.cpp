@@ -144,6 +144,13 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
     const Eigen::MatrixXd dragCoefficientMachRanges = MAV.dragCoefficientMachRanges();                       // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
     const Eigen::MatrixXd thrustAzimuth = MAV.thrustAzimuth();                                // psiT   these are the thrust azimuth-gimbal angles as a function of altitude (including the altitude ranges)
     const Eigen::MatrixXd thrustElevation = MAV.thrustElevation();                                // epsilonT   these are the thrust elevation-gimbal angles as a function of altitude (including the altitude ranges)
+    const Eigen::MatrixXd thrustAzimuthPolyCoefficients = MAV.thrustAzimuthPolyCoefficient();                 // P_psiT   these are the polynomial coefficients for the fit for the psiT curve
+    const Eigen::MatrixXd thrustElevationPolyCoefficients = MAV.thrustElevationPolyCoefficient();               // P_epsilonT   these are the polynomial coefficients for the fit for the epsilonT curve
+
+
+//    std::cout<<"thrustAzimuthPolyCoefficients = "<<thrustAzimuthPolyCoefficients<<std::endl;
+//    std::cout<<"thrustElevationPolyCoefficients = "<<thrustElevationPolyCoefficients<<std::endl;
+
 
     // StateAndTime
 
@@ -199,7 +206,7 @@ Eigen::VectorXd performTaylorSeriesIntegrationStep(const celestialBody& planet_,
     Auxiliary Aux(adiabeticIndex, specificGasConstant,standardGravitationalParameter, rotationalVelocity, primeMeridianAngle,
               inertialFrameTime, bodyReferenceRadius, temperaturePolyCoefficients, temperatureAltitudeRanges,
               densityPolyCoefficients, Thrust, thrustAzimuth, thrustElevation, specificImpulse,
-              referenceArea, dragCoefficientPolyCoefficients, dragCoefficientMachRanges);
+              referenceArea, dragCoefficientPolyCoefficients, dragCoefficientMachRanges,thrustAzimuthPolyCoefficients,thrustElevationPolyCoefficients);
 
     //std::cout<<"This works right 3?"<<std::endl;
 
@@ -842,6 +849,12 @@ else{
 //                std::cout<<"limitMach = "<<limitMach<<std::endl;
 //                std::cout<<"originalMach = "<<originalMach<<std::endl;
 //                std::cout<<"newMach = "<<newMach<<std::endl;
+//                std::cout<<"updatedState(3) = "<<updatedState(3)<<std::endl;
+//                std::cout<<"newSpeedOfSound = "<<newSpeedOfSound<<std::endl;
+//                std::cout<<"newTemp = "<<newTemp<<std::endl;
+//                std::cout<<"(updatedState(0)-bodyReferenceRadius) = "<<(updatedState(0)-bodyReferenceRadius)<<std::endl;
+
+
 //                std::cout<<"fFromM = "<<fFromM<<std::endl;
 //                std::cout<<"fToM = "<<fToM<<std::endl;
 //                std::cout<<"initialNewTimeM = "<<currentTime+currentStepSize<<std::endl;
@@ -905,6 +918,11 @@ else{
 
 //        std::cout<<"signIsPositiveMach = "<<signIsPositiveMach<<std::endl;
 //        std::cout<<"fFromDotM = "<<fFromDotM<<std::endl;
+//        std::cout<<"fToM = "<<fToM<<std::endl;
+//        std::cout<<"fFromM = "<<fFromM<<std::endl;
+//        std::cout<<"tToM = "<<tToM<<std::endl;
+//        std::cout<<"tFromM = "<<tFromM<<std::endl;
+
 //        std::cout<<"(fToM-fFromM)/((tToM-tFromM)*(tToM-tFromM)) = "<<(fToM-fFromM)/((tToM-tFromM)*(tToM-tFromM))<<std::endl;
 //        std::cout<<"fFromDotM/(tToM-tFromM) = "<<fFromDotM/(tToM-tFromM)<<std::endl;
 //        std::cout<<"fFromDotM = "<<fFromDotM<<std::endl;

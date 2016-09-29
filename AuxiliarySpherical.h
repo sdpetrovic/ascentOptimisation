@@ -106,6 +106,8 @@ public:
      * const double referenceArea                                            // S [m^2]  vehicle reference area
      * const Eigen::MatrixXd dragCoefficientPolyCoefficients            // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
      * const Eigen::MatrixXd dragCoefficientMachRanges                        // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
+     * const Eigen::MatrixXd thrustAzimuthPolyCoefficients_;                 // P_psiT   these are the polynomial coefficients for the fit for the psiT curve
+     * const Eigen::MatrixXd thrustElevationPolyCoefficients_;               // P_epsilonT   these are the polynomial coefficients for the fit for the epsilonT curve
      *
      *
      *
@@ -115,7 +117,7 @@ public:
     Auxiliary(const double adiabeticIndex_, const double specificGasConstant_, const double standardGravitationalParameter_, const double rotationalVelocity_, const double primeMeridianAngle_,
               const double inertialFrameTime_, const double bodyReferenceRadius_, const Eigen::MatrixXd temperaturePolyCoefficients_, const Eigen::MatrixXd temperatureAltitudeRanges_,
               const Eigen::VectorXd densityPolyCoefficients_, const double Thrust_, const Eigen::MatrixXd thrustAzimuthMatrix_, const Eigen::MatrixXd thrustElevationMatrix_, const double specificImpulse_,
-              const double referenceArea_, const Eigen::MatrixXd dragCoefficientPolyCoefficients_, const Eigen::MatrixXd dragCoefficientMachRanges_){
+              const double referenceArea_, const Eigen::MatrixXd dragCoefficientPolyCoefficients_, const Eigen::MatrixXd dragCoefficientMachRanges_, const Eigen::MatrixXd thrustAzimuthPolyCoefficients_,const Eigen::MatrixXd thrustElevationPolyCoefficients_){
 
             // Set the different celestial body constant parameters and polynomial coefficient parameter matrices
 
@@ -140,6 +142,9 @@ public:
          referenceArea = referenceArea_;                                           // S [m^2]  vehicle reference area
          dragCoefficientPolyCoefficients = dragCoefficientPolyCoefficients_;           // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
          dragCoefficientMachRanges = dragCoefficientMachRanges_;                       // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
+         thrustAzimuthPolyCoefficients = thrustAzimuthPolyCoefficients_;            // P_psiT   these are the polynomial coefficients for the fit for the psiT curve
+         thrustElevationPolyCoefficients = thrustElevationPolyCoefficients_;        // P_epsilonT   these are the polynomial coefficients for the fit for the epsilonT curve
+
 
 
          // Set the flight-path angle and the heading angle to the default values
@@ -1575,6 +1580,8 @@ private:
  double referenceArea;                                           // S [m^2]  vehicle reference area
  Eigen::MatrixXd dragCoefficientPolyCoefficients;           // P_CDn     these are the polynomial coefficients for the fit for the drag coefficient curve
  Eigen::MatrixXd dragCoefficientMachRanges;                       // dragCoefficientMachRanges      these are the Mach ranges corresponding to the polynomial coefficients for the drag coefficient
+ Eigen::MatrixXd thrustAzimuthPolyCoefficients;                 // P_psiT   these are the polynomial coefficients for the fit for the psiT curve
+ Eigen::MatrixXd thrustElevationPolyCoefficients;               // P_epsilonT   these are the polynomial coefficients for the fit for the epsilonT curve
 
     // Set functions
 
